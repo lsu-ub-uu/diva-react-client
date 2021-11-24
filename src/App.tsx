@@ -1,5 +1,6 @@
 import React from 'react';
 import PersonList from './components/PersonList';
+import PersonSearch from './components/PersonSearch';
 import Person from './control/Person';
 
 const persons: Person[] = [
@@ -28,7 +29,8 @@ const persons: Person[] = [
 ];
 
 function App() {
-	return <PersonList persons={persons} />;
+	// return <PersonList persons={persons} />;
+	return <PersonSearch />;
 }
 
 export default App;
