@@ -1,0 +1,7 @@
+/node_modules/
+.project
+.settings/
+lib/
+dist/
+.parcel-cache/
+coverage/
