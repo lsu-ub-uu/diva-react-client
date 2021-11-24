@@ -1,8 +1,6 @@
-import React from 'react';
-import PersonList from './components/PersonList';
-import Person from './control/Person';
+import Person from './Person';
 
-const persons: Person[] = [
+const DUMMY_PERSONS: Person[] = [
 	{
 		id: '1',
 		authorizedName: {
@@ -16,7 +14,7 @@ const persons: Person[] = [
 			familyName: 'Enequist',
 			givenName: 'Gerd',
 		},
-		domains: ['Uppsala Universitet'],
+		domains: ['Uppsala Universitet', 'Test'],
 	},
 	{
 		id: '3',
@@ -27,8 +25,12 @@ const persons: Person[] = [
 	},
 ];
 
-function App() {
-	return <PersonList persons={persons} />;
+function getOrganisation() {
+	return 'SomeOtherOrg';
 }
 
-export default App;
+export function getPersons(): Person[] {
+	return DUMMY_PERSONS;
+}
+
+export default { getOrganisation, getPersons };
