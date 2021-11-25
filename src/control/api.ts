@@ -33,4 +33,13 @@ export function getPersons(): Person[] {
 	return DUMMY_PERSONS;
 }
 
+export function searchPersonsByNameSearch(
+	searchTerm: string
+): Promise<Person[]> {
+	console.log(searchTerm);
+	return new Promise((resolve, reject) => {
+		resolve(DUMMY_PERSONS);
+	});
+}
+
 export default { getOrganisation, getPersons };
