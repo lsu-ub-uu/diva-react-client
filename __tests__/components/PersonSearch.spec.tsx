@@ -53,14 +53,14 @@ describe('The PersonSearch component', () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue([
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},
 			},
 			{
 				id: '2',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Enequist',
 					givenName: 'Gerd',
 				},
@@ -68,7 +68,7 @@ describe('The PersonSearch component', () => {
 			},
 			{
 				id: '3',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Ernman',
 					givenName: 'Malena',
 				},
@@ -100,7 +100,7 @@ describe('The PersonSearch component', () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue([
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},

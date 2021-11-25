@@ -19,7 +19,7 @@ describe('The PersonList component', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},
@@ -37,14 +37,14 @@ describe('The PersonList component', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},
 			},
 			{
 				id: '2',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Enequist',
 					givenName: 'Gerd',
 				},
@@ -52,7 +52,7 @@ describe('The PersonList component', () => {
 			},
 			{
 				id: '3',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Ernman',
 					givenName: 'Malena',
 				},
@@ -71,7 +71,7 @@ describe('The PersonList component', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},
@@ -92,7 +92,7 @@ describe('The PersonList component', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},
@@ -113,7 +113,7 @@ describe('The PersonList component', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
-				authorizedName: {
+				authorisedName: {
 					familyName: 'Anka',
 					givenName: 'Kalle',
 				},

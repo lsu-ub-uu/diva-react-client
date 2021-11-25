@@ -3,14 +3,14 @@ import Person from './Person';
 const DUMMY_PERSONS: Person[] = [
 	{
 		id: '1',
-		authorizedName: {
+		authorisedName: {
 			familyName: 'Anka',
 			givenName: 'Kalle',
 		},
 	},
 	{
 		id: '2',
-		authorizedName: {
+		authorisedName: {
 			familyName: 'Enequist',
 			givenName: 'Gerd',
 		},
@@ -18,7 +18,7 @@ const DUMMY_PERSONS: Person[] = [
 	},
 	{
 		id: '3',
-		authorizedName: {
+		authorisedName: {
 			familyName: 'Ernman',
 			givenName: 'Malena',
 		},

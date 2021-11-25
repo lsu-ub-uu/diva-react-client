@@ -2,7 +2,7 @@ import Name from './Name';
 
 interface Person {
 	id: string;
-	authorizedName: Name;
+	authorisedName: Name;
 	domains?: string[];
 }
 

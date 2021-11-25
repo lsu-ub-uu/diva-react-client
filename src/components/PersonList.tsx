@@ -11,7 +11,7 @@ const PersonList = (props: Props) => {
 	return (
 		<ul>
 			{persons.map((person) => {
-				let text = `${person.id}: ${person.authorizedName.familyName}, ${person.authorizedName.givenName}`;
+				let text = `${person.id}: ${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
 				text += person.domains ? ` [${person.domains.join(', ')}]` : '';
 				return <li key={person.id}>{text}</li>;
 			})}
