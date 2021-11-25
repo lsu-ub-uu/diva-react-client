@@ -1,13 +1,11 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import { PersonSearch } from '../../src/components/PersonSearch';
-import { getPersons, searchPersonsByNameSearch } from '../../src/control/api';
+import { searchPersonsByNameSearch } from '../../src/control/api';
 
 jest.mock('../../src/control/api');
 
-const mockGetPersons = getPersons as jest.MockedFunction<typeof getPersons>;
 const mockSearchPersonsByNameSearch =
 	searchPersonsByNameSearch as jest.MockedFunction<
 		typeof searchPersonsByNameSearch
