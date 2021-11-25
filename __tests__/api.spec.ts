@@ -1,4 +1,4 @@
-import api from '../src/control/api';
+import api, { searchPersonsByNameSearch } from '../src/control/api';
 
 describe('Api', () => {
 	it('should return the dummy persons', () => {
@@ -14,6 +14,12 @@ describe('Api', () => {
 	// 2. om vi får ett element i svarslistan, se till att det skickas till en personConverter
 
 	describe('searchPersonsByNameSearch', () => {
-		it('');
+		beforeAll(() => {
+			process.env.BASE_URL = 'baseUrl/';
+		});
+
+		it('Calls fetch with correct parameters', () => {
+			searchPersonsByNameSearch('someSearchTerm');
+		});
 	});
 });

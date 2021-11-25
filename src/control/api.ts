@@ -36,6 +36,7 @@ export function getPersons(): Person[] {
 export function searchPersonsByNameSearch(
 	searchTerm: string
 ): Promise<Person[]> {
+	console.log(process.env.BASE_URL);
 	console.log(searchTerm);
 	return new Promise((resolve, reject) => {
 		resolve(DUMMY_PERSONS);
