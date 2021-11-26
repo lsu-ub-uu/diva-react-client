@@ -5,7 +5,7 @@ type Props = {
 	persons: Person[];
 };
 
-const PersonList = (props: Props) => {
+const PersonList = function (props: Props) {
 	const { persons } = props;
 
 	return (

@@ -49,7 +49,7 @@
 		"build:types": "tsc --emitDeclarationOnly",
 		"build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
 		"start": "parcel -p 3000 src/index.html",
-		"eslint": "npx eslint \"src/**/*\" --quiet --fix",
+		"eslint": "npx eslint \"src/**/*\" --quiet --fix/;exit 0",
 		"test": "jest --watch"
 	},
 	"author": "Library Systems Unit - Uppsala University Library",

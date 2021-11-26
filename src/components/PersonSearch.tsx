@@ -3,7 +3,7 @@ import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
 import PersonList from './PersonList';
 
-export const PersonSearch = () => {
+export const PersonSearch = function () {
 	const [persons, setPersons] = useState<Person[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 
