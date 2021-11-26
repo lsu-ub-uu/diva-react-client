@@ -1,5 +1,5 @@
 import convertPerson from '../converter/Converter';
-import { DataGroup, RecordWrapper } from '../converter/CoraData';
+import { RecordWrapper } from '../converter/CoraData';
 import Person from './Person';
 
 const DUMMY_PERSONS: Person[] = [

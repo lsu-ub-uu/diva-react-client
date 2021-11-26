@@ -1,5 +1,6 @@
 export abstract class DataElement {
 	name: string;
+
 	repeatId?: string;
 }
 

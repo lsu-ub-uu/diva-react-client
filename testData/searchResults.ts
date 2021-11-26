@@ -1,4 +1,4 @@
-import { DataGroup, DataListWrapper } from '../src/converter/CoraData';
+import { DataListWrapper } from '../src/converter/CoraData';
 
 export function getDataListContainingOnePerson(): DataListWrapper {
 	return {

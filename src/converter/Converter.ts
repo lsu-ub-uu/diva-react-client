@@ -51,7 +51,7 @@ function extractAuthorisedNameFromPersonDataGroup(
 		nameToReturn.familyName = familyName.value;
 		nameToReturn.givenName = givenName.value;
 	} catch (error) {
-		//TODO: decide what to do here...
+		// TODO: decide what to do here...
 	}
 
 	return nameToReturn;
