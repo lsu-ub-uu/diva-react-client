@@ -1,3 +1,5 @@
+import convertPerson from '../converter/Converter';
+import { DataGroup, RecordWrapper } from '../converter/CoraData';
 import Person from './Person';
 
 const DUMMY_PERSONS: Person[] = [
@@ -43,36 +45,12 @@ export function searchPersonsByNameSearch(
 		.then((result) => {
 			return result.json();
 		})
-		.then((json) => {
-			const personArray: Object[] = json.dataList.data;
-			if (personArray.length === 0) {
-				return [];
-			}
-			return [
-				{
-					authorisedName: {
-						familyName: 'Bar',
-						givenName: 'Foo',
-					},
-					id: '2',
-				},
-			];
+		.then((dataListWrapper) => {
+			const personArray: RecordWrapper[] = dataListWrapper.dataList.data;
+			return personArray.map((recordWrapper) => {
+				return convertPerson(recordWrapper.record.data);
+			});
 		});
-	// console.log(searchTerm);
-	// return fetch('asdf')
-	// 	.then((result) => {
-	// 		console.log(result);
-	// 		return result.json();
-	// 	})
-	// 	.then((data) => {
-	// 		console.log(data.dataList);
-	// 		return DUMMY_PERSONS;
-	// 	});
-	// return new Promise((resolve, reject) => {
-	// 	resolve(DUMMY_PERSONS);
-	// });
-
-	// return Promise.resolve([]);
 }
 
 export default { getOrganisation, getPersons };
