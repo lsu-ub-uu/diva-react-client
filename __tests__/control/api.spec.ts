@@ -146,13 +146,13 @@ describe('Api', () => {
 
 function createMockPersons(amount: number): Person[] {
 	const mockPersons: Person[] = [];
-	for (let index = 0; index < amount; index++) {
+	for (let index = 0; index < amount; index += 1) {
 		mockPersons.push({
 			authorisedName: {
-				familyName: 'SomeFamilyName' + index,
-				givenName: 'SomeGivenName' + index,
+				familyName: `SomeFamilyName${index}`,
+				givenName: `SomeGivenName${index}`,
 			},
-			id: 'someId-' + index,
+			id: `someId-${index}`,
 		});
 	}
 	return mockPersons;
