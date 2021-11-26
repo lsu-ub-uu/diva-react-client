@@ -1,14 +1,14 @@
 import 'whatwg-fetch';
-import api, { searchPersonsByNameSearch } from '../src/control/api';
-import Person from '../src/control/Person';
-import convertPerson from '../src/converter/Converter';
-import { DataListWrapper } from '../src/converter/CoraData';
+import api, { searchPersonsByNameSearch } from '../../src/control/api';
+import Person from '../../src/control/Person';
+import convertPerson from '../../src/converter/Converter';
+import { DataListWrapper } from '../../src/converter/CoraData';
 import {
 	getDataListContainingFourPersons,
 	getDataListContainingOnePerson,
-} from '../testData/searchResults';
+} from '../../testData/searchResults';
 
-jest.mock('../src/converter/Converter');
+jest.mock('../../src/converter/Converter');
 
 const mockConvertPerson = convertPerson as jest.MockedFunction<
 	typeof convertPerson
@@ -22,15 +22,9 @@ describe('Api', () => {
 		expect(persons[1].authorisedName.givenName).toBe('Gerd');
 	});
 
-	// Mock fetch
-	// Kolla att fetch anropas med rätt parametrar
-	// 1. Kolla att om vi får tillbaka en tom lista, resolvas det med en tom lista
-	// 2. om vi får ett element i svarslistan, se till att det skickas till en personConverter
-
 	describe('searchPersonsByNameSearch', () => {
 		beforeAll(() => {
 			process.env.BASE_URL = 'baseUrl/';
-			// jest.spyOn(window, 'fetch');
 		});
 
 		beforeEach(() => {
