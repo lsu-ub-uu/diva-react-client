@@ -7,10 +7,11 @@ export const PersonSearch = function () {
 	const [persons, setPersons] = useState<Person[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 
-	const handleSend = () => {
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
 		const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
-		promiseFromSearch.then((personsFromAPI) => {
-			setPersons(personsFromAPI);
+		promiseFromSearch.then((personsFromSearch) => {
+			setPersons(personsFromSearch);
 		});
 	};
 
@@ -19,14 +20,12 @@ export const PersonSearch = function () {
 	};
 
 	return (
-		<div>
+		<form onSubmit={handleSubmit}>
 			<h1>Person search</h1>
 			<input value={searchTerm} onChange={handleSearchTerm} />
-			<button onClick={handleSend} type="submit">
-				Search
-			</button>
+			<button type="submit">Search</button>
 			<PersonList persons={persons} />
-		</div>
+		</form>
 	);
 };
 

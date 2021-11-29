@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
 import { PersonSearch } from '../../src/components/PersonSearch';
 import { searchPersonsByNameSearch } from '../../src/control/api';
+import Person from '../../src/control/Person';
 
 jest.mock('../../src/control/api');
 
@@ -10,6 +11,31 @@ const mockSearchPersonsByNameSearch =
 	searchPersonsByNameSearch as jest.MockedFunction<
 		typeof searchPersonsByNameSearch
 	>;
+
+const threePersonObjects: Person[] = [
+	{
+		id: '1',
+		authorisedName: {
+			familyName: 'Anka',
+			givenName: 'Kalle',
+		},
+	},
+	{
+		id: '2',
+		authorisedName: {
+			familyName: 'Enequist',
+			givenName: 'Gerd',
+		},
+		domains: ['Uppsala Universitet', 'Test'],
+	},
+	{
+		id: '3',
+		authorisedName: {
+			familyName: 'Ernman',
+			givenName: 'Malena',
+		},
+	},
+];
 
 beforeEach(() => {
 	jest.clearAllTimers();
@@ -50,30 +76,7 @@ describe('The PersonSearch component', () => {
 	});
 
 	it('Renders several results returned by searchPersonsByNameSearch when clicking the submit button', async () => {
-		mockSearchPersonsByNameSearch.mockResolvedValue([
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-			{
-				id: '2',
-				authorisedName: {
-					familyName: 'Enequist',
-					givenName: 'Gerd',
-				},
-				domains: ['Uppsala Universitet', 'Test'],
-			},
-			{
-				id: '3',
-				authorisedName: {
-					familyName: 'Ernman',
-					givenName: 'Malena',
-				},
-			},
-		]);
+		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 		render(<PersonSearch />);
 
 		const listItemsBeforeClick = screen.queryAllByRole('listitem');
@@ -95,7 +98,7 @@ describe('The PersonSearch component', () => {
 		expect(listItems[2]).toHaveTextContent('3: Ernman, Malena');
 	});
 
-	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch', async () => {
+	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
 		render(<PersonSearch />);
 		mockSearchPersonsByNameSearch.mockResolvedValue([
 			{
@@ -116,23 +119,46 @@ describe('The PersonSearch component', () => {
 		const button = screen.getByRole('button');
 		userEvent.click(button);
 
-		await waitFor(() => {
-			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-			expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-				'someSearchTerm'
-			);
-		});
+		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
 
 		userEvent.clear(inputText);
 		userEvent.type(inputText, 'someOtherSearchTerm');
 
 		userEvent.click(button);
 
-		await waitFor(() => {
-			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-			expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-				'someOtherSearchTerm'
-			);
-		});
+		await assertSearchIsCalledTimesWith(2, 'someOtherSearchTerm');
+	});
+
+	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
+		render(<PersonSearch />);
+		mockSearchPersonsByNameSearch.mockResolvedValue([
+			{
+				id: '1',
+				authorisedName: {
+					familyName: 'Anka',
+					givenName: 'Kalle',
+				},
+			},
+		]);
+
+		const listItemsBeforeClick = screen.queryAllByRole('listitem');
+		expect(listItemsBeforeClick).toHaveLength(0);
+
+		const inputText = screen.getByRole('textbox');
+		userEvent.type(inputText, 'someSearchTerm');
+
+		userEvent.type(inputText, '{enter}');
+
+		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
 	});
 });
+
+async function assertSearchIsCalledTimesWith(
+	times: number,
+	searchTerm: string
+) {
+	return waitFor(() => {
+		expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(times);
+		expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(searchTerm);
+	});
+}
