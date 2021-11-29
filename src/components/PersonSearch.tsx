@@ -9,10 +9,12 @@ export const PersonSearch = function () {
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
-		promiseFromSearch.then((personsFromSearch) => {
-			setPersons(personsFromSearch);
-		});
+		if (searchTerm !== '') {
+			const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
+			promiseFromSearch.then((personsFromSearch) => {
+				setPersons(personsFromSearch);
+			});
+		}
 	};
 
 	const handleSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,12 +22,14 @@ export const PersonSearch = function () {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<div>
 			<h1>Person search</h1>
-			<input value={searchTerm} onChange={handleSearchTerm} />
-			<button type="submit">Search</button>
+			<form onSubmit={handleSubmit}>
+				<input value={searchTerm} onChange={handleSearchTerm} />
+				<button type="submit">Search</button>
+			</form>
 			<PersonList persons={persons} />
-		</form>
+		</div>
 	);
 };
 

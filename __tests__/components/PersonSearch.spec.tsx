@@ -17,15 +17,6 @@ const mockSearchPersonsByNameSearch =
 const mockPersonList = jest.fn();
 const personList = PersonList as jest.MockedFunction<typeof PersonList>;
 
-// jest.mock('../../src/components/PersonList', (props: Props) => {
-// 	mockChildComponent(props);
-
-// 	// Return something for React to render. I like creating
-// 	// an element to pass through as it
-// 	// helps with visually debugging if needed.
-// 	return <div />;
-// });
-
 const threePersonObjects: Person[] = [
 	{
 		id: '1',
@@ -107,6 +98,12 @@ describe('The PersonSearch component', () => {
 				persons: [],
 			})
 		);
+		const inputText = screen.getByRole('textbox');
+		userEvent.type(inputText, 'someSearchTerm');
+
+		jest.clearAllTimers();
+		jest.clearAllMocks();
+		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 
 		const button = screen.getByRole('button');
 		userEvent.click(button);
@@ -115,13 +112,33 @@ describe('The PersonSearch component', () => {
 			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 		});
 
-		expect(mockPersonList).toHaveBeenCalledTimes(2);
+		expect(mockPersonList).toHaveBeenCalledTimes(1);
 		expect(mockPersonList).toHaveBeenNthCalledWith(
-			2,
+			1,
 			expect.objectContaining({
 				persons: threePersonObjects,
 			})
 		);
+	});
+
+	it('Does not pass an empty searchTerm to searchPersonsByNameSearch when button is clicked', async () => {
+		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+		render(<PersonSearch />);
+
+		const button = screen.getByRole('button');
+		userEvent.click(button);
+
+		await waitFor(() => {
+			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
+		});
+
+		const inputText = screen.getByRole('textbox');
+		userEvent.clear(inputText);
+		userEvent.type(inputText, 'someSearchTerm');
+
+		userEvent.click(button);
+
+		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
