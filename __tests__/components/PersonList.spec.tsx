@@ -3,14 +3,42 @@ import { render, screen } from '@testing-library/react';
 import PersonList from '../../src/components/PersonList';
 import Person from '../../src/control/Person';
 
+const threePersonObjects: Person[] = [
+	{
+		id: '1',
+		authorisedName: {
+			familyName: 'Anka',
+			givenName: 'Kalle',
+		},
+	},
+	{
+		id: '2',
+		authorisedName: {
+			familyName: 'Enequist',
+			givenName: 'Gerd',
+		},
+		domains: ['Uppsala Universitet'],
+	},
+	{
+		id: '3',
+		authorisedName: {
+			familyName: 'Ernman',
+			givenName: 'Malena',
+		},
+	},
+];
+
 describe('The PersonList component', () => {
-	it('should output empty list if there is an empty ', () => {
+	it('should output "No Data" if an empty list has been passed"', () => {
 		const persons: Person[] = [];
 
 		render(<PersonList persons={persons} />);
 
-		const lists = screen.getAllByRole('list');
-		expect(lists).toHaveLength(1);
+		const noDataTexts = screen.queryAllByText('No Data');
+		expect(noDataTexts).toHaveLength(1);
+
+		const lists = screen.queryAllByRole('list');
+		expect(lists).toHaveLength(0);
 		const listItems = screen.queryAllByRole('listitem');
 		expect(listItems).toHaveLength(0);
 	});
@@ -34,32 +62,7 @@ describe('The PersonList component', () => {
 	});
 
 	it('should render several persons', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-			{
-				id: '2',
-				authorisedName: {
-					familyName: 'Enequist',
-					givenName: 'Gerd',
-				},
-				domains: ['Uppsala Universitet'],
-			},
-			{
-				id: '3',
-				authorisedName: {
-					familyName: 'Ernman',
-					givenName: 'Malena',
-				},
-			},
-		];
-
-		render(<PersonList persons={persons} />);
+		render(<PersonList persons={threePersonObjects} />);
 
 		const listItems = screen.getAllByRole('listitem');
 		expect(listItems).toHaveLength(3);
