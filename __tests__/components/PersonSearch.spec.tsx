@@ -2,15 +2,29 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
 import { PersonSearch } from '../../src/components/PersonSearch';
+import PersonList from '../../src/components/PersonList';
 import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
 
 jest.mock('../../src/control/api');
+jest.mock('../../src/components/PersonList');
 
 const mockSearchPersonsByNameSearch =
 	searchPersonsByNameSearch as jest.MockedFunction<
 		typeof searchPersonsByNameSearch
 	>;
+
+const mockPersonList = jest.fn();
+const personList = PersonList as jest.MockedFunction<typeof PersonList>;
+
+// jest.mock('../../src/components/PersonList', (props: Props) => {
+// 	mockChildComponent(props);
+
+// 	// Return something for React to render. I like creating
+// 	// an element to pass through as it
+// 	// helps with visually debugging if needed.
+// 	return <div />;
+// });
 
 const threePersonObjects: Person[] = [
 	{
@@ -40,6 +54,11 @@ const threePersonObjects: Person[] = [
 beforeEach(() => {
 	jest.clearAllTimers();
 	jest.clearAllMocks();
+
+	personList.mockImplementation((props: any) => {
+		mockPersonList(props);
+		return <div />;
+	});
 });
 
 describe('The PersonSearch component', () => {
@@ -66,52 +85,48 @@ describe('The PersonSearch component', () => {
 		expect(buttons[0]).toHaveAttribute('type', 'submit');
 	});
 
-	it('Renders an empty PersonList on start', () => {
+	it('Renders passes empty person array to PersonList on start.', () => {
 		render(<PersonSearch />);
 
-		const lists = screen.getAllByRole('list');
-		expect(lists).toHaveLength(1);
-		const listItems = screen.queryAllByRole('listitem');
-		expect(listItems).toHaveLength(0);
+		expect(mockPersonList).toHaveBeenCalledTimes(1);
+		expect(mockPersonList).toHaveBeenCalledWith(
+			expect.objectContaining({
+				persons: [],
+			})
+		);
 	});
 
 	it('Renders several results returned by searchPersonsByNameSearch when clicking the submit button', async () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 		render(<PersonSearch />);
 
-		const listItemsBeforeClick = screen.queryAllByRole('listitem');
-		expect(listItemsBeforeClick).toHaveLength(0);
+		expect(mockPersonList).toHaveBeenCalledTimes(1);
+		expect(mockPersonList).toHaveBeenNthCalledWith(
+			1,
+			expect.objectContaining({
+				persons: [],
+			})
+		);
 
 		const button = screen.getByRole('button');
 		userEvent.click(button);
 
-		await waitFor(() =>
-			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1)
-		);
+		await waitFor(() => {
+			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+		});
 
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(3);
-		expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
-		expect(listItems[1]).toHaveTextContent(
-			'2: Enequist, Gerd [Uppsala Universitet, Test]'
+		expect(mockPersonList).toHaveBeenCalledTimes(2);
+		expect(mockPersonList).toHaveBeenNthCalledWith(
+			2,
+			expect.objectContaining({
+				persons: threePersonObjects,
+			})
 		);
-		expect(listItems[2]).toHaveTextContent('3: Ernman, Malena');
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
+		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 		render(<PersonSearch />);
-		mockSearchPersonsByNameSearch.mockResolvedValue([
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-		]);
-
-		const listItemsBeforeClick = screen.queryAllByRole('listitem');
-		expect(listItemsBeforeClick).toHaveLength(0);
 
 		const inputText = screen.getByRole('textbox');
 		userEvent.type(inputText, 'someSearchTerm');
@@ -131,15 +146,7 @@ describe('The PersonSearch component', () => {
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
 		render(<PersonSearch />);
-		mockSearchPersonsByNameSearch.mockResolvedValue([
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-		]);
+		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 
 		const listItemsBeforeClick = screen.queryAllByRole('listitem');
 		expect(listItemsBeforeClick).toHaveLength(0);
