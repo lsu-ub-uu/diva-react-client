@@ -13,11 +13,11 @@ export const Button = styled.button`
 	padding: 0.25em 1em;
 	border: 2px solid var(--primary);
 	border-radius: 3px;
+	transition: background-color 0.25s ease-out, color 0.25s ease-out;
+
+	&:hover {
+		background: #b68fd9; // <Thing> when hovered
+		border: 2px solid #b68fd9;
+	}
 `;
 export default Button;
-// return (
-// 	<div>
-// 		<Button>Normal</Button>
-// 		<Button primary>Primary</Button>
-// 	</div>
-// );

@@ -3,6 +3,7 @@ import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
 import PersonList from './PersonList';
 import Button from './styles/Button';
+import InputText from './styles/InputText';
 
 export const PersonSearch = function () {
 	const [persons, setPersons] = useState<Person[]>([]);
@@ -26,7 +27,7 @@ export const PersonSearch = function () {
 		<div>
 			<h1>Person search</h1>
 			<form onSubmit={handleSubmit}>
-				<input value={searchTerm} onChange={handleSearchTerm} />
+				<InputText value={searchTerm} onChange={handleSearchTerm} />
 				<Button type="submit" primary>
 					Search
 				</Button>
