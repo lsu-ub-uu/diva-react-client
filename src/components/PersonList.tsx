@@ -1,5 +1,6 @@
 import React from 'react';
 import Person from '../control/Person';
+import Card from './styles/Card';
 
 type Props = {
 	persons: Person[];
@@ -10,14 +11,20 @@ const PersonList = function (props: Props) {
 
 	if (persons.length) {
 		return (
-			<div>
-				<ul>
-					{persons.map((person) => {
-						let text = `${person.id}: ${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
-						text += person.domains ? ` [${person.domains.join(', ')}]` : '';
-						return <li key={person.id}>{text}</li>;
-					})}
-				</ul>
+			<div role="list">
+				{persons.map((person) => {
+					//let text = `${person.id}`;
+					//text += person.domains ? ` [${person.domains.join(', ')}]` : '';
+					return (
+						<div className="marginBottom2em">
+							<Card
+								key={person.id}
+								personName={person.authorisedName}
+								personID={person.id}
+							/>
+						</div>
+					);
+				})}
 			</div>
 		);
 	}
