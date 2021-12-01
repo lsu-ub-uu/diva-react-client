@@ -18,9 +18,11 @@ const Card = function (props: Props) {
 	return (
 		<CardSection role="listitem" className="card">
 			<div>
-				<p className="container">
-					{personName.familyName}, {personName.givenName}
-				</p>
+				<div className="container">
+					<a className="headingLink" href="/foo">
+						{personName.familyName}, {personName.givenName}
+					</a>
+				</div>
 			</div>
 			<div>{personID}</div>
 		</CardSection>
