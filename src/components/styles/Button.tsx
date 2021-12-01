@@ -3,9 +3,9 @@ import styled, { DefaultTheme } from 'styled-components';
 type Props = { primary?: boolean; theme: DefaultTheme };
 export const Button = styled.button`
 	background: ${(props: Props) =>
-		props.primary ? props.theme.primary : props.theme.secondary};
+		props.primary ? props.theme.primary : props.theme.primary};
 	color: ${(props: Props) =>
-		props.primary ? props.theme.secondary : props.theme.primary};
+		props.primary ? props.theme.secondary : props.theme.secondary};
 
 	font-size: 1em;
 	margin: 1em;

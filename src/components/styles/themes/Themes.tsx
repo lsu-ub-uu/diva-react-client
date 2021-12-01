@@ -18,11 +18,11 @@ const lightTheme: DefaultTheme = {
 
 const darkTheme: DefaultTheme = {
 	name: AvailableThemes.Dark,
-	primary: 'white',
+	primary: '#0057a8',
 	primaryAccent: '#cfcfce',
-	secondary: 'grey',
-	text: 'white',
-	background: 'grey',
+	secondary: '#ffffff',
+	text: '#ffffff',
+	background: '#001931',
 };
 
 export default { lightTheme, darkTheme };
