@@ -31,7 +31,7 @@ export const PersonSearch = function () {
 
 	return (
 		<Parent>
-			<h1>Person search</h1>
+			<h1>Personsök</h1>
 			<form key="form" onSubmit={handleSubmit}>
 				<InputText
 					key="searchTerm"
@@ -39,7 +39,7 @@ export const PersonSearch = function () {
 					onChange={handleSearchTerm}
 				/>
 				<Button type="submit" primary>
-					Search
+					Sök
 				</Button>
 			</form>
 			<PersonList persons={persons} />
