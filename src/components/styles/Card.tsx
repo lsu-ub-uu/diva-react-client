@@ -1,6 +1,7 @@
-import styled, { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 import React from 'react';
 import Name from '../../control/Name';
+
 type Props = { personName: Name; personID: string };
 const CardSection = styled.section`
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);

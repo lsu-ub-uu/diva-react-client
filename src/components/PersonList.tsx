@@ -13,15 +13,9 @@ const PersonList = function (props: Props) {
 		return (
 			<div role="list">
 				{persons.map((person) => {
-					//let text = `${person.id}`;
-					//text += person.domains ? ` [${person.domains.join(', ')}]` : '';
 					return (
-						<div className="marginBottom2em">
-							<Card
-								key={person.id}
-								personName={person.authorisedName}
-								personID={person.id}
-							/>
+						<div key={person.id} className="marginBottom2em">
+							<Card personName={person.authorisedName} personID={person.id} />
 						</div>
 					);
 				})}
