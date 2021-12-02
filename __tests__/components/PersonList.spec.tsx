@@ -90,11 +90,8 @@ describe('The PersonList component', () => {
 		expect(mockedCard).toHaveBeenNthCalledWith(
 			1,
 			expect.objectContaining({
-				personID: '1',
-				personName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
+				id: '1',
+				text: 'Anka, Kalle',
 			})
 		);
 	});

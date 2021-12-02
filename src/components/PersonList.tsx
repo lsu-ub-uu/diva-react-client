@@ -21,13 +21,8 @@ const PersonList = function (props: Props) {
 		return (
 			<StyledDIV role="list">
 				{persons.map((person) => {
-					return (
-						<Card
-							key={person.id}
-							personName={person.authorisedName}
-							personID={person.id}
-						/>
-					);
+					const text = `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
+					return <Card key={person.id} text={text} id={person.id} />;
 				})}
 			</StyledDIV>
 		);

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
-import Name from '../../control/Name';
 
-type Props = { personName: Name; personID: string };
+type Props = { text: string; id: string };
 const CardSection = styled.section`
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	transition: 0.3s;
@@ -15,17 +14,13 @@ const CardSection = styled.section`
 `;
 
 const Card = function (props: Props) {
-	const { personName, personID } = props;
+	const { id, text } = props;
 	return (
-		<CardSection role="listitem" className="card">
-			<div>
-				<div className="container">
-					<a className="headingLink" href="/foo">
-						{personName.familyName}, {personName.givenName}
-					</a>
-				</div>
-			</div>
-			<div>{personID}</div>
+		<CardSection role="listitem">
+			<a href="/" className="headingLink">
+				{text}
+			</a>
+			<p>{id}</p>
 		</CardSection>
 	);
 };
