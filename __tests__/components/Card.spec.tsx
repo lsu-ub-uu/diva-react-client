@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import Card from '../../src/components/styles/Card';
+import Card from '../../src/components/Card';
 
 describe('The PersonCard component', () => {
 	it('Renders a section and takes text and id', () => {

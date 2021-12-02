@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import PersonList from '../../src/components/PersonList';
 import Person from '../../src/control/Person';
-import Card from '../../src/components/styles/Card';
+import Card from '../../src/components/Card';
 
-jest.mock('../../src/components/styles/Card');
+jest.mock('../../src/components/Card');
 const mockedCard = jest.fn();
 const card = Card as jest.MockedFunction<typeof Card>;
 

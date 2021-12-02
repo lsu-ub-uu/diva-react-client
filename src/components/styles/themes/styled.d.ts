@@ -9,5 +9,7 @@ declare module 'styled-components' {
 		primaryAccent: string;
 		secondary: string;
 		background: string;
+		boxShadow: string;
+		boxShadowAccent: string;
 	}
 }

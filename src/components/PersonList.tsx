@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Person from '../control/Person';
-import Card from './styles/Card';
+import Card from './Card';
 
 type Props = {
 	persons: Person[];

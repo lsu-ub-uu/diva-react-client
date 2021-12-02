@@ -14,6 +14,8 @@ const lightTheme: DefaultTheme = {
 	secondary: 'white',
 	text: 'black',
 	background: 'white',
+	boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+	boxShadowAccent: '0 8px 16px 0 rgba(0, 0, 0, 0.2)',
 };
 
 const darkTheme: DefaultTheme = {
@@ -23,6 +25,8 @@ const darkTheme: DefaultTheme = {
 	secondary: '#ffffff',
 	text: '#ffffff',
 	background: '#001931',
+	boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+	boxShadowAccent: '0 8px 16px 0 rgba(0, 0, 0, 0.2)',
 };
 
 export default { lightTheme, darkTheme };
