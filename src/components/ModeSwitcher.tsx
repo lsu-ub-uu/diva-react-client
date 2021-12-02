@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const ModeSwitcher: FunctionComponent<Props> = function (props: Props) {
-	const { darkMode = false, handleClick } = props;
+	const { darkMode, handleClick } = props;
 
 	return (
 		<button type="submit" onClick={handleClick}>
