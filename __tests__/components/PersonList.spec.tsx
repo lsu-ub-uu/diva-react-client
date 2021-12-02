@@ -16,30 +16,31 @@ beforeEach(() => {
 	});
 });
 
-// const threePersonObjects: Person[] = [
-// 	{
-// 		id: '1',
-// 		authorisedName: {
-// 			familyName: 'Anka',
-// 			givenName: 'Kalle',
-// 		},
-// 	},
-// 	{
-// 		id: '2',
-// 		authorisedName: {
-// 			familyName: 'Enequist',
-// 			givenName: 'Gerd',
-// 		},
-// 		domains: ['Uppsala Universitet'],
-// 	},
-// 	{
-// 		id: '3',
-// 		authorisedName: {
-// 			familyName: 'Ernman',
-// 			givenName: 'Malena',
-// 		},
-// 	},
-// ];
+const onePerson = [
+	{
+		id: '1',
+		authorisedName: {
+			familyName: 'Anka',
+			givenName: 'Kalle',
+		},
+	},
+];
+const twoPersons = [
+	{
+		id: '1',
+		authorisedName: {
+			familyName: 'Anka',
+			givenName: 'Kalle',
+		},
+	},
+	{
+		id: '2',
+		authorisedName: {
+			familyName: 'Broman',
+			givenName: 'Sten',
+		},
+	},
+];
 
 describe('The PersonList component', () => {
 	it('should output "No Data" if an empty list has been passed"', () => {
@@ -56,16 +57,8 @@ describe('The PersonList component', () => {
 		expect(listItems).toHaveLength(0);
 	});
 
-	it('Should return a list if a non-empty list has been passed', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-		];
+	it('should render a list if a non-empty list has been passed', () => {
+		const persons: Person[] = onePerson;
 
 		render(<PersonList persons={persons} />);
 
@@ -73,62 +66,24 @@ describe('The PersonList component', () => {
 		expect(lists).toHaveLength(1);
 	});
 
-	it('Should call Card once if one person in list', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-		];
+	it('should call Card once if one person in list', () => {
+		const persons: Person[] = onePerson;
 
 		render(<PersonList persons={persons} />);
 
 		expect(mockedCard).toHaveBeenCalledTimes(1);
 	});
 
-	it('Should call Card several time if several persons in list', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-			{
-				id: '2',
-				authorisedName: {
-					familyName: 'Broman',
-					givenName: 'Sten',
-				},
-			},
-		];
+	it('should call Card several times if several persons in list', () => {
+		const persons: Person[] = twoPersons;
 
 		render(<PersonList persons={persons} />);
 
 		expect(mockedCard).toHaveBeenCalledTimes(2);
 	});
 
-	it('Should call Person List with a Person array', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-			{
-				id: '2',
-				authorisedName: {
-					familyName: 'Broman',
-					givenName: 'Sten',
-				},
-			},
-		];
+	it('should call PersonList with personID and personName', () => {
+		const persons: Person[] = twoPersons;
 
 		render(<PersonList persons={persons} />);
 
@@ -143,74 +98,4 @@ describe('The PersonList component', () => {
 			})
 		);
 	});
-
-	// it('should render several persons', () => {
-	// 	render(<PersonList persons={threePersonObjects} />);
-
-	// 	const listItems = screen.getAllByRole('listitem');
-	// 	expect(listItems).toHaveLength(3);
-	// 	expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
-	// 	expect(listItems[2]).toHaveTextContent('3: Ernman, Malena');
-	// });
-
-	// it('should expose a domain in []', () => {
-	// 	const persons: Person[] = [
-	// 		{
-	// 			id: '1',
-	// 			authorisedName: {
-	// 				familyName: 'Anka',
-	// 				givenName: 'Kalle',
-	// 			},
-	// 			domains: ['Uppsala Universitet'],
-	// 		},
-	// 	];
-
-	// 	render(<PersonList persons={persons} />);
-
-	// 	const listItems = screen.getAllByRole('listitem');
-	// 	expect(listItems).toHaveLength(1);
-	// 	expect(listItems[0]).toHaveTextContent(
-	// 		'1: Anka, Kalle [Uppsala Universitet]'
-	// 	);
-	// });
-
-	// it('should expose several domains in []', () => {
-	// 	const persons: Person[] = [
-	// 		{
-	// 			id: '1',
-	// 			authorisedName: {
-	// 				familyName: 'Anka',
-	// 				givenName: 'Kalle',
-	// 			},
-	// 			domains: ['Uppsala Universitet', 'Test'],
-	// 		},
-	// 	];
-
-	// 	render(<PersonList persons={persons} />);
-
-	// 	const listItems = screen.getAllByRole('listitem');
-	// 	expect(listItems).toHaveLength(1);
-	// 	expect(listItems[0]).toHaveTextContent(
-	// 		'1: Anka, Kalle [Uppsala Universitet, Test]'
-	// 	);
-	// });
-
-	// it('should not expose a domain of domain array empty', () => {
-	// 	const persons: Person[] = [
-	// 		{
-	// 			id: '1',
-	// 			authorisedName: {
-	// 				familyName: 'Anka',
-	// 				givenName: 'Kalle',
-	// 			},
-	// 			domains: [],
-	// 		},
-	// 	];
-
-	// 	render(<PersonList persons={persons} />);
-
-	// 	const listItems = screen.getAllByRole('listitem');
-	// 	expect(listItems).toHaveLength(1);
-	// 	expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
-	// });
 });
