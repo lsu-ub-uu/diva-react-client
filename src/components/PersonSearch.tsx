@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
 import PersonList from './PersonList';
-import Button from './styles/Button';
-import InputText from './styles/InputText';
+import Button from '../styles/Button';
+import InputText from '../styles/InputText';
 
 const Parent = styled.div`
 	display: grid;

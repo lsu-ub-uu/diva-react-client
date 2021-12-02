@@ -5,8 +5,8 @@ import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
 import ModeSwitcher from './components/ModeSwitcher';
 import PersonSearch from './components/PersonSearch';
-import GlobalStyle from './components/styles/GlobalStyle';
-import Themes from './components/styles/themes/Themes';
+import GlobalStyle from './styles/GlobalStyle';
+import Themes from './themes/Themes';
 
 const App = function () {
 	const [activeTheme, setActiveTheme] = useState<DefaultTheme>(

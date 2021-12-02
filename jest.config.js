@@ -6,6 +6,7 @@ module.exports = {
 	setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 	collectCoverage: false,
 	collectCoverageFrom: ['./src/**'],
+	coveragePathIgnorePatterns: ['./src/components/Layout/', './src/index.tsx'],
 	coverageThreshold: {
 		global: {
 			statements: 100,
