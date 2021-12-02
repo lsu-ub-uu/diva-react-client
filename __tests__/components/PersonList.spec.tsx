@@ -5,12 +5,13 @@ import Person from '../../src/control/Person';
 import Card from '../../src/components/styles/Card';
 
 jest.mock('../../src/components/styles/Card');
-
-const mockCard = Card as jest.MockedFunction<typeof Card>;
+const mockedCard = jest.fn();
+const card = Card as jest.MockedFunction<typeof Card>;
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	mockCard.mockImplementation((props: any) => {
+	card.mockImplementation((props: any) => {
+		mockedCard(props);
 		return <div />;
 	});
 });
@@ -72,7 +73,7 @@ describe('The PersonList component', () => {
 		expect(lists).toHaveLength(1);
 	});
 
-	it('Should pass list of persons to Card', () => {
+	it('Should call Card once if one person in list', () => {
 		const persons: Person[] = [
 			{
 				id: '1',
@@ -85,7 +86,62 @@ describe('The PersonList component', () => {
 
 		render(<PersonList persons={persons} />);
 
-		expect(mockCard).toHaveBeenCalledTimes(1);
+		expect(mockedCard).toHaveBeenCalledTimes(1);
+	});
+
+	it('Should call Card several time if several persons in list', () => {
+		const persons: Person[] = [
+			{
+				id: '1',
+				authorisedName: {
+					familyName: 'Anka',
+					givenName: 'Kalle',
+				},
+			},
+			{
+				id: '2',
+				authorisedName: {
+					familyName: 'Broman',
+					givenName: 'Sten',
+				},
+			},
+		];
+
+		render(<PersonList persons={persons} />);
+
+		expect(mockedCard).toHaveBeenCalledTimes(2);
+	});
+
+	it('Should call Person List with a Person array', () => {
+		const persons: Person[] = [
+			{
+				id: '1',
+				authorisedName: {
+					familyName: 'Anka',
+					givenName: 'Kalle',
+				},
+			},
+			{
+				id: '2',
+				authorisedName: {
+					familyName: 'Broman',
+					givenName: 'Sten',
+				},
+			},
+		];
+
+		render(<PersonList persons={persons} />);
+
+		expect(mockedCard).toHaveBeenNthCalledWith(
+			1,
+			expect.objectContaining({
+				personID: '1',
+				personName: {
+					familyName: 'Anka',
+					givenName: 'Kalle',
+				},
+			})
+		);
 	});
 
 	// it('should render several persons', () => {
