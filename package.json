@@ -52,7 +52,11 @@
 		"build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
 		"start": "parcel -p 3000 src/index.html",
 		"eslint": "npx eslint \"src/**/*\" \"__tests__/**/*\" --quiet --fix/;exit 0",
-		"test": "jest --watch"
+		"test": "jest --watch",
+		"coverage": "jnpm run coverage:run /; npm run coverage:show",
+		"coverage:run": "jest --coverage /;exit 0",
+		"coverage:deploy": "jest --coverage",
+		"coverage:show": "firefox ~/workspace/cora-react-client/coverage/lcov-report/index.html"
 	},
 	"author": "Library Systems Unit - Uppsala University Library",
 	"license": "GPL-3.0"
