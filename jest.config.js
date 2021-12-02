@@ -4,7 +4,7 @@ module.exports = {
 	testEnvironment: 'jsdom',
 	testPathIgnorePatterns: ['./node_modules/'],
 	setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-	collectCoverage: true,
+	collectCoverage: false,
 	collectCoverageFrom: ['./src/**'],
 	coverageThreshold: {
 		global: {

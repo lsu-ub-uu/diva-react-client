@@ -54,7 +54,7 @@
 		"eslint": "npx eslint \"src/**/*\" \"__tests__/**/*\" --quiet --fix/;exit 0",
 		"test": "jest --watch",
 		"coverage": "jnpm run coverage:run /; npm run coverage:show",
-		"coverage:run": "jest --coverage /;exit 0",
+		"coverage:dev": "jest --coverage /;exit 0",
 		"coverage:deploy": "jest --coverage",
 		"coverage:show": "firefox ~/workspace/cora-react-client/coverage/lcov-report/index.html"
 	},
