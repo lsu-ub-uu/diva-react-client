@@ -5,6 +5,7 @@ It's recommended to use this together with https://github.com/belanglos/cora-vsc
 # To get started
 1. clone the repo
 2. Open example.env and follow the notes there
+3. In a terminal, run `npm start` to start the development server
 
 
 # NPM scripts
