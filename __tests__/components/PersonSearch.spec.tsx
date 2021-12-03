@@ -53,11 +53,11 @@ beforeEach(() => {
 });
 
 describe('The PersonSearch component', () => {
-	it('Shows an h1 with content "Person Search"', () => {
+	it('Shows an h1 with content "Personsök"', () => {
 		render(<PersonSearch />);
 
 		const heading = screen.getByRole('heading');
-		expect(heading).toHaveTextContent('Person search');
+		expect(heading.textContent).toEqual('Personsök');
 	});
 
 	it('Renders an input field of type text', () => {
@@ -67,12 +67,12 @@ describe('The PersonSearch component', () => {
 		expect(textInputs).toHaveLength(1);
 	});
 
-	it('Renders a button with text "Search"', () => {
+	it('Renders a button with text "Sök"', () => {
 		render(<PersonSearch />);
 
 		const buttons = screen.queryAllByRole('button');
 		expect(buttons).toHaveLength(1);
-		expect(buttons[0]).toHaveTextContent('Search');
+		expect(buttons[0]).toHaveTextContent('Sök');
 		expect(buttons[0]).toHaveAttribute('type', 'submit');
 	});
 

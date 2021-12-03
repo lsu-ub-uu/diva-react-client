@@ -2,8 +2,30 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import PersonList from '../../src/components/PersonList';
 import Person from '../../src/control/Person';
+import Card from '../../src/components/Card';
 
-const threePersonObjects: Person[] = [
+jest.mock('../../src/components/Card');
+const mockedCard = jest.fn();
+const card = Card as jest.MockedFunction<typeof Card>;
+
+beforeEach(() => {
+	jest.clearAllMocks();
+	card.mockImplementation((props: any) => {
+		mockedCard(props);
+		return <div />;
+	});
+});
+
+const onePerson = [
+	{
+		id: '1',
+		authorisedName: {
+			familyName: 'Anka',
+			givenName: 'Kalle',
+		},
+	},
+];
+const twoPersons = [
 	{
 		id: '1',
 		authorisedName: {
@@ -14,16 +36,8 @@ const threePersonObjects: Person[] = [
 	{
 		id: '2',
 		authorisedName: {
-			familyName: 'Enequist',
-			givenName: 'Gerd',
-		},
-		domains: ['Uppsala Universitet'],
-	},
-	{
-		id: '3',
-		authorisedName: {
-			familyName: 'Ernman',
-			givenName: 'Malena',
+			familyName: 'Broman',
+			givenName: 'Sten',
 		},
 	},
 ];
@@ -43,91 +57,42 @@ describe('The PersonList component', () => {
 		expect(listItems).toHaveLength(0);
 	});
 
-	it('should render one person if one is passed', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-			},
-		];
+	it('should render a list if a non-empty list has been passed', () => {
+		const persons: Person[] = onePerson;
 
 		render(<PersonList persons={persons} />);
 
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-		expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
+		const lists = screen.getAllByRole('list');
+		expect(lists).toHaveLength(1);
 	});
 
-	it('should render several persons', () => {
-		render(<PersonList persons={threePersonObjects} />);
-
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(3);
-		expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
-		expect(listItems[2]).toHaveTextContent('3: Ernman, Malena');
-	});
-
-	it('should expose a domain in []', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-				domains: ['Uppsala Universitet'],
-			},
-		];
+	it('should call Card once if one person in list', () => {
+		const persons: Person[] = onePerson;
 
 		render(<PersonList persons={persons} />);
 
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-		expect(listItems[0]).toHaveTextContent(
-			'1: Anka, Kalle [Uppsala Universitet]'
+		expect(mockedCard).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call Card several times if several persons in list', () => {
+		const persons: Person[] = twoPersons;
+
+		render(<PersonList persons={persons} />);
+
+		expect(mockedCard).toHaveBeenCalledTimes(2);
+	});
+
+	it('should call PersonList with personID and personName', () => {
+		const persons: Person[] = twoPersons;
+
+		render(<PersonList persons={persons} />);
+
+		expect(mockedCard).toHaveBeenNthCalledWith(
+			1,
+			expect.objectContaining({
+				id: '1',
+				text: 'Anka, Kalle',
+			})
 		);
-	});
-
-	it('should expose several domains in []', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-				domains: ['Uppsala Universitet', 'Test'],
-			},
-		];
-
-		render(<PersonList persons={persons} />);
-
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-		expect(listItems[0]).toHaveTextContent(
-			'1: Anka, Kalle [Uppsala Universitet, Test]'
-		);
-	});
-
-	it('should not expose a domain of domain array empty', () => {
-		const persons: Person[] = [
-			{
-				id: '1',
-				authorisedName: {
-					familyName: 'Anka',
-					givenName: 'Kalle',
-				},
-				domains: [],
-			},
-		];
-
-		render(<PersonList persons={persons} />);
-
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-		expect(listItems[0]).toHaveTextContent('1: Anka, Kalle');
 	});
 });

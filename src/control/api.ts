@@ -27,10 +27,6 @@ const DUMMY_PERSONS: Person[] = [
 	},
 ];
 
-function getOrganisation() {
-	return 'SomeOtherOrg';
-}
-
 export function getPersons(): Person[] {
 	return DUMMY_PERSONS;
 }
@@ -53,4 +49,4 @@ export function searchPersonsByNameSearch(
 		});
 }
 
-export default { getOrganisation, getPersons };
+export default { getPersons };

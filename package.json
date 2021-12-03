@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"dependencies": {
 		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react-dom": "^17.0.2",
+		"styled-components": "^5.3.3"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.16.0",
@@ -21,6 +22,7 @@
 		"@types/node": "^16.11.10",
 		"@types/react": "^17.0.37",
 		"@types/react-dom": "^17.0.11",
+		"@types/styled-components": "^5.1.15",
 		"@types/testing-library__jest-dom": "^5.14.1",
 		"@types/testing-library__react": "^10.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.4.0",
@@ -50,7 +52,11 @@
 		"build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
 		"start": "parcel -p 3000 src/index.html",
 		"eslint": "npx eslint \"src/**/*\" \"__tests__/**/*\" --quiet --fix/;exit 0",
-		"test": "jest --watch"
+		"test": "jest --watch",
+		"coverage": "npm run coverage:dev /; npm run coverage:show",
+		"coverage:dev": "jest --coverage /;exit 0",
+		"coverage:deploy": "jest --coverage",
+		"coverage:show": "firefox ~/workspace/cora-react-client/coverage/lcov-report/index.html"
 	},
 	"author": "Library Systems Unit - Uppsala University Library",
 	"license": "GPL-3.0"
