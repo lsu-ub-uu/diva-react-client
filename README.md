@@ -3,8 +3,8 @@
 It's recommended to use this together with https://github.com/belanglos/cora-vscodium
 
 # To get started
-- clone the repo
-- Open example.env and follow the notes there
+1. clone the repo
+2. Open example.env and follow the notes there
 
 
 # NPM scripts
