@@ -27,7 +27,7 @@ const PersonList = function (props: Props) {
 			</StyledDIV>
 		);
 	}
-	return <div>No Data</div>;
+	return <div>Ingen data</div>;
 };
 
 export default PersonList;

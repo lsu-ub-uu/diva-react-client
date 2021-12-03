@@ -43,12 +43,12 @@ const twoPersons = [
 ];
 
 describe('The PersonList component', () => {
-	it('should output "No Data" if an empty list has been passed"', () => {
+	it('should output "Ingen data" if an empty list has been passed"', () => {
 		const persons: Person[] = [];
 
 		render(<PersonList persons={persons} />);
 
-		const noDataTexts = screen.queryAllByText('No Data');
+		const noDataTexts = screen.queryAllByText('Ingen data');
 		expect(noDataTexts).toHaveLength(1);
 
 		const lists = screen.queryAllByRole('list');
