@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import Button from '../styles/Button';
 
 type Props = {
 	darkMode: boolean;
@@ -9,9 +10,9 @@ export const ModeSwitcher: FunctionComponent<Props> = function (props: Props) {
 	const { darkMode, handleClick } = props;
 
 	return (
-		<button type="submit" onClick={handleClick}>
+		<Button type="submit" onClick={handleClick}>
 			{darkMode ? 'light' : 'dark'}
-		</button>
+		</Button>
 	);
 };
 
