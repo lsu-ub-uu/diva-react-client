@@ -21,7 +21,7 @@ const lightTheme: DefaultTheme = {
 const darkTheme: DefaultTheme = {
 	name: AvailableThemes.Dark,
 	primary: '#0057a8',
-	primaryAccent: '#cfcfce',
+	primaryAccent: '#2676c2',
 	secondary: '#ffffff',
 	text: '#ffffff',
 	background: '#001931',
