@@ -5,7 +5,7 @@ const Layout = styled.div`
 	grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
 	grid-template-rows: auto;
 	grid-template-areas:
-		'header header header header header'
+		'. header header header header'
 		'. main main main sidebar'
 		'footer footer footer footer footer';
 `;

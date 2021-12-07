@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
+// import Header from './components/Layout/Header';
 import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
 import ModeSwitcher from './components/ModeSwitcher';
+import NoMatch from './components/NoMatch';
 import PersonSearch from './components/PersonSearch';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
+
+// const Navigation = function () {
+// 	return (
+// 		<nav>
+// 			<Link to="/person">Personposter</Link>
+// 			<Link to="/users">Användare</Link>
+// 		</nav>
+// 	);
+// };
+
+// const Users = function () {
+// 	return (
+// 		<main style={{ padding: '1rem 0' }}>
+// 			<h2>Users</h2>
+// 		</main>
+// 	);
+// };
 
 const App = function () {
 	const [activeTheme, setActiveTheme] = useState<DefaultTheme>(
@@ -28,11 +48,19 @@ const App = function () {
 			<>
 				<GlobalStyle />
 				<Layout>
+					{/* <Header>
+						<Navigation />
+					</Header> */}
+
 					<Sidebar>
 						<ModeSwitcher darkMode={darkMode} handleClick={toggleDarkMode} />
 					</Sidebar>
 					<Main>
-						<PersonSearch />
+						<Routes>
+							<Route index element={<PersonSearch />} />
+							<Route path="person" element={<PersonSearch />} />
+							<Route path="*" element={<NoMatch />} />
+						</Routes>
 					</Main>
 				</Layout>
 			</>
