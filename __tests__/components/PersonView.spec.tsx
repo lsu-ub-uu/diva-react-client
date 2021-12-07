@@ -3,13 +3,10 @@ import React from 'react';
 import PersonView from '../../src/components/PersonView';
 import Person from '../../src/control/Person';
 
-const examplePerson: Person = {
-	authorisedName: {
-		familyName: 'Anka',
-		givenName: 'Kalle',
-	},
-	id: 'someId',
-};
+const examplePerson: Person = new Person('someId', {
+	familyName: 'Anka',
+	givenName: 'Kalle',
+});
 
 describe('The Person component', () => {
 	it('Should take a person object', () => {

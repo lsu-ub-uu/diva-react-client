@@ -82,13 +82,10 @@ describe('Api', () => {
 				})
 			);
 
-			const expectedPerson: Person = {
-				authorisedName: {
-					familyName: 'SomeFamilyName',
-					givenName: 'SomeGivenName',
-				},
-				id: 'someId',
-			};
+			const expectedPerson: Person = new Person('someId', {
+				familyName: 'SomeFamilyName',
+				givenName: 'SomeGivenName',
+			});
 
 			mockConvertPerson.mockReturnValue(expectedPerson);
 
@@ -147,13 +144,12 @@ describe('Api', () => {
 function createMockPersons(amount: number): Person[] {
 	const mockPersons: Person[] = [];
 	for (let index = 0; index < amount; index += 1) {
-		mockPersons.push({
-			authorisedName: {
+		mockPersons.push(
+			new Person(`someId-${index}`, {
 				familyName: `SomeFamilyName${index}`,
 				givenName: `SomeGivenName${index}`,
-			},
-			id: `someId-${index}`,
-		});
+			})
+		);
 	}
 	return mockPersons;
 }

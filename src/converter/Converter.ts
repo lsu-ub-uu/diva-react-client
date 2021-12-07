@@ -9,10 +9,7 @@ export function convertPerson(dataGroup: DataGroup): Person {
 	const authorisedName: Name =
 		extractAuthorisedNameFromPersonDataGroup(dataGroup);
 
-	return {
-		authorisedName,
-		id,
-	};
+	return new Person(id, authorisedName);
 }
 
 function extractIdFromDataGroup(dataGroup: DataGroup): string {
