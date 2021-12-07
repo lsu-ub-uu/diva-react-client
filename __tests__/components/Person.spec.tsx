@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import PersonView from '../../src/components/Person';
+import PersonView from '../../src/components/PersonView';
 import Person from '../../src/control/Person';
 
 const examplePerson: Person = {
