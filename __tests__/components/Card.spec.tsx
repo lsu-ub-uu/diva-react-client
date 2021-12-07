@@ -5,10 +5,10 @@ import Card from '../../src/components/Card';
 describe('The PersonCard component', () => {
 	it('Renders a section and takes text and id', () => {
 		render(<Card text="some text" id="1" />);
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-		expect(listItems[0]).toHaveTextContent('some text');
-		expect(listItems[0]).toHaveTextContent('1');
+		// const listItems = screen.getAllByRole('listitem');
+		// expect(listItems).toHaveLength(1);
+		expect(screen.getByText(/some text/i)).toBeInTheDocument();
+		expect(screen.getByText(/1/i)).toBeInTheDocument();
 	});
 
 	it('Renders text as link', () => {

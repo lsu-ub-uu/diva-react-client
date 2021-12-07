@@ -16,7 +16,7 @@ const CardSection = styled.section`
 const Card = function (props: Props) {
 	const { id, text } = props;
 	return (
-		<CardSection role="listitem">
+		<CardSection>
 			<a href="/" className="headingLink">
 				{text}
 			</a>
