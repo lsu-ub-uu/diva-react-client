@@ -1,35 +1,27 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import ModeSwitcher from '../src/components/ModeSwitcher';
+import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 import App from '../src/App';
-import { act } from 'react-dom/test-utils';
 
-jest.mock('../src/components/ModeSwitcher');
-
-type Props = {
-	darkMode: boolean;
-	handleClick: () => void;
-};
-
-let props: Props;
-
-const mockModeSwitcher = jest.fn();
-const modeSwitcher = ModeSwitcher as jest.MockedFunction<typeof ModeSwitcher>;
-
-beforeEach(() => {
-	jest.clearAllMocks();
-	modeSwitcher.mockImplementation((propsIn: Props) => {
-		mockModeSwitcher(propsIn);
-		return <div />;
-	});
+const mockCounter = jest.fn();
+jest.mock('../src/components/ModeSwitcher', () => {
+	return function DummyModeSwitcher(props: any) {
+		mockCounter(props);
+		const { handleClick } = props;
+		return (
+			<button type="submit" onClick={handleClick}>
+				DummyButton
+			</button>
+		);
+	};
 });
 
 describe('The App component', () => {
 	it('Initially sends darkMode false to ModeSwitcher', () => {
 		render(<App />);
 
-		expect(mockModeSwitcher).toHaveBeenCalledTimes(1);
-		expect(mockModeSwitcher).toHaveBeenLastCalledWith(
+		expect(mockCounter).toHaveBeenCalledTimes(1);
+		expect(mockCounter).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				darkMode: false,
 			})
@@ -37,33 +29,30 @@ describe('The App component', () => {
 	});
 
 	it('Calls modeSwitcher again with switched theme if callBack is called', () => {
-		mockModeSwitcher.mockImplementation((propsIn: any) => {
-			props = propsIn;
-		});
 		render(<App />);
 
-		expect(mockModeSwitcher).toHaveBeenCalledTimes(1);
-		expect(mockModeSwitcher).toHaveBeenLastCalledWith(
+		expect(mockCounter).toHaveBeenCalledTimes(1);
+		expect(mockCounter).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				darkMode: false,
 			})
 		);
 
-		act(() => {
-			props.handleClick();
-		});
+		const button = screen.getByText('DummyButton');
 
-		expect(mockModeSwitcher).toHaveBeenCalledTimes(2);
-		expect(mockModeSwitcher).toHaveBeenLastCalledWith(
+		userEvent.click(button);
+
+		expect(mockCounter).toHaveBeenCalledTimes(2);
+		expect(mockCounter).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				darkMode: true,
 			})
 		);
 
-		props.handleClick();
+		userEvent.click(button);
 
-		expect(mockModeSwitcher).toHaveBeenCalledTimes(5);
-		expect(mockModeSwitcher).toHaveBeenLastCalledWith(
+		expect(mockCounter).toHaveBeenCalledTimes(3);
+		expect(mockCounter).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				darkMode: false,
 			})

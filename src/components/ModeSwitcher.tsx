@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import Button from '../styles/Button';
 
 type Props = {
@@ -6,9 +6,8 @@ type Props = {
 	handleClick: () => void;
 };
 
-export const ModeSwitcher: FunctionComponent<Props> = function (props: Props) {
+export const ModeSwitcher = function (props: Props) {
 	const { darkMode, handleClick } = props;
-
 	return (
 		<Button type="submit" onClick={handleClick}>
 			{darkMode ? 'light' : 'dark'}

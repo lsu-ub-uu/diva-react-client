@@ -19,4 +19,5 @@ module.exports = {
 			lines: 100,
 		},
 	},
+	clearMocks: true,
 };
