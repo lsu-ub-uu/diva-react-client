@@ -13,8 +13,12 @@ class Person implements Listable {
 		this.authorisedName = authorisedName;
 	}
 
+	setDomains = (domains: string[]) => {
+		this.domains = domains;
+	};
+
 	presentation = () => {
-		return this.id;
+		return this.authorisedName.toString();
 	};
 }
 

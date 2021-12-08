@@ -5,6 +5,7 @@ import { PersonSearch } from '../../src/components/PersonSearch';
 import PersonList from '../../src/components/PersonList';
 import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
+import Name from '../../src/control/Name';
 
 jest.mock('../../src/control/api');
 jest.mock('../../src/components/PersonList');
@@ -17,29 +18,13 @@ const mockSearchPersonsByNameSearch =
 const mockPersonList = jest.fn();
 const personList = PersonList as jest.MockedFunction<typeof PersonList>;
 
+const personWithDomain: Person = new Person('2', new Name('Enequist', 'Gerd'));
+personWithDomain.setDomains(['Uppsala Universitet', 'Test']);
+
 const threePersonObjects: Person[] = [
-	{
-		id: '1',
-		authorisedName: {
-			familyName: 'Anka',
-			givenName: 'Kalle',
-		},
-	},
-	{
-		id: '2',
-		authorisedName: {
-			familyName: 'Enequist',
-			givenName: 'Gerd',
-		},
-		domains: ['Uppsala Universitet', 'Test'],
-	},
-	{
-		id: '3',
-		authorisedName: {
-			familyName: 'Ernman',
-			givenName: 'Malena',
-		},
-	},
+	new Person('1', new Name('Anka', 'Kalle')),
+	personWithDomain,
+	new Person('3', new Name('Ernman', 'Malena')),
 ];
 
 beforeEach(() => {

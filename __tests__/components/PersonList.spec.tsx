@@ -17,29 +17,20 @@ beforeEach(() => {
 });
 
 const onePerson = [
-	{
-		id: '1',
-		authorisedName: {
-			familyName: 'Anka',
-			givenName: 'Kalle',
-		},
-	},
+	new Person('1', {
+		familyName: 'Anka',
+		givenName: 'Kalle',
+	}),
 ];
 const twoPersons = [
-	{
-		id: '1',
-		authorisedName: {
-			familyName: 'Anka',
-			givenName: 'Kalle',
-		},
-	},
-	{
-		id: '2',
-		authorisedName: {
-			familyName: 'Broman',
-			givenName: 'Sten',
-		},
-	},
+	new Person('1', {
+		familyName: 'Anka',
+		givenName: 'Kalle',
+	}),
+	new Person('2', {
+		familyName: 'Broman',
+		givenName: 'Sten',
+	}),
 ];
 
 describe('The PersonList component', () => {

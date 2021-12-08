@@ -3,28 +3,18 @@ import { RecordWrapper } from '../converter/CoraData';
 import Person from './Person';
 
 const DUMMY_PERSONS: Person[] = [
-	{
-		id: '1',
-		authorisedName: {
-			familyName: 'Anka',
-			givenName: 'Kalle',
-		},
-	},
-	{
-		id: '2',
-		authorisedName: {
-			familyName: 'Enequist',
-			givenName: 'Gerd',
-		},
-		domains: ['Uppsala Universitet', 'Test'],
-	},
-	{
-		id: '3',
-		authorisedName: {
-			familyName: 'Ernman',
-			givenName: 'Malena',
-		},
-	},
+	new Person('1', {
+		familyName: 'Anka',
+		givenName: 'Kalle',
+	}),
+	new Person('2', {
+		familyName: 'Enequist',
+		givenName: 'Gerd',
+	}),
+	new Person('3', {
+		familyName: 'Ernman',
+		givenName: 'Malena',
+	}),
 ];
 
 export function getPersons(): Person[] {

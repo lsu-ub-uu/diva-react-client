@@ -56,6 +56,7 @@
 		"start": "parcel -p 3000 src/index.html",
 		"eslint": "npx eslint \"src/**/*\" \"__tests__/**/*\" --quiet --fix/;exit 0",
 		"test": "jest --watch",
+		"test:file": "jest --watch --testPathPattern",
 		"coverage": "npm run coverage:dev /; npm run coverage:show",
 		"coverage:dev": "jest --coverage /;exit 0",
 		"coverage:deploy": "jest --coverage",
