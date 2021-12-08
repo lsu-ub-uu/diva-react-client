@@ -9,7 +9,8 @@ class Name {
 	}
 
 	toString = () => {
-		return `${this.familyName}, ${this.givenName}`;
+		const names = [this.familyName, this.givenName];
+		return names.filter((name) => name !== '').join(', ');
 	};
 }
 

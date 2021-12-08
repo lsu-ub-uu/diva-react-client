@@ -10,6 +10,8 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			expect(person.authorisedName.familyName).toStrictEqual('');
 			expect(person.authorisedName.givenName).toStrictEqual('');
 			expect(person.id).toStrictEqual('');
+			expect(person.presentation).toBeDefined();
+			expect(person.authorisedName.toString()).toStrictEqual('');
 		});
 
 		it('Sets the ID', () => {
@@ -36,6 +38,9 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			expect(person.authorisedName.familyName).toStrictEqual('SomeFamilyName');
 			expect(person.authorisedName.givenName).toStrictEqual('SomeGivenName');
 			expect(person.id).toStrictEqual('someId');
+			expect(person.authorisedName.toString()).toStrictEqual(
+				'SomeFamilyName, SomeGivenName'
+			);
 		});
 	});
 });

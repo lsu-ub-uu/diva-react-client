@@ -27,10 +27,7 @@ function extractIdFromDataGroup(dataGroup: DataGroup): string {
 function extractAuthorisedNameFromPersonDataGroup(
 	personDataGroup: DataGroup
 ): Name {
-	const nameToReturn: Name = {
-		familyName: '',
-		givenName: '',
-	};
+	const nameToReturn: Name = new Name('', '');
 
 	try {
 		const authorisedName: DataGroup = <DataGroup>(
