@@ -5,17 +5,17 @@ import { PersonSearch } from '../../src/components/PersonSearch';
 import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
+import ListComponent from '../../src/components/ListComponent';
 
 jest.mock('../../src/control/api');
-jest.mock('../../src/components/PersonList');
+jest.mock('../../src/components/ListComponent', () => {
+	return jest.fn(() => null);
+});
 
 const mockSearchPersonsByNameSearch =
 	searchPersonsByNameSearch as jest.MockedFunction<
 		typeof searchPersonsByNameSearch
 	>;
-
-const mockPersonList = jest.fn();
-const personList = PersonList as jest.MockedFunction<typeof PersonList>;
 
 const personWithDomain: Person = new Person('2', new Name('Enequist', 'Gerd'));
 personWithDomain.setDomains(['Uppsala Universitet', 'Test']);
@@ -25,16 +25,6 @@ const threePersonObjects: Person[] = [
 	personWithDomain,
 	new Person('3', new Name('Ernman', 'Malena')),
 ];
-
-beforeEach(() => {
-	jest.clearAllTimers();
-	jest.clearAllMocks();
-
-	personList.mockImplementation((props: any) => {
-		mockPersonList(props);
-		return <div />;
-	});
-});
 
 describe('The PersonSearch component', () => {
 	it('Shows an h1 with content "Personsök"', () => {
@@ -60,49 +50,51 @@ describe('The PersonSearch component', () => {
 		expect(buttons[0]).toHaveAttribute('type', 'submit');
 	});
 
-	it('Renders passes empty person array to PersonList on start.', () => {
-		render(<PersonSearch />);
+	describe('Uses ListComponent', () => {
+		it('should pass empty person array to ListComponent on start.', () => {
+			render(<PersonSearch />);
 
-		expect(mockPersonList).toHaveBeenCalledTimes(1);
-		expect(mockPersonList).toHaveBeenCalledWith(
-			expect.objectContaining({
-				persons: [],
-			})
-		);
-	});
-
-	it('Renders several results returned by searchPersonsByNameSearch when clicking the submit button', async () => {
-		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
-		render(<PersonSearch />);
-
-		expect(mockPersonList).toHaveBeenCalledTimes(1);
-		expect(mockPersonList).toHaveBeenNthCalledWith(
-			1,
-			expect.objectContaining({
-				persons: [],
-			})
-		);
-		const inputText = screen.getByRole('textbox');
-		userEvent.type(inputText, 'someSearchTerm');
-
-		jest.clearAllTimers();
-		jest.clearAllMocks();
-		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
-
-		const button = screen.getByRole('button');
-		userEvent.click(button);
-
-		await waitFor(() => {
-			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+			expect(ListComponent).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					list: [],
+				}),
+				expect.any(Object)
+			);
 		});
 
-		expect(mockPersonList).toHaveBeenCalledTimes(1);
-		expect(mockPersonList).toHaveBeenNthCalledWith(
-			1,
-			expect.objectContaining({
-				persons: threePersonObjects,
-			})
-		);
+		it('should pass results returned by searchPersonsByNameSearch to ListComponent', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+			render(<PersonSearch />);
+
+			expect(ListComponent).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					list: [],
+				}),
+				expect.any(Object)
+			);
+
+			const inputText = screen.getByRole('textbox');
+			userEvent.type(inputText, 'someSearchTerm');
+
+			jest.clearAllMocks();
+
+			const button = screen.getByRole('button');
+			userEvent.click(button);
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+			});
+
+			expect(ListComponent).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					list: threePersonObjects,
+				}),
+				expect.any(Object)
+			);
+		});
 	});
 
 	it('Does not pass an empty searchTerm to searchPersonsByNameSearch when button is clicked', async () => {
