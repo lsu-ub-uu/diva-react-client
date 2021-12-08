@@ -20,6 +20,10 @@ class Person implements Listable {
 	presentation = () => {
 		return this.authorisedName.toString();
 	};
+
+	getLink = () => {
+		return `/person/${this.id}`;
+	};
 }
 
 export default Person;

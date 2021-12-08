@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Listable from '../control/Listable';
 
-type Props = { text: string; id: string };
 const CardSection = styled.section`
 	box-shadow: ${(props) => props.theme.boxShadow};
 	transition: 0.3s;
@@ -12,15 +13,14 @@ const CardSection = styled.section`
 
 	padding: 1em;
 `;
-
-const Card = function (props: Props) {
-	const { id, text } = props;
+type Props = {
+	item: Listable;
+};
+const Card = function ({ item }: Props) {
 	return (
 		<CardSection>
-			<a href="/" className="headingLink">
-				{text}
-			</a>
-			<p>{id}</p>
+			<Link to={item.getLink()}>{item.presentation()}</Link>
+			<p>{item.id}</p>
 		</CardSection>
 	);
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
 import { PersonSearch } from '../../src/components/PersonSearch';
-import PersonList from '../../src/components/PersonList';
 import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
