@@ -1,16 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams as actualUseParams } from 'react-router-dom';
 import PersonView from '../../src/components/PersonView';
 
-let valueToReturn = 'someId;';
-jest.mock('react-router-dom', () => {
-	return {
-		useParams: jest.fn(() => {
-			return { personId: valueToReturn };
-		}),
-	};
-});
+jest.mock('react-router-dom');
+const useParams = actualUseParams as jest.MockedFunction<
+	typeof actualUseParams
+>;
+useParams.mockReturnValue({ personId: 'someId' });
 
 describe('The Person component', () => {
 	it('Should take the personId from useParams and render it 1', () => {
@@ -20,7 +17,7 @@ describe('The Person component', () => {
 	});
 
 	it('Should take the personId from useParams and render it 2', () => {
-		valueToReturn = 'someOtherId';
+		useParams.mockReturnValueOnce({ personId: 'someOtherId' });
 		render(<PersonView />);
 		expect(useParams).toBeCalledTimes(1);
 		expect(screen.getByText(/Person: someOtherId/i)).toBeInTheDocument();
