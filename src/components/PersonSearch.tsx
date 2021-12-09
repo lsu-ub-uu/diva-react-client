@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
@@ -42,6 +43,7 @@ export const PersonSearch = function () {
 					Sök
 				</Button>
 			</form>
+			<Outlet />
 			<ListComponent list={persons} />
 		</Parent>
 	);

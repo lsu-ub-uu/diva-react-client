@@ -1,13 +1,23 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Outlet } from 'react-router';
 import App from '../src/App';
 import PersonSearch from '../src/components/PersonSearch';
 import NoMatch from '../src/components/NoMatch';
+import PersonView from '../src/components/PersonView';
+import { renderWithRouter } from '../test-utils';
 
 jest.mock('../src/components/PersonSearch', () => {
-	return jest.fn(() => null);
+	return jest.fn(() => (
+		<div>
+			PersonSearch
+			<Outlet />
+		</div>
+	));
+});
+jest.mock('../src/components/PersonView', () => {
+	return jest.fn(() => <div>PersonView</div>);
 });
 jest.mock('../src/components/NoMatch', () => {
 	return jest.fn(() => null);
@@ -28,11 +38,7 @@ jest.mock('../src/components/ModeSwitcher', () => {
 
 describe('The App component', () => {
 	it('Initially sends darkMode false to ModeSwitcher', () => {
-		render(
-			<MemoryRouter>
-				<App />
-			</MemoryRouter>
-		);
+		renderWithRouter(<App />);
 
 		expect(mockCounter).toHaveBeenCalledTimes(1);
 		expect(mockCounter).toHaveBeenLastCalledWith(
@@ -43,11 +49,7 @@ describe('The App component', () => {
 	});
 
 	it('Calls modeSwitcher again with switched theme if callBack is called', () => {
-		render(
-			<MemoryRouter>
-				<App />
-			</MemoryRouter>
-		);
+		renderWithRouter(<App />);
 
 		expect(mockCounter).toHaveBeenCalledTimes(1);
 		expect(mockCounter).toHaveBeenLastCalledWith(
@@ -96,6 +98,17 @@ describe('The App component', () => {
 			);
 
 			expect(PersonSearch).toBeCalledTimes(1);
+		});
+
+		it('Renders PersonView if route is /person/someId', () => {
+			render(
+				<MemoryRouter initialEntries={['/person/someId']}>
+					<App />
+				</MemoryRouter>
+			);
+
+			expect(PersonSearch).toBeCalledTimes(1);
+			expect(PersonView).toBeCalledTimes(1);
 		});
 
 		it('Renders NoMatch if route is something not matched', () => {

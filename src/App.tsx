@@ -8,6 +8,7 @@ import Sidebar from './components/Layout/Sidebar';
 import ModeSwitcher from './components/ModeSwitcher';
 import NoMatch from './components/NoMatch';
 import PersonSearch from './components/PersonSearch';
+import PersonView from './components/PersonView';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
 
@@ -58,7 +59,9 @@ const App = function () {
 					<Main>
 						<Routes>
 							<Route index element={<PersonSearch />} />
-							<Route path="person" element={<PersonSearch />} />
+							<Route path="person" element={<PersonSearch />}>
+								<Route path=":personId" element={<PersonView id="" />} />
+							</Route>
 							<Route path="*" element={<NoMatch />} />
 						</Routes>
 					</Main>
