@@ -7,11 +7,20 @@ import PersonSearch from '../src/components/PersonSearch';
 import NoMatch from '../src/components/NoMatch';
 import PersonView from '../src/components/PersonView';
 import { renderWithRouter } from '../test-utils';
+import PersonRoot from '../src/components/PersonRoot';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (
 		<div>
 			PersonSearch
+			<Outlet />
+		</div>
+	));
+});
+jest.mock('../src/components/PersonRoot', () => {
+	return jest.fn(() => (
+		<div>
+			PersonRoot
 			<Outlet />
 		</div>
 	));
@@ -90,13 +99,14 @@ describe('The App component', () => {
 			expect(PersonSearch).toBeCalledTimes(1);
 		});
 
-		it('Renders PersonSearch if route is /person', () => {
+		it('Renders PersonRoot and PersonSearch if route is /person', () => {
 			render(
 				<MemoryRouter initialEntries={['/person']}>
 					<App />
 				</MemoryRouter>
 			);
 
+			expect(PersonRoot).toBeCalledTimes(1);
 			expect(PersonSearch).toBeCalledTimes(1);
 		});
 
@@ -107,8 +117,9 @@ describe('The App component', () => {
 				</MemoryRouter>
 			);
 
-			expect(PersonSearch).toBeCalledTimes(1);
+			expect(PersonRoot).toBeCalledTimes(1);
 			expect(PersonView).toBeCalledTimes(1);
+			expect(PersonSearch).toBeCalledTimes(0);
 		});
 
 		it('Renders NoMatch if route is something not matched', () => {
