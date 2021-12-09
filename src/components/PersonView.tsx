@@ -1,16 +1,9 @@
 import React from 'react';
-import Person from '../control/Person';
 
-type Props = {
-	person: Person;
-};
-
-const PersonView = function ({ person }: Props) {
+const PersonView = function ({ id }: { id: string }) {
 	return (
 		<section>
-			<span>{person.id}</span>
-			<span>{person.authorisedName.givenName}</span>
-			<span>{person.authorisedName.familyName}</span>
+			<span>Person: {id}</span>
 		</section>
 	);
 };

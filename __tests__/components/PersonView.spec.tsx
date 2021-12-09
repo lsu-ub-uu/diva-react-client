@@ -9,16 +9,8 @@ const examplePerson: Person = new Person('someId', {
 });
 
 describe('The Person component', () => {
-	it('Should take a person object', () => {
-		render(<PersonView person={examplePerson} />);
-	});
-	it('Should render a persons id', () => {
-		render(<PersonView person={examplePerson} />);
-		expect(screen.getByText(/someId/i)).toBeInTheDocument();
-	});
-	it('Should render a persons first and last name', () => {
-		render(<PersonView person={examplePerson} />);
-		expect(screen.getByText(/Kalle/i)).toBeInTheDocument();
-		expect(screen.getByText(/Anka/i)).toBeInTheDocument();
+	it('Should take a person id and render it', () => {
+		render(<PersonView id={examplePerson.id} />);
+		expect(screen.getByText(/Person: someId/i)).toBeInTheDocument();
 	});
 });
