@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
 import { PersonSearch } from '../../src/components/PersonSearch';
@@ -6,6 +7,7 @@ import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
 import ListComponent from '../../src/components/ListComponent';
+import { renderWithRouter } from '../../test-utils';
 
 jest.mock('../../src/control/api');
 jest.mock('../../src/components/ListComponent', () => {
@@ -28,21 +30,21 @@ const threePersonObjects: Person[] = [
 
 describe('The PersonSearch component', () => {
 	it('Shows an h1 with content "Personsök"', () => {
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 
 		const heading = screen.getByRole('heading');
 		expect(heading.textContent).toEqual('Personsök');
 	});
 
 	it('Renders an input field of type text', () => {
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 
 		const textInputs = screen.queryAllByRole('textbox');
 		expect(textInputs).toHaveLength(1);
 	});
 
 	it('Renders a button with text "Sök"', () => {
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 
 		const buttons = screen.queryAllByRole('button');
 		expect(buttons).toHaveLength(1);
@@ -52,7 +54,7 @@ describe('The PersonSearch component', () => {
 
 	describe('Uses ListComponent', () => {
 		it('should pass empty person array to ListComponent on start.', () => {
-			render(<PersonSearch />);
+			renderWithRouter(<PersonSearch />);
 
 			expect(ListComponent).toHaveBeenNthCalledWith(
 				1,
@@ -65,7 +67,7 @@ describe('The PersonSearch component', () => {
 
 		it('should pass results returned by searchPersonsByNameSearch to ListComponent', async () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
-			render(<PersonSearch />);
+			renderWithRouter(<PersonSearch />);
 
 			expect(ListComponent).toHaveBeenNthCalledWith(
 				1,
@@ -99,7 +101,7 @@ describe('The PersonSearch component', () => {
 
 	it('Does not pass an empty searchTerm to searchPersonsByNameSearch when button is clicked', async () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 
 		const button = screen.getByRole('button');
 		userEvent.click(button);
@@ -119,7 +121,7 @@ describe('The PersonSearch component', () => {
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 
 		const inputText = screen.getByRole('textbox');
 		userEvent.type(inputText, 'someSearchTerm');
@@ -138,7 +140,7 @@ describe('The PersonSearch component', () => {
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
-		render(<PersonSearch />);
+		renderWithRouter(<PersonSearch />);
 		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 
 		const listItemsBeforeClick = screen.queryAllByRole('listitem');
@@ -150,6 +152,39 @@ describe('The PersonSearch component', () => {
 		userEvent.type(inputText, '{enter}');
 
 		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
+	});
+
+	describe('uses searchParams', () => {
+		it('takes an empty searchTerm from useSearchParams', () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+
+			render(
+				<MemoryRouter initialEntries={['?searchTerm=']}>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
+		});
+
+		it('takes an existing searchTerm from useSearchParams and passes it to search', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+
+			render(
+				<MemoryRouter initialEntries={['?searchTerm=someSearchTerm']}>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm'
+				);
+			});
+		});
 	});
 });
 

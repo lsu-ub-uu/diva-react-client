@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
@@ -13,11 +14,20 @@ const Parent = styled.div`
 `;
 
 export const PersonSearch = function () {
+	const [searchParams, setSearchParams] = useSearchParams();
+	const searchTerm = searchParams.get('searchTerm') || '';
 	const [persons, setPersons] = useState<Person[]>([]);
-	const [searchTerm, setSearchTerm] = useState<string>('');
+
+	React.useEffect(() => {
+		queryPersonSearch();
+	}, []);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		queryPersonSearch();
+	};
+
+	const queryPersonSearch = () => {
 		if (searchTerm !== '') {
 			const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
 			promiseFromSearch.then((personsFromSearch) => {
@@ -27,7 +37,13 @@ export const PersonSearch = function () {
 	};
 
 	const handleSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(event.target.value);
+		const searchTermFromInput = event.target.value;
+
+		if (searchTermFromInput) {
+			setSearchParams({ searchTerm: searchTermFromInput });
+		} else {
+			setSearchParams({});
+		}
 	};
 
 	return (
