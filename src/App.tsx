@@ -60,7 +60,7 @@ const App = function () {
 						<Routes>
 							<Route index element={<PersonSearch />} />
 							<Route path="person" element={<PersonSearch />}>
-								<Route path=":personId" element={<PersonView id="" />} />
+								<Route path=":personId" element={<PersonView />} />
 							</Route>
 							<Route path="*" element={<NoMatch />} />
 						</Routes>

@@ -1,9 +1,11 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
-const PersonView = function ({ id }: { id: string }) {
+const PersonView = function () {
+	const { personId } = useParams();
 	return (
 		<section>
-			<span>Person: {id}</span>
+			<span>Person: {personId}</span>
 		</section>
 	);
 };
