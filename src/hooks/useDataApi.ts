@@ -16,11 +16,14 @@ const useDataApi = (
 	let data = initialData;
 	const setUrl = () => {};
 
-	if (initialUrl) {
-		axios(initialUrl);
-		data = { data: 'someData' };
-		isLoading = false;
-	}
+	const fetchData = async () => {
+		if (initialUrl) {
+			await axios(initialUrl);
+			data = { data: 'someData' };
+			isLoading = false;
+		}
+	};
+	fetchData();
 
 	return [{ data, isLoading, isError }, setUrl];
 };
