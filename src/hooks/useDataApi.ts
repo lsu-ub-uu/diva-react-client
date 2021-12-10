@@ -1,19 +1,27 @@
+import axios from 'axios';
 import React from 'react';
 
 type Response = {
-	data: string;
+	data: Object;
 	isLoading: boolean;
 	isError: boolean;
 };
 
 const useDataApi = (
 	initialUrl: string,
-	initialData: string
+	initialData: Object
 ): [response: Response, setUrl: Function] => {
-	const isLoading = true;
+	let isLoading = true;
 	const isError = false;
-	const data = initialData;
+	let data = initialData;
 	const setUrl = () => {};
+
+	if (initialUrl) {
+		axios(initialUrl);
+		data = { data: 'someData' };
+		isLoading = false;
+	}
+
 	return [{ data, isLoading, isError }, setUrl];
 };
 
