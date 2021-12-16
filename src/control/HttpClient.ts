@@ -34,4 +34,6 @@ class HttpClient implements IHttpClient {
 	}
 }
 
-export default HttpClient;
+const httpClient = new HttpClient();
+
+export default httpClient;

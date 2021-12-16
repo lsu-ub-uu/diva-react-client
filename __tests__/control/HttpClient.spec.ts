@@ -1,18 +1,13 @@
 import axios from 'axios';
-import HttpClient from '../../src/control/HttpClient';
+import httpClient from '../../src/control/HttpClient';
 import { IHttpClientRequestParameters } from '../../src/control/IHttpClient';
 
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-let httpClient: HttpClient;
 
 beforeAll(() => {
 	mockedAxios.get.mockResolvedValue({ data: { someField: 'someDefaultData' } });
-});
-
-beforeEach(() => {
-	httpClient = new HttpClient();
 });
 
 describe('The HttpClient', () => {
