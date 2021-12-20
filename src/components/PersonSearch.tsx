@@ -48,19 +48,24 @@ export const PersonSearch = function () {
 
 	return (
 		<Parent>
-			<h1>Personsök</h1>
-			<form key="form" onSubmit={handleSubmit}>
+			<main>
+			<header>	
+				<h1>Personsök</h1>
+			</header>
+			<form key="form" onSubmit={handleSubmit} role="search">
 				<InputText
 					key="searchTerm"
 					value={searchTerm}
 					onChange={handleSearchTerm}
+					aria-labelledby="searchButton"
 				/>
-				<Button type="submit" primary>
+				<Button type="submit" id="searchButton" primary>
 					Sök
 				</Button>
 			</form>
 			<Outlet />
 			<ListComponent list={persons} />
+			</main>
 		</Parent>
 	);
 };
