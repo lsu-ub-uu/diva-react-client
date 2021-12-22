@@ -6,6 +6,7 @@ import { searchPersonsByNameSearch } from '../control/api';
 import Person from '../control/Person';
 import Button from '../styles/Button';
 import InputText from '../styles/InputText';
+import SearchTextField from '../styles/SearchTextField';
 import ListComponent from './ListComponent';
 
 const Parent = styled.div`
@@ -53,11 +54,11 @@ export const PersonSearch = function () {
 				<h1>Personsök</h1>
 			</header>
 			<form key="form" onSubmit={handleSubmit} role="search">
-				<InputText
+				<SearchTextField
 					key="searchTerm"
-					value={searchTerm}
-					onChange={handleSearchTerm}
-					aria-labelledby="searchButton"
+					val={searchTerm}
+					action={handleSearchTerm}
+					labelledbyID="searchButton"
 				/>
 				<Button type="submit" id="searchButton" primary>
 					Sök
