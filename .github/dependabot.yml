@@ -8,3 +8,6 @@ updates:
       day: 'friday'
       time: '08:00'
       timezone: 'Europe/Stockholm'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
