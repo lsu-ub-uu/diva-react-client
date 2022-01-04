@@ -1,7 +1,11 @@
 import List from '../src/control/List';
 import Name from '../src/control/Name';
 import Person from '../src/control/Person';
-import { DataListWrapper, RecordWrapper } from '../src/converter/CoraData';
+import {
+	DataList,
+	DataListWrapper,
+	RecordWrapper,
+} from '../src/converter/CoraData';
 
 export const dataListContainingOnePerson: DataListWrapper = {
 	dataList: {
@@ -1539,6 +1543,343 @@ export const dataListContainingFourPersons: DataListWrapper = {
 export function getDataListContainingFourPersons(): DataListWrapper {
 	return dataListContainingFourPersons;
 }
+
+export const dataListContainingTwoOfFifteen: DataListWrapper = {
+	dataList: {
+		fromNo: '3',
+		data: [
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: 'authority-person:118' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'person' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.epc.ub.uu.se/diva/rest/record/recordType/person',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.epc.ub.uu.se/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{ name: 'tsCreated', value: '2021-03-04T14:46:00.463Z' },
+									{ name: 'public', value: 'yes' },
+									{ repeatId: '0', name: 'domain', value: 'test' },
+									{ repeatId: '1', name: 'domain', value: 'uu' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{ name: 'familyName', value: 'Långstrump' },
+									{ name: 'givenName', value: 'Pippi' },
+								],
+								name: 'authorisedName',
+							},
+							{ name: 'academicTitle', value: 'Doktor' },
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'familyName', value: 'Efraimsdotter' },
+									{ name: 'givenName', value: 'Rullgardina' },
+								],
+								name: 'alternativeName',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'linkTitle', value: 'Facebook' },
+									{ name: 'URL', value: 'http://facebook.se/pippi' },
+								],
+								name: 'externalURL',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'affiliation', value: 'Harvard' },
+									{ name: 'affiliationFromYear', value: '1920' },
+									{ name: 'affiliationUntilYear', value: '1922' },
+								],
+								name: 'otherAffiliation',
+							},
+							{ repeatId: '0', name: 'ORCID_ID', value: '238942+' },
+							{
+								children: [
+									{
+										name: 'biography',
+										value:
+											"<p>Pippi Longstocking (Swedish: Pippi Långstrump) is the fictional main character in an eponymous series of children's books by Swedish author Astrid Lindgren. Pippi was named by Lindgren's daughter Karin, who asked her mother for a get-well story when she was off school.</p><p>Pippi is red-haired, freckled, unconventional and superhumanly strong \u2013 able to lift her horse one-handed. She is playful and unpredictable. She often makes fun of unreasonable adults, especially if they are pompous and condescending. Her anger comes out in extreme cases, such as when a man mistreats his horse. Pippi, like Peter Pan, does not want to grow up. She is the daughter of a buccaneer captain and has adventure stories to tell about that, too. Her four best friends are her horse and monkey, and the neighbours' children, Tommy and Annika.</p><p>After being rejected by Bonnier Publishers in 1944, Lindgren's first manuscript was accepted by Rabén and Sjögren. The three Pippi chapter books (Pippi Longstocking, Pippi Goes on Board, and Pippi in the South Seas) were published from 1945 to 1948, followed by three short stories and a number of picture book adaptations. They have been translated into 76 languages as of 2018[1] and made into several films and television series.</p>",
+									},
+									{ name: 'language', value: 'en' },
+								],
+								name: 'biographyEnglish',
+							},
+							{
+								children: [
+									{
+										name: 'biography',
+										value:
+											'<p>Pippi Långstrump, Pippilotta Viktualia Rullgardina Krusmynta Efraimsdotter Långstrump,[1] är en av Astrid Lindgrens mest kända litterära figurer och även namnet på den första boken om Pippi och hennes vänner, Tommy och Annika. Lindgren skapade figuren 1941 och första boken kom ut 1945. Pippi-böckerna finns översatta till 77 olika språk (2020).[2]</p><p>Pippi är världens starkaste, har fräknar och röda flätor som står rakt ut, säger emot vuxna och är allmänt ouppfostrad. I början när böckerna kom ut kunde hon upplevas som kontroversiell. Hon bor utan föräldrar i ett hus kallat Villa Villekulla tillsammans med sin prickiga häst Lilla gubben och sin apa Herr Nilsson. Hon äter "krumelurpiller" (som gör att man aldrig blir stor), hennes mamma är i himlen, hennes pappa Efraim Långstrump är kung på söderhavsön Kurrekurreduttön och hon har en kappsäck full med guldpengar. I hennes trädgård finns ett ihåligt träd där det enligt Pippi växer sockerdricka. I böckerna om Pippi myntas begrepp såsom pluttifikationstabellen, spunk och sak-letare.</p>',
+									},
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'biographySwedish',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'linkedRecordType', value: 'personDomainPart' },
+									{
+										name: 'linkedRecordId',
+										value: 'authority-person:118:test',
+									},
+								],
+								actionLinks: {
+									read: {
+										requestMethod: 'GET',
+										rel: 'read',
+										url: 'https://cora.epc.ub.uu.se/diva/rest/record/personDomainPart/authority-person:118:test',
+										accept: 'application/vnd.uub.record+json',
+									},
+								},
+								name: 'personDomainPart',
+							},
+							{
+								repeatId: '1',
+								children: [
+									{ name: 'linkedRecordType', value: 'personDomainPart' },
+									{ name: 'linkedRecordId', value: 'authority-person:118:uu' },
+								],
+								actionLinks: {
+									read: {
+										requestMethod: 'GET',
+										rel: 'read',
+										url: 'https://cora.epc.ub.uu.se/diva/rest/record/personDomainPart/authority-person:118:uu',
+										accept: 'application/vnd.uub.record+json',
+									},
+								},
+								name: 'personDomainPart',
+							},
+						],
+						name: 'person',
+					},
+					permissions: {
+						read: [
+							'externalURL',
+							'otherAffiliation',
+							'biographySwedish',
+							'personDomainPart',
+							'public',
+							'biographyEnglish',
+							'Libris_ID',
+							'domain',
+							'ORCID_ID',
+							'alternativeName',
+							'VIAF_ID',
+							'academicTitle',
+						],
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.epc.ub.uu.se/diva/rest/record/person/authority-person:118',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: 'authority-person:112' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'person' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.epc.ub.uu.se/diva/rest/record/recordType/person',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{ name: 'tsCreated', value: '2021-03-23T13:46:04.970Z' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.epc.ub.uu.se/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{ name: 'public', value: 'yes' },
+									{ repeatId: '0', name: 'domain', value: 'test' },
+									{ repeatId: '1', name: 'domain', value: 'uu' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{ name: 'familyName', value: 'Enequist' },
+									{ name: 'givenName', value: 'Gerd' },
+								],
+								name: 'authorisedName',
+							},
+							{ name: 'academicTitle', value: 'Professor' },
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'familyName', value: 'Enequist' },
+									{ name: 'givenName', value: 'Gerd Margareta' },
+								],
+								name: 'alternativeName',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'affiliation', value: 'Fritextorganisation' },
+									{ name: 'affiliationFromYear', value: '1949' },
+									{ name: 'affiliationUntilYear', value: '1950' },
+								],
+								name: 'otherAffiliation',
+							},
+							{
+								repeatId: '0',
+								name: 'ORCID_ID',
+								value: '0000-0003-5342-25345',
+							},
+							{ repeatId: '0', name: 'VIAF_ID', value: '66928422' },
+							{ repeatId: '0', name: 'Libris_ID', value: '543453' },
+							{
+								children: [
+									{
+										name: 'biography',
+										value:
+											'<p>Gerd Margareta Enequist, född 24 februari 1903 i Luleå, död 21 maj 1989 i Uppsala domkyrkoförsamling[1], var en svensk geograf och professor.</p><p>Enequist var dotter till lanträntmästaren Axel Enequist och Anna Hederstedt. Efter studentexamen i Göteborg 1922 och folkskollärarexamen i Luleå 1923 blev Enequist filosofie magister i Uppsala 1929, filosofie licentiat 1934, filosofie doktor och docent i geografi vid Uppsala universitet 1937. Hon var professor i geografi, särskilt kulturgeografi med ekonomisk geografi mellan 1949 och 1968, tillförordnad redan 1947.</p><p>Enequist var ledamot delegationen för vägplanering 1954\u20131958 och av redaktionskommittén för Atlas över Sverige, i vilken hon medverkade med kartor som beskrev befolkning, bebyggelse och näringsliv. Hon var inspektor vid kommunala flickskolan i Uppsala och Uppsala högre elementarläroverk samt ledamot av kyrkofullmäktige 1951\u201357.</p><p>Enequist blev korresponderande ledamot av Österreichische Gesellschaft zur Förderung von Landesforschung und Landesplanung 1955, ledamot av Kungliga Humanistiska vetenskapssamfundet i Uppsala 1956, av Kungliga Skytteanska samfundet 1956, hedersledamot av Upplands fornminnesförening 1976 och av Olaus Magnus-sällskapet 1976. Hon blev filosofie hedersdoktor i Umeå 1982 och var ledamot av Nordstjärneorden.</p>',
+									},
+									{ name: 'language', value: 'en' },
+								],
+								name: 'biographyEnglish',
+							},
+							{
+								children: [
+									{
+										name: 'biography',
+										value:
+											'<p>Gerd Margareta Enequist, född 24 februari 1903 i Luleå, död 21 maj 1989 i Uppsala domkyrkoförsamling[1], var en svensk geograf och professor.</p><p>Gerd Margareta Enequist, född 24 februari 1903 i Luleå, död 21 maj 1989 i Uppsala domkyrkoförsamling[1], var en svensk geograf och professor.</p><p>Enequist var dotter till lanträntmästaren Axel Enequist och Anna Hederstedt. Efter studentexamen i Göteborg 1922 och folkskollärarexamen i Luleå 1923 blev Enequist filosofie magister i Uppsala 1929, filosofie licentiat 1934, filosofie doktor och docent i geografi vid Uppsala universitet 1937. Hon var professor i geografi, särskilt kulturgeografi med ekonomisk geografi mellan 1949 och 1968, tillförordnad redan 1947.</p><p>Enequist var ledamot delegationen för vägplanering 1954\u20131958 och av redaktionskommittén för Atlas över Sverige, i vilken hon medverkade med kartor som beskrev befolkning, bebyggelse och näringsliv. Hon var inspektor vid kommunala flickskolan i Uppsala och Uppsala högre elementarläroverk samt ledamot av kyrkofullmäktige 1951\u201357.</p><p>Enequist blev korresponderande ledamot av Österreichische Gesellschaft zur Förderung von Landesforschung und Landesplanung 1955, ledamot av Kungliga Humanistiska vetenskapssamfundet i Uppsala 1956, av Kungliga Skytteanska samfundet 1956, hedersledamot av Upplands fornminnesförening 1976 och av Olaus Magnus-sällskapet 1976. Hon blev filosofie hedersdoktor i Umeå 1982 och var ledamot av Nordstjärneorden.</p>',
+									},
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'biographySwedish',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{ name: 'linkedRecordType', value: 'personDomainPart' },
+									{
+										name: 'linkedRecordId',
+										value: 'authority-person:112:test',
+									},
+								],
+								actionLinks: {
+									read: {
+										requestMethod: 'GET',
+										rel: 'read',
+										url: 'https://cora.epc.ub.uu.se/diva/rest/record/personDomainPart/authority-person:112:test',
+										accept: 'application/vnd.uub.record+json',
+									},
+								},
+								name: 'personDomainPart',
+							},
+							{
+								repeatId: '1',
+								children: [
+									{ name: 'linkedRecordType', value: 'personDomainPart' },
+									{ name: 'linkedRecordId', value: 'authority-person:112:uu' },
+								],
+								actionLinks: {
+									read: {
+										requestMethod: 'GET',
+										rel: 'read',
+										url: 'https://cora.epc.ub.uu.se/diva/rest/record/personDomainPart/authority-person:112:uu',
+										accept: 'application/vnd.uub.record+json',
+									},
+								},
+								name: 'personDomainPart',
+							},
+						],
+						name: 'person',
+					},
+					permissions: {
+						read: [
+							'externalURL',
+							'otherAffiliation',
+							'biographySwedish',
+							'personDomainPart',
+							'public',
+							'biographyEnglish',
+							'Libris_ID',
+							'domain',
+							'ORCID_ID',
+							'alternativeName',
+							'VIAF_ID',
+							'academicTitle',
+						],
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.epc.ub.uu.se/diva/rest/record/person/authority-person:112',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+		],
+		totalNo: '15',
+		containDataOfType: 'mix',
+		toNo: '4',
+	},
+};
 
 export const onePerson: RecordWrapper = {
 	record: {

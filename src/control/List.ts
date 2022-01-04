@@ -1,17 +1,22 @@
 class List<T> {
-	fromNo: number;
+	fromNumber: number;
 
-	totalNo: number;
+	toNumber: number;
 
-	toNo: number;
+	totalNumber: number;
 
 	data: T[];
 
-	constructor(data: T[], fromNo: number, totalNo: number, toNo: number) {
+	constructor(
+		data: T[],
+		fromNumber: number,
+		toNumber: number,
+		totalNumber: number
+	) {
 		this.data = data;
-		this.fromNo = fromNo;
-		this.totalNo = totalNo;
-		this.toNo = toNo;
+		this.fromNumber = fromNumber;
+		this.toNumber = toNumber;
+		this.totalNumber = totalNumber;
 	}
 }
 
