@@ -10,7 +10,7 @@ type Props = {
 const ListComponent = React.memo((props: Props) => {
 	const { list } = props;
 	if (!list.length) {
-		return <p>Ingen data</p>;
+		return <p>Inga träffar matchade sökningen.</p>;
 	}
 	return (
 		<List>

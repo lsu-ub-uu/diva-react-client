@@ -39,7 +39,7 @@ describe('The PersonSearch component', () => {
 	it('Renders an input field of type text', () => {
 		renderWithRouter(<PersonSearch />);
 
-		const textInputs = screen.queryAllByRole('textbox');
+		const textInputs = screen.queryAllByRole('searchbox');
 		expect(textInputs).toHaveLength(1);
 	});
 
@@ -77,7 +77,7 @@ describe('The PersonSearch component', () => {
 				expect.any(Object)
 			);
 
-			const inputText = screen.getByRole('textbox');
+			const inputText = screen.getByRole('searchbox');
 			userEvent.type(inputText, 'someSearchTerm');
 
 			jest.clearAllMocks();
@@ -110,7 +110,7 @@ describe('The PersonSearch component', () => {
 			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
 		});
 
-		const inputText = screen.getByRole('textbox');
+		const inputText = screen.getByRole('searchbox');
 		userEvent.clear(inputText);
 		userEvent.type(inputText, 'someSearchTerm');
 
@@ -123,7 +123,7 @@ describe('The PersonSearch component', () => {
 		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
 		renderWithRouter(<PersonSearch />);
 
-		const inputText = screen.getByRole('textbox');
+		const inputText = screen.getByRole('searchbox');
 		userEvent.type(inputText, 'someSearchTerm');
 
 		const button = screen.getByRole('button');
@@ -146,7 +146,7 @@ describe('The PersonSearch component', () => {
 		const listItemsBeforeClick = screen.queryAllByRole('listitem');
 		expect(listItemsBeforeClick).toHaveLength(0);
 
-		const inputText = screen.getByRole('textbox');
+		const inputText = screen.getByRole('searchbox');
 		userEvent.type(inputText, 'someSearchTerm');
 
 		userEvent.type(inputText, '{enter}');

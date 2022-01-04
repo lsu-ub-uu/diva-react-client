@@ -16,11 +16,11 @@ describe('The List component', () => {
 	});
 	it('should render "Ingen data" if an empty list has been passed', () => {
 		render(<ListComponent list={[]} />);
-		expect(screen.getByText(/Ingen data/i)).toBeInTheDocument();
+		expect(screen.getByText(/Inga träffar matchade sökningen/i)).toBeInTheDocument();
 	});
 	it('should render a list if a non-empty list has been passed', () => {
 		const { rerender } = render(<ListComponent list={threePersonObjects} />);
-		expect(screen.queryByText(/Ingen data/i)).not.toBeInTheDocument();
+		expect(screen.queryByText(/Inga träffar matchade sökningen./i)).not.toBeInTheDocument();
 
 		const lists = screen.getAllByRole('list');
 		expect(lists).toHaveLength(1);
