@@ -21,7 +21,9 @@ type Props = {
 const Card = function ({ item }: Props) {
 	return (
 		<CardSection>
-			<Link className="headingLink" to={item.getLink()}>{item.presentation()}</Link>
+			<Link className="headingLink" to={item.getLink()}>
+				{item.presentation()}
+			</Link>
 			<p className="gray">{item.id}</p>
 		</CardSection>
 	);
