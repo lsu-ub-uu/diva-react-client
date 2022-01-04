@@ -24,10 +24,14 @@ function searchPersonsByNameSearch(
 			httpClient
 				.get(parameters)
 				.then(() => {
+					// receives dataList from api
+					// foreach element in dataList -> call convertPerson
+					// resolve with ???
+					// - List
 					resolve('');
 				})
-				.catch(() => {
-					reject(new Error());
+				.catch((error: unknown) => {
+					reject(error);
 				});
 		}
 	});

@@ -15,14 +15,14 @@ describe('searchPersonsByNameSearch', () => {
 	});
 
 	it('should exist and take searchTerm, start and rows', () => {
-		searchPersonsByNameSearch('someSearchTerm', 0, 20);
+		searchPersonsByNameSearch('someSearchTerm', 1, 20);
 	});
 
 	it('start and rows should be optional', () => {
 		searchPersonsByNameSearch('someSearchTerm');
 	});
 
-	it('should reject with error if empty searchWord given and not call httpClient', async () => {
+	it('should reject with error if empty searchTerm given and not call httpClient', async () => {
 		expect.assertions(2);
 
 		try {
@@ -54,20 +54,40 @@ describe('searchPersonsByNameSearch', () => {
 		);
 	});
 
+	it.todo('should call personConverter for each person in dataList');
+	it.todo(
+		'should return List containing array of persons as well as from/to/max from dataList'
+	);
+
 	it('should reject with an error if HttpClient throws error', async () => {
 		mockHttpClientGet.mockRejectedValueOnce(
 			new Error('Some error from httpClient')
 		);
 
-		expect.assertions(1);
+		expect.assertions(6);
 
 		try {
 			await searchPersonsByNameSearch('someSearchTerm');
 		} catch (error: unknown) {
 			const castError: Error = <Error>error;
 			expect(castError).toBeDefined();
-			// expect(castError.message).toStrictEqual('Some error from httpClient');
-			// expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+			expect(castError.message).toStrictEqual('Some error from httpClient');
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+		}
+
+		mockHttpClientGet.mockRejectedValueOnce(
+			new Error('Some other error from httpClient')
+		);
+
+		try {
+			await searchPersonsByNameSearch('someSearchTerm');
+		} catch (error: unknown) {
+			const castError: Error = <Error>error;
+			expect(castError).toBeDefined();
+			expect(castError.message).toStrictEqual(
+				'Some other error from httpClient'
+			);
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(2);
 		}
 	});
 });
