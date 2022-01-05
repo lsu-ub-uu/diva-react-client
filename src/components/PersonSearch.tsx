@@ -16,8 +16,7 @@ const Parent = styled.div`
 export const PersonSearch = function () {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchTerm = searchParams.get('searchTerm') || '';
-	const startValue = searchParams.get('start') || '1';
-	const rowsValue = searchParams.get('rows') || '100';
+
 	const [persons, setPersons] = useState<Listable[]>([]);
 
 	React.useEffect(() => {
@@ -31,8 +30,8 @@ export const PersonSearch = function () {
 
 	const queryPersonSearch = () => {
 		if (searchTerm !== '') {
-			const start = getPositiveNumberOrDefault(startValue, 1);
-			const rows = getPositiveNumberOrDefault(rowsValue, 100);
+			const start = getStartValue();
+			const rows = getRowsValue();
 			const promiseFromSearch = searchPersonsByNameSearch(
 				searchTerm,
 				start,
@@ -63,6 +62,29 @@ export const PersonSearch = function () {
 		}
 	};
 
+	const getStartValue = () => {
+		const startValue = searchParams.get('start') || '1';
+		return getPositiveNumberOrDefault(startValue, 1);
+	};
+
+	const getRowsValue = () => {
+		const rowsValue = searchParams.get('rows') || '100';
+		return getPositiveNumberOrDefault(rowsValue, 100);
+	};
+
+	const nextPage = () => {
+		const nextStart = getStartValue() + getRowsValue();
+		searchParams.set('start', nextStart.toString());
+		setSearchParams(searchParams);
+		queryPersonSearch();
+	};
+
+	// Button "Nästa"
+	// onClick:
+	// - calculate next page
+	// - navigate to next page
+	// - display next page
+
 	return (
 		<Parent>
 			<main>
@@ -80,6 +102,7 @@ export const PersonSearch = function () {
 						Sök
 					</Button>
 				</form>
+				<Button onClick={nextPage}>Nästa &gt;</Button>
 				<Outlet />
 				<CardList list={persons} />
 			</main>
