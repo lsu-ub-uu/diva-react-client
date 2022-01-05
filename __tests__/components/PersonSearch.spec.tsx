@@ -6,12 +6,12 @@ import { PersonSearch } from '../../src/components/PersonSearch';
 import { searchPersonsByNameSearch } from '../../src/control/api';
 import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
-import ListComponent from '../../src/components/ListComponent';
+import CardList from '../../src/components/CardList';
 import { renderWithRouter } from '../../test-utils';
 import List from '../../src/control/List';
 
 jest.mock('../../src/control/api');
-jest.mock('../../src/components/ListComponent', () => {
+jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);
 });
 
@@ -57,7 +57,7 @@ describe('The PersonSearch component', () => {
 		it('should pass empty person array to ListComponent on start.', () => {
 			renderWithRouter(<PersonSearch />);
 
-			expect(ListComponent).toHaveBeenNthCalledWith(
+			expect(CardList).toHaveBeenNthCalledWith(
 				1,
 				expect.objectContaining({
 					list: [],
@@ -72,7 +72,7 @@ describe('The PersonSearch component', () => {
 			);
 			renderWithRouter(<PersonSearch />);
 
-			expect(ListComponent).toHaveBeenNthCalledWith(
+			expect(CardList).toHaveBeenNthCalledWith(
 				1,
 				expect.objectContaining({
 					list: [],
@@ -92,7 +92,7 @@ describe('The PersonSearch component', () => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 			});
 
-			expect(ListComponent).toHaveBeenNthCalledWith(
+			expect(CardList).toHaveBeenNthCalledWith(
 				1,
 				expect.objectContaining({
 					list: threePersonObjects,
@@ -212,5 +212,5 @@ async function assertSearchIsCalledTimesWith(
 }
 
 function createListWithPersons(persons: Person[]) {
-	return new List<Person>(persons, 1, 1, 1);
+	return new List(persons, 1, 1, 1);
 }

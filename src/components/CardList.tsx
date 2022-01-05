@@ -7,7 +7,7 @@ type Props = {
 	list: Listable[];
 };
 
-const ListComponent = React.memo((props: Props) => {
+const CardList = React.memo((props: Props) => {
 	const { list } = props;
 	if (!list.length) {
 		return <p>Inga träffar matchade sökningen.</p>;
@@ -23,4 +23,4 @@ const ListComponent = React.memo((props: Props) => {
 	);
 });
 
-export default ListComponent;
+export default CardList;

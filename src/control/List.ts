@@ -1,14 +1,16 @@
-class List<T> {
+import Listable from './Listable';
+
+class List {
 	fromNumber: number;
 
 	toNumber: number;
 
 	totalNumber: number;
 
-	data: T[];
+	data: Listable[];
 
 	constructor(
-		data: T[],
+		data: Listable[],
 		fromNumber: number,
 		toNumber: number,
 		totalNumber: number

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import ListComponent from '../../src/components/ListComponent';
+import CardList from '../../src/components/CardList';
 import { threePersonObjects } from '../../testData/personData';
 import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
@@ -12,15 +12,19 @@ jest.mock('../../src/components/Card', () => {
 
 describe('The List component', () => {
 	it('should take an array of Listables as props', () => {
-		render(<ListComponent list={[]} />);
+		render(<CardList list={[]} />);
 	});
-	it('should render "Ingen data" if an empty list has been passed', () => {
-		render(<ListComponent list={[]} />);
-		expect(screen.getByText(/Inga träffar matchade sökningen/i)).toBeInTheDocument();
+	it('should render "Inga träffar matchade sökningen" if an empty list has been passed', () => {
+		render(<CardList list={[]} />);
+		expect(
+			screen.getByText(/Inga träffar matchade sökningen/i)
+		).toBeInTheDocument();
 	});
 	it('should render a list if a non-empty list has been passed', () => {
-		const { rerender } = render(<ListComponent list={threePersonObjects} />);
-		expect(screen.queryByText(/Inga träffar matchade sökningen./i)).not.toBeInTheDocument();
+		const { rerender } = render(<CardList list={threePersonObjects} />);
+		expect(
+			screen.queryByText(/Inga träffar matchade sökningen./i)
+		).not.toBeInTheDocument();
 
 		const lists = screen.getAllByRole('list');
 		expect(lists).toHaveLength(1);
@@ -32,12 +36,12 @@ describe('The List component', () => {
 		const fourPersonObjects: Person[] = Array.from(threePersonObjects);
 		fourPersonObjects.push(person);
 
-		rerender(<ListComponent list={fourPersonObjects} />);
+		rerender(<CardList list={fourPersonObjects} />);
 		const listItems2 = screen.getAllByRole('listitem');
 		expect(listItems2).toHaveLength(4);
 	});
 	it('should pass the Listable to a Card for each listItem', () => {
-		render(<ListComponent list={threePersonObjects} />);
+		render(<CardList list={threePersonObjects} />);
 
 		expect(Card).toBeCalledTimes(3);
 		expect(Card).toHaveBeenNthCalledWith(
@@ -63,8 +67,8 @@ describe('The List component', () => {
 		);
 	});
 	it('should use React.memo', () => {
-		const { rerender } = render(<ListComponent list={threePersonObjects} />);
-		rerender(<ListComponent list={threePersonObjects} />);
+		const { rerender } = render(<CardList list={threePersonObjects} />);
+		rerender(<CardList list={threePersonObjects} />);
 		expect(Card).toBeCalledTimes(3);
 	});
 });

@@ -3,10 +3,10 @@ import { Outlet } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
-import Person from '../control/Person';
+import Listable from '../control/Listable';
 import Button from '../styles/Button';
 import SearchTextField from '../styles/SearchTextField';
-import ListComponent from './ListComponent';
+import CardList from './CardList';
 
 const Parent = styled.div`
 	display: grid;
@@ -16,7 +16,7 @@ const Parent = styled.div`
 export const PersonSearch = function () {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchTerm = searchParams.get('searchTerm') || '';
-	const [persons, setPersons] = useState<Person[]>([]);
+	const [persons, setPersons] = useState<Listable[]>([]);
 
 	React.useEffect(() => {
 		queryPersonSearch();
@@ -64,7 +64,7 @@ export const PersonSearch = function () {
 					</Button>
 				</form>
 				<Outlet />
-				<ListComponent list={persons} />
+				<CardList list={persons} />
 			</main>
 		</Parent>
 	);

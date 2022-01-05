@@ -2,7 +2,6 @@ import httpClient from '../../../src/control/HttpClient';
 import convertPerson from '../../../src/converter/Converter';
 import searchPersonsByNameSearch from '../../../src/control/api/searchPersonByNameSearch';
 import List from '../../../src/control/List';
-import Person from '../../../src/control/Person';
 import {
 	dataListContainingFourPersons,
 	dataListContainingOnePerson,
@@ -80,7 +79,7 @@ describe('searchPersonsByNameSearch', () => {
 
 		expect.assertions(5);
 
-		const returnedList: List<Person> = await searchPersonsByNameSearch(
+		const returnedList: List = await searchPersonsByNameSearch(
 			'someSearchTerm'
 		);
 
@@ -127,9 +126,7 @@ describe('searchPersonsByNameSearch', () => {
 
 		expect.assertions(5);
 
-		const list: List<Person> = await searchPersonsByNameSearch(
-			'someSearchTerm'
-		);
+		const list: List = await searchPersonsByNameSearch('someSearchTerm');
 
 		expect(mockConvertPerson).toHaveBeenCalledTimes(4);
 
@@ -144,9 +141,7 @@ describe('searchPersonsByNameSearch', () => {
 
 		expect.assertions(4);
 
-		const list: List<Person> = await searchPersonsByNameSearch(
-			'someSearchTerm'
-		);
+		const list: List = await searchPersonsByNameSearch('someSearchTerm');
 
 		expect(mockConvertPerson).toHaveBeenCalledTimes(2);
 		expect(list.fromNumber).toStrictEqual(3);

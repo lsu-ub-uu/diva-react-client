@@ -16,7 +16,7 @@ function searchPersonsByNameSearch(
 	searchTerm: string,
 	start?: number,
 	rows?: number
-): Promise<List<Person>> {
+): Promise<List> {
 	return new Promise((resolve, reject) => {
 		if (searchTerm === '') {
 			reject(
@@ -103,9 +103,7 @@ const composeReturnData = (
 	return searchData;
 };
 
-function extractListFromDataList(
-	dataListWrapper: DataListWrapper
-): List<Person> {
+function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 	let persons: Person[] = [];
 
 	if (dataListWrapper.dataList.data.length > 0) {
@@ -119,7 +117,7 @@ function extractListFromDataList(
 	const toNumber = parseInt(dataListWrapper.dataList.toNo, 10);
 	const totalNumber = parseInt(dataListWrapper.dataList.totalNo, 10);
 
-	const list = new List<Person>(persons, fromNumber, toNumber, totalNumber);
+	const list = new List(persons, fromNumber, toNumber, totalNumber);
 
 	return list;
 }
