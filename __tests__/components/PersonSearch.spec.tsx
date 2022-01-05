@@ -53,8 +53,8 @@ describe('The PersonSearch component', () => {
 		expect(buttons[0]).toHaveAttribute('type', 'submit');
 	});
 
-	describe('Uses ListComponent', () => {
-		it('should pass empty person array to ListComponent on start.', () => {
+	describe('Uses CardList', () => {
+		it('should pass empty person array to CardList on start.', () => {
 			renderWithRouter(<PersonSearch />);
 
 			expect(CardList).toHaveBeenNthCalledWith(
@@ -66,7 +66,7 @@ describe('The PersonSearch component', () => {
 			);
 		});
 
-		it('should pass results returned by searchPersonsByNameSearch to ListComponent', async () => {
+		it('should pass results returned by searchPersonsByNameSearch to CardList', async () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(
 				createListWithPersons(threePersonObjects)
 			);
@@ -121,7 +121,10 @@ describe('The PersonSearch component', () => {
 
 		userEvent.click(button);
 
-		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
+		await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
+			1,
+			'someSearchTerm'
+		);
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
@@ -136,14 +139,20 @@ describe('The PersonSearch component', () => {
 		const button = screen.getByRole('button');
 		userEvent.click(button);
 
-		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
+		await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
+			1,
+			'someSearchTerm'
+		);
 
 		userEvent.clear(inputText);
 		userEvent.type(inputText, 'someOtherSearchTerm');
 
 		userEvent.click(button);
 
-		await assertSearchIsCalledTimesWith(2, 'someOtherSearchTerm');
+		await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
+			2,
+			'someOtherSearchTerm'
+		);
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
@@ -160,11 +169,14 @@ describe('The PersonSearch component', () => {
 
 		userEvent.type(inputText, '{enter}');
 
-		await assertSearchIsCalledTimesWith(1, 'someSearchTerm');
+		await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
+			1,
+			'someSearchTerm'
+		);
 	});
 
 	describe('uses searchParams', () => {
-		it('takes an empty searchTerm from useSearchParams', () => {
+		it('takes an empty searchTerm from useSearchParams and does not pass it to search', () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(
 				createListWithPersons(threePersonObjects)
 			);
@@ -178,7 +190,7 @@ describe('The PersonSearch component', () => {
 			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
 		});
 
-		it('takes an existing searchTerm from useSearchParams and passes it to search', async () => {
+		it('takes an existing searchTerm from useSearchParams and passes it to search, passes default values 1 and 100 for start/rows', async () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(
 				createListWithPersons(threePersonObjects)
 			);
@@ -194,20 +206,161 @@ describe('The PersonSearch component', () => {
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someSearchTerm'
+					'someSearchTerm',
+					1,
+					100
+				);
+			});
+		});
+
+		it('does not call search if no searchTerm is provided, even though start and rows are given', () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter initialEntries={['?start=1&rows=10']}>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
+		});
+
+		it('passes a positive start value to search', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter initialEntries={['?searchTerm=someSearchTerm&start=3']}>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					3,
+					100
+				);
+			});
+		});
+
+		it('passes a positive rows value to search', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter initialEntries={['?searchTerm=someSearchTerm&rows=4']}>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					1,
+					4
+				);
+			});
+		});
+
+		it('passes start 1, row 100 to search if given strings', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter
+					initialEntries={['?searchTerm=someSearchTerm&start=asdf&rows=asdf']}
+				>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					1,
+					100
+				);
+			});
+		});
+
+		it('passes start 1, rows 100 to search if given negative numbers', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter
+					initialEntries={['?searchTerm=someSearchTerm&start=-1&rows=-1']}
+				>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					1,
+					100
+				);
+			});
+		});
+
+		it('passes start 1, rows 100 to search if given 0s', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+
+			render(
+				<MemoryRouter
+					initialEntries={['?searchTerm=someSearchTerm&start=0&rows=0']}
+				>
+					<PersonSearch />
+				</MemoryRouter>
+			);
+
+			expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					1,
+					100
 				);
 			});
 		});
 	});
 });
 
-async function assertSearchIsCalledTimesWith(
+async function assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 	times: number,
 	searchTerm: string
 ) {
 	return waitFor(() => {
 		expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(times);
-		expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(searchTerm);
+		expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+			searchTerm,
+			1,
+			100
+		);
 	});
 }
 

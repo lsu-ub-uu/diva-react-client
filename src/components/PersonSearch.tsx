@@ -16,6 +16,8 @@ const Parent = styled.div`
 export const PersonSearch = function () {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchTerm = searchParams.get('searchTerm') || '';
+	const startValue = searchParams.get('start') || '1';
+	const rowsValue = searchParams.get('rows') || '100';
 	const [persons, setPersons] = useState<Listable[]>([]);
 
 	React.useEffect(() => {
@@ -29,11 +31,26 @@ export const PersonSearch = function () {
 
 	const queryPersonSearch = () => {
 		if (searchTerm !== '') {
-			const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
+			const start = getPositiveNumberOrDefault(startValue, 1);
+			const rows = getPositiveNumberOrDefault(rowsValue, 100);
+			const promiseFromSearch = searchPersonsByNameSearch(
+				searchTerm,
+				start,
+				rows
+			);
 			promiseFromSearch.then((personListFromSearch) => {
 				setPersons(personListFromSearch.data);
 			});
 		}
+	};
+
+	const getPositiveNumberOrDefault = (input: string, defaultNumber: number) => {
+		const parsedNumber = parseInt(input, 10);
+		if (Number.isNaN(parsedNumber) || parsedNumber < 1) {
+			return defaultNumber;
+		}
+
+		return parsedNumber;
 	};
 
 	const handleSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
