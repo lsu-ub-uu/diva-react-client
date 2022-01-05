@@ -8,6 +8,7 @@ import Person from '../../src/control/Person';
 import Name from '../../src/control/Name';
 import ListComponent from '../../src/components/ListComponent';
 import { renderWithRouter } from '../../test-utils';
+import List from '../../src/control/List';
 
 jest.mock('../../src/control/api');
 jest.mock('../../src/components/ListComponent', () => {
@@ -66,7 +67,9 @@ describe('The PersonSearch component', () => {
 		});
 
 		it('should pass results returned by searchPersonsByNameSearch to ListComponent', async () => {
-			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
 			renderWithRouter(<PersonSearch />);
 
 			expect(ListComponent).toHaveBeenNthCalledWith(
@@ -100,7 +103,9 @@ describe('The PersonSearch component', () => {
 	});
 
 	it('Does not pass an empty searchTerm to searchPersonsByNameSearch when button is clicked', async () => {
-		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+		mockSearchPersonsByNameSearch.mockResolvedValue(
+			createListWithPersons(threePersonObjects)
+		);
 		renderWithRouter(<PersonSearch />);
 
 		const button = screen.getByRole('button');
@@ -120,7 +125,9 @@ describe('The PersonSearch component', () => {
 	});
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
-		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+		mockSearchPersonsByNameSearch.mockResolvedValue(
+			createListWithPersons(threePersonObjects)
+		);
 		renderWithRouter(<PersonSearch />);
 
 		const inputText = screen.getByRole('textbox');
@@ -141,7 +148,9 @@ describe('The PersonSearch component', () => {
 
 	it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
 		renderWithRouter(<PersonSearch />);
-		mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+		mockSearchPersonsByNameSearch.mockResolvedValue(
+			createListWithPersons(threePersonObjects)
+		);
 
 		const listItemsBeforeClick = screen.queryAllByRole('listitem');
 		expect(listItemsBeforeClick).toHaveLength(0);
@@ -156,7 +165,9 @@ describe('The PersonSearch component', () => {
 
 	describe('uses searchParams', () => {
 		it('takes an empty searchTerm from useSearchParams', () => {
-			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
 
 			render(
 				<MemoryRouter initialEntries={['?searchTerm=']}>
@@ -168,7 +179,9 @@ describe('The PersonSearch component', () => {
 		});
 
 		it('takes an existing searchTerm from useSearchParams and passes it to search', async () => {
-			mockSearchPersonsByNameSearch.mockResolvedValue(threePersonObjects);
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
 
 			render(
 				<MemoryRouter initialEntries={['?searchTerm=someSearchTerm']}>
@@ -196,4 +209,8 @@ async function assertSearchIsCalledTimesWith(
 		expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(times);
 		expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(searchTerm);
 	});
+}
+
+function createListWithPersons(persons: Person[]) {
+	return new List<Person>(persons, 1, 1, 1);
 }

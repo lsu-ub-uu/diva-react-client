@@ -1,11 +1,7 @@
 import List from '../src/control/List';
 import Name from '../src/control/Name';
 import Person from '../src/control/Person';
-import {
-	DataList,
-	DataListWrapper,
-	RecordWrapper,
-} from '../src/converter/CoraData';
+import { DataListWrapper, RecordWrapper } from '../src/converter/CoraData';
 
 export const dataListContainingOnePerson: DataListWrapper = {
 	dataList: {

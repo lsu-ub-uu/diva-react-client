@@ -30,8 +30,8 @@ export const PersonSearch = function () {
 	const queryPersonSearch = () => {
 		if (searchTerm !== '') {
 			const promiseFromSearch = searchPersonsByNameSearch(searchTerm);
-			promiseFromSearch.then((personsFromSearch) => {
-				setPersons(personsFromSearch);
+			promiseFromSearch.then((personListFromSearch) => {
+				setPersons(personListFromSearch.data);
 			});
 		}
 	};

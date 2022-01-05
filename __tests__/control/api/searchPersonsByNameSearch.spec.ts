@@ -1,14 +1,12 @@
 import httpClient from '../../../src/control/HttpClient';
 import convertPerson from '../../../src/converter/Converter';
 import searchPersonsByNameSearch from '../../../src/control/api/searchPersonByNameSearch';
-import { threePersonObjects } from '../../../testData/personData';
 import List from '../../../src/control/List';
 import Person from '../../../src/control/Person';
 import {
 	dataListContainingFourPersons,
 	dataListContainingOnePerson,
 	dataListContainingTwoOfFifteen,
-	getDataListContainingOnePerson,
 } from '../../../testData/searchResults';
 
 jest.mock('../../../src/control/HttpClient');
@@ -29,7 +27,7 @@ const searchEndpoint = 'record/searchResult/';
 describe('searchPersonsByNameSearch', () => {
 	beforeAll(() => {
 		process.env.BASE_URL = 'baseUrl/';
-		mockHttpClientGet.mockResolvedValue(getDataListContainingOnePerson());
+		mockHttpClientGet.mockResolvedValue(dataListContainingOnePerson);
 	});
 
 	it('should exist and take searchTerm, start and rows', () => {
@@ -204,6 +202,22 @@ describe('searchPersonsByNameSearch', () => {
 		);
 	});
 
+	it('should not pass start if start is negative', async () => {
+		const nameSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personNameSearchTerm","value":"${searchTerm}"}]}]},{"name":"rows","value":"4"}]}`;
+		const expectedUrl = process.env.BASE_URL + searchEndpoint + nameSearch;
+
+		expect.assertions(2);
+
+		await searchPersonsByNameSearch('someSearchTerm', -1, 4);
+
+		expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+		expect(mockHttpClientGet).toHaveBeenCalledWith(
+			expect.objectContaining({
+				url: expectedUrl,
+			})
+		);
+	});
+
 	it('should not pass rows if rows is 0', async () => {
 		const nameSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personNameSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"3"}]}`;
 		const expectedUrl = process.env.BASE_URL + searchEndpoint + nameSearch;
@@ -211,6 +225,22 @@ describe('searchPersonsByNameSearch', () => {
 		expect.assertions(2);
 
 		await searchPersonsByNameSearch('someSearchTerm', 3, 0);
+
+		expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+		expect(mockHttpClientGet).toHaveBeenCalledWith(
+			expect.objectContaining({
+				url: expectedUrl,
+			})
+		);
+	});
+
+	it('should not pass rows if rows is negative', async () => {
+		const nameSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personNameSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"3"}]}`;
+		const expectedUrl = process.env.BASE_URL + searchEndpoint + nameSearch;
+
+		expect.assertions(2);
+
+		await searchPersonsByNameSearch('someSearchTerm', 3, -1);
 
 		expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
 		expect(mockHttpClientGet).toHaveBeenCalledWith(
