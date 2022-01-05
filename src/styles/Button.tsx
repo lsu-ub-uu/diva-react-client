@@ -10,11 +10,11 @@ export const Button = styled.button`
 	padding: 0.25em 1em;
 	border: 2px solid ${(props) => props.theme.primary};
 	border-radius: 3px;
-	height:40px;
+	height: 40px;
 	transition: background-color 0.25s ease-out, color 0.25s ease-out;
 
 	&:hover {
-		background: ${(props) => props.theme.primaryAccent}; 
+		background: ${(props) => props.theme.primaryAccent};
 		border: 2px solid ${(props) => props.theme.primaryAccent};
 	}
 `;
