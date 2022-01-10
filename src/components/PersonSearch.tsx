@@ -20,27 +20,49 @@ export const PersonSearch = function () {
 	const [persons, setPersons] = useState<Listable[]>([]);
 
 	React.useEffect(() => {
-		queryPersonSearch();
+		possiblyExecuteSearch();
 	}, []);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		queryPersonSearch();
+		possiblyExecuteSearch();
 	};
 
-	const queryPersonSearch = () => {
+	const possiblyExecuteSearch = () => {
 		if (searchTerm !== '') {
-			const start = getStartValue();
-			const rows = getRowsValue();
-			const promiseFromSearch = searchPersonsByNameSearch(
-				searchTerm,
-				start,
-				rows
-			);
-			promiseFromSearch.then((personListFromSearch) => {
-				setPersons(personListFromSearch.data);
-			});
+			getPaginationVarsAndQuerySearch();
 		}
+	};
+
+	const getPaginationVarsAndQuerySearch = () => {
+		const { start, rows } = getPaginationVars();
+
+		const promiseFromSearch = searchPersonsByNameSearch(
+			searchTerm,
+			start,
+			rows
+		);
+
+		promiseFromSearch.then((personListFromSearch) => {
+			setPersons(personListFromSearch.data);
+		});
+	};
+
+	const getPaginationVars = (): { start: number; rows: number } => {
+		const start = getStartValue();
+		const rows = getRowsValue();
+
+		return { start, rows };
+	};
+
+	const getStartValue = () => {
+		const startValue = searchParams.get('start') || '1';
+		return getPositiveNumberOrDefault(startValue, 1);
+	};
+
+	const getRowsValue = () => {
+		const rowsValue = searchParams.get('rows') || '100';
+		return getPositiveNumberOrDefault(rowsValue, 100);
 	};
 
 	const getPositiveNumberOrDefault = (input: string, defaultNumber: number) => {
@@ -62,28 +84,12 @@ export const PersonSearch = function () {
 		}
 	};
 
-	const getStartValue = () => {
-		const startValue = searchParams.get('start') || '1';
-		return getPositiveNumberOrDefault(startValue, 1);
-	};
-
-	const getRowsValue = () => {
-		const rowsValue = searchParams.get('rows') || '100';
-		return getPositiveNumberOrDefault(rowsValue, 100);
-	};
-
 	const nextPage = () => {
 		const nextStart = getStartValue() + getRowsValue();
 		searchParams.set('start', nextStart.toString());
 		setSearchParams(searchParams);
-		queryPersonSearch();
+		possiblyExecuteSearch();
 	};
-
-	// Button "Nästa"
-	// onClick:
-	// - calculate next page
-	// - navigate to next page
-	// - display next page
 
 	return (
 		<Parent>
@@ -102,8 +108,8 @@ export const PersonSearch = function () {
 						Sök
 					</Button>
 				</form>
-				<Button onClick={nextPage}>Nästa &gt;</Button>
 				<Outlet />
+				<Button onClick={nextPage}>Nästa &gt;</Button>
 				<CardList list={persons} />
 			</main>
 		</Parent>

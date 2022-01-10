@@ -421,6 +421,13 @@ describe('The PersonSearch component', () => {
 				);
 			});
 		});
+
+		it.todo(
+			'if the current page is the last page, the next button should be disabled'
+		);
+
+		it.todo('there should be a button to jump to the last page');
+		it.todo('there should be a button to jump to the first page');
 	});
 });
 
