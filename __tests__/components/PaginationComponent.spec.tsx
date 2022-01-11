@@ -17,14 +17,13 @@ describe('paginationComponent', () => {
 			/>
 		);
 	});
-	it.todo(
-		'default values for "start", "rows" and totalNumber should be 1, 100'
-	);
 
 	describe('the next-button...', () => {
 		it('should exist: display a button with text "Nästa >"', () => {
 			render(
 				<PaginationComponent
+					start={1}
+					rows={100}
 					totalNumber={200}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
@@ -49,21 +48,7 @@ describe('paginationComponent', () => {
 			expect(onPaginationUpdate).toHaveBeenCalledWith(7, 5);
 		});
 
-		it('if the next-button is clicked, onPaginationUpdate should be called with "start"=1 value and "rows"=100, if neither start nor rows were specified', () => {
-			render(
-				<PaginationComponent
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-			userEvent.click(nextButton);
-
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenCalledWith(101, 100);
-		});
-
-		it('should be disabled if the combination of start, rows and totalNumber indicate that the user is on the last page', () => {
+		it('should not be displayed if on the last page', () => {
 			render(
 				<PaginationComponent
 					start={101}
@@ -73,12 +58,201 @@ describe('paginationComponent', () => {
 				/>
 			);
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-			expect(nextButton).toBeInTheDocument();
-			expect(nextButton).toBeDisabled();
+			const nextButtons = screen.queryAllByRole('button', { name: 'Nästa >' });
+			expect(nextButtons).toHaveLength(0);
 		});
 	});
 
-	it.todo('there should be a button to jump to the last page');
+	describe('the last-button', () => {
+		it('should exist: display a button with text "Sista >|"', () => {
+			render(
+				<PaginationComponent
+					start={1}
+					rows={100}
+					totalNumber={400}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			expect(lastButton).toBeInTheDocument();
+		});
+
+		it('should not be displayed if on the last page', () => {
+			render(
+				<PaginationComponent
+					start={1}
+					rows={100}
+					totalNumber={100}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const lastButtons = screen.queryAllByRole('button', { name: 'Sista >|' });
+			expect(lastButtons).toHaveLength(0);
+		});
+
+		it('if the last-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
+			let expectedRows = 5;
+			const { rerender } = render(
+				<PaginationComponent
+					start={1}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			userEvent.click(lastButton);
+
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(21, expectedRows);
+
+			expectedRows = 6;
+			rerender(
+				<PaginationComponent
+					start={2}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+
+			userEvent.click(lastButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(20, expectedRows);
+
+			expectedRows = 25;
+			rerender(
+				<PaginationComponent
+					start={123}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+
+			userEvent.click(lastButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(198, expectedRows);
+		});
+	});
+
+	describe('the previous-button', () => {
+		it('should exist: display a button with text "< Föregående"', () => {
+			render(
+				<PaginationComponent
+					start={101}
+					rows={100}
+					totalNumber={400}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const previousButton = screen.getByRole('button', {
+				name: '< Föregående',
+			});
+			expect(previousButton).toBeInTheDocument();
+		});
+		it('should not be displayed if on the first page', () => {
+			render(
+				<PaginationComponent
+					start={1}
+					rows={100}
+					totalNumber={100}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const previousButtons = screen.queryAllByRole('button', {
+				name: '< Föregående',
+			});
+			expect(previousButtons).toHaveLength(0);
+		});
+		it('if the previous-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
+			let expectedRows = 100;
+			const { rerender } = render(
+				<PaginationComponent
+					start={101}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const previousButton = screen.getByRole('button', {
+				name: '< Föregående',
+			});
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+
+			expectedRows = 6;
+			rerender(
+				<PaginationComponent
+					start={13}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(7, expectedRows);
+
+			expectedRows = 25;
+			rerender(
+				<PaginationComponent
+					start={123}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(98, expectedRows);
+		});
+
+		it('if the previous-button is clicked, and start<rows, start should be set to 1', () => {
+			let expectedRows = 100;
+			const { rerender } = render(
+				<PaginationComponent
+					start={50}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const previousButton = screen.getByRole('button', {
+				name: '< Föregående',
+			});
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+
+			expectedRows = 6;
+			rerender(
+				<PaginationComponent
+					start={2}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+
+			expectedRows = 25;
+			rerender(
+				<PaginationComponent
+					start={23}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			userEvent.click(previousButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+		});
+	});
+
 	it.todo('there should be a button to jump to the first page');
 });
