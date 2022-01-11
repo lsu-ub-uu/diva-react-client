@@ -9,10 +9,29 @@ import Name from '../../src/control/Name';
 import CardList from '../../src/components/CardList';
 import { renderWithRouter } from '../../test-utils';
 import List from '../../src/control/List';
+import PaginationComponent from '../../src/components/PaginationComponent';
 
 jest.mock('../../src/control/api');
 jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);
+});
+
+let startValueForTest = 333;
+let rowsValueForTest = 666;
+
+jest.mock('../../src/components/PaginationComponent', () => {
+	return jest.fn((props: { onPaginationUpdate: Function }) => {
+		return (
+			<button
+				type="button"
+				onClick={() => {
+					props.onPaginationUpdate(startValueForTest, rowsValueForTest);
+				}}
+			>
+				CallPaginationUpdate
+			</button>
+		);
+	});
 });
 
 const mockSearchPersonsByNameSearch =
@@ -54,16 +73,10 @@ describe('The PersonSearch component', () => {
 	});
 
 	describe('Uses CardList', () => {
-		it('should pass empty person array to CardList on start.', () => {
+		it('should not render CardList if no List is present', () => {
 			renderWithRouter(<PersonSearch />);
 
-			expect(CardList).toHaveBeenNthCalledWith(
-				1,
-				expect.objectContaining({
-					list: [],
-				}),
-				expect.any(Object)
-			);
+			expect(CardList).toHaveBeenCalledTimes(0);
 		});
 
 		it('should pass results returned by searchPersonsByNameSearch to CardList', async () => {
@@ -72,18 +85,10 @@ describe('The PersonSearch component', () => {
 			);
 			renderWithRouter(<PersonSearch />);
 
-			expect(CardList).toHaveBeenNthCalledWith(
-				1,
-				expect.objectContaining({
-					list: [],
-				}),
-				expect.any(Object)
-			);
+			expect(CardList).toHaveBeenCalledTimes(0);
 
 			const inputText = screen.getByRole('searchbox');
 			userEvent.type(inputText, 'someSearchTerm');
-
-			jest.clearAllMocks();
 
 			const button = screen.getByRole('button', { name: 'Sök' });
 			userEvent.click(button);
@@ -351,17 +356,55 @@ describe('The PersonSearch component', () => {
 		});
 	});
 
-	describe('pagination interface', () => {
-		it('should display a button with text "Nästa >"', () => {
+	describe('pagination', () => {
+		it('should not render the PaginationComponent if no List is present', () => {
 			renderWithRouter(<PersonSearch />);
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-			expect(nextButton).toBeInTheDocument();
+			expect(PaginationComponent).toHaveBeenCalledTimes(0);
 		});
-		it('if the button is clicked, the "start" parameter should be increased by "rows"', async () => {
+
+		it('should pass totalNumber returned by searchPersonsByNameSearch triggered by manual search as well as start/rows to PaginationComponent', async () => {
+			mockSearchPersonsByNameSearch.mockResolvedValue(
+				createListWithPersons(threePersonObjects)
+			);
+			renderWithRouter(<PersonSearch />);
+
+			expect(PaginationComponent).toHaveBeenCalledTimes(0);
+
+			const inputText = screen.getByRole('searchbox');
+			userEvent.type(inputText, 'someSearchTerm');
+
+			const button = screen.getByRole('button', { name: 'Sök' });
+			userEvent.click(button);
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
+			});
+
+			expect(PaginationComponent).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					start: 1,
+					rows: 100,
+					totalNumber: 6,
+					onPaginationUpdate: expect.any(Function),
+				}),
+				expect.any(Object)
+			);
+		});
+
+		it('should pass totalNumber returned by searchPersonsByNameSearch triggered by URL search as well as start/rows to PaginationComponent', async () => {
+			const expectedTotalNumber = 400;
+			const mockList = new List(threePersonObjects, 1, 3, expectedTotalNumber);
+			mockSearchPersonsByNameSearch.mockResolvedValue(mockList);
+
+			const expectedStart = 5;
+			const expectedRows = 20;
+
 			render(
 				<MemoryRouter
-					initialEntries={['?searchTerm=someSearchTerm&start=1&rows=5']}
+					initialEntries={[
+						`?searchTerm=someSearchTerm&start=${expectedStart}&rows=${expectedRows}`,
+					]}
 				>
 					<PersonSearch />
 				</MemoryRouter>
@@ -369,31 +412,26 @@ describe('The PersonSearch component', () => {
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someSearchTerm',
-					1,
-					5
-				);
 			});
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-
-			userEvent.click(nextButton);
-
-			await waitFor(() => {
-				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someSearchTerm',
-					6,
-					5
-				);
-			});
+			expect(PaginationComponent).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					start: expectedStart,
+					rows: expectedRows,
+					totalNumber: expectedTotalNumber,
+					onPaginationUpdate: expect.any(Function),
+				}),
+				expect.any(Object)
+			);
 		});
 
-		it('if the button is clicked, the "start" parameter should be increased by "rows" 2', async () => {
+		it('should pass a function "onPaginationUpdate", that takes start/rows and calls searchPersonsByNameSearch with the new values', async () => {
+			const mockList = new List(threePersonObjects, 1, 3, 400);
+			mockSearchPersonsByNameSearch.mockResolvedValue(mockList);
+
 			render(
 				<MemoryRouter
-					initialEntries={['?searchTerm=someSearchTerm&start=2&rows=10']}
+					initialEntries={['?searchTerm=someSearchTerm&start=5&rows=20']}
 				>
 					<PersonSearch />
 				</MemoryRouter>
@@ -401,33 +439,39 @@ describe('The PersonSearch component', () => {
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someSearchTerm',
-					2,
-					10
-				);
 			});
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			expect(PaginationComponent).toHaveBeenCalledTimes(1);
 
-			userEvent.click(nextButton);
+			const callUpdateButton = screen.getByRole('button', {
+				name: 'CallPaginationUpdate',
+			});
+
+			userEvent.click(callUpdateButton);
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
 				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
 					'someSearchTerm',
-					12,
-					10
+					startValueForTest,
+					rowsValueForTest
+				);
+			});
+
+			startValueForTest = 555;
+			rowsValueForTest = 888;
+
+			userEvent.click(callUpdateButton);
+
+			await waitFor(() => {
+				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(3);
+				expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+					'someSearchTerm',
+					startValueForTest,
+					rowsValueForTest
 				);
 			});
 		});
-
-		it.todo(
-			'if the current page is the last page, the next button should be disabled'
-		);
-
-		it.todo('there should be a button to jump to the last page');
-		it.todo('there should be a button to jump to the first page');
 	});
 });
 
@@ -446,5 +490,6 @@ async function assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 }
 
 function createListWithPersons(persons: Person[]) {
-	return new List(persons, 1, 1, 1);
+	const toNumber = persons.length;
+	return new List(persons, 1, toNumber, toNumber * 2);
 }

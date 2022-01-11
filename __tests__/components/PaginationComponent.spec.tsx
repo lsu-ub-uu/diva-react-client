@@ -17,7 +17,9 @@ describe('paginationComponent', () => {
 			/>
 		);
 	});
-	it.todo('default values for "start" and "rows" should be 1 and 100');
+	it.todo(
+		'default values for "start", "rows" and totalNumber should be 1, 100'
+	);
 
 	describe('the next-button...', () => {
 		it('should exist: display a button with text "Nästa >"', () => {
@@ -76,74 +78,6 @@ describe('paginationComponent', () => {
 			expect(nextButton).toBeDisabled();
 		});
 	});
-
-	// it('if the button is clicked, the "start" parameter should be increased by "rows"', async () => {
-	//     render(
-	//         <MemoryRouter
-	//             initialEntries={['?searchTerm=someSearchTerm&start=1&rows=5']}
-	//         >
-	//             <PersonSearch />
-	//         </MemoryRouter>
-	//     );
-
-	//     await waitFor(() => {
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-	//             'someSearchTerm',
-	//             1,
-	//             5
-	//         );
-	//     });
-
-	//     const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-
-	//     userEvent.click(nextButton);
-
-	//     await waitFor(() => {
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-	//             'someSearchTerm',
-	//             6,
-	//             5
-	//         );
-	//     });
-	// });
-
-	// it('if the button is clicked, the "start" parameter should be increased by "rows" 2', async () => {
-	//     render(
-	//         <MemoryRouter
-	//             initialEntries={['?searchTerm=someSearchTerm&start=2&rows=10']}
-	//         >
-	//             <PersonSearch />
-	//         </MemoryRouter>
-	//     );
-
-	//     await waitFor(() => {
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-	//             'someSearchTerm',
-	//             2,
-	//             10
-	//         );
-	//     });
-
-	//     const nextButton = screen.getByRole('button', { name: 'Nästa >' });
-
-	//     userEvent.click(nextButton);
-
-	//     await waitFor(() => {
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-	//         expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-	//             'someSearchTerm',
-	//             12,
-	//             10
-	//         );
-	//     });
-	// });
-
-	it.todo(
-		'if the current page is the last page, the next button should be disabled'
-	);
 
 	it.todo('there should be a button to jump to the last page');
 	it.todo('there should be a button to jump to the first page');

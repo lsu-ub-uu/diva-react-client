@@ -3,10 +3,11 @@ import { Outlet } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
-import Listable from '../control/Listable';
+import List from '../control/List';
 import Button from '../styles/Button';
 import SearchTextField from '../styles/SearchTextField';
 import CardList from './CardList';
+import PaginationComponent from './PaginationComponent';
 
 const Parent = styled.div`
 	display: grid;
@@ -17,7 +18,7 @@ export const PersonSearch = function () {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchTerm = searchParams.get('searchTerm') || '';
 
-	const [persons, setPersons] = useState<Listable[]>([]);
+	const [list, setList] = useState<List>();
 
 	React.useEffect(() => {
 		possiblyExecuteSearch();
@@ -44,7 +45,7 @@ export const PersonSearch = function () {
 		);
 
 		promiseFromSearch.then((personListFromSearch) => {
-			setPersons(personListFromSearch.data);
+			setList(personListFromSearch);
 		});
 	};
 
@@ -84,9 +85,9 @@ export const PersonSearch = function () {
 		}
 	};
 
-	const nextPage = () => {
-		const nextStart = getStartValue() + getRowsValue();
-		searchParams.set('start', nextStart.toString());
+	const onPaginationUpdate = (start: number, rows: number) => {
+		searchParams.set('start', start.toString());
+		searchParams.set('rows', rows.toString());
 		setSearchParams(searchParams);
 		possiblyExecuteSearch();
 	};
@@ -109,8 +110,15 @@ export const PersonSearch = function () {
 					</Button>
 				</form>
 				<Outlet />
-				<Button onClick={nextPage}>Nästa &gt;</Button>
-				<CardList list={persons} />
+				{list && (
+					<PaginationComponent
+						start={getStartValue()}
+						rows={getRowsValue()}
+						totalNumber={list.totalNumber}
+						onPaginationUpdate={onPaginationUpdate}
+					/>
+				)}
+				{list && <CardList list={list.data} />}
 			</main>
 		</Parent>
 	);
