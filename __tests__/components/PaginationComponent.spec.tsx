@@ -48,7 +48,7 @@ describe('paginationComponent', () => {
 			expect(onPaginationUpdate).toHaveBeenCalledWith(7, 5);
 		});
 
-		it('should not be displayed if on the last page', () => {
+		it('should be disabled if on the last page', () => {
 			render(
 				<PaginationComponent
 					start={101}
@@ -58,8 +58,8 @@ describe('paginationComponent', () => {
 				/>
 			);
 
-			const nextButtons = screen.queryAllByRole('button', { name: 'Nästa >' });
-			expect(nextButtons).toHaveLength(0);
+			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			expect(nextButton).toBeDisabled();
 		});
 	});
 
@@ -77,7 +77,7 @@ describe('paginationComponent', () => {
 			expect(lastButton).toBeInTheDocument();
 		});
 
-		it('should not be displayed if on the last page', () => {
+		it('should be disabled if on the last page', () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -86,8 +86,8 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButtons = screen.queryAllByRole('button', { name: 'Sista >|' });
-			expect(lastButtons).toHaveLength(0);
+			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			expect(lastButton).toBeDisabled();
 		});
 
 		it('if the last-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
@@ -151,7 +151,7 @@ describe('paginationComponent', () => {
 			});
 			expect(previousButton).toBeInTheDocument();
 		});
-		it('should not be displayed if on the first page', () => {
+		it('should be disabled if on the first page', () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -160,10 +160,10 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const previousButtons = screen.queryAllByRole('button', {
+			const previousButton = screen.getByRole('button', {
 				name: '< Föregående',
 			});
-			expect(previousButtons).toHaveLength(0);
+			expect(previousButton).toBeDisabled();
 		});
 		it('if the previous-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
 			let expectedRows = 100;
@@ -268,7 +268,7 @@ describe('paginationComponent', () => {
 			expect(firstButton).toBeInTheDocument();
 		});
 
-		it('should not be displayed if on the first page', () => {
+		it('should be disabled if on the first page', () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -277,10 +277,8 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const allPossibleFirstButtons = screen.queryAllByRole('button', {
-				name: '|< Första',
-			});
-			expect(allPossibleFirstButtons).toHaveLength(0);
+			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			expect(firstButton).toBeDisabled();
 		});
 
 		it('if the first-button is clicked, onPaginationUpdate should be called with start=1 and the same "rows" value', () => {
@@ -328,6 +326,4 @@ describe('paginationComponent', () => {
 			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
 		});
 	});
-
-	it.todo('there should be a button to jump to the first page');
 });

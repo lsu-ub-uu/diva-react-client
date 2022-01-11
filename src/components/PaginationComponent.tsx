@@ -36,18 +36,18 @@ const PaginationComponent = function ({
 
 	return (
 		<>
-			{!isFirstPage && (
-				<Button onClick={handleFirstButtonClick}>|&lt; Första</Button>
-			)}
-			{!isFirstPage && (
-				<Button onClick={handlePreviousButtonClick}>&lt; Föregående</Button>
-			)}
-			{!isLastPage && (
-				<Button onClick={handleNextButtonClick}>Nästa &gt;</Button>
-			)}
-			{!isLastPage && (
-				<Button onClick={handleLastButtonClick}>Sista &gt;|</Button>
-			)}
+			<Button onClick={handleFirstButtonClick} disabled={isFirstPage}>
+				|&lt; Första
+			</Button>
+			<Button onClick={handlePreviousButtonClick} disabled={isFirstPage}>
+				&lt; Föregående
+			</Button>
+			<Button onClick={handleNextButtonClick} disabled={isLastPage}>
+				Nästa &gt;
+			</Button>
+			<Button onClick={handleLastButtonClick} disabled={isLastPage}>
+				Sista &gt;|
+			</Button>
 		</>
 	);
 };
