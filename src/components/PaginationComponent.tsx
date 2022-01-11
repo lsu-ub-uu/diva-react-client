@@ -30,8 +30,15 @@ const PaginationComponent = function ({
 		onPaginationUpdate(previousStartValue, rows);
 	};
 
+	const handleFirstButtonClick = () => {
+		onPaginationUpdate(1, rows);
+	};
+
 	return (
 		<>
+			{!isFirstPage && (
+				<Button onClick={handleFirstButtonClick}>|&lt; Första</Button>
+			)}
 			{!isFirstPage && (
 				<Button onClick={handlePreviousButtonClick}>&lt; Föregående</Button>
 			)}

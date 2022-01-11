@@ -254,5 +254,80 @@ describe('paginationComponent', () => {
 		});
 	});
 
+	describe('the first-button', () => {
+		it('should exist: display a button with text "|< Första"', () => {
+			render(
+				<PaginationComponent
+					start={101}
+					rows={100}
+					totalNumber={400}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			expect(firstButton).toBeInTheDocument();
+		});
+
+		it('should not be displayed if on the first page', () => {
+			render(
+				<PaginationComponent
+					start={1}
+					rows={100}
+					totalNumber={400}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const allPossibleFirstButtons = screen.queryAllByRole('button', {
+				name: '|< Första',
+			});
+			expect(allPossibleFirstButtons).toHaveLength(0);
+		});
+
+		it('if the first-button is clicked, onPaginationUpdate should be called with start=1 and the same "rows" value', () => {
+			let expectedRows = 5;
+			const { rerender } = render(
+				<PaginationComponent
+					start={6}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			userEvent.click(firstButton);
+
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+
+			expectedRows = 6;
+			rerender(
+				<PaginationComponent
+					start={2}
+					rows={expectedRows}
+					totalNumber={23}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+
+			userEvent.click(firstButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+
+			expectedRows = 25;
+			rerender(
+				<PaginationComponent
+					start={123}
+					rows={expectedRows}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+
+			userEvent.click(firstButton);
+			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
+			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+		});
+	});
+
 	it.todo('there should be a button to jump to the first page');
 });
