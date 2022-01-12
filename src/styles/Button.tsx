@@ -17,5 +17,10 @@ export const Button = styled.button`
 		background: ${(props) => props.theme.primaryAccent};
 		border: 2px solid ${(props) => props.theme.primaryAccent};
 	}
+
+	&:disabled {
+		background: ${(props) => props.theme.grey};
+		border-color: ${(props) => props.theme.grey};
+	}
 `;
 export default Button;

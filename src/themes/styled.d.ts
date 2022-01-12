@@ -8,6 +8,7 @@ declare module 'styled-components' {
 		primary: string;
 		primaryAccent: string;
 		secondary: string;
+		grey: string;
 		background: string;
 		boxShadow: string;
 		boxShadowAccent: string;
