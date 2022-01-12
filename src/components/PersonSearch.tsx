@@ -114,6 +114,7 @@ export const PersonSearch = function () {
 					<PaginationComponent
 						start={getStartValue()}
 						rows={getRowsValue()}
+						toNumber={list.toNumber}
 						totalNumber={list.totalNumber}
 						onPaginationUpdate={onPaginationUpdate}
 					/>
