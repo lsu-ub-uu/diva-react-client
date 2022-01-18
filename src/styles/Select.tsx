@@ -1,12 +1,12 @@
 import styled, { DefaultTheme } from 'styled-components';
 
 type Props = { primary?: boolean; theme: DefaultTheme };
-export const Button = styled.button`
+export const Select = styled.select`
 	background: ${(props: Props) => props.theme.primary};
 	color: ${(props: Props) => props.theme.secondary};
 
 	font-size: 1em;
-	padding: 0.25em 1em;
+	padding-left: 0.6em;
 	border: 2px solid ${(props) => props.theme.primary};
 	border-radius: 3px;
 	height: 40px;
@@ -22,4 +22,4 @@ export const Button = styled.button`
 		border-color: ${(props) => props.theme.grey};
 	}
 `;
-export default Button;
+export default Select;

@@ -316,7 +316,7 @@ describe('paginationComponent', () => {
 	});
 
 	describe('the next-button...', () => {
-		it('should exist: display a button with text "Nästa >"', () => {
+		it('should exist: display a button with text ">"', () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -326,7 +326,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			const nextButton = screen.getByRole('button', { name: '>' });
 			expect(nextButton).toBeInTheDocument();
 		});
 
@@ -344,7 +344,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			const nextButton = screen.getByRole('button', { name: '>' });
 
 			userEvent.click(nextButton);
 
@@ -362,7 +362,7 @@ describe('paginationComponent', () => {
 				/>
 			);
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			const nextButton = screen.getByRole('button', { name: '>' });
 			expect(nextButton).toBeDisabled();
 		});
 
@@ -381,13 +381,13 @@ describe('paginationComponent', () => {
 				/>
 			);
 
-			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			const nextButton = screen.getByRole('button', { name: '>' });
 			expect(nextButton).not.toBeDisabled();
 		});
 	});
 
 	describe('the last-button...', () => {
-		it('should exist: display a button with text "Sista >|"', () => {
+		it('should exist: display a button with text ">|"', () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -397,7 +397,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			const lastButton = screen.getByRole('button', { name: '>|' });
 			expect(lastButton).toBeInTheDocument();
 		});
 
@@ -411,7 +411,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			const lastButton = screen.getByRole('button', { name: '>|' });
 			expect(lastButton).toBeDisabled();
 		});
 
@@ -429,7 +429,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			const lastButton = screen.getByRole('button', { name: '>|' });
 			expect(lastButton).not.toBeDisabled();
 		});
 
@@ -447,7 +447,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			const lastButton = screen.getByRole('button', { name: '>|' });
 			userEvent.click(lastButton);
 
 			expect(mockGoToLastPage).toHaveBeenCalledTimes(1);
@@ -455,7 +455,7 @@ describe('paginationComponent', () => {
 	});
 
 	describe('the previous-button...', () => {
-		it('should exist: display a button with text "< Föregående"', () => {
+		it('should exist: display a button with text "<"', () => {
 			render(
 				<PaginationComponent
 					start={101}
@@ -466,7 +466,7 @@ describe('paginationComponent', () => {
 				/>
 			);
 			const previousButton = screen.getByRole('button', {
-				name: '< Föregående',
+				name: '<',
 			});
 			expect(previousButton).toBeInTheDocument();
 		});
@@ -481,7 +481,7 @@ describe('paginationComponent', () => {
 				/>
 			);
 			const previousButton = screen.getByRole('button', {
-				name: '< Föregående',
+				name: '<',
 			});
 			expect(previousButton).toBeDisabled();
 		});
@@ -501,7 +501,7 @@ describe('paginationComponent', () => {
 				/>
 			);
 			const previousButton = screen.getByRole('button', {
-				name: '< Föregående',
+				name: '<',
 			});
 			expect(previousButton).not.toBeDisabled();
 		});
@@ -520,7 +520,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: '< Föregående' });
+			const lastButton = screen.getByRole('button', { name: '<' });
 			userEvent.click(lastButton);
 
 			expect(mockGoToPreviousPage).toHaveBeenCalledTimes(1);
@@ -528,7 +528,7 @@ describe('paginationComponent', () => {
 	});
 
 	describe('the first-button...', () => {
-		it('should exist: display a button with text "|< Första"', () => {
+		it('should exist: display a button with text "|<"', () => {
 			render(
 				<PaginationComponent
 					start={101}
@@ -538,7 +538,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			const firstButton = screen.getByRole('button', { name: '|<' });
 			expect(firstButton).toBeInTheDocument();
 		});
 
@@ -552,7 +552,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			const firstButton = screen.getByRole('button', { name: '|<' });
 			expect(firstButton).toBeDisabled();
 		});
 
@@ -570,7 +570,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const firstButton = screen.getByRole('button', { name: '|< Första' });
+			const firstButton = screen.getByRole('button', { name: '|<' });
 			expect(firstButton).not.toBeDisabled();
 		});
 
@@ -588,7 +588,7 @@ describe('paginationComponent', () => {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			const lastButton = screen.getByRole('button', { name: '|< Första' });
+			const lastButton = screen.getByRole('button', { name: '|<' });
 			userEvent.click(lastButton);
 
 			expect(mockGoToFirstPage).toHaveBeenCalledTimes(1);

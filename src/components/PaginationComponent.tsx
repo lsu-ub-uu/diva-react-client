@@ -2,13 +2,23 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import usePagination from '../hooks/usePagination';
 import Button from '../styles/Button';
+import Select from '../styles/Select';
 
 const Parent = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: auto auto auto auto auto auto;
 	grid-template-rows: 1fr;
 	align-items: center;
 	justify-items: center;
+	justify-content: center;
+	column-gap: 0.5em;
+`;
+const StyledLabel = styled.label`
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: 1fr;
+	align-items: center;
+	column-gap: 0.5em;
 `;
 const defaultRowOptions = [10, 25, 50, 100];
 
@@ -55,17 +65,16 @@ const PaginationComponent = React.memo(
 		return (
 			<Parent>
 				<Button onClick={goToFirstPage} disabled={isFirstPage}>
-					|&lt; Första
+					|&lt;
 				</Button>
 				<Button onClick={goToPreviousPage} disabled={isFirstPage}>
-					&lt; Föregående
+					&lt;
 				</Button>
 				<div>
 					{start}-{toNumber} av {totalNumber}
 				</div>
-				<label id="rows-label" htmlFor="rows-input">
-					Träffar per sida
-					<select
+				<StyledLabel id="rows-label" htmlFor="rows-input">
+					<Select
 						id="rows-input"
 						aria-labelledby="rows-label"
 						value={selectedRowOption}
@@ -86,13 +95,14 @@ const PaginationComponent = React.memo(
 								{selectedRowOption.toString()}
 							</option>
 						)}
-					</select>
-				</label>
+					</Select>
+					<div>Träffar per sida</div>
+				</StyledLabel>
 				<Button onClick={goToNextPage} disabled={isLastPage}>
-					Nästa &gt;
+					&gt;
 				</Button>
 				<Button onClick={goToLastPage} disabled={isLastPage}>
-					Sista &gt;|
+					&gt;|
 				</Button>
 			</Parent>
 		);
