@@ -10,6 +10,34 @@ import CardList from '../../src/components/CardList';
 import { renderWithRouter } from '../../test-utils';
 import List from '../../src/control/List';
 import PaginationComponent from '../../src/components/PaginationComponent';
+import SearchComponent from '../../src/components/SearchComponent';
+
+let stringToSendToOnValueChange = '';
+
+jest.mock('../../src/components/SearchComponent', () => {
+	return jest.fn((props: { onSubmit: Function; onValueChange: Function }) => {
+		return (
+			<>
+				<button
+					type="button"
+					onClick={() => {
+						props.onSubmit();
+					}}
+				>
+					callOnSubmit
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						props.onValueChange(stringToSendToOnValueChange);
+					}}
+				>
+					callOnValueChange
+				</button>
+			</>
+		);
+	});
+});
 
 jest.mock('../../src/control/api');
 jest.mock('../../src/components/CardList', () => {
@@ -56,20 +84,14 @@ describe('The PersonSearch component', () => {
 		expect(heading.textContent).toEqual('Personsök');
 	});
 
-	it('Renders an input field of type text', () => {
+	it('Uses the SearchComponent', () => {
 		renderWithRouter(<PersonSearch />);
 
-		const textInputs = screen.queryAllByRole('searchbox');
-		expect(textInputs).toHaveLength(1);
-	});
-
-	it('Renders a button with text "Sök"', () => {
-		renderWithRouter(<PersonSearch />);
-
-		const submitButton = screen.getByRole('button', { name: 'Sök' });
-
-		expect(submitButton).toBeInTheDocument();
-		expect(submitButton).toHaveAttribute('type', 'submit');
+		expect(SearchComponent).toHaveBeenCalledTimes(1);
+		expect(SearchComponent).toHaveBeenLastCalledWith(
+			expect.objectContaining({ value: '' }),
+			expect.any(Object)
+		);
 	});
 
 	describe('Uses CardList', () => {
@@ -87,11 +109,14 @@ describe('The PersonSearch component', () => {
 
 			expect(CardList).toHaveBeenCalledTimes(0);
 
-			const inputText = screen.getByRole('searchbox');
-			userEvent.type(inputText, 'someSearchTerm');
+			stringToSendToOnValueChange = 'someSearchTerm';
+			const onValueChangeButton = screen.getByRole('button', {
+				name: 'callOnValueChange',
+			});
+			userEvent.click(onValueChangeButton);
 
-			const button = screen.getByRole('button', { name: 'Sök' });
-			userEvent.click(button);
+			const submitButton = screen.getByRole('button', { name: 'callOnSubmit' });
+			userEvent.click(submitButton);
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
@@ -108,24 +133,21 @@ describe('The PersonSearch component', () => {
 	});
 
 	describe('uses URL to store state', () => {
-		it('Does not pass an empty searchTerm to searchPersonsByNameSearch when button is clicked', async () => {
+		it('Does not pass an empty searchTerm to searchPersonsByNameSearch when handleSubmit is called', async () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(
 				createListWithPersons(threePersonObjects)
 			);
 			renderWithRouter(<PersonSearch />);
 
-			const button = screen.getByRole('button', { name: 'Sök' });
-			userEvent.click(button);
+			simulateSearchComponentSubmit();
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(0);
 			});
 
-			const inputText = screen.getByRole('searchbox');
-			userEvent.clear(inputText);
-			userEvent.type(inputText, 'someSearchTerm');
+			simulateSearchComponentTextInput('someSearchTerm');
 
-			userEvent.click(button);
+			simulateSearchComponentSubmit();
 
 			await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 				1,
@@ -133,51 +155,26 @@ describe('The PersonSearch component', () => {
 			);
 		});
 
-		it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when button is clicked', async () => {
+		it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when handleSubmit is called', async () => {
 			mockSearchPersonsByNameSearch.mockResolvedValue(
 				createListWithPersons(threePersonObjects)
 			);
 			renderWithRouter(<PersonSearch />);
 
-			const inputText = screen.getByRole('searchbox');
-			userEvent.type(inputText, 'someSearchTerm');
-
-			const button = screen.getByRole('button', { name: 'Sök' });
-			userEvent.click(button);
+			simulateSearchComponentTextInput('someSearchTerm');
+			simulateSearchComponentSubmit();
 
 			await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 				1,
 				'someSearchTerm'
 			);
 
-			userEvent.clear(inputText);
-			userEvent.type(inputText, 'someOtherSearchTerm');
-
-			userEvent.click(button);
+			simulateSearchComponentTextInput('someOtherSearchTerm');
+			simulateSearchComponentSubmit();
 
 			await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 				2,
 				'someOtherSearchTerm'
-			);
-		});
-
-		it('Passes the searchTerm typed into the input field to searchPersonsByNameSearch when enter is clicked', async () => {
-			renderWithRouter(<PersonSearch />);
-			mockSearchPersonsByNameSearch.mockResolvedValue(
-				createListWithPersons(threePersonObjects)
-			);
-
-			const listItemsBeforeClick = screen.queryAllByRole('listitem');
-			expect(listItemsBeforeClick).toHaveLength(0);
-
-			const inputText = screen.getByRole('searchbox');
-			userEvent.type(inputText, 'someSearchTerm');
-
-			userEvent.type(inputText, '{enter}');
-
-			await assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
-				1,
-				'someSearchTerm'
 			);
 		});
 
@@ -207,7 +204,10 @@ describe('The PersonSearch component', () => {
 					</MemoryRouter>
 				);
 
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
+				expect(SearchComponent).toHaveBeenLastCalledWith(
+					expect.objectContaining({ value: 'someSearchTerm' }),
+					expect.any(Object)
+				);
 
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
@@ -244,8 +244,6 @@ describe('The PersonSearch component', () => {
 					</MemoryRouter>
 				);
 
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
-
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 					expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
@@ -266,8 +264,6 @@ describe('The PersonSearch component', () => {
 						<PersonSearch />
 					</MemoryRouter>
 				);
-
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
 
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
@@ -292,8 +288,6 @@ describe('The PersonSearch component', () => {
 					</MemoryRouter>
 				);
 
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
-
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 					expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
@@ -317,8 +311,6 @@ describe('The PersonSearch component', () => {
 					</MemoryRouter>
 				);
 
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
-
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 					expect(mockSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
@@ -341,8 +333,6 @@ describe('The PersonSearch component', () => {
 						<PersonSearch />
 					</MemoryRouter>
 				);
-
-				expect(screen.getByDisplayValue('someSearchTerm')).toBeInTheDocument();
 
 				await waitFor(() => {
 					expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
@@ -371,11 +361,8 @@ describe('The PersonSearch component', () => {
 
 			expect(PaginationComponent).toHaveBeenCalledTimes(0);
 
-			const inputText = screen.getByRole('searchbox');
-			userEvent.type(inputText, 'someSearchTerm');
-
-			const button = screen.getByRole('button', { name: 'Sök' });
-			userEvent.click(button);
+			simulateSearchComponentTextInput('someSearchTerm');
+			simulateSearchComponentSubmit();
 
 			await waitFor(() => {
 				expect(mockSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
@@ -492,4 +479,17 @@ async function assertSearchIsCalledTimesWithGivenSearchTermAndDefaultStartRows(
 function createListWithPersons(persons: Person[]) {
 	const toNumber = persons.length;
 	return new List(persons, 1, toNumber, toNumber * 2);
+}
+
+function simulateSearchComponentTextInput(text: string) {
+	stringToSendToOnValueChange = text;
+	const onValueChangeButton = screen.getByRole('button', {
+		name: 'callOnValueChange',
+	});
+	userEvent.click(onValueChangeButton);
+}
+
+function simulateSearchComponentSubmit() {
+	const submitButton = screen.getByRole('button', { name: 'callOnSubmit' });
+	userEvent.click(submitButton);
 }

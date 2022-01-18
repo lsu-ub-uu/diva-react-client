@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import Button from '../styles/Button';
 
 const SearchInput = styled.input`
-	width: 50%;
+	width: 100%;
 	font-size: 1em;
 	height: 40px;
 	padding: 0 10px;
@@ -12,6 +12,15 @@ const SearchInput = styled.input`
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset;
 	background-color: ${(props: { theme: DefaultTheme }) =>
 		props.theme.secondary};
+`;
+
+const StyledForm = styled.form`
+	display: grid;
+	grid-template-columns: 50% min-content;
+	grid-template-rows: 1fr;
+	justify-content: left;
+	justify-items: left;
+	column-gap: 1em;
 `;
 
 const SearchComponent = function ({
@@ -38,7 +47,7 @@ const SearchComponent = function ({
 		[onSubmit]
 	);
 	return (
-		<form onSubmit={handleSubmit}>
+		<StyledForm onSubmit={handleSubmit}>
 			<SearchInput
 				type="search"
 				aria-labelledby="searchButton"
@@ -50,7 +59,7 @@ const SearchComponent = function ({
 			<Button type="submit" id="searchButton" primary>
 				Sök
 			</Button>
-		</form>
+		</StyledForm>
 	);
 };
 

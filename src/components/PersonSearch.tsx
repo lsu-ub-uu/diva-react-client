@@ -4,10 +4,9 @@ import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
 import List from '../control/List';
-import Button from '../styles/Button';
-import SearchTextField from '../styles/SearchTextField';
 import CardList from './CardList';
 import PaginationComponent from './PaginationComponent';
+import SearchComponent from './SearchComponent';
 
 const Parent = styled.div`
 	display: grid;
@@ -24,8 +23,7 @@ export const PersonSearch = function () {
 		possiblyExecuteSearch();
 	}, []);
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const handleSubmit = () => {
 		possiblyExecuteSearch();
 	};
 
@@ -75,9 +73,7 @@ export const PersonSearch = function () {
 		return parsedNumber;
 	};
 
-	const handleSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const searchTermFromInput = event.target.value;
-
+	const handleSearchTerm = (searchTermFromInput: string) => {
 		if (searchTermFromInput) {
 			setSearchParams({ searchTerm: searchTermFromInput });
 		} else {
@@ -98,17 +94,11 @@ export const PersonSearch = function () {
 				<header>
 					<h1>Personsök</h1>
 				</header>
-				<form key="form" onSubmit={handleSubmit} role="search">
-					<SearchTextField
-						key="searchTerm"
-						val={searchTerm}
-						action={handleSearchTerm}
-						labelledbyID="searchButton"
-					/>
-					<Button type="submit" id="searchButton" primary>
-						Sök
-					</Button>
-				</form>
+				<SearchComponent
+					value={searchTerm}
+					onSubmit={handleSubmit}
+					onValueChange={handleSearchTerm}
+				/>
 				<Outlet />
 				{list && (
 					<PaginationComponent
