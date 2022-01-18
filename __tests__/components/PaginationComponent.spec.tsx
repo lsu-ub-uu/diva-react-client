@@ -3,8 +3,32 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import PaginationComponent from '../../src/components/PaginationComponent';
+import usePagination from '../../src/hooks/usePagination';
 
 const onPaginationUpdate = jest.fn();
+
+jest.mock('../../src/hooks/usePagination');
+const mockUsePagination = usePagination as jest.MockedFunction<
+	typeof usePagination
+>;
+
+const mockGoToFirstPage = jest.fn();
+const mockGoToPreviousPage = jest.fn();
+const mockGoToNextPage = jest.fn();
+const mockGoToLastPage = jest.fn();
+
+const returnFromUsePagination = {
+	goToFirstPage: mockGoToFirstPage,
+	goToPreviousPage: mockGoToPreviousPage,
+	goToNextPage: mockGoToNextPage,
+	goToLastPage: mockGoToLastPage,
+	isFirstPage: true,
+	isLastPage: true,
+};
+
+beforeEach(() => {
+	mockUsePagination.mockReturnValue(returnFromUsePagination);
+});
 
 describe('paginationComponent', () => {
 	it('should take props "start", "rows", "toNumber", "totalNumber" and "onPaginationUpdate"', () => {
@@ -306,7 +330,11 @@ describe('paginationComponent', () => {
 			expect(nextButton).toBeInTheDocument();
 		});
 
-		it('if the next-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
+		it("if the next-button is clicked, usePagination's goToNextPage should be called", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isLastPage: false,
+			});
 			render(
 				<PaginationComponent
 					start={2}
@@ -317,13 +345,13 @@ describe('paginationComponent', () => {
 				/>
 			);
 			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+
 			userEvent.click(nextButton);
 
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenCalledWith(7, 5);
+			expect(mockGoToNextPage).toHaveBeenCalledTimes(1);
 		});
 
-		it('should be disabled if on the last page', () => {
+		it("should be disabled if usePagination says we're on the last page", () => {
 			render(
 				<PaginationComponent
 					start={101}
@@ -336,6 +364,25 @@ describe('paginationComponent', () => {
 
 			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
 			expect(nextButton).toBeDisabled();
+		});
+
+		it("should NOT be disabled if usePagination says we're NOT on the last page", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isLastPage: false,
+			});
+			render(
+				<PaginationComponent
+					start={101}
+					rows={100}
+					toNumber={0}
+					totalNumber={200}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+
+			const nextButton = screen.getByRole('button', { name: 'Nästa >' });
+			expect(nextButton).not.toBeDisabled();
 		});
 	});
 
@@ -354,7 +401,7 @@ describe('paginationComponent', () => {
 			expect(lastButton).toBeInTheDocument();
 		});
 
-		it('should be disabled if on the last page', () => {
+		it("should be disabled if usePagination says we're on the last page", () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -368,12 +415,33 @@ describe('paginationComponent', () => {
 			expect(lastButton).toBeDisabled();
 		});
 
-		it('if the last-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
-			let expectedRows = 5;
-			const { rerender } = render(
+		it("should NOT be disabled if usePagination says we're NOT on the last page", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isLastPage: false,
+			});
+			render(
 				<PaginationComponent
 					start={1}
-					rows={expectedRows}
+					rows={100}
+					toNumber={0}
+					totalNumber={100}
+					onPaginationUpdate={onPaginationUpdate}
+				/>
+			);
+			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
+			expect(lastButton).not.toBeDisabled();
+		});
+
+		it("if the last-button is clicked, usePagination's goToLastPage should be called", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isLastPage: false,
+			});
+			render(
+				<PaginationComponent
+					start={1}
+					rows={5}
 					toNumber={0}
 					totalNumber={23}
 					onPaginationUpdate={onPaginationUpdate}
@@ -382,38 +450,7 @@ describe('paginationComponent', () => {
 			const lastButton = screen.getByRole('button', { name: 'Sista >|' });
 			userEvent.click(lastButton);
 
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(21, expectedRows);
-
-			expectedRows = 6;
-			rerender(
-				<PaginationComponent
-					start={2}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={23}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-
-			userEvent.click(lastButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(20, expectedRows);
-
-			expectedRows = 25;
-			rerender(
-				<PaginationComponent
-					start={123}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-
-			userEvent.click(lastButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(198, expectedRows);
+			expect(mockGoToLastPage).toHaveBeenCalledTimes(1);
 		});
 	});
 
@@ -433,7 +470,7 @@ describe('paginationComponent', () => {
 			});
 			expect(previousButton).toBeInTheDocument();
 		});
-		it('should be disabled if on the first page', () => {
+		it("should be disabled if usePagination says we're on the first page", () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -448,98 +485,45 @@ describe('paginationComponent', () => {
 			});
 			expect(previousButton).toBeDisabled();
 		});
-		it('if the previous-button is clicked, onPaginationUpdate should be called with a new "start" value and the same "rows" value', () => {
-			let expectedRows = 100;
-			const { rerender } = render(
+
+		it("should be disabled if usePagination says we're not on the first page", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isFirstPage: false,
+			});
+			render(
 				<PaginationComponent
-					start={101}
-					rows={expectedRows}
+					start={1}
+					rows={100}
 					toNumber={0}
-					totalNumber={200}
+					totalNumber={100}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
 			const previousButton = screen.getByRole('button', {
 				name: '< Föregående',
 			});
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
-
-			expectedRows = 6;
-			rerender(
-				<PaginationComponent
-					start={13}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={23}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(7, expectedRows);
-
-			expectedRows = 25;
-			rerender(
-				<PaginationComponent
-					start={123}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(98, expectedRows);
+			expect(previousButton).not.toBeDisabled();
 		});
 
-		it('if the previous-button is clicked, and start<rows, start should be set to 1', () => {
-			let expectedRows = 100;
-			const { rerender } = render(
-				<PaginationComponent
-					start={50}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-			const previousButton = screen.getByRole('button', {
-				name: '< Föregående',
+		it("if the previous-button is clicked, usePagination's goToPreviousPage should be called", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isFirstPage: false,
 			});
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
-
-			expectedRows = 6;
-			rerender(
+			render(
 				<PaginationComponent
-					start={2}
-					rows={expectedRows}
+					start={1}
+					rows={5}
 					toNumber={0}
 					totalNumber={23}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+			const lastButton = screen.getByRole('button', { name: '< Föregående' });
+			userEvent.click(lastButton);
 
-			expectedRows = 25;
-			rerender(
-				<PaginationComponent
-					start={23}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-			userEvent.click(previousButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+			expect(mockGoToPreviousPage).toHaveBeenCalledTimes(1);
 		});
 	});
 
@@ -558,7 +542,7 @@ describe('paginationComponent', () => {
 			expect(firstButton).toBeInTheDocument();
 		});
 
-		it('should be disabled if on the first page', () => {
+		it("should be disabled if usePagination says we're on the first page", () => {
 			render(
 				<PaginationComponent
 					start={1}
@@ -572,52 +556,42 @@ describe('paginationComponent', () => {
 			expect(firstButton).toBeDisabled();
 		});
 
-		it('if the first-button is clicked, onPaginationUpdate should be called with start=1 and the same "rows" value', () => {
-			let expectedRows = 5;
-			const { rerender } = render(
+		it("should NOT be disabled if usePagination says we're NOT on the first page", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isFirstPage: false,
+			});
+			render(
 				<PaginationComponent
-					start={6}
-					rows={expectedRows}
+					start={1}
+					rows={100}
 					toNumber={0}
-					totalNumber={23}
+					totalNumber={400}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
 			const firstButton = screen.getByRole('button', { name: '|< Första' });
-			userEvent.click(firstButton);
+			expect(firstButton).not.toBeDisabled();
+		});
 
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(1);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
-
-			expectedRows = 6;
-			rerender(
+		it("if the first-button is clicked, usePagination's goToFirstPage should be called", () => {
+			mockUsePagination.mockReturnValue({
+				...returnFromUsePagination,
+				isFirstPage: false,
+			});
+			render(
 				<PaginationComponent
-					start={2}
-					rows={expectedRows}
+					start={1}
+					rows={5}
 					toNumber={0}
 					totalNumber={23}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			);
+			const lastButton = screen.getByRole('button', { name: '|< Första' });
+			userEvent.click(lastButton);
 
-			userEvent.click(firstButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(2);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
-
-			expectedRows = 25;
-			rerender(
-				<PaginationComponent
-					start={123}
-					rows={expectedRows}
-					toNumber={0}
-					totalNumber={200}
-					onPaginationUpdate={onPaginationUpdate}
-				/>
-			);
-
-			userEvent.click(firstButton);
-			expect(onPaginationUpdate).toHaveBeenCalledTimes(3);
-			expect(onPaginationUpdate).toHaveBeenLastCalledWith(1, expectedRows);
+			expect(mockGoToFirstPage).toHaveBeenCalledTimes(1);
 		});
 	});
 });
