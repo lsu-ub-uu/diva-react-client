@@ -10,7 +10,8 @@ import SearchComponent from './SearchComponent';
 
 const Parent = styled.div`
 	display: grid;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto auto auto auto auto;
+	row-gap: 1em;
 `;
 
 export const PersonSearch = function () {
@@ -90,27 +91,25 @@ export const PersonSearch = function () {
 
 	return (
 		<Parent>
-			<main>
-				<header>
-					<h1>Personsök</h1>
-				</header>
-				<SearchComponent
-					value={searchTerm}
-					onSubmit={handleSubmit}
-					onValueChange={handleSearchTerm}
+			<header>
+				<h1>Personsök</h1>
+			</header>
+			<SearchComponent
+				value={searchTerm}
+				onSubmit={handleSubmit}
+				onValueChange={handleSearchTerm}
+			/>
+			<Outlet />
+			{list && (
+				<PaginationComponent
+					start={getStartValue()}
+					rows={getRowsValue()}
+					toNumber={list.toNumber}
+					totalNumber={list.totalNumber}
+					onPaginationUpdate={onPaginationUpdate}
 				/>
-				<Outlet />
-				{list && (
-					<PaginationComponent
-						start={getStartValue()}
-						rows={getRowsValue()}
-						toNumber={list.toNumber}
-						totalNumber={list.totalNumber}
-						onPaginationUpdate={onPaginationUpdate}
-					/>
-				)}
-				{list && <CardList list={list.data} />}
-			</main>
+			)}
+			{list && <CardList list={list.data} />}
 		</Parent>
 	);
 };
