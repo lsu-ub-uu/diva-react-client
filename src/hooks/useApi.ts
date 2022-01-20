@@ -33,7 +33,9 @@ const useApi = <T>(
 			setIsLoading(false);
 		};
 
-		fetchData();
+		if (Object.values(apiParams).length > 0) {
+			fetchData();
+		}
 	}, [apiParams]);
 
 	return { result, isLoading, setApiParams };

@@ -18,7 +18,10 @@ describe('The useApi hook', () => {
 		const { rerender } = renderHook(
 			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
 			{
-				initialProps: { apiToCall: mockApiToCall, initialApiParams: {} },
+				initialProps: {
+					apiToCall: mockApiToCall,
+					initialApiParams: { someParam: 'someValue' },
+				},
 			}
 		);
 
@@ -41,6 +44,20 @@ describe('The useApi hook', () => {
 
 		expect(mockApiToCall).toHaveBeenCalledTimes(1);
 		expect(mockApiToCall).toHaveBeenLastCalledWith('one', 2);
+	});
+
+	it('should not call apiToCall if params are empty', () => {
+		renderHook(
+			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			{
+				initialProps: {
+					apiToCall: mockApiToCall,
+					initialApiParams: {},
+				},
+			}
+		);
+
+		expect(mockApiToCall).toHaveBeenCalledTimes(0);
 	});
 
 	it('should return setApiParams method, which can be used to send new params and should trigger new call to apiToCall', async () => {
@@ -77,7 +94,9 @@ describe('The useApi hook', () => {
 				});
 			});
 
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			expect(result.current.isLoading).toBe(true);
 
@@ -100,7 +119,9 @@ describe('The useApi hook', () => {
 				});
 			});
 
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			expect(result.current.isLoading).toBe(true);
 
@@ -118,7 +139,9 @@ describe('The useApi hook', () => {
 		it('which should be true if apiCall rejects', async () => {
 			mockApiToCall.mockRejectedValueOnce(new Error('some Error'));
 
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			await waitFor(() => {
 				expect(result.current.result.isError).toBe(true);
@@ -126,7 +149,9 @@ describe('The useApi hook', () => {
 		});
 
 		it('which should be false if apiCall resolves', async () => {
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			await waitFor(() => {
 				expect(result.current.result.isError).toBe(false);
@@ -189,7 +214,9 @@ describe('The useApi hook', () => {
 
 	describe('it should return result.error', () => {
 		it('which should be undefined if apiCall resolves', async () => {
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			await waitFor(() => {
 				expect(result.current.result.error).toBeUndefined();
@@ -200,7 +227,9 @@ describe('The useApi hook', () => {
 			const expectedError = new Error('some Error');
 			mockApiToCall.mockRejectedValueOnce(expectedError);
 
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			await waitFor(() => {
 				expect(result.current.result.error).toStrictEqual(expectedError);
@@ -266,7 +295,9 @@ describe('The useApi hook', () => {
 		it('if apiCall rejects, the result.hasData should be false and the data undefined', async () => {
 			mockApiToCall.mockRejectedValueOnce(new Error('some Error'));
 
-			const { result, waitFor } = renderHook(() => useApi(mockApiToCall, {}));
+			const { result, waitFor } = renderHook(() =>
+				useApi(mockApiToCall, { someParam: 'someValue' })
+			);
 
 			await waitFor(() => {
 				expect(result.current.isLoading).toBe(false);
@@ -279,7 +310,7 @@ describe('The useApi hook', () => {
 			mockApiToCall.mockResolvedValueOnce('someString');
 
 			const { result, waitFor } = renderHook(() =>
-				useApi<string>(mockApiToCall, {})
+				useApi<string>(mockApiToCall, { someParam: 'someValue' })
 			);
 
 			await waitFor(() => {
