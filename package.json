@@ -2,7 +2,6 @@
 	"name": "diva-react-client",
 	"version": "1.0.0",
 	"description": "A react client for DiVA.",
-	"main": "index.js",
 	"dependencies": {
 		"@types/react-router": "^5.1.17",
 		"axios": "^0.24.0",
