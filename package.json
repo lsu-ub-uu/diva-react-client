@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"dependencies": {
 		"@types/react-router": "^5.1.17",
-		"axios": "^0.24.0",
+		"axios": "^0.25.0",
 		"npm-check-updates": "^12.1.0",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
