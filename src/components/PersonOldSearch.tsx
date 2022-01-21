@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { searchPersonsByNameSearch } from '../control/api';
 import List from '../control/List';
+import useApi from '../hooks/useApi';
 import CardList from './CardList';
 import PaginationComponent from './PaginationComponent';
 import SearchComponent from './SearchComponent';
@@ -17,6 +18,8 @@ const Parent = styled.div`
 export const PersonSearch = function () {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchTerm = searchParams.get('searchTerm') || '';
+
+	const { result, setApiParams } = useApi(searchPersonsByNameSearch, {});
 
 	const [list, setList] = useState<List>();
 
@@ -37,15 +40,17 @@ export const PersonSearch = function () {
 	const getPaginationVarsAndQuerySearch = () => {
 		const { start, rows } = getPaginationVars();
 
-		const promiseFromSearch = searchPersonsByNameSearch(
-			searchTerm,
-			start,
-			rows
-		);
+		setApiParams({});
 
-		promiseFromSearch.then((personListFromSearch) => {
-			setList(personListFromSearch);
-		});
+		// const promiseFromSearch = searchPersonsByNameSearch(
+		// 	searchTerm,
+		// 	start,
+		// 	rows
+		// );
+
+		// promiseFromSearch.then((personListFromSearch) => {
+		// 	setList(personListFromSearch);
+		// });
 	};
 
 	const getPaginationVars = (): { start: number; rows: number } => {
@@ -100,7 +105,7 @@ export const PersonSearch = function () {
 				onValueChange={handleSearchTerm}
 			/>
 			<Outlet />
-			{list && (
+			{/* {list && (
 				<PaginationComponent
 					start={getStartValue()}
 					rows={getRowsValue()}
@@ -109,7 +114,9 @@ export const PersonSearch = function () {
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			)}
-			{list && <CardList list={list.data} />}
+
+			{result.hasData && result.data && <CardList list={result.data.data} />}
+			{list && <CardList list={list.data} />} */}
 		</Parent>
 	);
 };
