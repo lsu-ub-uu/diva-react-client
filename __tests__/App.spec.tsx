@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Outlet } from 'react-router';
 import App from '../src/App';
-import PersonSearch from '../src/components/PersonSearch';
 import NoMatch from '../src/components/NoMatch';
 import PersonView from '../src/components/PersonView';
 import { renderWithRouter } from '../test-utils';
 import PersonRoot from '../src/components/PersonRoot';
+import PersonSearch from '../src/components/PersonSearch';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (

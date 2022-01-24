@@ -325,6 +325,9 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
 		});
 	});
+	it.todo(
+		'Refactor so that it does not hold its own state. Instead, it should work with the start/row numbers it receives. Rows should be lifted out entirely and possibly be put in the SearchComponent, as it is not dependent on list.'
+	);
 });
 
 function createListWithPersons(persons: Person[]) {
