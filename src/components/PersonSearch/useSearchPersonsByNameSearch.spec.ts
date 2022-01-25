@@ -1,6 +1,6 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { renderHook, act } from '@testing-library/react-hooks/dom';
+import { renderHook } from '@testing-library/react-hooks/dom';
 import { threePersonObjects } from '../../../testData/personData';
 import { searchPersonsByNameSearch } from '../../control/api';
 import List from '../../control/List';
@@ -39,134 +39,88 @@ beforeAll(() => {
 });
 
 describe('the useSearchPersonsByNameSearch hook', () => {
-	it('takes searchTerm as well as initial start/rows as argument', () => {
+	it('takes searchTerm as well as start and rows as argument', () => {
 		renderHook(() => useSearchPersonsByNameSearch('', 1, 10));
 	});
 
-	it('returns (amongst others) paginationVars, setPaginationVars', () => {
-		const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
-
-		expect(result.current.paginationVars).toStrictEqual({ start: 1, rows: 10 });
-		expect(result.current.setPaginationVars).toBeDefined();
-	});
-
-	describe('setPaginationVars sets the paginationVars', () => {
-		it('if start >=1 and rows >= 1, as is', () => {
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
-
-			act(() => {
-				result.current.setPaginationVars(2, 1);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 2,
-				rows: 1,
-			});
-
-			act(() => {
-				result.current.setPaginationVars(5234, 1000);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 5234,
-				rows: 1000,
-			});
-		});
-
-		it('if start < 1 and rows < 1, it sets them to 1', () => {
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
-
-			act(() => {
-				result.current.setPaginationVars(-1, 0);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 1,
-				rows: 1,
-			});
-
-			act(() => {
-				result.current.setPaginationVars(3, -1000);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 3,
-				rows: 1,
-			});
-		});
-
-		it('if rows >1000, sets it to 1000', () => {
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
-
-			act(() => {
-				result.current.setPaginationVars(234234234, 1001);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 234234234,
-				rows: 1000,
-			});
-
-			act(() => {
-				result.current.setPaginationVars(-1, 23423423);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 1,
-				rows: 1000,
-			});
-
-			act(() => {
-				result.current.setPaginationVars(1000, 1000);
-			});
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 1000,
-				rows: 1000,
-			});
-		});
-
-		it("if provided start/rows are unchanged, don't update state", () => {
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
-
-			result.current.setPaginationVars(1, 10);
-
-			expect(result.current.paginationVars).toStrictEqual({
-				start: 1,
-				rows: 10,
-			});
-		});
-	});
-
 	describe('uses useApi', () => {
-		it('calls useApi with searchPersonByNameSearch and empty params', () => {
-			renderHook(() => useSearchPersonsByNameSearch(''));
+		it('calls useApi with searchPersonByNameSearch and empty params, does NOT call setApiParams on first render if empty searchTerm', () => {
+			renderHook(() => useSearchPersonsByNameSearch('', 1, 10));
 
 			expect(mockUseApi).toHaveBeenLastCalledWith(
 				searchPersonsByNameSearch,
 				{}
 			);
+
+			expect(mockSetApiParams).not.toHaveBeenCalled();
+		});
+
+		it('calls useApi with searchPersonByNameSearch and empty params, does NOT call setApiParams on subsequent renders, even if searchTerm given', () => {
+			const { rerender } = renderHook(
+				({ searchTerm }) => useSearchPersonsByNameSearch(searchTerm, 1, 10),
+				{ initialProps: { searchTerm: '' } }
+			);
+
+			expect(mockUseApi).toHaveBeenLastCalledWith(
+				searchPersonsByNameSearch,
+				{}
+			);
+
+			expect(mockSetApiParams).not.toHaveBeenCalled();
+			rerender({ searchTerm: 'someSearchTerm' });
+
+			expect(mockSetApiParams).not.toHaveBeenCalled();
+		});
+
+		it('calls useApi with searchPersonByNameSearch and empty params, DOES call setApiParams on first render if given searchTerm', () => {
+			const { rerender } = renderHook(
+				({ start }) =>
+					useSearchPersonsByNameSearch('someSearchTerm', start, 10),
+				{ initialProps: { start: 1 } }
+			);
+
+			expect(mockUseApi).toHaveBeenLastCalledWith(
+				searchPersonsByNameSearch,
+				{}
+			);
+
+			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
+			expect(mockSetApiParams).toHaveBeenLastCalledWith({
+				searchTerm: 'someSearchTerm',
+				start: 1,
+				rows: 10,
+			});
+
+			rerender({ start: 11 });
+
+			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
 		});
 
 		it('passes on isLoading from useApi', () => {
 			defaultReturnFromMockUseApi.isLoading = false;
 
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
+			const { result } = renderHook(() =>
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+			);
 
 			expect(result.current.isLoading).toBe(false);
 
 			defaultReturnFromMockUseApi.isLoading = true;
 			mockUseApi.mockReturnValueOnce(defaultReturnFromMockUseApi);
 
-			act(() => {
-				result.current.setPaginationVars(1, 25);
-			});
+			const { result: result2 } = renderHook(() =>
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+			);
 
-			expect(result.current.isLoading).toBe(true);
+			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
+
+			expect(result2.current.isLoading).toBe(true);
 		});
 
 		it('passes on result from useApi', () => {
-			const { result } = renderHook(() => useSearchPersonsByNameSearch(''));
+			const { result } = renderHook(() =>
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+			);
 
 			expect(result.current.result).toStrictEqual(
 				defaultReturnFromMockUseApi.result
@@ -180,154 +134,62 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 
 			mockUseApi.mockReturnValueOnce(defaultReturnFromMockUseApi);
 
-			act(() => {
-				result.current.setPaginationVars(1, 25);
-			});
+			const { result: result2 } = renderHook(() =>
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+			);
 
-			expect(result.current.result).toStrictEqual(
+			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
+
+			expect(result2.current.result).toStrictEqual(
 				defaultReturnFromMockUseApi.result
 			);
 		});
+	});
 
-		it('if triggerSearch is called, does call setApiParams with start, rows and searchTerm', () => {
-			const { result, rerender } = renderHook(
-				(searchTerm) => useSearchPersonsByNameSearch(searchTerm),
-				{ initialProps: 'someSearchTerm' }
-			);
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
-			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someSearchTerm',
-				start: 1,
-				rows: 10,
-			});
-
-			rerender('someOtherSearchTerm');
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
-
-			act(() => {
-				result.current.triggerSearch();
-			});
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
-			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someOtherSearchTerm',
-				start: 1,
-				rows: 10,
-			});
-		});
-
-		it('hook is rendered with empty searchTerm, and triggerSearch is called, does not call setApiParams', () => {
-			const { result, rerender } = renderHook(
-				(searchTerm) => useSearchPersonsByNameSearch(searchTerm),
-				{ initialProps: '' }
-			);
-
-			expect(mockSetApiParams).not.toHaveBeenCalled();
-
-			rerender('someSearchTerm');
-
-			act(() => {
-				result.current.triggerSearch();
-			});
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
-			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someSearchTerm',
-				start: 1,
-				rows: 10,
-			});
-
-			rerender('');
-
-			act(() => {
-				result.current.triggerSearch();
-			});
-			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
-		});
-
-		it('if hook is called with searchTerm and initial start/rows, and triggerSearch is called, does call setApiParams with start, rows and searchTerm', () => {
-			const { result, rerender } = renderHook(
-				({ searchTerm, initialStart, initialRows }) =>
-					useSearchPersonsByNameSearch(searchTerm, initialStart, initialRows),
-				{
-					initialProps: {
-						searchTerm: 'someSearchTerm',
-						initialStart: 10,
-						initialRows: 50,
-					},
-				}
-			);
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
-			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someSearchTerm',
-				start: 10,
-				rows: 50,
-			});
-
-			rerender({
-				searchTerm: 'someOtherSearchTerm',
-				initialStart: -1,
-				initialRows: 1001,
-			});
-
-			act(() => {
-				result.current.triggerSearch();
-			});
-
-			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
-			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someOtherSearchTerm',
-				start: 10,
-				rows: 50,
-			});
-		});
-
-		it('if setPaginationVars is called with new vars, setApiParams is called with new start/row values', () => {
+	describe('triggerSearchWithParams', () => {
+		it('returns a function triggerSearchWithParams', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm')
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+			);
+			expect(result.current.triggerSearchWithParams).toBeDefined();
+		});
+
+		it('triggerSearchWithParams takes searchTerm, start, rows and calls setApiParams if searchTerm is set', () => {
+			const { result } = renderHook(() =>
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
 			);
 
-			act(() => {
-				result.current.setPaginationVars(2, 20);
-			});
+			result.current.triggerSearchWithParams('someOtherSearchTerm', 11, 20);
 
-			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
 			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someSearchTerm',
-				start: 2,
+				searchTerm: 'someOtherSearchTerm',
+				start: 11,
 				rows: 20,
 			});
 
-			act(() => {
-				result.current.setPaginationVars(333, 1000);
-			});
+			result.current.triggerSearchWithParams('iAmSearching', 333, 500);
 
-			expect(mockSetApiParams).toHaveBeenCalledTimes(3);
 			expect(mockSetApiParams).toHaveBeenLastCalledWith({
-				searchTerm: 'someSearchTerm',
+				searchTerm: 'iAmSearching',
 				start: 333,
-				rows: 1000,
+				rows: 500,
 			});
 		});
 
-		it('if setPaginationVars is called with same vars, do not call setApiParams', () => {
+		it('triggerSearchWithParams takes searchTerm, start, rows and does NOT call setApiParams if searchTerm is NOT set', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm')
+				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
 			);
 
-			act(() => {
-				result.current.setPaginationVars(1, 10);
-			});
+			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
 
+			result.current.triggerSearchWithParams('', 11, 20);
+			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
+
+			result.current.triggerSearchWithParams('', 333, 500);
 			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
 		});
 	});
-	it.todo(
-		'Refactor so that it does not hold its own state. Instead, it should work with the start/row numbers it receives. Rows should be lifted out entirely and possibly be put in the SearchComponent, as it is not dependent on list.'
-	);
 });
 
 function createListWithPersons(persons: Person[]) {

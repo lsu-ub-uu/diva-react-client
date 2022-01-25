@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import Button from '../styles/Button';
+import Select from '../styles/Select';
 
 const SearchInput = styled.input`
 	width: 100%;
@@ -23,15 +24,42 @@ const StyledForm = styled.form`
 	column-gap: 1em;
 `;
 
+const StyledLabel = styled.label`
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: 1fr;
+	align-items: center;
+	column-gap: 0.5em;
+`;
+
+function getRowsOrDefaultValue(providedRows: number) {
+	return providedRows < 1 ? 50 : providedRows;
+}
+
 const SearchComponent = function ({
 	value,
+	rows,
+	rowOptions,
 	onValueChange,
+	onRowUpdate,
 	onSubmit,
 }: {
 	value: string;
+	rows: number;
+	rowOptions: number[];
 	onValueChange: (newValue: string) => void;
+	onRowUpdate: (newRows: number) => void;
 	onSubmit: () => void;
 }) {
+	const [opinionatedRows, setOpinionatedRows] = useState(
+		getRowsOrDefaultValue(rows)
+	);
+
+	React.useEffect(() => {
+		const newRowOption = getRowsOrDefaultValue(rows);
+		setOpinionatedRows(newRowOption);
+	}, [rows]);
+
 	const handleChange = React.useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			onValueChange(event.target.value);
@@ -46,6 +74,12 @@ const SearchComponent = function ({
 		},
 		[onSubmit]
 	);
+
+	const handleRowChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const newRows = parseInt(event.target.value, 10);
+		setOpinionatedRows(newRows);
+		onRowUpdate(newRows);
+	};
 	return (
 		<StyledForm onSubmit={handleSubmit}>
 			<SearchInput
@@ -59,6 +93,28 @@ const SearchComponent = function ({
 			<Button type="submit" id="searchButton" primary>
 				Sök
 			</Button>
+			<StyledLabel id="rows-label" htmlFor="rows-input">
+				<Select
+					id="rows-input"
+					aria-labelledby="rows-label"
+					value={opinionatedRows}
+					onChange={handleRowChange}
+				>
+					{rowOptions.map((option) => {
+						return (
+							<option key={option} value={option.toString()}>
+								{option.toString()}
+							</option>
+						);
+					})}
+					{!rowOptions.includes(opinionatedRows) && (
+						<option key={opinionatedRows} value={opinionatedRows.toString()}>
+							{opinionatedRows.toString()}
+						</option>
+					)}
+				</Select>
+				<div>Träffar per sida</div>
+			</StyledLabel>
 		</StyledForm>
 	);
 };
