@@ -84,6 +84,14 @@ beforeAll(() => {
 });
 
 describe('The PersonSearch component', () => {
+	it('displays heading "Personsök"', () => {
+		renderWithRouter(<PersonSearch />);
+
+		expect(
+			screen.getByRole('heading', { name: 'Personsök' })
+		).toBeInTheDocument();
+	});
+
 	describe('Uses usePersonSearchParams', () => {
 		it('calls usePersonSearchParams', () => {
 			renderWithRouter(<PersonSearch />);

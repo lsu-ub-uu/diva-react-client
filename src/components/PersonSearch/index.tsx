@@ -1,8 +1,16 @@
 import React from 'react';
+import styled from 'styled-components';
 import PaginatedCardList from '../PaginatedCardList';
 import SearchComponent from '../SearchComponent';
 import usePersonSearchParams from './usePersonSearchParams';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
+
+const Parent = styled.div`
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto;
+	row-gap: 1em;
+`;
 
 const DEFAULT_ROW_OPTIONS = [10, 25, 50, 100];
 
@@ -32,7 +40,8 @@ const PersonSearch = function () {
 	};
 
 	return (
-		<>
+		<Parent>
+			<h1>Personsök</h1>
 			<SearchComponent
 				rows={rows}
 				rowOptions={DEFAULT_ROW_OPTIONS}
@@ -52,7 +61,7 @@ const PersonSearch = function () {
 			{result.error && (
 				<div>Ett fel har inträffat: &quot;{result.error.message}&quot;</div>
 			)}
-		</>
+		</Parent>
 	);
 };
 

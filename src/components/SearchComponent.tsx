@@ -22,6 +22,7 @@ const StyledForm = styled.form`
 	justify-content: left;
 	justify-items: left;
 	column-gap: 1em;
+	row-gap: 0.5em;
 `;
 
 const StyledLabel = styled.label`
