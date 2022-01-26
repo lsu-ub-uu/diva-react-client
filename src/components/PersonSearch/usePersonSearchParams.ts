@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 const RADIX = 10;
 const DEFAULT_START = 1;
 const DEFAULT_ROWS = 10;
+const MAX_ROWS = 1000;
 
 const usePersonSearchParams = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -11,7 +12,7 @@ const usePersonSearchParams = () => {
 	const rowsString = searchParams.get('rows') || '';
 
 	const start = getPositiveNumberOrDefault(startString, DEFAULT_START);
-	const rows = getPositiveNumberOrDefault(rowsString, DEFAULT_ROWS);
+	const rows = getRowNumber(rowsString);
 
 	const setSearchTerm = (newSearchTerm: string) => {
 		searchParams.set('searchTerm', newSearchTerm);
@@ -29,6 +30,11 @@ const usePersonSearchParams = () => {
 	};
 
 	return { searchTerm, start, rows, setSearchTerm, setStart, setRows };
+};
+
+const getRowNumber = (toParse: string) => {
+	const parsedNumber = getPositiveNumberOrDefault(toParse, DEFAULT_ROWS);
+	return parsedNumber <= MAX_ROWS ? parsedNumber : MAX_ROWS;
 };
 
 const getPositiveNumberOrDefault = (toParse: string, defaultNumber: number) => {
