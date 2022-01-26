@@ -59,6 +59,16 @@ describe('the usePersonSearchParams hook', () => {
 		expect(result.current.rows).toStrictEqual(300);
 	});
 
+	describe('searchTerm', () => {
+		it("if searchTerm is not existing, returns searchTerm=''", () => {
+			urlSearchParamsToReturn.delete('searchTerm');
+			mockOnceWithSearchParams(urlSearchParamsToReturn);
+			const { result } = renderHook(() => usePersonSearchParams());
+
+			expect(result.current.searchTerm).toStrictEqual('');
+		});
+	});
+
 	describe('start', () => {
 		it('if start is NaN (not set or not a numeric), returns start=1', () => {
 			mockReturnedStartValueOnce('');

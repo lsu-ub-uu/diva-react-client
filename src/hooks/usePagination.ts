@@ -2,26 +2,26 @@ const usePagination = (
 	start: number,
 	rows: number,
 	totalNumber: number,
-	onPaginationUpdate: (start: number, rows: number) => void
+	onPaginationUpdate: (start: number) => void
 ) => {
 	function goToFirstPage() {
-		onPaginationUpdate(1, rows);
+		onPaginationUpdate(1);
 	}
 
 	function goToPreviousPage() {
 		const previousStart = start - rows < 1 ? 1 : start - rows;
-		onPaginationUpdate(previousStart, rows);
+		onPaginationUpdate(previousStart);
 	}
 
 	function goToNextPage() {
 		const nextStart = start + rows > totalNumber ? totalNumber : start + rows;
-		onPaginationUpdate(nextStart, rows);
+		onPaginationUpdate(nextStart);
 	}
 
 	function goToLastPage() {
 		const remainingRows = totalNumber - start;
 		const lastStartValue = Math.floor(remainingRows / rows) * rows + start;
-		onPaginationUpdate(lastStartValue, rows);
+		onPaginationUpdate(lastStartValue);
 	}
 
 	function getIsFirstPage() {

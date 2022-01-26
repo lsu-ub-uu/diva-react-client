@@ -1,8 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { screen } from '@testing-library/react';
 import PersonSearch from '.';
 import Person from '../../control/Person';
 import List from '../../control/List';
@@ -14,12 +13,10 @@ import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
 import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from '../PaginatedCardList';
-import useRowsWithString from './useRowsWithString';
-import useStartWithString from './useStartWithString';
+import usePersonSearchParams from './usePersonSearchParams';
 
 jest.mock('./useSearchPersonsByNameSearch');
-const mockSetPaginationVars = jest.fn();
-const mockTriggerSearchWithParams = jest.fn();
+const mockedTriggerSearchWithParams = jest.fn();
 const mockUseSearchPersonsByNameSearch =
 	useSearchPersonsByNameSearch as jest.MockedFunction<
 		typeof useSearchPersonsByNameSearch
@@ -30,29 +27,22 @@ jest.mock('../SearchComponent');
 const mockSearchComponent = SearchComponent as jest.MockedFunction<
 	typeof SearchComponent
 >;
-let receivedOnSubmit: () => void;
-let receivedOnValueChange: (val: string) => void;
-let receivedValue: string;
+let searchComponentReceivedOnSubmit: () => void;
+let searchComponentReceivedOnValueChange: (val: string) => void;
+let searchComponentReceivedOnRowUpdate: (val: number) => void;
 
 jest.mock('../PaginatedCardList');
 const mockPaginatedCardList = PaginatedCardList as jest.MockedFunction<
 	typeof PaginatedCardList
 >;
-let receivedOnPaginationUpdate: (start: number, rows: number) => void;
+let receivedOnPaginationUpdate: (start: number) => void;
 
-jest.mock('./useRowsWithString');
-const mockUseRowsWithString = useRowsWithString as jest.MockedFunction<
-	typeof useRowsWithString
->;
-let returnedByUseRowsWithString = { rows: 10 };
-
-// jest.mock('./useStart');
-// const mockUseStart = useStart as jest.MockedFunction<typeof useStart>;
-
-jest.mock('./useStartWithString');
-const mockUseStartWithString = useStartWithString as jest.MockedFunction<
-	typeof useStartWithString
->;
+jest.mock('./usePersonSearchParams');
+const mockedUsePersonSearchParams =
+	usePersonSearchParams as jest.MockedFunction<typeof usePersonSearchParams>;
+const mockedSetSearchTerm = jest.fn();
+const mockedSetStart = jest.fn();
+const mockedSetRows = jest.fn();
 
 beforeAll(() => {
 	mockUseSearchPersonsByNameSearch.mockReturnValue({
@@ -62,25 +52,26 @@ beforeAll(() => {
 			isError: false,
 			data: defaultListToReturn,
 		},
-		triggerSearchWithParams: mockTriggerSearchWithParams,
+		triggerSearchWithParams: mockedTriggerSearchWithParams,
 	});
 
 	type Props = {
 		value: string;
 		onSubmit: () => void;
 		onValueChange: (val: string) => void;
+		onRowUpdate: (val: number) => void;
 	};
 
 	mockSearchComponent.mockImplementation((props: Props) => {
-		receivedOnSubmit = props.onSubmit;
-		receivedOnValueChange = props.onValueChange;
-		receivedValue = props.value;
+		searchComponentReceivedOnSubmit = props.onSubmit;
+		searchComponentReceivedOnValueChange = props.onValueChange;
+		searchComponentReceivedOnRowUpdate = props.onRowUpdate;
 		return <div />;
 	});
 
 	type PaginatedCardListProps = {
 		list: List;
-		onPaginationUpdate(start: number, rows: number): void;
+		onPaginationUpdate(start: number): void;
 		rows: number;
 	};
 
@@ -89,189 +80,45 @@ beforeAll(() => {
 		return <div />;
 	});
 
-	// mockUseRowsWithString.mockImplementation(
-	// 	(rows: string, maxRows: number, defaultRows: number) => {
-	// 		return { rows: parseInt(rows, 10) };
-	// 	}
-	// );
-
-	mockUseRowsWithString.mockReturnValue(returnedByUseRowsWithString);
-	mockUseStartWithString.mockReturnValue({ start: 1 });
+	mockReturnFromUsePersonSearchParams('someDefaultSearchTerm', 99999, 999999);
 });
 
 describe('The PersonSearch component', () => {
-	describe('Uses useRowsWithString', () => {
-		it('if searchParams contain rows, pass it to useRowsWithString', () => {
-			render(
-				<MemoryRouter initialEntries={['?rows=10']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
+	describe('Uses usePersonSearchParams', () => {
+		it('calls usePersonSearchParams', () => {
+			renderWithRouter(<PersonSearch />);
 
-			expect(mockUseRowsWithString).toHaveBeenCalledTimes(1);
-			expect(mockUseRowsWithString).toHaveBeenLastCalledWith('10', 100, 10);
-
-			render(
-				<MemoryRouter initialEntries={['?rows=50']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
-
-			expect(mockUseRowsWithString).toHaveBeenCalledTimes(2);
-			expect(mockUseRowsWithString).toHaveBeenLastCalledWith('50', 100, 10);
-		});
-
-		it('if searchParams does not contain rows, pass empty string to useRowsWithString', () => {
-			render(
-				<MemoryRouter initialEntries={['?rows=']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
-
-			expect(mockUseRowsWithString).toHaveBeenCalledTimes(1);
-			expect(mockUseRowsWithString).toHaveBeenLastCalledWith('', 100, 10);
-		});
-	});
-
-	describe('Uses useStartWithString', () => {
-		it('if searchParams contain start, pass it to useStartWithString', () => {
-			render(
-				<MemoryRouter initialEntries={['?start=50']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
-
-			expect(mockUseStartWithString).toHaveBeenCalledTimes(1);
-			expect(mockUseStartWithString).toHaveBeenCalledWith('50');
-
-			render(
-				<MemoryRouter initialEntries={['?start=20']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
-
-			expect(mockUseStartWithString).toHaveBeenCalledTimes(2);
-			expect(mockUseStartWithString).toHaveBeenCalledWith('20');
-		});
-
-		it("if searchParams does not contain start, pass '1' to useStartWithString", () => {
-			render(
-				<MemoryRouter initialEntries={['?start=']}>
-					<PersonSearch />
-				</MemoryRouter>
-			);
-
-			expect(mockUseStartWithString).toHaveBeenCalledTimes(1);
-			expect(mockUseStartWithString).toHaveBeenCalledWith('1');
+			expect(mockedUsePersonSearchParams).toHaveBeenCalledTimes(1);
 		});
 	});
 
 	describe('Uses useSearchPersonsByNameSearch', () => {
-		it('should call useSearchPersonsByNameSearch, initially with an empty searchTerm and start from useStartWithString and rows from useRowsWithString', () => {
-			mockUseRowsWithString.mockReturnValueOnce({ rows: 50 });
-			mockUseStartWithString.mockReturnValueOnce({ start: 20 });
-
+		it('should call useSearchPersonsByNameSearch, with searchTerm/start/rows from usePersonSearchParams', () => {
+			mockReturnFromUsePersonSearchParams('someCoolTerm', 1, 10);
 			renderWithRouter(<PersonSearch />);
 
 			expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
 			expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-				'',
-				20,
-				50
+				'someCoolTerm',
+				1,
+				10
 			);
-		});
 
-		describe('with useSearchParams', () => {
-			it('if searchParams contain searchTerm, pass it to useSearchPersonsByNameSearch', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=someSearchTerm']}>
-						<PersonSearch />
-					</MemoryRouter>
-				);
+			mockReturnFromUsePersonSearchParams('someSearchTerm', 30, 100);
 
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someSearchTerm',
-					1,
-					10
-				);
-			});
+			renderWithRouter(<PersonSearch />);
 
-			it('if searchParams contain empty searchTerm, pass "" to useSearchPersonsByNameSearch', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=']}>
-						<PersonSearch />
-					</MemoryRouter>
-				);
-
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'',
-					1,
-					10
-				);
-			});
-
-			// it("if searchParams contain start, pass it to useSearchPersonsByNameSearch, if it doesn't, pass 1", () => {
-			// 	render(
-			// 		<MemoryRouter initialEntries={['?start=2']}>
-			// 			<PersonSearch />
-			// 		</MemoryRouter>
-			// 	);
-
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-			// 		'',
-			// 		2,
-			// 		10
-			// 	);
-
-			// 	render(
-			// 		<MemoryRouter initialEntries={['?start']}>
-			// 			<PersonSearch />
-			// 		</MemoryRouter>
-			// 	);
-
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-			// 		'',
-			// 		1,
-			// 		10
-			// 	);
-			// });
-
-			// it("if searchParams contain rows, pass it to useSearchPersonsByNameSearch, if it doesn't, pass 10", () => {
-			// 	render(
-			// 		<MemoryRouter initialEntries={['?rows=50']}>
-			// 			<PersonSearch />
-			// 		</MemoryRouter>
-			// 	);
-
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-			// 		'',
-			// 		1,
-			// 		50
-			// 	);
-
-			// 	render(
-			// 		<MemoryRouter initialEntries={['?rows']}>
-			// 			<PersonSearch />
-			// 		</MemoryRouter>
-			// 	);
-
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-			// 	expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-			// 		'',
-			// 		1,
-			// 		10
-			// 	);
-			// });
+			expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
+			expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+				'someSearchTerm',
+				30,
+				100
+			);
 		});
 	});
 
 	describe('Uses SearchComponent', () => {
-		describe('with useSearchParams', () => {
+		describe('with usePersonSearchParams', () => {
 			it('passes default rowOptions to SearchComponent', () => {
 				renderWithRouter(<PersonSearch />);
 				expect(mockSearchComponent).toHaveBeenLastCalledWith(
@@ -282,72 +129,125 @@ describe('The PersonSearch component', () => {
 				);
 			});
 
-			it.todo('handle onRowUpdate');
-			it.todo('send in rows');
-
-			it('passes searchTerm from useSearchParams as value', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=someNiceSearchTerm']}>
-						<PersonSearch />
-					</MemoryRouter>
-				);
+			it('passes searchTerm and rows from useSearchParams as value', () => {
+				mockReturnFromUsePersonSearchParams('someAwesomeSearchTerm', 1, 1234);
+				renderWithRouter(<PersonSearch />);
 
 				expect(mockSearchComponent).toHaveBeenLastCalledWith(
 					expect.objectContaining({
-						value: 'someNiceSearchTerm',
+						value: 'someAwesomeSearchTerm',
+						rows: 1234,
+					}),
+					expect.any(Object)
+				);
+
+				mockReturnFromUsePersonSearchParams('someOtherSearchTerm', 1, 444);
+
+				renderWithRouter(<PersonSearch />);
+
+				expect(mockSearchComponent).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						value: 'someOtherSearchTerm',
+						rows: 444,
 					}),
 					expect.any(Object)
 				);
 			});
 
-			it('if onValueChange is called, searchParams get updated', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=someNiceSearchTerm']}>
-						<PersonSearch />
-					</MemoryRouter>
-				);
+			it("if onRowUpdate is called, usePersonSearchParam's setRows is called", () => {
+				renderWithRouter(<PersonSearch />);
 
 				act(() => {
-					receivedOnValueChange('someNewValue');
+					searchComponentReceivedOnRowUpdate(123415);
 				});
 
-				expect(receivedValue).toStrictEqual('someNewValue');
+				expect(mockedSetRows).toHaveBeenLastCalledWith(123415);
+
+				act(() => {
+					searchComponentReceivedOnRowUpdate(434345);
+				});
+
+				expect(mockedSetRows).toHaveBeenLastCalledWith(434345);
 			});
 
-			it('if onValueChange is called, useSearchPersonsByNameSearch is called again', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=someNiceSearchTerm']}>
-						<PersonSearch />
-					</MemoryRouter>
-				);
+			it('if onRowUpdate is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the new rows', () => {
+				mockReturnFromUsePersonSearchParams('awesomeTerm', 1, 10);
+				renderWithRouter(<PersonSearch />);
 
 				act(() => {
-					receivedOnValueChange('someNewValue');
+					searchComponentReceivedOnRowUpdate(30);
 				});
 
-				expect(receivedValue).toStrictEqual('someNewValue');
-
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-				expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
-					'someNewValue',
+				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+					'awesomeTerm',
 					1,
-					10
-				);
-			});
-
-			it.only('if onSubmit is called, useSearchPersonsByNameSearches triggerSearch is called with the searchTerm', () => {
-				render(
-					<MemoryRouter initialEntries={['?searchTerm=someNiceSearchTerm']}>
-						<PersonSearch />
-					</MemoryRouter>
+					30
 				);
 
 				act(() => {
-					receivedOnSubmit();
+					searchComponentReceivedOnRowUpdate(434345);
 				});
 
-				expect(mockTriggerSearchWithParams).toHaveBeenCalledTimes(1);
-				expect(true).toBe(false);
+				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+					'awesomeTerm',
+					1,
+					434345
+				);
+
+				mockReturnFromUsePersonSearchParams('coolTerm', 30, 500);
+				renderWithRouter(<PersonSearch />);
+
+				act(() => {
+					searchComponentReceivedOnRowUpdate(85775);
+				});
+
+				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+					'coolTerm',
+					30,
+					85775
+				);
+			});
+
+			it('if onValueChange is called, searchParams get updated', () => {
+				renderWithRouter(<PersonSearch />);
+
+				act(() => {
+					searchComponentReceivedOnValueChange('someNewValue');
+				});
+
+				expect(mockedSetSearchTerm).toHaveBeenCalledWith('someNewValue');
+			});
+
+			it('if onSubmit is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the searchTerm, start and rows from usePersonSearchParams', () => {
+				mockReturnFromUsePersonSearchParams('someFooSearchTerm', 2, 3);
+
+				renderWithRouter(<PersonSearch />);
+
+				act(() => {
+					searchComponentReceivedOnSubmit();
+				});
+
+				expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(1);
+				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+					'someFooSearchTerm',
+					2,
+					3
+				);
+
+				mockReturnFromUsePersonSearchParams('someNewSearchTerm', 500, 1234);
+
+				renderWithRouter(<PersonSearch />);
+
+				act(() => {
+					searchComponentReceivedOnSubmit();
+				});
+
+				expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(2);
+				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+					'someNewSearchTerm',
+					500,
+					1234
+				);
 			});
 		});
 	});
@@ -360,7 +260,7 @@ describe('The PersonSearch component', () => {
 					hasData: false,
 					isError: false,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			renderWithRouter(<PersonSearch />);
@@ -376,8 +276,9 @@ describe('The PersonSearch component', () => {
 					isError: false,
 					data: defaultListToReturn,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
+			mockReturnFromUsePersonSearchParams('someBarSearch', 4334, 84839);
 
 			renderWithRouter(<PersonSearch />);
 
@@ -386,13 +287,12 @@ describe('The PersonSearch component', () => {
 			expect(mockPaginatedCardList).toHaveBeenLastCalledWith(
 				expect.objectContaining({
 					list: defaultListToReturn,
-					rows: returnedByUseRowsWithString.rows,
+					rows: 84839,
 				}),
 				expect.any(Object)
 			);
 
-			returnedByUseRowsWithString = { rows: 20 };
-			mockUseRowsWithString.mockReturnValueOnce(returnedByUseRowsWithString);
+			mockReturnFromUsePersonSearchParams('someFooSearch', 434, 5445);
 
 			const someOtherList = createListWithPersons([personWithDomain]);
 			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
@@ -402,7 +302,7 @@ describe('The PersonSearch component', () => {
 					isError: false,
 					data: someOtherList,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			renderWithRouter(<PersonSearch />);
@@ -411,28 +311,67 @@ describe('The PersonSearch component', () => {
 			expect(mockPaginatedCardList).toHaveBeenLastCalledWith(
 				expect.objectContaining({
 					list: someOtherList,
-					rows: returnedByUseRowsWithString.rows,
+					rows: 5445,
 				}),
 				expect.any(Object)
 			);
 		});
 
-		it('onPaginationUpdate passed to PaginatedCardList calls useSearchPersonsByNameSearches setPaginationVars and NOT triggerSearch', () => {
+		it('onPaginationUpdate passed to PaginatedCardList calls useSearchPersonsByNameSearches triggerSearchWithParams with start from onPaginationUpdate an rows from usePersonSearchParams', () => {
+			mockReturnFromUsePersonSearchParams('someSearch', 1, 40);
 			renderWithRouter(<PersonSearch />);
 
 			act(() => {
-				receivedOnPaginationUpdate(333, 40);
+				receivedOnPaginationUpdate(333);
 			});
-			expect(mockSetPaginationVars).toHaveBeenCalledTimes(1);
-			expect(mockSetPaginationVars).toHaveBeenLastCalledWith(333, 40);
-			expect(mockTriggerSearchWithParams).toHaveBeenCalledTimes(0);
+			expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(1);
+			expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+				'someSearch',
+				333,
+				40
+			);
 
 			act(() => {
-				receivedOnPaginationUpdate(20, 30);
+				receivedOnPaginationUpdate(20);
 			});
-			expect(mockSetPaginationVars).toHaveBeenCalledTimes(2);
-			expect(mockSetPaginationVars).toHaveBeenLastCalledWith(20, 30);
-			expect(mockTriggerSearchWithParams).toHaveBeenCalledTimes(0);
+			expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(2);
+			expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+				'someSearch',
+				20,
+				40
+			);
+
+			mockReturnFromUsePersonSearchParams('someOtherSearch', 342, 3333);
+
+			renderWithRouter(<PersonSearch />);
+
+			act(() => {
+				receivedOnPaginationUpdate(500);
+			});
+
+			expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(3);
+			expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
+				'someOtherSearch',
+				500,
+				3333
+			);
+		});
+
+		it('onPaginationUpdate passed to PaginatedCardList calls usePersonSearches setStart with received start value', () => {
+			mockReturnFromUsePersonSearchParams('someSearch', 1, 40);
+			renderWithRouter(<PersonSearch />);
+
+			act(() => {
+				receivedOnPaginationUpdate(333);
+			});
+			expect(mockedSetStart).toHaveBeenCalledTimes(1);
+			expect(mockedSetStart).toHaveBeenLastCalledWith(333);
+
+			act(() => {
+				receivedOnPaginationUpdate(20);
+			});
+			expect(mockedSetStart).toHaveBeenCalledTimes(2);
+			expect(mockedSetStart).toHaveBeenLastCalledWith(20);
 		});
 	});
 
@@ -444,7 +383,7 @@ describe('The PersonSearch component', () => {
 					hasData: false,
 					isError: false,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			renderWithRouter(<PersonSearch />);
@@ -460,7 +399,7 @@ describe('The PersonSearch component', () => {
 					hasData: false,
 					isError: false,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			renderWithRouter(<PersonSearch />);
@@ -481,7 +420,7 @@ describe('The PersonSearch component', () => {
 						'Some Error message returned by useSearchPersonsByNameSearch'
 					),
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			const { rerender } = renderWithRouter(<PersonSearch />);
@@ -501,7 +440,7 @@ describe('The PersonSearch component', () => {
 						'Some other Error message returned by useSearchPersonsByNameSearch'
 					),
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			rerender(<PersonSearch />);
@@ -519,7 +458,7 @@ describe('The PersonSearch component', () => {
 					hasData: false,
 					isError: false,
 				},
-				triggerSearchWithParams: mockTriggerSearchWithParams,
+				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
 
 			renderWithRouter(<PersonSearch />);
@@ -529,14 +468,22 @@ describe('The PersonSearch component', () => {
 			).not.toBeInTheDocument();
 		});
 	});
-
-	it.todo(
-		'Think about what to do if rows are changed from within SearchComponent. It should be reflected in the searchParams.'
-	);
-	it.todo(
-		'Ideally the logic on which rows should be allowed, should be in a hook'
-	);
 });
+
+function mockReturnFromUsePersonSearchParams(
+	searchTerm: string,
+	start: number,
+	rows: number
+) {
+	mockedUsePersonSearchParams.mockReturnValue({
+		searchTerm,
+		start,
+		rows,
+		setSearchTerm: mockedSetSearchTerm,
+		setStart: mockedSetStart,
+		setRows: mockedSetRows,
+	});
+}
 
 function createListWithPersons(persons: Person[]) {
 	const toNumber = persons.length;

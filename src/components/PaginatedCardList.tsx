@@ -16,7 +16,7 @@ const PaginatedCardList = function ({
 	rows,
 }: {
 	list: List;
-	onPaginationUpdate(start: number, rows: number): void;
+	onPaginationUpdate(start: number): void;
 	rows: number;
 }) {
 	return (

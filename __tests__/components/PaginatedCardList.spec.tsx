@@ -23,7 +23,7 @@ jest.mock('../../src/components/CardList', () => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const defaultOnPaginationUpdate = (start: number, rows: number): void => {};
+const defaultOnPaginationUpdate = (start: number): void => {};
 
 describe('PaginatedCardList', () => {
 	it('should take list, onPaginationUpdate and rows as props', () => {

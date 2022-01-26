@@ -1,13 +1,17 @@
 import { useSearchParams } from 'react-router-dom';
 
+const RADIX = 10;
+const DEFAULT_START = 1;
+const DEFAULT_ROWS = 10;
+
 const usePersonSearchParams = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const searchTerm = searchParams.get('searchTerm');
+	const searchTerm = searchParams.get('searchTerm') || '';
 	const startString = searchParams.get('start') || '';
 	const rowsString = searchParams.get('rows') || '';
 
-	const start = getPositiveNumberOrDefault(startString, 1);
-	const rows = getPositiveNumberOrDefault(rowsString, 10);
+	const start = getPositiveNumberOrDefault(startString, DEFAULT_START);
+	const rows = getPositiveNumberOrDefault(rowsString, DEFAULT_ROWS);
 
 	const setSearchTerm = (newSearchTerm: string) => {
 		searchParams.set('searchTerm', newSearchTerm);
@@ -28,10 +32,14 @@ const usePersonSearchParams = () => {
 };
 
 const getPositiveNumberOrDefault = (toParse: string, defaultNumber: number) => {
-	const parsedNumber = parseInt(toParse, 10);
-	return !Number.isNaN(parsedNumber) && parsedNumber > 0
+	const parsedNumber = parseInt(toParse, RADIX);
+	return !Number.isNaN(parsedNumber) && numberIsPositive(parsedNumber)
 		? parsedNumber
 		: defaultNumber;
+};
+
+const numberIsPositive = (numberToCheck: number) => {
+	return numberToCheck > 0;
 };
 
 export default usePersonSearchParams;

@@ -24,7 +24,7 @@ const PaginationComponent = function ({
 	rows: number;
 	toNumber: number;
 	totalNumber: number;
-	onPaginationUpdate(start: number, rows: number): void;
+	onPaginationUpdate(start: number): void;
 }) {
 	const {
 		goToFirstPage,

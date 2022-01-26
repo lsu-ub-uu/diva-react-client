@@ -1,55 +1,42 @@
-import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React from 'react';
 import PaginatedCardList from '../PaginatedCardList';
 import SearchComponent from '../SearchComponent';
-import useRowsWithString from './useRowsWithString';
+import usePersonSearchParams from './usePersonSearchParams';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
-import useStartWithString from './useStartWithString';
 
 const DEFAULT_ROW_OPTIONS = [10, 25, 50, 100];
-const MAX_ROWS = 100;
-const DEFAULT_ROWS = 10;
 
 const PersonSearch = function () {
-	const [searchParams, setSearchParams] = useSearchParams();
-	const searchTerm = searchParams.get('searchTerm') || '';
-	const startFromSearchParams = searchParams.get('start') || '1';
-	const { start: initialStart } = useStartWithString(startFromSearchParams);
+	const { searchTerm, start, rows, setSearchTerm, setStart, setRows } =
+		usePersonSearchParams();
 
-	const rowsString = searchParams.get('rows') || '';
-	const { rows: initialRows } = useRowsWithString(
-		rowsString,
-		MAX_ROWS,
-		DEFAULT_ROWS
-	);
-
-	const [apiSearchTerm, setApiSearchTerm] = useState(searchTerm);
-	// const initialStart = parseInt(searchParams.get('start') || '1', 10);
-	// const initialRows = parseInt(searchParams.get('rows') || '10', 10);
-
-	const { result, isLoading, triggerSearchWithParams } =
-		useSearchPersonsByNameSearch(apiSearchTerm, initialStart, initialRows);
+	const { isLoading, result, triggerSearchWithParams } =
+		useSearchPersonsByNameSearch(searchTerm, start, rows);
 
 	const handleValueChange = (newValue: string) => {
-		searchParams.set('searchTerm', newValue);
-		setSearchParams(searchParams);
-		setApiSearchTerm(newValue);
+		setSearchTerm(newValue);
 	};
 
 	const onSubmit = () => {
-		triggerSearchWithParams('', 1, 1);
+		triggerSearchWithParams(searchTerm, start, rows);
 	};
 
-	const onPaginationUpdate = (start: number, rows: number) => {
-		// setPaginationVars(start, rows);
+	const onRowUpdate = (newRows: number) => {
+		setRows(newRows);
+		triggerSearchWithParams(searchTerm, start, newRows);
+	};
+
+	const onPaginationUpdate = (newStart: number) => {
+		setStart(newStart);
+		triggerSearchWithParams(searchTerm, newStart, rows);
 	};
 
 	return (
 		<>
 			<SearchComponent
-				rows={0}
+				rows={rows}
 				rowOptions={DEFAULT_ROW_OPTIONS}
-				onRowUpdate={() => {}}
+				onRowUpdate={onRowUpdate}
 				value={searchTerm}
 				onSubmit={onSubmit}
 				onValueChange={handleValueChange}
@@ -57,7 +44,7 @@ const PersonSearch = function () {
 			{result.data && (
 				<PaginatedCardList
 					list={result.data}
-					rows={initialRows}
+					rows={rows}
 					onPaginationUpdate={onPaginationUpdate}
 				/>
 			)}
