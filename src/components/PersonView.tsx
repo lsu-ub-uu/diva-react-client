@@ -13,7 +13,10 @@ const PersonView = function () {
 				<div>Hämtar persondata...</div>
 			) : (
 				<div>
-					{person?.authorisedName.toString()} {person?.otherIds[0]?.id}
+					<p>{person?.authorisedName.toString()}</p>
+					<p>
+						{person?.otherIds[0]?.type}: {person?.otherIds[0]?.id}
+					</p>
 				</div>
 			)}
 		</section>
