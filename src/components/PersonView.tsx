@@ -12,7 +12,9 @@ const PersonView = function () {
 			{isLoading ? (
 				<div>Hämtar persondata...</div>
 			) : (
-				<div>{person?.authorisedName.toString()}</div>
+				<div>
+					{person?.authorisedName.toString()} {person?.otherIds[0]?.id}
+				</div>
 			)}
 		</section>
 	);

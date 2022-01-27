@@ -42,6 +42,16 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 				'SomeFamilyName, SomeGivenName'
 			);
 		});
+
+		it('Sets the other ids, (eg viaf, libris, orcid)', () => {
+			const person: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedNameAndOrcid
+			);
+			expect(person.otherIds[0]).toStrictEqual({
+				type: 'ORCID',
+				id: '0000-0001-6885-9290',
+			});
+		});
 	});
 });
 
@@ -125,6 +135,39 @@ const personDataGroupWithIdAndAuthorisedName: DataGroup = {
 				},
 			],
 			name: 'authorisedName',
+		},
+	],
+};
+
+const personDataGroupWithIdAndAuthorisedNameAndOrcid: DataGroup = {
+	name: 'person',
+	children: [
+		{
+			name: 'recordInfo',
+			children: [
+				{
+					name: 'id',
+					value: 'someId',
+				},
+			],
+		},
+		{
+			children: [
+				{
+					name: 'familyName',
+					value: 'SomeFamilyName',
+				},
+				{
+					name: 'givenName',
+					value: 'SomeGivenName',
+				},
+			],
+			name: 'authorisedName',
+		},
+		{
+			repeatId: '0',
+			name: 'ORCID_ID',
+			value: '0000-0001-6885-9290',
 		},
 	],
 };

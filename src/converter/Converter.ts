@@ -9,7 +9,10 @@ export function convertPerson(dataGroup: DataGroup): Person {
 	const authorisedName: Name =
 		extractAuthorisedNameFromPersonDataGroup(dataGroup);
 
-	return new Person(id, authorisedName);
+	const orcid = extractOtherIdsFromDataGroup(dataGroup);
+	let p = new Person(id, authorisedName);
+	p.setOtherIds([{ id: orcid, type: 'ORCID' }]);
+	return p;
 }
 
 function extractIdFromDataGroup(dataGroup: DataGroup): string {
@@ -49,6 +52,19 @@ function extractAuthorisedNameFromPersonDataGroup(
 	}
 
 	return nameToReturn;
+}
+
+function extractOtherIdsFromDataGroup(personDataGroup: DataGroup): string {
+	let orcidToReturn = '';
+	try {
+		const orcid: DataAtomic = <DataAtomic>(
+			getFirstChildWithNameInData(personDataGroup, 'ORCID_ID')
+		);
+		orcidToReturn = orcid.value.toString();
+	} catch (error) {
+		// TODO: decide what to do here...
+	}
+	return orcidToReturn;
 }
 
 export default convertPerson;
