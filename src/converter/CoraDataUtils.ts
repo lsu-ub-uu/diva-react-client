@@ -3,9 +3,9 @@ import { DataAtomic, DataGroup } from './CoraData';
 export function getFirstChildWithNameInData(
 	dataGroup: DataGroup,
 	nameInData: string
-): DataAtomic | DataGroup {
+): DataAtomic | DataGroup | null {
 	if (dataGroup.children.length === 0) {
-		throw new Error('The DataGroup has no children.');
+		return null;
 	}
 
 	const matchingDataElements: (DataAtomic | DataGroup)[] =
@@ -14,9 +14,7 @@ export function getFirstChildWithNameInData(
 		});
 
 	if (matchingDataElements.length === 0) {
-		throw new Error(
-			`The DataGroup has no child with name in data "${nameInData}".`
-		);
+		return null;
 	}
 
 	return matchingDataElements[0];

@@ -1,8 +1,6 @@
 import Listable from './Listable';
 import Name from './Name';
 
-import OtherID from './OtherID';
-
 class Person implements Listable {
 	id: string;
 
@@ -10,20 +8,19 @@ class Person implements Listable {
 
 	domains?: string[];
 
-	otherIds: OtherID[];
+	orcidID?: string;
+
+	viafID?: string;
+
+	librisID?: string;
 
 	constructor(id: string, authorisedName: Name) {
 		this.id = id;
 		this.authorisedName = authorisedName;
-		this.otherIds = [];
 	}
 
 	setDomains = (domains: string[]) => {
 		this.domains = domains;
-	};
-
-	setOtherIds = (otherIds: OtherID[]) => {
-		this.otherIds = otherIds;
 	};
 
 	presentation = () => {

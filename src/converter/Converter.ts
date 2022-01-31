@@ -3,16 +3,20 @@ import Person from '../control/Person';
 import { DataAtomic, DataGroup } from './CoraData';
 import { getFirstChildWithNameInData } from './CoraDataUtils';
 
+const ORCID_NAME_IN_DATA = 'ORCID_ID';
+
+let person: Person;
+
 export function convertPerson(dataGroup: DataGroup): Person {
 	const id: string = extractIdFromDataGroup(dataGroup);
 
 	const authorisedName: Name =
 		extractAuthorisedNameFromPersonDataGroup(dataGroup);
 
-	const orcid = extractOtherIdsFromDataGroup(dataGroup);
-	let p = new Person(id, authorisedName);
-	p.setOtherIds([{ id: orcid, type: 'ORCID' }]);
-	return p;
+	person = new Person(id, authorisedName);
+
+	possiblyAddOtherIdsFromDataGroup(dataGroup);
+	return person;
 }
 
 function extractIdFromDataGroup(dataGroup: DataGroup): string {
@@ -54,17 +58,16 @@ function extractAuthorisedNameFromPersonDataGroup(
 	return nameToReturn;
 }
 
-function extractOtherIdsFromDataGroup(personDataGroup: DataGroup): string {
-	let orcidToReturn = '';
-	try {
-		const orcid: DataAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(personDataGroup, 'ORCID_ID')
-		);
-		orcidToReturn = orcid.value.toString();
-	} catch (error) {
-		// TODO: decide what to do here...
+function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
+	const child = getFirstChildWithNameInData(
+		personDataGroup,
+		ORCID_NAME_IN_DATA
+	);
+
+	if (child !== null) {
+		const orcidAtomic = <DataAtomic>child;
+		person.orcidID = orcidAtomic.value;
 	}
-	return orcidToReturn;
 }
 
 export default convertPerson;

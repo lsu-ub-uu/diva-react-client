@@ -47,10 +47,15 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			const person: Person = convertPerson(
 				personDataGroupWithIdAndAuthorisedNameAndOrcid
 			);
-			expect(person.otherIds[0]).toStrictEqual({
-				type: 'ORCID',
-				id: '0000-0001-6885-9290',
-			});
+			expect(person.orcidID).toStrictEqual('0000-0001-6885-9290');
+		});
+
+		it('Returns nothing if ORCID does not exist in DataGroup', () => {
+			const person: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedName
+			);
+
+			expect(person.orcidID).toBeUndefined();
 		});
 	});
 });

@@ -6,18 +6,18 @@ import {
 } from '../../src/converter/CoraData';
 
 describe('getFirstChildWithNameInData', () => {
-	it('should throw error if no child exists', () => {
+	it('should return null if no child exists', () => {
 		const dataGroupWithEmptyChildren: DataGroup = {
 			name: 'someName',
 			children: [],
 		};
 
-		expect(() => {
-			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName');
-		}).toThrowError('The DataGroup has no children.');
+		expect(
+			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName')
+		).toBe(null);
 	});
 
-	it('should throw error if no matching child exists', () => {
+	it('should return null if no matching child exists', () => {
 		const dataGroupWithEmptyChildren: DataGroup = {
 			name: 'someName',
 			children: [
@@ -28,20 +28,16 @@ describe('getFirstChildWithNameInData', () => {
 			],
 		};
 
-		expect(() => {
-			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName');
-		}).toThrowError(
-			'The DataGroup has no child with name in data "someChildName".'
-		);
+		expect(
+			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName')
+		).toBe(null);
 
-		expect(() => {
+		expect(
 			getFirstChildWithNameInData(
 				dataGroupWithEmptyChildren,
 				'someOtherChildName'
-			);
-		}).toThrowError(
-			'The DataGroup has no child with name in data "someOtherChildName".'
-		);
+			)
+		).toBe(null);
 	});
 
 	it('Should return a child with matching name in data if provided with one matching child', () => {
@@ -80,10 +76,13 @@ describe('getFirstChildWithNameInData', () => {
 			],
 		};
 
-		const child2: DataElement = getFirstChildWithNameInData(
-			dataGroupWithOneMatchingAndOneOtherChild,
-			'someOtherChildName'
+		const child2 = <DataElement>(
+			getFirstChildWithNameInData(
+				dataGroupWithOneMatchingAndOneOtherChild,
+				'someOtherChildName'
+			)
 		);
+
 		expect(child2).not.toBe(undefined);
 		expect(child2.name).toBe('someOtherChildName');
 	});
