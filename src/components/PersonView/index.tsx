@@ -1,6 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import useGetPersonById from '../../hooks/useGetPersonById';
+import ListWithLabel from './ListWithLabel';
+
+const Identifiers = styled.div`
+	display: grid;
+	grid-template-columns: max-content auto;
+	column-gap: 0.5em;
+`;
 
 const PersonView = function () {
 	const { personId = '' } = useParams();
@@ -13,10 +21,19 @@ const PersonView = function () {
 			{person && (
 				<div>
 					<p>{person.authorisedName.toString()}</p>
-					{person.orcidIDs.length && <p>ORCID:</p>}
-					{person.orcidIDs.map((id) => (
-						<p key={id}>{id}</p>
-					))}
+					<Identifiers>
+						{person.orcidIDs.length > 0 && (
+							<ListWithLabel list={person.orcidIDs} label="ORCID" />
+						)}
+
+						{person.viafIDs.length > 0 && (
+							<ListWithLabel list={person.viafIDs} label="VIAF" />
+						)}
+
+						{person.librisIDs.length > 0 && (
+							<ListWithLabel list={person.librisIDs} label="Libris-id" />
+						)}
+					</Identifiers>
 				</div>
 			)}
 		</section>

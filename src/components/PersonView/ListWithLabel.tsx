@@ -1,4 +1,12 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const StyledUl = styled.ul`
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 1em;
+`;
 
 const ListWithLabel = function ({
 	list,
@@ -7,19 +15,17 @@ const ListWithLabel = function ({
 	list: string[];
 	label: string;
 }) {
-	return (
-		<div>
-			{list.length && (
-				<>
-					<b>{label}:</b>
-					<ul>
-						{list.map((id) => (
-							<li key={id}>{id}</li>
-						))}
-					</ul>
-				</>
-			)}
-		</div>
+	return list.length > 0 ? (
+		<>
+			<b>{label}:</b>
+			<StyledUl>
+				{list.map((id) => (
+					<li key={id}>{id}</li>
+				))}
+			</StyledUl>
+		</>
+	) : (
+		<div />
 	);
 };
 

@@ -13,7 +13,7 @@ export const threePersonObjects: Person[] = [
 	new Person('3', new Name('Ernman', 'Malena')),
 ];
 
-const createCompletePerson = () => {
+export const createCompletePerson = () => {
 	const completePerson: Person = new Person('3', new Name('Celsius', 'Anders'));
 
 	completePerson.orcidIDs = ['someOrcid', 'someOtherOrcid'];
