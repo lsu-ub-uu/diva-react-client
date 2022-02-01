@@ -19,6 +19,8 @@ const GlobalStyle = createGlobalStyle`
 
   ul {
     list-style-type: none;
+    margin: 0;
+    padding: 0;
   }
 
   a:focus, button:focus, input[type=submit]:focus, input[type=checkbox]:focus, [tabindex]:focus,.card:focus {
