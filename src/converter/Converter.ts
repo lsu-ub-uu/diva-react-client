@@ -1,9 +1,14 @@
 import Name from '../control/Name';
 import Person from '../control/Person';
 import { DataAtomic, DataGroup } from './CoraData';
-import { getFirstChildWithNameInData } from './CoraDataUtils';
+import {
+	getAllChildrenWithNameInData,
+	getFirstChildWithNameInData,
+} from './CoraDataUtils';
 
 const ORCID_NAME_IN_DATA = 'ORCID_ID';
+const VIAF_NAME_IN_DATA = 'VIAF_ID';
+const LIBRIS_NAME_IN_DATA = 'Libris_ID';
 
 let person: Person;
 
@@ -36,38 +41,53 @@ function extractAuthorisedNameFromPersonDataGroup(
 ): Name {
 	const nameToReturn: Name = new Name('', '');
 
-	try {
-		const authorisedName: DataGroup = <DataGroup>(
-			getFirstChildWithNameInData(personDataGroup, 'authorisedName')
-		);
+	const authorisedName: DataGroup = <DataGroup>(
+		getFirstChildWithNameInData(personDataGroup, 'authorisedName')
+	);
 
-		const familyName: DataAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(authorisedName, 'familyName')
-		);
+	if (authorisedName === null) {
+		return nameToReturn;
+	}
 
-		const givenName: DataAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(authorisedName, 'givenName')
-		);
-
+	const familyName: DataAtomic = <DataAtomic>(
+		getFirstChildWithNameInData(authorisedName, 'familyName')
+	);
+	if (familyName !== null) {
 		nameToReturn.familyName = familyName.value;
+	}
+
+	const givenName: DataAtomic = <DataAtomic>(
+		getFirstChildWithNameInData(authorisedName, 'givenName')
+	);
+
+	if (givenName !== null) {
 		nameToReturn.givenName = givenName.value;
-	} catch (error) {
-		// TODO: decide what to do here...
 	}
 
 	return nameToReturn;
 }
 
 function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
-	const child = getFirstChildWithNameInData(
-		personDataGroup,
-		ORCID_NAME_IN_DATA
+	const orcidChildren = <DataAtomic[]>(
+		getAllChildrenWithNameInData(personDataGroup, ORCID_NAME_IN_DATA)
 	);
+	orcidChildren.forEach((child) => {
+		person.orcidIDs.push(child.value);
+	});
 
-	if (child !== null) {
-		const orcidAtomic = <DataAtomic>child;
-		person.orcidIDs.push(orcidAtomic.value);
-	}
+	const viafChildren = <DataAtomic[]>(
+		getAllChildrenWithNameInData(personDataGroup, VIAF_NAME_IN_DATA)
+	);
+	viafChildren.forEach((child) => {
+		person.viafIDs.push(child.value);
+	});
+
+	const librisChildren = <DataAtomic[]>(
+		getAllChildrenWithNameInData(personDataGroup, LIBRIS_NAME_IN_DATA)
+	);
+	librisChildren.forEach((child) => {
+		person.librisIDs.push(child.value);
+	});
 }
 
 export default convertPerson;

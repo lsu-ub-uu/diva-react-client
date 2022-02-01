@@ -43,11 +43,47 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			);
 		});
 
-		it('Sets the other ids, (eg viaf, libris, orcid)', () => {
+		it('Sets ORCID if it exists in DataGroup, even if multiple', () => {
 			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOrcid
+				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
 			);
 			expect(person.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
+
+			const person2: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+			);
+
+			expect(person2.orcidIDs).toHaveLength(2);
+			expect(person2.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
+			expect(person2.orcidIDs[1]).toStrictEqual('0000-234-5454-65656');
+		});
+
+		it('Sets VIAF if it exists in DataGroup, even if multiple', () => {
+			const person: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
+			);
+			expect(person.viafIDs[0]).toStrictEqual('someViaf');
+
+			const person2: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+			);
+
+			expect(person2.viafIDs).toHaveLength(2);
+			expect(person2.viafIDs[1]).toStrictEqual('someOtherViaf');
+		});
+
+		it('Sets LibrisId if it exists in DataGroup, even if multiple', () => {
+			const person: Person = convertPerson(
+				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
+			);
+			expect(person.librisIDs[0]).toStrictEqual('someLibris');
+
+			// const person2: Person = convertPerson(
+			// 	personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+			// );
+
+			// expect(person2.librisIDs).toHaveLength(2);
+			// expect(person2.librisIDs[1]).toStrictEqual('someOtherLibris');
 		});
 
 		it('Does not set ORCID, viaf and libris if ORCID does not exist in DataGroup', () => {
@@ -146,7 +182,7 @@ const personDataGroupWithIdAndAuthorisedName: DataGroup = {
 	],
 };
 
-const personDataGroupWithIdAndAuthorisedNameAndOrcid: DataGroup = {
+const personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris: DataGroup = {
 	name: 'person',
 	children: [
 		{
@@ -176,8 +212,77 @@ const personDataGroupWithIdAndAuthorisedNameAndOrcid: DataGroup = {
 			name: 'ORCID_ID',
 			value: '0000-0001-6885-9290',
 		},
+		{
+			name: 'VIAF_ID',
+			value: 'someViaf',
+			repeatId: '0',
+		},
+		{
+			name: 'Libris_ID',
+			value: 'someLibris',
+			repeatId: '0',
+		},
 	],
 };
+
+const personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris: DataGroup =
+	{
+		name: 'person',
+		children: [
+			{
+				name: 'recordInfo',
+				children: [
+					{
+						name: 'id',
+						value: 'someId',
+					},
+				],
+			},
+			{
+				children: [
+					{
+						name: 'familyName',
+						value: 'SomeFamilyName',
+					},
+					{
+						name: 'givenName',
+						value: 'SomeGivenName',
+					},
+				],
+				name: 'authorisedName',
+			},
+			{
+				repeatId: '0',
+				name: 'ORCID_ID',
+				value: '0000-0001-6885-9290',
+			},
+			{
+				repeatId: '1',
+				name: 'ORCID_ID',
+				value: '0000-234-5454-65656',
+			},
+			{
+				name: 'VIAF_ID',
+				value: 'someViaf',
+				repeatId: '0',
+			},
+			{
+				name: 'VIAF_ID',
+				value: 'someOtherViaf',
+				repeatId: '1',
+			},
+			{
+				name: 'Libris_ID',
+				value: 'someLibris',
+				repeatId: '0',
+			},
+			{
+				name: 'Libris_ID',
+				value: 'someOtherLibris',
+				repeatId: '1',
+			},
+		],
+	};
 
 const personDataGroupWithOnlyId: DataGroup = {
 	name: 'person',
