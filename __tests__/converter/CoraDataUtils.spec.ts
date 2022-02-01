@@ -1,9 +1,141 @@
-import { getFirstChildWithNameInData } from '../../src/converter/CoraDataUtils';
+import {
+	getAllChildrenWithNameInData,
+	getFirstChildWithNameInData,
+} from '../../src/converter/CoraDataUtils';
 import {
 	DataGroup,
 	DataElement,
 	DataAtomic,
 } from '../../src/converter/CoraData';
+
+describe('getAllChildrenWithNameInData', () => {
+	it('should return empty list if there are no children', () => {
+		const dataGroupWithEmptyChildren: DataGroup = {
+			name: 'someName',
+			children: [],
+		};
+
+		const children = getAllChildrenWithNameInData(
+			dataGroupWithEmptyChildren,
+			'someChildName'
+		);
+
+		expect(children).toStrictEqual([]);
+		expect(children).toHaveLength(0);
+	});
+	it('should return empty list if no child with given name in data exists', () => {
+		const dataGroupWithNonMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+			],
+		};
+
+		const children = getAllChildrenWithNameInData(
+			dataGroupWithNonMatchingChildren,
+			'someChildName'
+		);
+
+		expect(children).toStrictEqual([]);
+		expect(children).toHaveLength(0);
+	});
+	it('should return a list containing all dataElements with given name in data', () => {
+		const dataGroupWithSomeMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someInterestingValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOtherInterestingValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOther2InterestingValue',
+				},
+			],
+		};
+
+		const children = getAllChildrenWithNameInData(
+			dataGroupWithSomeMatchingChildren,
+			'someInterestingName'
+		);
+
+		expect(children).toStrictEqual([
+			{
+				name: 'someInterestingName',
+				value: 'someInterestingValue',
+			},
+			{
+				name: 'someInterestingName',
+				value: 'someOtherInterestingValue',
+			},
+			{
+				name: 'someInterestingName',
+				value: 'someOther2InterestingValue',
+			},
+		]);
+		expect(children).toHaveLength(3);
+	});
+	it('should not return dataElements with non-matching name in data', () => {
+		const dataGroupWithSomeMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someInterestingValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOtherInterestingValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOther2InterestingValue',
+				},
+			],
+		};
+
+		const children = getAllChildrenWithNameInData(
+			dataGroupWithSomeMatchingChildren,
+			'someInterestingName'
+		);
+
+		expect(children).not.toContain({
+			name: 'someUninterestingName',
+			value: 'someValue',
+		});
+		expect(children).not.toContain({
+			name: 'someOtherUninterestingName',
+			value: 'someOtherValue',
+		});
+	});
+});
 
 describe('getFirstChildWithNameInData', () => {
 	it('should return null if no child exists', () => {
@@ -18,7 +150,7 @@ describe('getFirstChildWithNameInData', () => {
 	});
 
 	it('should return null if no matching child exists', () => {
-		const dataGroupWithEmptyChildren: DataGroup = {
+		const dataGroupWithNonMatchingChildren: DataGroup = {
 			name: 'someName',
 			children: [
 				{
@@ -29,12 +161,15 @@ describe('getFirstChildWithNameInData', () => {
 		};
 
 		expect(
-			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName')
+			getFirstChildWithNameInData(
+				dataGroupWithNonMatchingChildren,
+				'someChildName'
+			)
 		).toBe(null);
 
 		expect(
 			getFirstChildWithNameInData(
-				dataGroupWithEmptyChildren,
+				dataGroupWithNonMatchingChildren,
 				'someOtherChildName'
 			)
 		).toBe(null);

@@ -8,16 +8,27 @@ export function getFirstChildWithNameInData(
 		return null;
 	}
 
-	const matchingDataElements: (DataAtomic | DataGroup)[] =
-		dataGroup.children.filter((child) => {
-			return child.name === nameInData;
-		});
+	const matchingDataElements = getAllChildrenWithNameInData(
+		dataGroup,
+		nameInData
+	);
 
 	if (matchingDataElements.length === 0) {
 		return null;
 	}
 
 	return matchingDataElements[0];
+}
+
+export function getAllChildrenWithNameInData(
+	dataGroup: DataGroup,
+	nameInData: string
+): (DataAtomic | DataGroup)[] {
+	const childrenToReturn = dataGroup.children.filter((child) => {
+		return child.name === nameInData;
+	});
+
+	return childrenToReturn;
 }
 
 export default { getFirstChildWithNameInData };
