@@ -10,12 +10,14 @@ const ListWithLabel = function ({
 	return (
 		<div>
 			{list.length && (
-				<p>
-					{label}:
-					{list.map((id) => (
-						<p key={id}>{id}</p>
-					))}
-				</p>
+				<>
+					<b>{label}:</b>
+					<ul>
+						{list.map((id) => (
+							<li key={id}>{id}</li>
+						))}
+					</ul>
+				</>
 			)}
 		</div>
 	);

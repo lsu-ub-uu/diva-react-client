@@ -16,12 +16,32 @@ describe('ListWithLabel...', () => {
 		render(<ListWithLabel list={defaultList} label="someOtherLabel" />);
 		expect(screen.getByText(/someOtherLabel:/i)).toBeInTheDocument();
 	});
+
+	it('displays a UL element if the list is NOT empty', () => {
+		render(<ListWithLabel list={defaultList} label="someLabel" />);
+
+		expect(screen.getByRole('list')).toBeInTheDocument();
+	});
+
+	it('displays NO UL element if the list IS empty', () => {
+		render(<ListWithLabel list={[]} label="someLabel" />);
+
+		expect(screen.queryByRole('list')).not.toBeInTheDocument();
+	});
+
 	it('does not display the label if the list IS empty', () => {
 		render(<ListWithLabel list={[]} label="someLabel" />);
 		expect(screen.queryByText(/someLabel:/i)).not.toBeInTheDocument();
 	});
+
 	it('displays the list elements if the list is not empty', () => {
 		render(<ListWithLabel list={defaultList} label="someLabel" />);
-		expect(screen.getByText(/someElement/i)).toBeInTheDocument();
+
+		const listItems = screen.getAllByRole('listitem');
+
+		expect(listItems).toHaveLength(2);
+
+		expect(listItems[0]).toHaveTextContent('someElement');
+		expect(listItems[1]).toHaveTextContent('someOtherElement');
 	});
 });
