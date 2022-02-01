@@ -1,9 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
-import PersonView from '../../src/components/PersonView';
-import useGetPersonById from '../../src/hooks/useGetPersonById';
-import { personWithDomain } from '../../testData/personData';
+import PersonView from '.';
+import useGetPersonById from '../../hooks/useGetPersonById';
+import { completePerson, personWithDomain } from '../../../testData/personData';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<
@@ -11,7 +12,7 @@ const useParams = actualUseParams as jest.MockedFunction<
 >;
 useParams.mockReturnValue({ personId: 'someId' });
 
-jest.mock('../../src/hooks/useGetPersonById');
+jest.mock('../../hooks/useGetPersonById');
 
 const mockUseGetPersonById = useGetPersonById as jest.MockedFunction<
 	typeof useGetPersonById
@@ -82,15 +83,15 @@ describe('The Person component', () => {
 		).toHaveLength(0);
 	});
 
-	it('should not show person if hook returns person but hook still loading', () => {
+	it('should not show person no person returned', () => {
 		mockUseGetPersonById.mockReturnValue({
 			isLoading: true,
-			person: personWithDomain,
+			person: undefined,
 		});
 
 		render(<PersonView />);
 		expect(screen.getByText(/Hämtar persondata.../i)).toBeInTheDocument();
-		expect(screen.queryAllByAltText(/Enequist, Gerd/i)).toHaveLength(0);
+		expect(screen.queryAllByText(/Enequist, Gerd/i)).toHaveLength(0);
 	});
 
 	it('should show person if hook returns person and hook not loading', () => {
@@ -100,7 +101,33 @@ describe('The Person component', () => {
 		});
 
 		render(<PersonView />);
-		expect(screen.queryAllByAltText(/Hämtar persondata.../i)).toHaveLength(0);
+		expect(screen.queryAllByText(/Hämtar persondata.../i)).toHaveLength(0);
 		expect(screen.getByText(/Enequist, Gerd/i)).toBeInTheDocument();
 	});
+
+	it('should display ORCID label and ORCIDs if they exist on person', () => {
+		mockUseGetPersonById.mockReturnValueOnce({
+			isLoading: false,
+			person: completePerson,
+		});
+
+		render(<PersonView />);
+		expect(screen.getByText(/ORCID:/i)).toBeInTheDocument();
+		expect(screen.getByText(/someOrcid/i)).toBeInTheDocument();
+		// expect(screen.getByText(/someOrcid/i)).toBeInTheDocument();
+	});
+	it('should display VIAF label and VIAF ids if they exist on person', () => {});
+	it('should display Libris label and Libris ids if they exist on person', () => {});
+
+	it('should not display ORCID label if person has no ORCIDs', () => {
+		mockUseGetPersonById.mockReturnValueOnce({
+			isLoading: false,
+			person: personWithDomain,
+		});
+
+		render(<PersonView />);
+		expect(screen.queryByText(/ORCID:/i)).not.toBeInTheDocument();
+	});
+	it.todo('should not display VIAF label if person has no ORCIDs');
+	it.todo('should not display Libris label if person has no ORCIDs');
 });

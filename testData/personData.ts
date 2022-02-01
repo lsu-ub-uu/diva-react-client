@@ -12,3 +12,17 @@ export const threePersonObjects: Person[] = [
 	personWithDomain,
 	new Person('3', new Name('Ernman', 'Malena')),
 ];
+
+const createCompletePerson = () => {
+	const completePerson: Person = new Person('3', new Name('Celsius', 'Anders'));
+
+	completePerson.orcidIDs = ['someOrcid', 'someOtherOrcid'];
+	completePerson.viafIDs = ['someViaf', 'someOtherViaf'];
+	completePerson.librisIDs = ['someLibris', 'someOtherLibris'];
+
+	completePerson.domains = ['someDomain', 'someOtherDomain'];
+
+	return completePerson;
+};
+
+export const completePerson: Person = createCompletePerson();
