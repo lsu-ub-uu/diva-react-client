@@ -8,15 +8,18 @@ class Person implements Listable {
 
 	domains?: string[];
 
-	orcidID?: string;
+	orcidIDs: string[];
 
-	viafID?: string;
+	viafIDs: string[];
 
-	librisID?: string;
+	librisIDs: string[];
 
 	constructor(id: string, authorisedName: Name) {
 		this.id = id;
 		this.authorisedName = authorisedName;
+		this.orcidIDs = [];
+		this.viafIDs = [];
+		this.librisIDs = [];
 	}
 
 	setDomains = (domains: string[]) => {

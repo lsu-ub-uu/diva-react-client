@@ -66,7 +66,7 @@ function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
 
 	if (child !== null) {
 		const orcidAtomic = <DataAtomic>child;
-		person.orcidID = orcidAtomic.value;
+		person.orcidIDs.push(orcidAtomic.value);
 	}
 }
 
