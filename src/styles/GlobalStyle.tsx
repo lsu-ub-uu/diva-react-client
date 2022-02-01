@@ -17,6 +17,10 @@ const GlobalStyle = createGlobalStyle`
     color: ${(props) => props.theme.text};
   }
 
+  ul {
+    list-style-type: none;
+  }
+
   a:focus, button:focus, input[type=submit]:focus, input[type=checkbox]:focus, [tabindex]:focus,.card:focus {
     outline:2px solid ${(props) => props.theme.primary};
     outline-offset:0.25em;
