@@ -1,6 +1,10 @@
 import Person from '../../src/control/Person';
 import convertPerson from '../../src/converter/Converter';
 import { DataGroup } from '../../src/converter/CoraData';
+import {
+	completePersonDataGroup,
+	createMinimumPersonDataGroup,
+} from '../../testData/personDataGroups';
 
 describe('The functions in converter can be used to convert DataGroups to TS-objects', () => {
 	describe('convertPerson', () => {
@@ -12,14 +16,6 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			expect(person.id).toStrictEqual('');
 			expect(person.presentation).toBeDefined();
 			expect(person.authorisedName.toString()).toStrictEqual('');
-		});
-
-		it('Sets the ID', () => {
-			const person: Person = convertPerson(personDataGroupWithId);
-
-			expect(person.authorisedName.familyName).toStrictEqual('');
-			expect(person.authorisedName.givenName).toStrictEqual('');
-			expect(person.id).toStrictEqual('someId');
 		});
 
 		it('Sets empty name if DataGroup for name does not exist', () => {
@@ -43,78 +39,160 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			);
 		});
 
-		it('Sets ORCID if it exists in DataGroup, even if multiple', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
-			);
-			expect(person.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
+		describe('alternative names', () => {
+			it('does not add an alternative name if there is none', () => {
+				const person: Person = convertPerson(personDataGroupWithId);
 
-			const person2: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
-			);
+				expect(person.alternativeNames).toHaveLength(0);
+			});
 
-			expect(person2.orcidIDs).toHaveLength(2);
-			expect(person2.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
-			expect(person2.orcidIDs[1]).toStrictEqual('0000-234-5454-65656');
+			it('does add alternative names if there are alternative names', () => {
+				const person = convertPerson(completePersonDataGroup);
+
+				expect(person.alternativeNames).toHaveLength(2);
+			});
+
+			it('can handle if given name is missing', () => {
+				const personDataGroup = createMinimumPersonDataGroup();
+				personDataGroup.children.push({
+					name: 'alternativeName',
+					children: [
+						{
+							name: 'familyName',
+							value: 'SomeAlternativeFamilyName',
+						},
+					],
+					repeatId: '0',
+				});
+
+				const person = convertPerson(personDataGroup);
+
+				expect(person.alternativeNames).toHaveLength(1);
+				expect(person.alternativeNames[0].givenName).toStrictEqual('');
+				expect(person.alternativeNames[0].familyName).toStrictEqual(
+					'SomeAlternativeFamilyName'
+				);
+			});
+
+			it('can handle if family name is missing', () => {
+				const personDataGroup = createMinimumPersonDataGroup();
+				personDataGroup.children.push({
+					name: 'alternativeName',
+					children: [
+						{
+							name: 'givenName',
+							value: 'SomeAlternativeGivenName',
+						},
+					],
+					repeatId: '0',
+				});
+
+				const person = convertPerson(personDataGroup);
+
+				expect(person.alternativeNames).toHaveLength(1);
+				expect(person.alternativeNames[0].familyName).toStrictEqual('');
+				expect(person.alternativeNames[0].givenName).toStrictEqual(
+					'SomeAlternativeGivenName'
+				);
+			});
+
+			it('can handle if both family and given name are missing', () => {
+				const personDataGroup = createMinimumPersonDataGroup();
+				personDataGroup.children.push({
+					name: 'alternativeName',
+					children: [],
+					repeatId: '0',
+				});
+
+				const person = convertPerson(personDataGroup);
+
+				expect(person.alternativeNames).toHaveLength(1);
+				expect(person.alternativeNames[0].familyName).toStrictEqual('');
+				expect(person.alternativeNames[0].givenName).toStrictEqual('');
+			});
 		});
 
-		it('Does not set ORCID if value is an empty string', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
-			);
-			expect(person.orcidIDs).toHaveLength(0);
-		});
+		describe('identifiers', () => {
+			it('Sets the pID', () => {
+				const person: Person = convertPerson(personDataGroupWithId);
 
-		it('Sets VIAF if it exists in DataGroup, even if multiple', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
-			);
-			expect(person.viafIDs[0]).toStrictEqual('someViaf');
+				expect(person.authorisedName.familyName).toStrictEqual('');
+				expect(person.authorisedName.givenName).toStrictEqual('');
+				expect(person.id).toStrictEqual('someId');
+			});
+			it('Sets ORCID if it exists in DataGroup, even if multiple', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
+				);
+				expect(person.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
 
-			const person2: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
-			);
+				const person2: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+				);
 
-			expect(person2.viafIDs).toHaveLength(2);
-			expect(person2.viafIDs[1]).toStrictEqual('someOtherViaf');
-		});
+				expect(person2.orcidIDs).toHaveLength(2);
+				expect(person2.orcidIDs[0]).toStrictEqual('0000-0001-6885-9290');
+				expect(person2.orcidIDs[1]).toStrictEqual('0000-234-5454-65656');
+			});
 
-		it('Does not set VIAF if value is an empty string', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
-			);
-			expect(person.viafIDs).toHaveLength(0);
-		});
+			it('Does not set ORCID if value is an empty string', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
+				);
+				expect(person.orcidIDs).toHaveLength(0);
+			});
 
-		it('Sets LibrisId if it exists in DataGroup, even if multiple', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
-			);
-			expect(person.librisIDs[0]).toStrictEqual('someLibris');
+			it('Sets VIAF if it exists in DataGroup, even if multiple', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
+				);
+				expect(person.viafIDs[0]).toStrictEqual('someViaf');
 
-			const person2: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
-			);
+				const person2: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+				);
 
-			expect(person2.librisIDs).toHaveLength(2);
-			expect(person2.librisIDs[1]).toStrictEqual('someOtherLibris');
-		});
+				expect(person2.viafIDs).toHaveLength(2);
+				expect(person2.viafIDs[1]).toStrictEqual('someOtherViaf');
+			});
 
-		it('Does not set LibrisId if value is an empty string', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
-			);
-			expect(person.librisIDs).toHaveLength(0);
-		});
+			it('Does not set VIAF if value is an empty string', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
+				);
+				expect(person.viafIDs).toHaveLength(0);
+			});
 
-		it('Does not set ORCID, viaf and libris if ORCID does not exist in DataGroup', () => {
-			const person: Person = convertPerson(
-				personDataGroupWithIdAndAuthorisedName
-			);
+			it('Sets LibrisId if it exists in DataGroup, even if multiple', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneOrcidViafLibris
+				);
+				expect(person.librisIDs[0]).toStrictEqual('someLibris');
 
-			expect(person.orcidIDs).toHaveLength(0);
-			expect(person.viafIDs).toHaveLength(0);
-			expect(person.librisIDs).toHaveLength(0);
+				const person2: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameMultipleOrcidViafLibris
+				);
+
+				expect(person2.librisIDs).toHaveLength(2);
+				expect(person2.librisIDs[1]).toStrictEqual('someOtherLibris');
+			});
+
+			it('Does not set LibrisId if value is an empty string', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedNameAndOneEMPTYOrcidViafLibris
+				);
+				expect(person.librisIDs).toHaveLength(0);
+			});
+
+			it('Does not set ORCID, viaf and libris if ORCID does not exist in DataGroup', () => {
+				const person: Person = convertPerson(
+					personDataGroupWithIdAndAuthorisedName
+				);
+
+				expect(person.orcidIDs).toHaveLength(0);
+				expect(person.viafIDs).toHaveLength(0);
+				expect(person.librisIDs).toHaveLength(0);
+			});
 		});
 	});
 });

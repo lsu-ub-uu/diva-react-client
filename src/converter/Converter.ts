@@ -21,6 +21,18 @@ export function convertPerson(dataGroup: DataGroup): Person {
 	person = new Person(id, authorisedName);
 
 	possiblyAddOtherIdsFromDataGroup(dataGroup);
+
+	const alternativeNames = getAllChildrenWithNameInData(
+		dataGroup,
+		'alternativeName'
+	);
+
+	alternativeNames.forEach((alternativeNameDataGroup) => {
+		person.alternativeNames.push(
+			extractNameFromNameDataGroup(<DataGroup>alternativeNameDataGroup)
+		);
+	});
+
 	return person;
 }
 
@@ -39,25 +51,29 @@ function extractIdFromDataGroup(dataGroup: DataGroup): string {
 function extractAuthorisedNameFromPersonDataGroup(
 	personDataGroup: DataGroup
 ): Name {
-	const nameToReturn: Name = new Name('', '');
-
 	const authorisedName: DataGroup = <DataGroup>(
 		getFirstChildWithNameInData(personDataGroup, 'authorisedName')
 	);
 
 	if (authorisedName === null) {
-		return nameToReturn;
+		return new Name('', '');
 	}
 
+	return extractNameFromNameDataGroup(authorisedName);
+}
+
+function extractNameFromNameDataGroup(nameDataGroup: DataGroup) {
+	const nameToReturn: Name = new Name('', '');
+
 	const familyName: DataAtomic = <DataAtomic>(
-		getFirstChildWithNameInData(authorisedName, 'familyName')
+		getFirstChildWithNameInData(nameDataGroup, 'familyName')
 	);
 	if (familyName !== null) {
 		nameToReturn.familyName = familyName.value;
 	}
 
 	const givenName: DataAtomic = <DataAtomic>(
-		getFirstChildWithNameInData(authorisedName, 'givenName')
+		getFirstChildWithNameInData(nameDataGroup, 'givenName')
 	);
 
 	if (givenName !== null) {
