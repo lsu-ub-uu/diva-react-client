@@ -1,3 +1,4 @@
+import ExternalUrl from '../control/ExternalUrl';
 import Name from '../control/Name';
 import Person from '../control/Person';
 import { DataAtomic, DataGroup } from './CoraData';
@@ -25,6 +26,8 @@ export function convertPerson(dataGroup: DataGroup): Person {
 	possiblyAddAlternativeNames(dataGroup);
 
 	possiblySetAcademicTitle(dataGroup);
+
+	possiblySetExternalUrls(dataGroup);
 
 	return person;
 }
@@ -126,6 +129,30 @@ function possiblySetAcademicTitle(dataGroup: DataGroup) {
 	if (academicTitle !== null) {
 		person.title = academicTitle.value;
 	}
+}
+
+function possiblySetExternalUrls(dataGroup: DataGroup) {
+	const externalUrls = <DataGroup[]>(
+		getAllChildrenWithNameInData(dataGroup, 'externalURL')
+	);
+
+	externalUrls.forEach((externalUrlDataGroup) => {
+		const titleAtomic = <DataAtomic>(
+			getFirstChildWithNameInData(externalUrlDataGroup, 'linkTitle')
+		);
+		const urlAtomic = <DataAtomic>(
+			getFirstChildWithNameInData(externalUrlDataGroup, 'URL')
+		);
+
+		const externalUrl: ExternalUrl = {
+			title: titleAtomic !== null ? titleAtomic.value : '',
+			url: urlAtomic !== null ? urlAtomic.value : '',
+		};
+
+		if (externalUrl.title !== '' && externalUrl.url !== '') {
+			person.externalURLs.push(externalUrl);
+		}
+	});
 }
 
 export default convertPerson;

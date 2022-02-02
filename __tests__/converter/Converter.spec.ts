@@ -209,7 +209,49 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			});
 		});
 
-		describe('external Urls', () => {});
+		describe('external Urls', () => {
+			it('does not set external URLs if they do not exist', () => {
+				const person = convertPerson(createMinimumPersonDataGroup());
+
+				expect(person.externalURLs).toHaveLength(0);
+			});
+
+			it('does set external URLs if the exist', () => {
+				const person = convertPerson(completePersonDataGroup);
+
+				expect(person.externalURLs).toHaveLength(2);
+
+				expect(person.externalURLs[0].title).toStrictEqual('Min profilsida UU');
+				expect(person.externalURLs[0].url).toStrictEqual('someUrl');
+
+				expect(person.externalURLs[1].title).toStrictEqual('ResearchGate');
+				expect(person.externalURLs[1].url).toStrictEqual(
+					'https://www.researchgate.net'
+				);
+			});
+
+			it('does not set external Url if both title and URL are empty strings', () => {
+				const personDataGroup = createMinimumPersonDataGroup();
+				personDataGroup.children.push({
+					name: 'externalURL',
+					children: [
+						{
+							name: 'linkTitle',
+							value: '',
+						},
+						{
+							name: 'URL',
+							value: '',
+						},
+					],
+					repeatId: '0',
+				});
+
+				const person = convertPerson(personDataGroup);
+
+				expect(person.externalURLs).toHaveLength(0);
+			});
+		});
 	});
 });
 
