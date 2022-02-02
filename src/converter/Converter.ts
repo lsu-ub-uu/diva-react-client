@@ -72,21 +72,27 @@ function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
 		getAllChildrenWithNameInData(personDataGroup, ORCID_NAME_IN_DATA)
 	);
 	orcidChildren.forEach((child) => {
-		person.orcidIDs.push(child.value);
+		if (child.value !== '') {
+			person.orcidIDs.push(child.value);
+		}
 	});
 
 	const viafChildren = <DataAtomic[]>(
 		getAllChildrenWithNameInData(personDataGroup, VIAF_NAME_IN_DATA)
 	);
 	viafChildren.forEach((child) => {
-		person.viafIDs.push(child.value);
+		if (child.value !== '') {
+			person.viafIDs.push(child.value);
+		}
 	});
 
 	const librisChildren = <DataAtomic[]>(
 		getAllChildrenWithNameInData(personDataGroup, LIBRIS_NAME_IN_DATA)
 	);
 	librisChildren.forEach((child) => {
-		person.librisIDs.push(child.value);
+		if (child.value !== '') {
+			person.librisIDs.push(child.value);
+		}
 	});
 }
 
