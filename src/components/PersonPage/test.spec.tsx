@@ -34,10 +34,18 @@ beforeAll(() => {
 });
 
 describe('The Person component', () => {
-	it('should call hook with personId', () => {
+	it('should call hook with personId if personId exists', () => {
 		render(<PersonPage />);
 		expect(mockUseGetPersonById).toHaveBeenCalledTimes(1);
 		expect(mockUseGetPersonById).toHaveBeenCalledWith('someId');
+	});
+
+	it('should call hook with empty string if personId does not exist', () => {
+		useParams.mockReturnValueOnce({});
+
+		render(<PersonPage />);
+		expect(mockUseGetPersonById).toHaveBeenCalledTimes(1);
+		expect(mockUseGetPersonById).toHaveBeenCalledWith('');
 	});
 
 	it('should show loading if hook is loading', () => {

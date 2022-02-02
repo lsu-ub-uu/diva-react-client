@@ -4,7 +4,7 @@ import useGetPersonById from '../../hooks/useGetPersonById';
 import PersonView from './PersonView';
 
 const PersonPage = function () {
-	const { personId = '' } = useParams();
+	const { personId = '' } = useParams<string>();
 	const { person, isLoading, error } = useGetPersonById(personId);
 	return (
 		<section>
