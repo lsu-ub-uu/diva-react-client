@@ -14,7 +14,10 @@ export const threePersonObjects: Person[] = [
 ];
 
 export const createCompletePerson = () => {
-	const completePerson: Person = new Person('3', new Name('Celsius', 'Anders'));
+	const completePerson: Person = new Person(
+		'somePID',
+		new Name('Celsius', 'Anders')
+	);
 
 	completePerson.orcidIDs = ['someOrcid', 'someOtherOrcid'];
 	completePerson.viafIDs = ['someViaf', 'someOtherViaf'];
@@ -23,6 +26,14 @@ export const createCompletePerson = () => {
 	completePerson.domains = ['someDomain', 'someOtherDomain'];
 
 	return completePerson;
+};
+
+export const createMinimumPersonWithIdAndName = (
+	id: string = 'someId',
+	lastName: string = 'LastName',
+	firstName: string = 'FirstName'
+) => {
+	return new Person(id, new Name(lastName, firstName));
 };
 
 export const completePerson: Person = createCompletePerson();

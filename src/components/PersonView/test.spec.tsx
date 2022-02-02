@@ -4,12 +4,8 @@ import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
 import PersonView from '.';
 import useGetPersonById from '../../hooks/useGetPersonById';
-import {
-	completePerson,
-	createCompletePerson,
-	personWithDomain,
-} from '../../../testData/personData';
-import ListWithLabel from './ListWithLabel';
+import { personWithDomain } from '../../../testData/personData';
+import Identifiers from './Identifiers';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<
@@ -23,7 +19,7 @@ const mockUseGetPersonById = useGetPersonById as jest.MockedFunction<
 	typeof useGetPersonById
 >;
 
-jest.mock('./ListWithLabel', () => {
+jest.mock('./Identifiers', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -38,19 +34,6 @@ beforeAll(() => {
 });
 
 describe('The Person component', () => {
-	it('Should take the personId from useParams and render it 1', () => {
-		render(<PersonView />);
-		expect(useParams).toBeCalledTimes(1);
-		expect(screen.getByText(/Person ID: someId/i)).toBeInTheDocument();
-	});
-
-	it('Should take the personId from useParams and render it 2', () => {
-		useParams.mockReturnValueOnce({ personId: 'someOtherId' });
-		render(<PersonView />);
-		expect(useParams).toBeCalledTimes(1);
-		expect(screen.getByText(/Person ID: someOtherId/i)).toBeInTheDocument();
-	});
-
 	it('should call hook with personId', () => {
 		render(<PersonView />);
 		expect(mockUseGetPersonById).toHaveBeenCalledTimes(1);
@@ -116,78 +99,146 @@ describe('The Person component', () => {
 		expect(screen.getByText(/Enequist, Gerd/i)).toBeInTheDocument();
 	});
 
-	describe('identifiers', () => {
-		it('should call ListWithLabel with ORCID and orcidIds if they exist on person', () => {
-			const person = createCompletePerson();
-			person.viafIDs = [];
-			person.librisIDs = [];
-			mockUseGetPersonById.mockReturnValueOnce({
-				isLoading: false,
-				person,
+	describe('Identifiers...', () => {
+		it('should not call Identifiers if no person', () => {
+			mockUseGetPersonById.mockReturnValue({
+				isLoading: true,
+				person: undefined,
 			});
 
 			render(<PersonView />);
 
-			expect(ListWithLabel).toHaveBeenCalledTimes(1);
-			expect(ListWithLabel).toHaveBeenCalledWith(
-				expect.objectContaining({
-					label: 'ORCID',
-					list: completePerson.orcidIDs,
-				}),
-				expect.any(Object)
-			);
+			expect(Identifiers).not.toHaveBeenCalled();
 		});
 
-		it('should call ListWithLabel with VIAF and viafIds if they exist on person', () => {
-			const person = createCompletePerson();
-			person.orcidIDs = [];
-			person.librisIDs = [];
-			mockUseGetPersonById.mockReturnValueOnce({
-				isLoading: false,
-				person,
-			});
-
-			render(<PersonView />);
-
-			expect(ListWithLabel).toHaveBeenCalledTimes(1);
-			expect(ListWithLabel).toHaveBeenCalledWith(
-				expect.objectContaining({
-					label: 'VIAF',
-					list: completePerson.viafIDs,
-				}),
-				expect.any(Object)
-			);
-		});
-
-		it('should call ListWithLabel with Libris-id and librisIDs if they exist on person', () => {
-			const person = createCompletePerson();
-			person.orcidIDs = [];
-			person.viafIDs = [];
-			mockUseGetPersonById.mockReturnValueOnce({
-				isLoading: false,
-				person,
-			});
-
-			render(<PersonView />);
-
-			expect(ListWithLabel).toHaveBeenCalledTimes(1);
-			expect(ListWithLabel).toHaveBeenCalledWith(
-				expect.objectContaining({
-					label: 'Libris-id',
-					list: completePerson.librisIDs,
-				}),
-				expect.any(Object)
-			);
-		});
-
-		it('should not call ListWithLabel for ORCID if person has no ORCIDs, VIAFs or Libris ids', () => {
-			mockUseGetPersonById.mockReturnValueOnce({
+		it('should call Identifiers with person if person', () => {
+			mockUseGetPersonById.mockReturnValue({
 				isLoading: false,
 				person: personWithDomain,
 			});
+
 			render(<PersonView />);
 
-			expect(ListWithLabel).toHaveBeenCalledTimes(0);
+			expect(Identifiers).toHaveBeenCalledTimes(1);
+			expect(Identifiers).toHaveBeenCalledWith(
+				expect.objectContaining({
+					person: personWithDomain,
+				}),
+				expect.any(Object)
+			);
 		});
 	});
+
+	// describe('identifiers', () => {
+	// 	it('should call ListWithLabel with id', () => {
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person: personWithDomain,
+	// 		});
+
+	// 		const { rerender } = render(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(1);
+	// 		expect(ListWithLabel).toHaveBeenCalledWith(
+	// 			expect.objectContaining({
+	// 				label: 'pID',
+	// 				list: [personWithDomain.id],
+	// 			}),
+	// 			expect.any(Object)
+	// 		);
+
+	// 		const otherPerson = createMinimumPersonWithIdAndName('someId');
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person: otherPerson,
+	// 		});
+
+	// 		rerender(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
+	// 		expect(ListWithLabel).toHaveBeenCalledWith(
+	// 			expect.objectContaining({
+	// 				label: 'pID',
+	// 				list: [otherPerson.id],
+	// 			}),
+	// 			expect.any(Object)
+	// 		);
+	// 	});
+
+	// 	it('should call ListWithLabel with ORCID and orcidIds if they exist on person', () => {
+	// 		const person = createCompletePerson();
+	// 		person.viafIDs = [];
+	// 		person.librisIDs = [];
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person,
+	// 		});
+
+	// 		render(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
+	// 		expect(ListWithLabel).toHaveBeenNthCalledWith(
+	// 			2,
+	// 			expect.objectContaining({
+	// 				label: 'ORCID',
+	// 				list: completePerson.orcidIDs,
+	// 			}),
+	// 			expect.any(Object)
+	// 		);
+	// 	});
+
+	// 	it('should call ListWithLabel with VIAF and viafIds if they exist on person', () => {
+	// 		const person = createCompletePerson();
+	// 		person.orcidIDs = [];
+	// 		person.librisIDs = [];
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person,
+	// 		});
+
+	// 		render(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
+	// 		expect(ListWithLabel).toHaveBeenNthCalledWith(
+	// 			2,
+	// 			expect.objectContaining({
+	// 				label: 'VIAF',
+	// 				list: completePerson.viafIDs,
+	// 			}),
+	// 			expect.any(Object)
+	// 		);
+	// 	});
+
+	// 	it('should call ListWithLabel with Libris-id and librisIDs if they exist on person', () => {
+	// 		const person = createCompletePerson();
+	// 		person.orcidIDs = [];
+	// 		person.viafIDs = [];
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person,
+	// 		});
+
+	// 		render(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
+	// 		expect(ListWithLabel).toHaveBeenNthCalledWith(
+	// 			2,
+	// 			expect.objectContaining({
+	// 				label: 'Libris-id',
+	// 				list: completePerson.librisIDs,
+	// 			}),
+	// 			expect.any(Object)
+	// 		);
+	// 	});
+
+	// 	it('should not call ListWithLabel for ORCID if person has no ORCIDs, VIAFs or Libris ids', () => {
+	// 		mockUseGetPersonById.mockReturnValueOnce({
+	// 			isLoading: false,
+	// 			person: personWithDomain,
+	// 		});
+	// 		render(<PersonView />);
+
+	// 		expect(ListWithLabel).toHaveBeenCalledTimes(1);
+	// 	});
+	// });
 });
