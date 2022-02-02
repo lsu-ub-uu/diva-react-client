@@ -6,6 +6,8 @@ class Person implements Listable {
 
 	authorisedName: Name;
 
+	alternativeNames: Name[];
+
 	domains?: string[];
 
 	orcidIDs: string[];
@@ -17,6 +19,7 @@ class Person implements Listable {
 	constructor(id: string, authorisedName: Name) {
 		this.id = id;
 		this.authorisedName = authorisedName;
+		this.alternativeNames = [];
 		this.orcidIDs = [];
 		this.viafIDs = [];
 		this.librisIDs = [];
