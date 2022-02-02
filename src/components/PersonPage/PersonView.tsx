@@ -10,7 +10,8 @@ const PersonView = function ({ person }: { person: Person }) {
 
 	return (
 		<>
-			<p>{person.authorisedName.toString()}</p>
+			<h1>{person.authorisedName.toString()}</h1>
+			{person.title !== '' && <p data-testid="personTitle">{person.title}</p>}
 			{alternativeNames.length > 0 && (
 				<ListWithLabel label="" list={alternativeNames} />
 			)}

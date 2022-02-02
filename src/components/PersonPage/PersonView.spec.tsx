@@ -41,31 +41,55 @@ describe('PersonView', () => {
 			/>
 		);
 		expect(
-			screen.getByText(/SomeLastName, SomeFirstName/i)
+			screen.getByRole('heading', { name: 'SomeLastName, SomeFirstName' })
 		).toBeInTheDocument();
 	});
 
-	it('should NOT call ListWithLabel with alternative names and no label if there are no alternative names', () => {
-		render(<PersonView person={createMinimumPersonWithIdAndName()} />);
+	it('should render title if not empty', () => {
+		const person = createMinimumPersonWithIdAndName();
+		person.title = 'someTitle';
+		const { rerender } = render(<PersonView person={person} />);
 
-		expect(ListWithLabel).not.toHaveBeenCalled();
+		expect(screen.getByText(/someTitle/i)).toBeInTheDocument();
+
+		person.title = 'someOtherTitle';
+
+		rerender(<PersonView person={person} />);
+
+		expect(screen.getByText(/someOtherTitle/i)).toBeInTheDocument();
 	});
 
-	it('should call ListWithLabel with alternative names and no label if alternative names', () => {});
-	const person = createCompletePerson();
-	render(<PersonView person={person} />);
+	it('should NOT render title if empty', () => {
+		const person = createMinimumPersonWithIdAndName();
+		render(<PersonView person={person} />);
 
-	expect(ListWithLabel).toHaveBeenCalled();
-	expect(ListWithLabel).toHaveBeenLastCalledWith(
-		expect.objectContaining({
-			label: '',
-			list: [
-				'someAlternativeFamilyName, someAlternativeGivenName',
-				'someOtherAlternativeFamilyName, someOtherAlternativeGivenName',
-			],
-		}),
-		expect.any(Object)
-	);
+		expect(screen.queryByTestId('personTitle')).not.toBeInTheDocument();
+	});
+
+	describe('alternative names', () => {
+		it('should NOT call ListWithLabel with alternative names and no label if there are no alternative names', () => {
+			render(<PersonView person={createMinimumPersonWithIdAndName()} />);
+
+			expect(ListWithLabel).not.toHaveBeenCalled();
+		});
+
+		it('should call ListWithLabel with alternative names and no label if alternative names', () => {
+			const person = createCompletePerson();
+			render(<PersonView person={person} />);
+
+			expect(ListWithLabel).toHaveBeenCalled();
+			expect(ListWithLabel).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					label: '',
+					list: [
+						'someAlternativeFamilyName, someAlternativeGivenName',
+						'someOtherAlternativeFamilyName, someOtherAlternativeGivenName',
+					],
+				}),
+				expect.any(Object)
+			);
+		});
+	});
 
 	it('should call Identifiers with person', () => {
 		render(<PersonView person={personWithDomain} />);

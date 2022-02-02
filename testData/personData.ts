@@ -19,6 +19,8 @@ export const createCompletePerson = () => {
 		new Name('Celsius', 'Anders')
 	);
 
+	completePerson.title = 'someTitle';
+
 	completePerson.orcidIDs = ['someOrcid', 'someOtherOrcid'];
 	completePerson.viafIDs = ['someViaf', 'someOtherViaf'];
 	completePerson.librisIDs = ['someLibris', 'someOtherLibris'];
