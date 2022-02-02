@@ -17,7 +17,7 @@ const ListWithLabel = function ({
 }) {
 	return list.length > 0 ? (
 		<>
-			<b>{label}:</b>
+			{label !== '' && <b>{label}:</b>}
 			<StyledUl>
 				{list.map((id) => (
 					<li key={id}>{id}</li>
