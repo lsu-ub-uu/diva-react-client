@@ -5,8 +5,10 @@ import App from './App';
 
 const app = document.getElementById('root');
 ReactDOM.render(
-	<BrowserRouter>
-		<App />
-	</BrowserRouter>,
+	<React.StrictMode>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
+	</React.StrictMode>,
 	app
 );
