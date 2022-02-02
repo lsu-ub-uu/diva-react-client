@@ -22,16 +22,9 @@ export function convertPerson(dataGroup: DataGroup): Person {
 
 	possiblyAddOtherIdsFromDataGroup(dataGroup);
 
-	const alternativeNames = getAllChildrenWithNameInData(
-		dataGroup,
-		'alternativeName'
-	);
+	possiblyAddAlternativeNames(dataGroup);
 
-	alternativeNames.forEach((alternativeNameDataGroup) => {
-		person.alternativeNames.push(
-			extractNameFromNameDataGroup(<DataGroup>alternativeNameDataGroup)
-		);
-	});
+	possiblySetAcademicTitle(dataGroup);
 
 	return person;
 }
@@ -110,6 +103,29 @@ function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
 			person.librisIDs.push(child.value);
 		}
 	});
+}
+
+function possiblyAddAlternativeNames(dataGroup: DataGroup) {
+	const alternativeNames = getAllChildrenWithNameInData(
+		dataGroup,
+		'alternativeName'
+	);
+
+	alternativeNames.forEach((alternativeNameDataGroup) => {
+		person.alternativeNames.push(
+			extractNameFromNameDataGroup(<DataGroup>alternativeNameDataGroup)
+		);
+	});
+}
+
+function possiblySetAcademicTitle(dataGroup: DataGroup) {
+	const academicTitle = <DataAtomic>(
+		getFirstChildWithNameInData(dataGroup, 'academicTitle')
+	);
+
+	if (academicTitle !== null) {
+		person.title = academicTitle.value;
+	}
 }
 
 export default convertPerson;

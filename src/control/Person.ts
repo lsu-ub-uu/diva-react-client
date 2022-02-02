@@ -8,6 +8,8 @@ class Person implements Listable {
 
 	alternativeNames: Name[];
 
+	title: string;
+
 	domains?: string[];
 
 	orcidIDs: string[];
@@ -20,6 +22,7 @@ class Person implements Listable {
 		this.id = id;
 		this.authorisedName = authorisedName;
 		this.alternativeNames = [];
+		this.title = '';
 		this.orcidIDs = [];
 		this.viafIDs = [];
 		this.librisIDs = [];

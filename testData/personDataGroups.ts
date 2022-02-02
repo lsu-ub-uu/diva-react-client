@@ -13,6 +13,10 @@ export const completePersonDataGroup: DataGroup = {
 			],
 		},
 		{
+			name: 'academicTitle',
+			value: 'someTitle',
+		},
+		{
 			children: [
 				{
 					name: 'familyName',
