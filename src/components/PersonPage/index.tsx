@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import useGetPersonById from '../../hooks/useGetPersonById';
 import Identifiers from './Identifiers';
 
-const PersonView = function () {
+const PersonPage = function () {
 	const { personId = '' } = useParams();
 	const { person, isLoading, error } = useGetPersonById(personId);
 	return (
@@ -20,4 +20,4 @@ const PersonView = function () {
 	);
 };
 
-export default PersonView;
+export default PersonPage;

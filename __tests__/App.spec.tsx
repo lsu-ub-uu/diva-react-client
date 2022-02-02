@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Outlet } from 'react-router';
 import App from '../src/App';
 import NoMatch from '../src/components/NoMatch';
-import PersonView from '../src/components/PersonView';
+import PersonPage from '../src/components/PersonPage';
 import { renderWithRouter } from '../test-utils';
 import PersonRoot from '../src/components/PersonRoot';
 import PersonSearch from '../src/components/PersonSearch';
@@ -25,8 +25,8 @@ jest.mock('../src/components/PersonRoot', () => {
 		</div>
 	));
 });
-jest.mock('../src/components/PersonView', () => {
-	return jest.fn(() => <div>PersonView</div>);
+jest.mock('../src/components/PersonPage', () => {
+	return jest.fn(() => <div>PersonPage</div>);
 });
 jest.mock('../src/components/NoMatch', () => {
 	return jest.fn(() => null);
@@ -110,7 +110,7 @@ describe('The App component', () => {
 			expect(PersonSearch).toBeCalledTimes(1);
 		});
 
-		it('Renders PersonView if route is /person/someId', () => {
+		it('Renders PersonPage if route is /person/someId', () => {
 			render(
 				<MemoryRouter initialEntries={['/person/someId']}>
 					<App />
@@ -118,7 +118,7 @@ describe('The App component', () => {
 			);
 
 			expect(PersonRoot).toBeCalledTimes(1);
-			expect(PersonView).toBeCalledTimes(1);
+			expect(PersonPage).toBeCalledTimes(1);
 			expect(PersonSearch).toBeCalledTimes(0);
 		});
 

@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
-import PersonView from '.';
+import PersonPage from '.';
 import useGetPersonById from '../../hooks/useGetPersonById';
 import { personWithDomain } from '../../../testData/personData';
 import Identifiers from './Identifiers';
@@ -35,7 +35,7 @@ beforeAll(() => {
 
 describe('The Person component', () => {
 	it('should call hook with personId', () => {
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(mockUseGetPersonById).toHaveBeenCalledTimes(1);
 		expect(mockUseGetPersonById).toHaveBeenCalledWith('someId');
 	});
@@ -44,7 +44,7 @@ describe('The Person component', () => {
 		mockUseGetPersonById.mockReturnValue({
 			isLoading: true,
 		});
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(screen.getByText(/Hämtar persondata.../i)).toBeInTheDocument();
 	});
 
@@ -52,7 +52,7 @@ describe('The Person component', () => {
 		mockUseGetPersonById.mockReturnValue({
 			isLoading: false,
 		});
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(screen.queryAllByText(/Hämtar persondata.../i)).toHaveLength(0);
 	});
 
@@ -61,7 +61,7 @@ describe('The Person component', () => {
 			isLoading: false,
 			error: new Error('Some Error from hook'),
 		});
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(
 			screen.getByText(/Någonting gick fel: Some Error from hook/i)
 		).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('The Person component', () => {
 		mockUseGetPersonById.mockReturnValue({
 			isLoading: false,
 		});
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(
 			screen.queryAllByText(/Någonting gick fel: Some Error from hook/i)
 		).toHaveLength(0);
@@ -83,7 +83,7 @@ describe('The Person component', () => {
 			person: undefined,
 		});
 
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(screen.getByText(/Hämtar persondata.../i)).toBeInTheDocument();
 		expect(screen.queryAllByText(/Enequist, Gerd/i)).toHaveLength(0);
 	});
@@ -94,7 +94,7 @@ describe('The Person component', () => {
 			person: personWithDomain,
 		});
 
-		render(<PersonView />);
+		render(<PersonPage />);
 		expect(screen.queryAllByText(/Hämtar persondata.../i)).toHaveLength(0);
 		expect(screen.getByText(/Enequist, Gerd/i)).toBeInTheDocument();
 	});
@@ -106,7 +106,7 @@ describe('The Person component', () => {
 				person: undefined,
 			});
 
-			render(<PersonView />);
+			render(<PersonPage />);
 
 			expect(Identifiers).not.toHaveBeenCalled();
 		});
@@ -117,7 +117,7 @@ describe('The Person component', () => {
 				person: personWithDomain,
 			});
 
-			render(<PersonView />);
+			render(<PersonPage />);
 
 			expect(Identifiers).toHaveBeenCalledTimes(1);
 			expect(Identifiers).toHaveBeenCalledWith(
