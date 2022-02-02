@@ -25,6 +25,11 @@ export const createCompletePerson = () => {
 
 	completePerson.domains = ['someDomain', 'someOtherDomain'];
 
+	completePerson.alternativeNames = [
+		new Name('someAlternativeFamilyName', 'someAlternativeGivenName'),
+		new Name('someOtherAlternativeFamilyName', 'someOtherAlternativeGivenName'),
+	];
+
 	return completePerson;
 };
 
