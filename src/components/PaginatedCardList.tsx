@@ -8,6 +8,7 @@ const Parent = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
+	row-gap: 1em;
 `;
 
 const PaginatedCardList = function ({
