@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import useGetPersonById from '../../hooks/useGetPersonById';
-import Identifiers from './Identifiers';
+import PersonView from './PersonView';
 
 const PersonPage = function () {
 	const { personId = '' } = useParams();
@@ -10,12 +10,7 @@ const PersonPage = function () {
 		<section>
 			{error && <div>Någonting gick fel: {error.message}</div>}
 			{isLoading && <div>Hämtar persondata...</div>}
-			{person && (
-				<div>
-					<p>{person.authorisedName.toString()}</p>
-					<Identifiers person={person} />
-				</div>
-			)}
+			{person && <PersonView person={person} />}
 		</section>
 	);
 };
