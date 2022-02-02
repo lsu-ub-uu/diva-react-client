@@ -1,3 +1,4 @@
+import ExternalUrl from './ExternalUrl';
 import Listable from './Listable';
 import Name from './Name';
 
@@ -18,6 +19,8 @@ class Person implements Listable {
 
 	librisIDs: string[];
 
+	externalURLs: ExternalUrl[];
+
 	constructor(id: string, authorisedName: Name) {
 		this.id = id;
 		this.authorisedName = authorisedName;
@@ -26,6 +29,7 @@ class Person implements Listable {
 		this.orcidIDs = [];
 		this.viafIDs = [];
 		this.librisIDs = [];
+		this.externalURLs = [];
 	}
 
 	setDomains = (domains: string[]) => {

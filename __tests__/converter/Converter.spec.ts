@@ -195,17 +195,21 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 			});
 		});
 
-		it('sets the title if it exists', () => {
-			const person = convertPerson(completePersonDataGroup);
+		describe('title', () => {
+			it('sets the title if it exists', () => {
+				const person = convertPerson(completePersonDataGroup);
 
-			expect(person.title).toStrictEqual('someTitle');
+				expect(person.title).toStrictEqual('someTitle');
+			});
+
+			it('does not set the title if it does NOT exists', () => {
+				const person = convertPerson(createMinimumPersonDataGroup());
+
+				expect(person.title).toStrictEqual('');
+			});
 		});
 
-		it('does not set the title if it does NOT exists', () => {
-			const person = convertPerson(createMinimumPersonDataGroup());
-
-			expect(person.title).toStrictEqual('');
-		});
+		describe('external Urls', () => {});
 	});
 });
 

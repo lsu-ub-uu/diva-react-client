@@ -87,6 +87,34 @@ export const completePersonDataGroup: DataGroup = {
 			value: 'someOtherLibris',
 			repeatId: '1',
 		},
+		{
+			name: 'externalURL',
+			children: [
+				{
+					name: 'linkTitle',
+					value: 'Min profilsida UU',
+				},
+				{
+					name: 'URL',
+					value: 'someUrl',
+				},
+			],
+			repeatId: '0',
+		},
+		{
+			name: 'externalURL',
+			children: [
+				{
+					name: 'linkTitle',
+					value: 'ResearchGate',
+				},
+				{
+					name: 'URL',
+					value: 'https://www.researchgate.net',
+				},
+			],
+			repeatId: '1',
+		},
 	],
 };
 
