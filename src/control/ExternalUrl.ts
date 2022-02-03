@@ -1,6 +1,6 @@
 type ExternalUrl = {
-	title: string;
-	url: string;
+	linkTitle: string;
+	URL: string;
 };
 
 export default ExternalUrl;

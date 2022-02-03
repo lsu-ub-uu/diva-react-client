@@ -1,65 +1,65 @@
 import { DataAtomic, DataGroup } from './CoraData';
 
-export type PersonObject = {
-	person: [
-		{
-			recordInfo: [
-				{
-					id: string[];
-				}
-			];
-			authorisedName: [
-				{
-					familyName: string[];
-					givenName: string[];
-				}
-			];
-			academicTitle?: string[];
+class GenericConverter {
+	multipleDefinition: string[];
+
+	constructor(multipleDefinition: string[]) {
+		this.multipleDefinition = multipleDefinition;
+	}
+
+	convertToGenericObject<T>(dataGroup: DataGroup) {
+		const object: any = {};
+
+		object[dataGroup.name] = this.convertDataGroup(dataGroup);
+
+		const objectToReturn: T = <T>object;
+
+		return objectToReturn;
+	}
+
+	convertDataGroup(dataGroup: DataGroup) {
+		const object: any = {};
+		const uniqueNameInDatas = getUniqueNameInDatas(dataGroup.children);
+
+		uniqueNameInDatas.forEach((nameInData) => {
+			if (this.canBeMultiple(nameInData)) {
+				object[nameInData] = [];
+			}
+		});
+
+		dataGroup.children.forEach((child) => {
+			if (this.canBeMultiple(child.name)) {
+				object[child.name].push(this.convertDataElement(child));
+			} else {
+				object[child.name] = this.convertDataElement(child);
+			}
+		});
+
+		return object;
+	}
+
+	canBeMultiple(key: string): boolean {
+		return this.multipleDefinition.includes(key);
+	}
+
+	convertDataElement(element: Object) {
+		if (Object.hasOwnProperty.call(element, 'children')) {
+			const dataGroup = <DataGroup>element;
+
+			return this.convertDataGroup(dataGroup);
 		}
-	];
-};
+		const dataAtomic = <DataAtomic>element;
 
-export function convertToGenericObject<T>(dataGroup: DataGroup) {
-	const object: any = {};
-
-	object[dataGroup.name] = [convertDataGroup(dataGroup)];
-
-	const objectToReturn: T = <T>object;
-
-	return objectToReturn;
+		return convertDataAtomic(dataAtomic);
+	}
 }
-
-function convertDataGroup(dataGroup: DataGroup) {
-	const object: any = {};
-	const uniqueNameInDatas = getUniqueNameInDatas(dataGroup.children);
-
-	uniqueNameInDatas.forEach((nameInData) => {
-		object[nameInData] = [];
-	});
-
-	dataGroup.children.forEach((child) => {
-		object[child.name].push(convertDataElement(child));
-	});
-
-	return object;
-}
-
 function getUniqueNameInDatas(children: (DataGroup | DataAtomic)[]): string[] {
 	return [...new Set(children.map((item) => item.name))];
-}
-
-function convertDataElement(element: Object) {
-	if (Object.hasOwnProperty.call(element, 'children')) {
-		const dataGroup = <DataGroup>element;
-
-		return convertDataGroup(dataGroup);
-	}
-	const dataAtomic = <DataAtomic>element;
-
-	return convertDataAtomic(dataAtomic);
 }
 
 function convertDataAtomic(dataAtomic: DataAtomic) {
 	const { value } = dataAtomic;
 	return value;
 }
+
+export default GenericConverter;

@@ -1,158 +1,158 @@
-import ExternalUrl from '../control/ExternalUrl';
-import Name from '../control/Name';
-import Person from '../control/Person';
-import { DataAtomic, DataGroup } from './CoraData';
-import {
-	getAllChildrenWithNameInData,
-	getFirstChildWithNameInData,
-} from './CoraDataUtils';
+// import ExternalUrl from '../control/ExternalUrl';
+// import Name from '../control/Name';
+// import Person from '../control/Person';
+// import { DataAtomic, DataGroup } from './CoraData';
+// import {
+// 	getAllChildrenWithNameInData,
+// 	getFirstChildWithNameInData,
+// } from './CoraDataUtils';
 
-const ORCID_NAME_IN_DATA = 'ORCID_ID';
-const VIAF_NAME_IN_DATA = 'VIAF_ID';
-const LIBRIS_NAME_IN_DATA = 'Libris_ID';
+// const ORCID_NAME_IN_DATA = 'ORCID_ID';
+// const VIAF_NAME_IN_DATA = 'VIAF_ID';
+// const LIBRIS_NAME_IN_DATA = 'Libris_ID';
 
-let person: Person;
+// let person: Person;
 
-export function convertPerson(dataGroup: DataGroup): Person {
-	const id: string = extractIdFromDataGroup(dataGroup);
+// export function convertPerson(dataGroup: DataGroup): Person {
+// 	const id: string = extractIdFromDataGroup(dataGroup);
 
-	const authorisedName: Name =
-		extractAuthorisedNameFromPersonDataGroup(dataGroup);
+// 	const authorisedName: Name =
+// 		extractAuthorisedNameFromPersonDataGroup(dataGroup);
 
-	person = new Person(id, authorisedName);
+// 	person = new Person(id, authorisedName);
 
-	possiblyAddOtherIdsFromDataGroup(dataGroup);
+// 	possiblyAddOtherIdsFromDataGroup(dataGroup);
 
-	possiblyAddAlternativeNames(dataGroup);
+// 	possiblyAddAlternativeNames(dataGroup);
 
-	possiblySetAcademicTitle(dataGroup);
+// 	possiblySetAcademicTitle(dataGroup);
 
-	possiblySetExternalUrls(dataGroup);
+// 	possiblySetExternalUrls(dataGroup);
 
-	return person;
-}
+// 	return person;
+// }
 
-function extractIdFromDataGroup(dataGroup: DataGroup): string {
-	const recordInfo: DataGroup = <DataGroup>(
-		getFirstChildWithNameInData(dataGroup, 'recordInfo')
-	);
+// function extractIdFromDataGroup(dataGroup: DataGroup): string {
+// 	const recordInfo: DataGroup = <DataGroup>(
+// 		getFirstChildWithNameInData(dataGroup, 'recordInfo')
+// 	);
 
-	const idAtomic: DataAtomic = <DataAtomic>(
-		getFirstChildWithNameInData(recordInfo, 'id')
-	);
+// 	const idAtomic: DataAtomic = <DataAtomic>(
+// 		getFirstChildWithNameInData(recordInfo, 'id')
+// 	);
 
-	return idAtomic.value;
-}
+// 	return idAtomic.value;
+// }
 
-function extractAuthorisedNameFromPersonDataGroup(
-	personDataGroup: DataGroup
-): Name {
-	const authorisedName: DataGroup = <DataGroup>(
-		getFirstChildWithNameInData(personDataGroup, 'authorisedName')
-	);
+// function extractAuthorisedNameFromPersonDataGroup(
+// 	personDataGroup: DataGroup
+// ): Name {
+// 	const authorisedName: DataGroup = <DataGroup>(
+// 		getFirstChildWithNameInData(personDataGroup, 'authorisedName')
+// 	);
 
-	if (authorisedName === null) {
-		return new Name('', '');
-	}
+// 	if (authorisedName === null) {
+// 		return new Name('', '');
+// 	}
 
-	return extractNameFromNameDataGroup(authorisedName);
-}
+// 	return extractNameFromNameDataGroup(authorisedName);
+// }
 
-function extractNameFromNameDataGroup(nameDataGroup: DataGroup) {
-	const nameToReturn: Name = new Name('', '');
+// function extractNameFromNameDataGroup(nameDataGroup: DataGroup) {
+// 	const nameToReturn: Name = new Name('', '');
 
-	const familyName: DataAtomic = <DataAtomic>(
-		getFirstChildWithNameInData(nameDataGroup, 'familyName')
-	);
-	if (familyName !== null) {
-		nameToReturn.familyName = familyName.value;
-	}
+// 	const familyName: DataAtomic = <DataAtomic>(
+// 		getFirstChildWithNameInData(nameDataGroup, 'familyName')
+// 	);
+// 	if (familyName !== null) {
+// 		nameToReturn.familyName = familyName.value;
+// 	}
 
-	const givenName: DataAtomic = <DataAtomic>(
-		getFirstChildWithNameInData(nameDataGroup, 'givenName')
-	);
+// 	const givenName: DataAtomic = <DataAtomic>(
+// 		getFirstChildWithNameInData(nameDataGroup, 'givenName')
+// 	);
 
-	if (givenName !== null) {
-		nameToReturn.givenName = givenName.value;
-	}
+// 	if (givenName !== null) {
+// 		nameToReturn.givenName = givenName.value;
+// 	}
 
-	return nameToReturn;
-}
+// 	return nameToReturn;
+// }
 
-function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
-	const orcidChildren = <DataAtomic[]>(
-		getAllChildrenWithNameInData(personDataGroup, ORCID_NAME_IN_DATA)
-	);
-	orcidChildren.forEach((child) => {
-		if (child.value !== '') {
-			person.orcidIDs.push(child.value);
-		}
-	});
+// function possiblyAddOtherIdsFromDataGroup(personDataGroup: DataGroup) {
+// 	const orcidChildren = <DataAtomic[]>(
+// 		getAllChildrenWithNameInData(personDataGroup, ORCID_NAME_IN_DATA)
+// 	);
+// 	orcidChildren.forEach((child) => {
+// 		if (child.value !== '') {
+// 			person.orcidIDs.push(child.value);
+// 		}
+// 	});
 
-	const viafChildren = <DataAtomic[]>(
-		getAllChildrenWithNameInData(personDataGroup, VIAF_NAME_IN_DATA)
-	);
-	viafChildren.forEach((child) => {
-		if (child.value !== '') {
-			person.viafIDs.push(child.value);
-		}
-	});
+// 	const viafChildren = <DataAtomic[]>(
+// 		getAllChildrenWithNameInData(personDataGroup, VIAF_NAME_IN_DATA)
+// 	);
+// 	viafChildren.forEach((child) => {
+// 		if (child.value !== '') {
+// 			person.viafIDs.push(child.value);
+// 		}
+// 	});
 
-	const librisChildren = <DataAtomic[]>(
-		getAllChildrenWithNameInData(personDataGroup, LIBRIS_NAME_IN_DATA)
-	);
-	librisChildren.forEach((child) => {
-		if (child.value !== '') {
-			person.librisIDs.push(child.value);
-		}
-	});
-}
+// 	const librisChildren = <DataAtomic[]>(
+// 		getAllChildrenWithNameInData(personDataGroup, LIBRIS_NAME_IN_DATA)
+// 	);
+// 	librisChildren.forEach((child) => {
+// 		if (child.value !== '') {
+// 			person.librisIDs.push(child.value);
+// 		}
+// 	});
+// }
 
-function possiblyAddAlternativeNames(dataGroup: DataGroup) {
-	const alternativeNames = getAllChildrenWithNameInData(
-		dataGroup,
-		'alternativeName'
-	);
+// function possiblyAddAlternativeNames(dataGroup: DataGroup) {
+// 	const alternativeNames = getAllChildrenWithNameInData(
+// 		dataGroup,
+// 		'alternativeName'
+// 	);
 
-	alternativeNames.forEach((alternativeNameDataGroup) => {
-		person.alternativeNames.push(
-			extractNameFromNameDataGroup(<DataGroup>alternativeNameDataGroup)
-		);
-	});
-}
+// 	alternativeNames.forEach((alternativeNameDataGroup) => {
+// 		person.alternativeNames.push(
+// 			extractNameFromNameDataGroup(<DataGroup>alternativeNameDataGroup)
+// 		);
+// 	});
+// }
 
-function possiblySetAcademicTitle(dataGroup: DataGroup) {
-	const academicTitle = <DataAtomic>(
-		getFirstChildWithNameInData(dataGroup, 'academicTitle')
-	);
+// function possiblySetAcademicTitle(dataGroup: DataGroup) {
+// 	const academicTitle = <DataAtomic>(
+// 		getFirstChildWithNameInData(dataGroup, 'academicTitle')
+// 	);
 
-	if (academicTitle !== null) {
-		person.title = academicTitle.value;
-	}
-}
+// 	if (academicTitle !== null) {
+// 		person.title = academicTitle.value;
+// 	}
+// }
 
-function possiblySetExternalUrls(dataGroup: DataGroup) {
-	const externalUrls = <DataGroup[]>(
-		getAllChildrenWithNameInData(dataGroup, 'externalURL')
-	);
+// function possiblySetExternalUrls(dataGroup: DataGroup) {
+// 	const externalUrls = <DataGroup[]>(
+// 		getAllChildrenWithNameInData(dataGroup, 'externalURL')
+// 	);
 
-	externalUrls.forEach((externalUrlDataGroup) => {
-		const titleAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(externalUrlDataGroup, 'linkTitle')
-		);
-		const urlAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(externalUrlDataGroup, 'URL')
-		);
+// 	externalUrls.forEach((externalUrlDataGroup) => {
+// 		const titleAtomic = <DataAtomic>(
+// 			getFirstChildWithNameInData(externalUrlDataGroup, 'linkTitle')
+// 		);
+// 		const urlAtomic = <DataAtomic>(
+// 			getFirstChildWithNameInData(externalUrlDataGroup, 'URL')
+// 		);
 
-		const externalUrl: ExternalUrl = {
-			title: titleAtomic !== null ? titleAtomic.value : '',
-			url: urlAtomic !== null ? urlAtomic.value : '',
-		};
+// 		const externalUrl: ExternalUrl = {
+// 			title: titleAtomic !== null ? titleAtomic.value : '',
+// 			url: urlAtomic !== null ? urlAtomic.value : '',
+// 		};
 
-		if (externalUrl.title !== '' && externalUrl.url !== '') {
-			person.externalURLs.push(externalUrl);
-		}
-	});
-}
+// 		if (externalUrl.title !== '' && externalUrl.url !== '') {
+// 			person.externalURLs.push(externalUrl);
+// 		}
+// 	});
+// }
 
-export default convertPerson;
+// export default convertPerson;

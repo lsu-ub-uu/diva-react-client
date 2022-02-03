@@ -1,49 +1,100 @@
-import { createMinimumPersonDataGroup } from '../../testData/personDataGroups';
+import { completePersonDataGroup } from '../../testData/personDataGroups';
 import { DataGroup } from './CoraData';
-import { convertToGenericObject, PersonObject } from './GenericConverter';
-
-const personMultipleDefinition = {
-	person: false,
-	recordInfo: false,
-	id: false,
-	authorisedName: false,
-	familyName: false,
-	academicTitle: false,
-};
+import GenericConverter from './GenericConverter';
+import {
+	objectName,
+	personMultipleDefinition,
+	PersonObject,
+} from './Person/PersonDefinitions';
 
 describe('GenericConverter', () => {
-	describe('convertToGenericObject', () => {
-		it('takes a dataGroup and a key definition array and returns type that has been provided', () => {
-			const dataGroup: DataGroup = createMinimumPersonDataGroup();
-
-			const personObject = convertToGenericObject<PersonObject>(dataGroup);
-			expect(personObject.person).toBeDefined();
+	describe('GenericConverter', () => {
+		it('constructor takes a multipleDefinition', () => {
+			const converter = new GenericConverter([]);
+			expect(converter).toBeDefined();
 		});
+	});
 
+	describe('convertToGenericObject', () => {
 		it('converts a top-level DataAtomic (0-1) and returns an object containing its data', () => {
+			type TypeToConvertTo = {
+				someKey: {
+					title: string;
+				};
+			};
 			const dataGroup: DataGroup = {
-				name: 'person',
+				name: 'someKey',
 				children: [
 					{
-						name: 'academicTitle',
+						name: 'title',
 						value: 'someTitle',
 					},
 				],
 			};
-			const genericObject = <any>convertToGenericObject(dataGroup);
-			expect(genericObject.person[0].academicTitle).toStrictEqual([
+
+			const converter = new GenericConverter([]);
+			const genericObject =
+				converter.convertToGenericObject<TypeToConvertTo>(dataGroup);
+
+			expect(genericObject.someKey.title).toStrictEqual('someTitle');
+		});
+		it('converts a top-level DataGroup (0-1) and returns an object containing its data', () => {
+			type TypeToConvertTo = {
+				someKey: {
+					title: string[];
+				};
+			};
+			const dataGroup: DataGroup = {
+				name: 'someKey',
+				children: [
+					{
+						name: 'title',
+						value: 'someTitle',
+					},
+					{
+						name: 'title',
+						value: 'someOtherTitle',
+					},
+				],
+			};
+
+			const converter = new GenericConverter(['title']);
+			const genericObject =
+				converter.convertToGenericObject<TypeToConvertTo>(dataGroup);
+
+			expect(genericObject.someKey.title).toStrictEqual([
 				'someTitle',
+				'someOtherTitle',
 			]);
 		});
 
-		it('traverses a top-level DataGroup (0-1)', () => {
-			const dataGroup: DataGroup = createMinimumPersonDataGroup();
+		it('converts a full dataGroup', () => {
+			const converter = new GenericConverter(personMultipleDefinition);
 
-			const genericObject = <PersonObject>convertToGenericObject(dataGroup);
+			const personObject = converter.convertToGenericObject<PersonObject>(
+				completePersonDataGroup
+			);
 
-			expect(genericObject.person[0].recordInfo[0].id).toStrictEqual([
-				'someId',
-			]);
+			const alternativeNames = <objectName[]>(
+				personObject.person.alternativeName
+			);
+
+			expect(alternativeNames).toBeDefined();
+			expect(alternativeNames).toHaveLength(2);
+
+			expect(alternativeNames[0].familyName).toStrictEqual(
+				'SomeAlternativeFamilyName'
+			);
+			expect(alternativeNames[0].givenName).toStrictEqual(
+				'SomeAlternativeGivenName'
+			);
+
+			expect(alternativeNames[1].familyName).toStrictEqual(
+				'SomeOtherAlternativeFamilyName'
+			);
+			expect(alternativeNames[1].givenName).toStrictEqual(
+				'SomeOtherAlternativeGivenName'
+			);
 		});
 	});
 });
