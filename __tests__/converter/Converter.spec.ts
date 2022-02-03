@@ -4,7 +4,7 @@ import { DataGroup } from '../../src/converter/CoraData';
 import {
 	completePersonDataGroup,
 	createMinimumPersonDataGroup,
-} from '../../testData/personDataGroups';
+} from '../../testData/personTestData';
 
 describe('The functions in converter can be used to convert DataGroups to TS-objects', () => {
 	describe('convertPerson', () => {
@@ -221,11 +221,13 @@ describe('The functions in converter can be used to convert DataGroups to TS-obj
 
 				expect(person.externalURLs).toHaveLength(2);
 
-				expect(person.externalURLs[0].title).toStrictEqual('Min profilsida UU');
-				expect(person.externalURLs[0].url).toStrictEqual('someUrl');
+				expect(person.externalURLs[0].linkTitle).toStrictEqual(
+					'Min profilsida UU'
+				);
+				expect(person.externalURLs[0].URL).toStrictEqual('someUrl');
 
-				expect(person.externalURLs[1].title).toStrictEqual('ResearchGate');
-				expect(person.externalURLs[1].url).toStrictEqual(
+				expect(person.externalURLs[1].linkTitle).toStrictEqual('ResearchGate');
+				expect(person.externalURLs[1].URL).toStrictEqual(
 					'https://www.researchgate.net'
 				);
 			});

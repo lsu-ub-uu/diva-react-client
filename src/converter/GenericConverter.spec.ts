@@ -1,4 +1,4 @@
-import { completePersonDataGroup } from '../../testData/personDataGroups';
+import { completePersonDataGroup } from '../../testData/personTestData';
 import { DataGroup } from './CoraData';
 import GenericConverter from './GenericConverter';
 import {

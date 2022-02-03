@@ -1,4 +1,7 @@
+import Name from '../src/control/Name';
+import Person from '../src/control/Person';
 import { DataGroup } from '../src/converter/CoraData';
+import { PersonObject } from '../src/converter/Person/PersonDefinitions';
 
 export const completePersonDataGroup: DataGroup = {
 	name: 'person',
@@ -182,6 +185,76 @@ export const createMinimumPersonDataGroup = (): DataGroup => {
 			},
 		],
 	};
+};
+
+const createCompletePerson = () => {
+	const person = new Person(
+		'someId',
+		new Name('SomeFamilyName', 'SomeGivenName')
+	);
+
+	person.title = 'someTitle';
+
+	person.alternativeNames = [
+		new Name('SomeAlternativeFamilyName', 'SomeAlternativeGivenName'),
+		new Name('SomeOtherAlternativeFamilyName', 'SomeOtherAlternativeGivenName'),
+	];
+
+	person.orcidIDs = ['0000-0001-6885-9290', '0000-234-5454-65656'];
+
+	person.viafIDs = ['someViaf', 'someOtherViaf'];
+
+	person.librisIDs = ['someLibris', 'someOtherLibris'];
+
+	person.externalURLs = [
+		{
+			linkTitle: 'Min profilsida UU',
+			URL: 'someUrl',
+		},
+		{
+			linkTitle: 'ResearchGate',
+			URL: 'https://www.researchgate.net',
+		},
+	];
+
+	return person;
+};
+export const completePerson = createCompletePerson();
+
+export const completePersonObject: PersonObject = {
+	person: {
+		authorisedName: {
+			familyName: 'SomeFamilyName',
+			givenName: 'SomeGivenName',
+		},
+		recordInfo: {
+			id: 'someId',
+		},
+		academicTitle: 'someTitle',
+		alternativeName: [
+			{
+				familyName: 'SomeAlternativeFamilyName',
+				givenName: 'SomeAlternativeGivenName',
+			},
+			{
+				familyName: 'SomeOtherAlternativeFamilyName',
+				givenName: 'SomeOtherAlternativeGivenName',
+			},
+		],
+		ORCID_ID: ['0000-0001-6885-9290', '0000-234-5454-65656'],
+		VIAF_ID: ['someViaf', 'someOtherViaf'],
+		Libris_ID: ['someLibris', 'someOtherLibris'],
+		externalURL: [
+			{
+				linkTitle: 'Min profilsida UU',
+				URL: 'someUrl',
+			},
+			{
+				linkTitle: 'ResearchGate',
+				URL: 'https://www.researchgate.net',
+			},
+		],
+	},
 };
 
 export default { completePersonDataGroup };

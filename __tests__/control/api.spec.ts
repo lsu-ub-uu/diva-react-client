@@ -5,16 +5,17 @@ import {
 } from '../../src/control/api';
 import searchPersonsByNameSearch from '../../src/control/api/searchPersonByNameSearch';
 import Person from '../../src/control/Person';
-import convertPerson from '../../src/converter/Converter';
 import { onePerson } from '../../testData/searchResults';
 
 import httpClient from '../../src/control/HttpClient';
+import convertPersonDataGroupToPerson from '../../src/converter/Person/PersonConverter';
 
-jest.mock('../../src/converter/Converter');
+jest.mock('../../src/converter/Person/PersonConverter');
 
-const mockConvertPerson = convertPerson as jest.MockedFunction<
-	typeof convertPerson
->;
+const mockConvertPersonDataGroupToPerson =
+	convertPersonDataGroupToPerson as jest.MockedFunction<
+		typeof convertPersonDataGroupToPerson
+	>;
 
 jest.mock('../../src/control/HttpClient');
 
@@ -84,19 +85,23 @@ describe('Api', () => {
 			}
 		});
 
-		it('should pass recordData received from httpClient to convertPerson', async () => {
+		it('should pass recordData received from httpClient to convertPersonDataGroupToPerson', async () => {
 			expect.assertions(2);
 
 			await getPersonById('someId');
 
-			expect(mockConvertPerson).toHaveBeenCalledTimes(1);
-			expect(mockConvertPerson).toHaveBeenCalledWith(onePerson.record.data);
+			expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(1);
+			expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledWith(
+				onePerson.record.data
+			);
 		});
 
 		it('should resolve with a person if a person could be found', async () => {
 			const expectedPersons: Person[] = createMockPersons(1);
 
-			mockConvertPerson.mockReturnValueOnce(expectedPersons[0]);
+			mockConvertPersonDataGroupToPerson.mockReturnValueOnce(
+				expectedPersons[0]
+			);
 
 			expect.assertions(1);
 

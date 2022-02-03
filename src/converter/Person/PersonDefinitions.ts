@@ -1,6 +1,3 @@
-import Name from '../../control/Name';
-import Person from '../../control/Person';
-
 export type objectName = {
 	familyName: string;
 	givenName: string;
@@ -37,9 +34,3 @@ export const personMultipleDefinition = [
 	'externalURL',
 	'otherAffiliation',
 ];
-
-export const createPersonFromPersonObject = (
-	personObject: PersonObject
-): Person => {
-	return new Person('asdf', new Name('asdf', 'asdf'));
-};
