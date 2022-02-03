@@ -115,6 +115,42 @@ export const completePersonDataGroup: DataGroup = {
 			],
 			repeatId: '1',
 		},
+		{
+			name: 'otherAffiliation',
+			children: [
+				{
+					name: 'affiliation',
+					value: 'Säffle högskola',
+				},
+				{
+					name: 'affiliationFromYear',
+					value: '1998',
+				},
+				{
+					name: 'affiliationUntilYear',
+					value: '2000',
+				},
+			],
+			repeatId: '0',
+		},
+		{
+			name: 'otherAffiliation',
+			children: [
+				{
+					name: 'affiliation',
+					value: 'Foobar skola',
+				},
+				{
+					name: 'affiliationFromYear',
+					value: '1970',
+				},
+				{
+					name: 'affiliationUntilYear',
+					value: '1990',
+				},
+			],
+			repeatId: '1',
+		},
 	],
 };
 
