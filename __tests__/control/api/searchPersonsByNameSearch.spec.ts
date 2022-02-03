@@ -1,5 +1,4 @@
 import httpClient from '../../../src/control/HttpClient';
-import convertPerson from '../../../src/converter/Converter';
 import searchPersonsByNameSearch from '../../../src/control/api/searchPersonByNameSearch';
 import List from '../../../src/control/List';
 import {
@@ -7,6 +6,7 @@ import {
 	dataListContainingOnePerson,
 	dataListContainingTwoOfFifteen,
 } from '../../../testData/searchResults';
+import convertPersonDataGroupToPerson from '../../../src/converter/Person/PersonConverter';
 
 jest.mock('../../../src/control/HttpClient');
 
@@ -14,11 +14,12 @@ const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
 
-jest.mock('../../../src/converter/Converter');
+jest.mock('../../../src/converter/Person/PersonConverter');
 
-const mockConvertPerson = convertPerson as jest.MockedFunction<
-	typeof convertPerson
->;
+const mockConvertPersonDataGroupToPerson =
+	convertPersonDataGroupToPerson as jest.MockedFunction<
+		typeof convertPersonDataGroupToPerson
+	>;
 
 const searchTerm = 'someSearchTerm';
 const searchEndpoint = 'record/searchResult/';
@@ -88,7 +89,7 @@ describe('searchPersonsByNameSearch', () => {
 		expect(returnedList.totalNumber).toStrictEqual(0);
 		expect(returnedList.toNumber).toStrictEqual(0);
 
-		expect(mockConvertPerson).not.toHaveBeenCalled();
+		expect(mockConvertPersonDataGroupToPerson).not.toHaveBeenCalled();
 	});
 
 	it('should call convertPerson once with correct data if httpClient resolves with dataList of size 1', async () => {
@@ -98,8 +99,8 @@ describe('searchPersonsByNameSearch', () => {
 
 		await searchPersonsByNameSearch('someSearchTerm');
 
-		expect(mockConvertPerson).toHaveBeenCalledTimes(1);
-		expect(mockConvertPerson).toHaveBeenCalledWith(
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(1);
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledWith(
 			dataListContainingOnePerson.dataList.data[0].record.data
 		);
 	});
@@ -110,12 +111,12 @@ describe('searchPersonsByNameSearch', () => {
 		expect.assertions(3);
 
 		await searchPersonsByNameSearch('someSearchTerm');
-		expect(mockConvertPerson).toHaveBeenCalledTimes(4);
-		expect(mockConvertPerson).toHaveBeenNthCalledWith(
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(4);
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenNthCalledWith(
 			1,
 			dataListContainingFourPersons.dataList.data[0].record.data
 		);
-		expect(mockConvertPerson).toHaveBeenNthCalledWith(
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenNthCalledWith(
 			4,
 			dataListContainingFourPersons.dataList.data[3].record.data
 		);
@@ -128,7 +129,7 @@ describe('searchPersonsByNameSearch', () => {
 
 		const list: List = await searchPersonsByNameSearch('someSearchTerm');
 
-		expect(mockConvertPerson).toHaveBeenCalledTimes(4);
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(4);
 
 		expect(list.data).toHaveLength(4);
 		expect(list.fromNumber).toStrictEqual(1);
@@ -143,7 +144,7 @@ describe('searchPersonsByNameSearch', () => {
 
 		const list: List = await searchPersonsByNameSearch('someSearchTerm');
 
-		expect(mockConvertPerson).toHaveBeenCalledTimes(2);
+		expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(2);
 		expect(list.fromNumber).toStrictEqual(3);
 		expect(list.toNumber).toStrictEqual(4);
 		expect(list.totalNumber).toStrictEqual(15);

@@ -1,9 +1,9 @@
-import convertPerson from '../../converter/Converter';
 import {
 	DataGroup,
 	DataListWrapper,
 	RecordWrapper,
 } from '../../converter/CoraData';
+import convertPersonDataGroupToPerson from '../../converter/Person/PersonConverter';
 import httpClient from '../HttpClient';
 import { IHttpClientRequestParameters } from '../IHttpClient';
 import List from '../List';
@@ -110,7 +110,7 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 		const records: RecordWrapper[] = dataListWrapper.dataList.data;
 
 		persons = records.map((recordWrapper) => {
-			return convertPerson(recordWrapper.record.data);
+			return convertPersonDataGroupToPerson(recordWrapper.record.data);
 		});
 	}
 	const fromNumber = parseInt(dataListWrapper.dataList.fromNo, 10);
