@@ -5,13 +5,27 @@ import Name from './Name';
 class Person implements Listable {
 	id: string;
 
+	domains?: string[];
+
 	authorisedName: Name;
+
+	academicTitle: string;
+
+	yearOfBirth?: string;
+
+	yearOfDeath?: string;
+
+	emailAddress?: string;
 
 	alternativeNames: Name[];
 
-	title: string;
+	externalURLs: ExternalUrl[];
 
-	domains?: string[];
+	otherAffiliation?: {
+		affiliation: string;
+		affiliationFromYear: string;
+		affiliationUntilYear: string;
+	}[];
 
 	orcidIDs: string[];
 
@@ -19,13 +33,25 @@ class Person implements Listable {
 
 	librisIDs: string[];
 
-	externalURLs: ExternalUrl[];
+	biographyEnglish?: {
+		biography: string;
+		language: string;
+	};
+
+	biographySwedish?: {
+		biography: string;
+		language: string;
+	};
+
+	personDomainPart?: {
+		personDomainPart: string;
+	}[];
 
 	constructor(id: string, authorisedName: Name) {
 		this.id = id;
 		this.authorisedName = authorisedName;
 		this.alternativeNames = [];
-		this.title = '';
+		this.academicTitle = '';
 		this.orcidIDs = [];
 		this.viafIDs = [];
 		this.librisIDs = [];

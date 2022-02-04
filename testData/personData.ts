@@ -19,7 +19,7 @@ export const createCompletePerson = () => {
 		new Name('Celsius', 'Anders')
 	);
 
-	completePerson.title = 'someTitle';
+	completePerson.academicTitle = 'someTitle';
 
 	completePerson.orcidIDs = ['someOrcid', 'someOtherOrcid'];
 	completePerson.viafIDs = ['someViaf', 'someOtherViaf'];

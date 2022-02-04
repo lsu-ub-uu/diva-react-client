@@ -47,12 +47,12 @@ describe('PersonView', () => {
 
 	it('should render title if not empty', () => {
 		const person = createMinimumPersonWithIdAndName();
-		person.title = 'someTitle';
+		person.academicTitle = 'someTitle';
 		const { rerender } = render(<PersonView person={person} />);
 
 		expect(screen.getByText(/someTitle/i)).toBeInTheDocument();
 
-		person.title = 'someOtherTitle';
+		person.academicTitle = 'someOtherTitle';
 
 		rerender(<PersonView person={person} />);
 

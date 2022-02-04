@@ -193,18 +193,18 @@ const createCompletePerson = () => {
 		new Name('SomeFamilyName', 'SomeGivenName')
 	);
 
-	person.title = 'someTitle';
+	person.domains = ['someDomain', 'someOtherDomain'];
+
+	person.academicTitle = 'someTitle';
+
+	person.yearOfBirth = 'someYearOfBirth';
+	person.yearOfDeath = 'someYearOfDeat';
+	person.emailAddress = 'someEmailAddress';
 
 	person.alternativeNames = [
 		new Name('SomeAlternativeFamilyName', 'SomeAlternativeGivenName'),
 		new Name('SomeOtherAlternativeFamilyName', 'SomeOtherAlternativeGivenName'),
 	];
-
-	person.orcidIDs = ['0000-0001-6885-9290', '0000-234-5454-65656'];
-
-	person.viafIDs = ['someViaf', 'someOtherViaf'];
-
-	person.librisIDs = ['someLibris', 'someOtherLibris'];
 
 	person.externalURLs = [
 		{
@@ -217,20 +217,56 @@ const createCompletePerson = () => {
 		},
 	];
 
+	person.otherAffiliation = [
+		{
+			affiliation: 'someAffiliation',
+			affiliationFromYear: 'someAffiliationFromYear',
+			affiliationUntilYear: 'someAffiliationUntilYear',
+		},
+		{
+			affiliation: 'someOtherAffiliation',
+			affiliationFromYear: 'someOtherAffiliationFromYear',
+			affiliationUntilYear: 'someOtherAffiliationUntilYear',
+		},
+	];
+
+	person.orcidIDs = ['0000-0001-6885-9290', '0000-234-5454-65656'];
+
+	person.viafIDs = ['someViaf', 'someOtherViaf'];
+
+	person.librisIDs = ['someLibris', 'someOtherLibris'];
+
+	person.biographyEnglish = {
+		biography: 'some biography',
+		language: 'en',
+	};
+	person.biographySwedish = {
+		biography: 'Någon rolig biografi',
+		language: 'sv',
+	};
+	person.personDomainPart = [
+		{ personDomainPart: 'somePersonDomainPartId' },
+		{ personDomainPart: 'someOtherPersonDomainPartId' },
+	];
+
 	return person;
 };
 export const completePerson = createCompletePerson();
 
 export const completePersonObject: PersonObject = {
 	person: {
+		recordInfo: {
+			id: 'someId',
+			domain: ['someDomain', 'someOtherDomain'],
+		},
 		authorisedName: {
 			familyName: 'SomeFamilyName',
 			givenName: 'SomeGivenName',
 		},
-		recordInfo: {
-			id: 'someId',
-		},
 		academicTitle: 'someTitle',
+		yearOfBirth: 'someYearOfBirth',
+		yearOfDeath: 'someYearOfDeat',
+		emailAddress: 'someEmailAddress',
 		alternativeName: [
 			{
 				familyName: 'SomeAlternativeFamilyName',
@@ -241,9 +277,6 @@ export const completePersonObject: PersonObject = {
 				givenName: 'SomeOtherAlternativeGivenName',
 			},
 		],
-		ORCID_ID: ['0000-0001-6885-9290', '0000-234-5454-65656'],
-		VIAF_ID: ['someViaf', 'someOtherViaf'],
-		Libris_ID: ['someLibris', 'someOtherLibris'],
 		externalURL: [
 			{
 				linkTitle: 'Min profilsida UU',
@@ -253,6 +286,33 @@ export const completePersonObject: PersonObject = {
 				linkTitle: 'ResearchGate',
 				URL: 'https://www.researchgate.net',
 			},
+		],
+		otherAffiliation: [
+			{
+				affiliation: 'someAffiliation',
+				affiliationFromYear: 'someAffiliationFromYear',
+				affiliationUntilYear: 'someAffiliationUntilYear',
+			},
+			{
+				affiliation: 'someOtherAffiliation',
+				affiliationFromYear: 'someOtherAffiliationFromYear',
+				affiliationUntilYear: 'someOtherAffiliationUntilYear',
+			},
+		],
+		ORCID_ID: ['0000-0001-6885-9290', '0000-234-5454-65656'],
+		VIAF_ID: ['someViaf', 'someOtherViaf'],
+		Libris_ID: ['someLibris', 'someOtherLibris'],
+		biographyEnglish: {
+			biography: 'some biography',
+			language: 'en',
+		},
+		biographySwedish: {
+			biography: 'Någon rolig biografi',
+			language: 'sv',
+		},
+		personDomainPart: [
+			{ personDomainPart: 'somePersonDomainPartId' },
+			{ personDomainPart: 'someOtherPersonDomainPartId' },
 		],
 	},
 };
