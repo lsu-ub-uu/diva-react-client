@@ -13,7 +13,9 @@ export const createPersonFromPersonObject = (
 
 	const person = new Person(personObject.person.recordInfo.id, authorisedName);
 
-	person.domains = getArrayOrEmptyArray(personObject.person.recordInfo.domain);
+	if (personObject.person.recordInfo.domain !== undefined) {
+		person.domains = personObject.person.recordInfo.domain;
+	}
 
 	person.academicTitle = getValueOrEmptyString(
 		personObject.person.academicTitle
@@ -55,9 +57,15 @@ export const createPersonFromPersonObject = (
 		person.otherAffiliation = otherAffiliations;
 	}
 
-	person.orcidIDs = getArrayOrEmptyArray(personObject.person.ORCID_ID);
-	person.viafIDs = getArrayOrEmptyArray(personObject.person.VIAF_ID);
-	person.librisIDs = getArrayOrEmptyArray(personObject.person.Libris_ID);
+	if (personObject.person.ORCID_ID !== undefined) {
+		person.orcidIDs = personObject.person.ORCID_ID;
+	}
+	if (personObject.person.VIAF_ID !== undefined) {
+		person.viafIDs = personObject.person.VIAF_ID;
+	}
+	if (personObject.person.Libris_ID !== undefined) {
+		person.librisIDs = personObject.person.Libris_ID;
+	}
 
 	if (personObject.person.biographyEnglish !== undefined) {
 		person.biographyEnglish = personObject.person.biographyEnglish;
@@ -73,10 +81,6 @@ export const createPersonFromPersonObject = (
 
 	return person;
 };
-
-function getArrayOrEmptyArray(arr: string[] | undefined) {
-	return arr === undefined ? [] : arr;
-}
 
 function getValueOrEmptyString(str: string | undefined) {
 	return str !== undefined ? str : '';
