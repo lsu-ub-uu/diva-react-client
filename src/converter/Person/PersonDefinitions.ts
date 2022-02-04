@@ -3,6 +3,48 @@ export type objectName = {
 	givenName: string;
 };
 
+// const PersonMatcher = [
+// 	{
+// 		react: 'id',
+// 		cora: 'recordinfo/id',
+// 	},
+// 	{
+// 		react: 'authorisedName',
+// 		cora: 'authorisedName(NameMatcher)',
+// 	},
+// 	{
+// 		react: 'alternativeNames[]',
+// 		cora: 'alternativeName[](NameMatcher)',
+// 	},
+// 	{
+// 		react: 'authorisedName',
+// 		cora: 'name#type:authorised(NameMatcher)',
+// 	},
+// 	{
+// 		react: 'alternativeNames[]',
+// 		cora: 'name#type:alternative[](NameMatcher)',
+// 	},
+// 	{
+// 		react: 'orcidIDs[]',
+// 		cora: 'ORCID_ID[]',
+// 	},
+// ];
+
+// const NameMatcher = [
+// 	{
+// 		react: 'familyName',
+// 		cora: 'familyName',
+// 	},
+// 	{
+// 		react: 'givenName',
+// 		cora: 'givenName',
+// 	},
+// 	{
+// 		react: 'language',
+// 		cora: '#lang',
+// 	},
+// ];
+
 export type PersonObject = {
 	person: {
 		recordInfo: {
