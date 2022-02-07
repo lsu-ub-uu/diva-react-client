@@ -1,6 +1,6 @@
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
-import extractAndSetDataAtomic from './DataAtomicConverter';
+import extractDataAtomicValue from './DataAtomicConverter';
 
 const defaultTestDataGroup: DataGroup = {
 	name: 'someName',
@@ -17,182 +17,155 @@ const defaultTestObjectMatcher: Matcher = {
 	cora: 'someAtomicName',
 };
 
-let objectToReturn: any = {};
-
-beforeEach(() => {
-	objectToReturn = {};
-});
-
-it('takes a DataGroup and a top-level-matcher', () => {
-	extractAndSetDataAtomic(defaultTestDataGroup, defaultTestObjectMatcher, {});
-});
-
-describe('Handles DataAtomics', () => {
-	describe('extracts a DataAtomic value from the top level and returns an Object containing it', () => {
-		it('with a value', () => {
-			extractAndSetDataAtomic(
-				defaultTestDataGroup,
-				defaultTestObjectMatcher,
-				objectToReturn
-			);
-
-			expect(objectToReturn).toHaveProperty('someAtomicName');
-			expect(objectToReturn).toStrictEqual({
-				someAtomicName: 'someAtomicValue',
-			});
-		});
-
-		it('with another value', () => {
-			const testDataGroup: DataGroup = {
-				name: 'someName',
-				children: [
-					{
-						name: 'someAtomicName',
-						value: 'someOtherAtomicValue',
-					},
-				],
-			};
-
-			extractAndSetDataAtomic(
-				testDataGroup,
-				defaultTestObjectMatcher,
-				objectToReturn
-			);
-			expect(objectToReturn).toStrictEqual({
-				someAtomicName: 'someOtherAtomicValue',
-			});
-		});
-
-		it('with a different name in data', () => {
-			const testDataGroup: DataGroup = {
-				name: 'someName',
-				children: [
-					{
-						name: 'someAtomicName',
-						value: 'someOtherAtomicValue',
-					},
-					{
-						name: 'someOtherAtomicName',
-						value: 'someInterestingAtomicValue',
-					},
-				],
-			};
-			const testObjectMatcher: Matcher = {
-				react: 'someAtomicName',
-				cora: 'someOtherAtomicName',
-			};
-
-			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-			expect(objectToReturn).toStrictEqual({
-				someAtomicName: 'someInterestingAtomicValue',
-			});
-		});
-
-		it('with a different react path', () => {
-			const testDataGroup: DataGroup = {
-				name: 'someName',
-				children: [
-					{
-						name: 'someAtomicName',
-						value: 'someOtherAtomicValue',
-					},
-					{
-						name: 'someOtherAtomicName',
-						value: 'someInterestingAtomicValue',
-					},
-				],
-			};
-
-			const testObjectMatcher: Matcher = {
-				react: 'someOtherAtomicName',
-				cora: 'someOtherAtomicName',
-			};
-
-			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-			expect(objectToReturn).toHaveProperty('someOtherAtomicName');
-			expect(objectToReturn).toStrictEqual({
-				someOtherAtomicName: 'someInterestingAtomicValue',
-			});
-		});
+describe('extractDataAtomicValue', () => {
+	it('takes a DataGroup and a top-level-matcher', () => {
+		extractDataAtomicValue(defaultTestDataGroup, defaultTestObjectMatcher.cora);
 	});
 
-	it('does not fill the specified field if the DataAtomic does not exist', () => {
-		const testDataGroup: DataGroup = {
-			name: 'someName',
-			children: [
-				{
-					name: 'someOtherAtomicName',
-					value: 'someOtherAtomicValue',
-				},
-			],
-		};
-		const testObjectMatcher: Matcher = {
-			react: 'someAtomicName',
-			cora: 'someAtomicName',
-		};
-		extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
+	describe('Handles DataAtomics', () => {
+		describe('extracts a DataAtomic value from the top level and returns it', () => {
+			it('with a value', () => {
+				const value = extractDataAtomicValue(
+					defaultTestDataGroup,
+					defaultTestObjectMatcher.cora
+				);
 
-		expect(objectToReturn).not.toHaveProperty('someAtomicName');
-		expect(objectToReturn).toStrictEqual({});
-	});
+				expect(value).toStrictEqual('someAtomicValue');
+			});
 
-	it('does not fill the specified field if the children array is empty', () => {
-		const testDataGroup: DataGroup = {
-			name: 'someName',
-			children: [],
-		};
-		const testObjectMatcher: Matcher = {
-			react: 'someAtomicName',
-			cora: 'someAtomicName',
-		};
+			it('with another value', () => {
+				const testDataGroup: DataGroup = {
+					name: 'someName',
+					children: [
+						{
+							name: 'someAtomicName',
+							value: 'someOtherAtomicValue',
+						},
+					],
+				};
 
-		extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
+				const value = extractDataAtomicValue(
+					testDataGroup,
+					defaultTestObjectMatcher.cora
+				);
+				expect(value).toStrictEqual('someOtherAtomicValue');
+			});
 
-		expect(objectToReturn).not.toHaveProperty('someAtomicName');
-		expect(objectToReturn).toStrictEqual({});
-	});
+			it('with a different name in data', () => {
+				const testDataGroup: DataGroup = {
+					name: 'someName',
+					children: [
+						{
+							name: 'someAtomicName',
+							value: 'someOtherAtomicValue',
+						},
+						{
+							name: 'someOtherAtomicName',
+							value: 'someInterestingAtomicValue',
+						},
+					],
+				};
+				const testObjectMatcher: Matcher = {
+					react: 'someAtomicName',
+					cora: 'someOtherAtomicName',
+				};
 
-	describe('does fill the specified field with an empty string if the DataAtomic does not exist BUT the field is required', () => {
-		it('if the nameInData does not exist', () => {
-			const testDataGroup: DataGroup = {
-				name: 'someName',
-				children: [
-					{
-						name: 'someOtherAtomicName',
-						value: 'someOtherAtomicValue',
-					},
-				],
-			};
-			const testObjectMatcher: Matcher = {
-				react: 'someAtomicName',
-				cora: 'someAtomicName',
-				required: true,
-			};
-			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
+				const value = extractDataAtomicValue(
+					testDataGroup,
+					testObjectMatcher.cora
+				);
 
-			expect(objectToReturn).toHaveProperty('someAtomicName');
-			expect(objectToReturn).toStrictEqual({
-				someAtomicName: '',
+				expect(value).toStrictEqual('someInterestingAtomicValue');
 			});
 		});
-		it('if the children array is empty', () => {
-			const testDataGroup: DataGroup = {
-				name: 'someName',
-				children: [],
-			};
-			const testObjectMatcher: Matcher = {
-				react: 'someAtomicName',
-				cora: 'someAtomicName',
-				required: true,
-			};
 
-			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
+		describe('does NOT fill the specified field with an empty string if the DataAtomic does not exist', () => {
+			it('if the DataAtomic does not exist', () => {
+				const testDataGroup: DataGroup = {
+					name: 'someName',
+					children: [
+						{
+							name: 'someOtherAtomicName',
+							value: 'someOtherAtomicValue',
+						},
+					],
+				};
+				const testObjectMatcher: Matcher = {
+					react: 'someAtomicName',
+					cora: 'someAtomicName',
+				};
+				const value = extractDataAtomicValue(
+					testDataGroup,
+					testObjectMatcher.cora
+				);
 
-			expect(objectToReturn).toHaveProperty('someAtomicName');
-			expect(objectToReturn).toStrictEqual({
-				someAtomicName: '',
+				expect(value).toBeUndefined();
+			});
+
+			it('if the children array is empty', () => {
+				const testDataGroup: DataGroup = {
+					name: 'someName',
+					children: [],
+				};
+				const testObjectMatcher: Matcher = {
+					react: 'someAtomicName',
+					cora: 'someAtomicName',
+				};
+
+				const value = extractDataAtomicValue(
+					testDataGroup,
+					testObjectMatcher.cora
+				);
+
+				expect(value).toBeUndefined();
 			});
 		});
+
+		// describe('does fill the specified field with an empty string if the DataAtomic does not exist BUT the field is required', () => {
+		// 	it('if the nameInData does not exist', () => {
+		// 		const testDataGroup: DataGroup = {
+		// 			name: 'someName',
+		// 			children: [
+		// 				{
+		// 					name: 'someOtherAtomicName',
+		// 					value: 'someOtherAtomicValue',
+		// 				},
+		// 			],
+		// 		};
+		// 		const testObjectMatcher: Matcher = {
+		// 			react: 'someAtomicName',
+		// 			cora: 'someAtomicName',
+		// 			required: true,
+		// 		};
+		// 		const value = extractDataAtomicValue(
+		// 			testDataGroup,
+		// 			testObjectMatcher.cora,
+		// 			testObjectMatcher.required
+		// 		);
+
+		// 		expect(value).toStrictEqual('');
+		// 	});
+		// 	it('if the children array is empty', () => {
+		// 		const testDataGroup: DataGroup = {
+		// 			name: 'someName',
+		// 			children: [],
+		// 		};
+		// 		const testObjectMatcher: Matcher = {
+		// 			react: 'someAtomicName',
+		// 			cora: 'someAtomicName',
+		// 			required: true,
+		// 		};
+
+		// 		const value = extractDataAtomicValue(
+		// 			testDataGroup,
+		// 			testObjectMatcher.cora,
+		// 			testObjectMatcher.required
+		// 		);
+
+		// 		expect(value).toStrictEqual('');
+		// 	});
+		// });
+
+		it.todo('handle single DataAtomics with attributes');
 	});
 });

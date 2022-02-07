@@ -1,11 +1,11 @@
 import { DataGroup } from './CoraData';
-import extractAndSetDataAtomic from './DataAtomicConverter';
+import extractDataAtomicValue from './DataAtomicConverter';
 
 const convertToObject = <T>(dataGroup: DataGroup, matchers: Matcher[]) => {
 	const objectToReturn: any = {};
 
 	matchers.forEach((matcher) => {
-		extractAndSetDataAtomic(dataGroup, matcher, objectToReturn);
+		extractDataAtomicValue(dataGroup, matcher.cora);
 	});
 
 	return <T>objectToReturn;
@@ -32,6 +32,13 @@ export type Matcher = {
 	cora: string;
 	required?: boolean;
 	matcher?: Matcher;
+	multiple?: boolean;
+	matchingAttributes?: AttributeMatcher[];
+};
+
+export type AttributeMatcher = {
+	key: string;
+	value: string;
 };
 
 export default convertToObject;

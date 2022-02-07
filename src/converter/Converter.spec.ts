@@ -1,6 +1,6 @@
 import convertToObject, { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
-import extractAndSetDataAtomic from './DataAtomicConverter';
+import extractDataAtomicValue from './DataAtomicConverter';
 
 jest.mock('./DataAtomicConverter');
 
@@ -41,15 +41,15 @@ describe('The Converter', () => {
 					defaultTestObjectMatcher
 				);
 
-				expect(extractAndSetDataAtomic).toHaveBeenCalledTimes(1);
-				expect(extractAndSetDataAtomic).toHaveBeenLastCalledWith(
+				expect(extractDataAtomicValue).toHaveBeenCalledTimes(1);
+				expect(extractDataAtomicValue).toHaveBeenLastCalledWith(
 					defaultTestDataGroup,
 					defaultTestObjectMatcher[0],
 					{}
 				);
 			});
 
-			it('calls extractAndSetDataAtomic for multiple DataAtomic in matcher', () => {
+			it('calls extractAndSetDataAtomic for several DataAtomic in matcher', () => {
 				const testDataGroup: DataGroup = {
 					name: 'someName',
 					children: [
@@ -78,16 +78,16 @@ describe('The Converter', () => {
 
 				convertToObject<DefaultTestObject>(testDataGroup, testObjectMatcher);
 
-				expect(extractAndSetDataAtomic).toHaveBeenCalledTimes(2);
+				expect(extractDataAtomicValue).toHaveBeenCalledTimes(2);
 
-				expect(extractAndSetDataAtomic).toHaveBeenNthCalledWith(
+				expect(extractDataAtomicValue).toHaveBeenNthCalledWith(
 					1,
 					testDataGroup,
 					testObjectMatcher[0],
 					{}
 				);
 
-				expect(extractAndSetDataAtomic).toHaveBeenNthCalledWith(
+				expect(extractDataAtomicValue).toHaveBeenNthCalledWith(
 					2,
 					testDataGroup,
 					testObjectMatcher[1],
