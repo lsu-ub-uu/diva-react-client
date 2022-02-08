@@ -13,7 +13,23 @@ export const getAllDataAtomicValuesWithNameInData = (
 	nameInDatas: string[],
 	matchingAttributes?: AttributeMatcher[]
 ): string[] => {
-	return [];
+	if (!nameInDatas.length || !dataGroup.children.length) {
+		return [];
+	}
+
+	const matchingChildren = dataGroup.children.filter((child) => {
+		return child.name === 'someInterestingNameInData';
+	});
+
+	const matchingDataAtomics = <DataAtomic[]>matchingChildren.filter((child) => {
+		return Object.prototype.hasOwnProperty.call(child, 'value');
+	});
+
+	const values = matchingDataAtomics.map((child) => {
+		return child.value;
+	});
+
+	return values;
 };
 
 export const getFinalDataAtomicValueWithNameInDatas = (
