@@ -1,8 +1,12 @@
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
 import extractDataAtomicValue from './DataAtomicConverter';
-import extractAndSetChildren from './DataElementSetter';
-import { getAllDataAtomicValuesWithNameInData } from './DataExtractor';
+import * as des from './DataElementSetter';
+import {
+	getAllDataAtomicValuesWithNameInData,
+	getDataGroupWithNameInDatas,
+	getFinalDataAtomicValueWithNameInDatas,
+} from './DataExtractor';
 
 jest.mock('./DataAtomicConverter');
 
@@ -16,7 +20,17 @@ const mockGetAllDataAtomicValuesWithNameInData =
 		typeof getAllDataAtomicValuesWithNameInData
 	>;
 
-const defaultTestDataGroup: DataGroup = {
+const mockGetFinalDataAtomicValueWithNameInDatas =
+	getFinalDataAtomicValueWithNameInDatas as jest.MockedFunction<
+		typeof getFinalDataAtomicValueWithNameInDatas
+	>;
+
+const mockGetDataGroupWithNameInDatas =
+	getDataGroupWithNameInDatas as jest.MockedFunction<
+		typeof getDataGroupWithNameInDatas
+	>;
+
+const defaultDataAtomicDataGroup: DataGroup = {
 	name: 'someName',
 	children: [
 		{
@@ -26,12 +40,12 @@ const defaultTestDataGroup: DataGroup = {
 	],
 };
 
-const defaultTestObjectMatcher: Matcher = {
+const defaultDataAtomicObjectMatcher: Matcher = {
 	react: 'someAtomicName',
 	cora: 'someAtomicName',
 };
 
-const defaultMultipleTestDataGroup: DataGroup = {
+const defaultMultipleDataAtomicDataGroup: DataGroup = {
 	name: 'someName',
 	children: [
 		{
@@ -57,16 +71,24 @@ const defaultMultipleTestDataGroup: DataGroup = {
 	],
 };
 
-const defaulMultipleTestObjectMatcher: Matcher = {
+const defaulMultipleDataAtomicObjectMatcher: Matcher = {
 	react: 'someMultipleField',
 	cora: 'someMultipleAtomicNameInData',
 	multiple: true,
 };
 
-let objectToSet = {};
+// let objectToSet = {};
 
 beforeAll(() => {
-	mockExtractDataAtomicValue.mockReturnValue('someDefaultValue');
+	mockExtractDataAtomicValue.mockReturnValue(
+		'someDefaultValueFromExtractDataAtomicValue'
+	);
+	mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValue(
+		'someDefaultValueFromGetFinalDataAtomicValueWithNameInDatas'
+	);
+
+	mockGetDataGroupWithNameInDatas.mockReturnValue(undefined);
+
 	mockGetAllDataAtomicValuesWithNameInData.mockReturnValue([
 		'someDefaultValue',
 		'someDefaultValue2',
@@ -74,46 +96,104 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-	objectToSet = {};
+	// objectToSet = {};
 });
 
 describe('The ElementSetter', () => {
 	describe('DataAtomics', () => {
+		it('does call getNameInDatasFromPath', () => {
+			const getNameInDatasFromPathSpy = jest.spyOn(
+				des,
+				'getNameInDatasFromPath'
+			);
+
+			const someDataGroup: DataGroup = {
+				name: 'someName',
+				children: [],
+			};
+
+			const someMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataAtomic',
+				multiple: true,
+			};
+
+			des.extractAndSetChildren(someDataGroup, someMatcher);
+
+			expect(getNameInDatasFromPathSpy).toHaveBeenLastCalledWith(
+				someMatcher.cora
+			);
+
+			const someOtherMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataGroup/someDataGroup/someDataAtomic',
+				required: true,
+			};
+
+			des.extractAndSetChildren(someDataGroup, someOtherMatcher);
+
+			expect(getNameInDatasFromPathSpy).toHaveBeenLastCalledWith(
+				someOtherMatcher.cora
+			);
+		});
+
 		describe('if not multiple', () => {
-			it('if not required, calls extractDataAtomicValue with dataGroup and matcher', () => {
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					defaultTestObjectMatcher,
-					objectToSet
+			it('calls getFinalDataAtomicValueWithNameInDatas with dataGroup, result from getNameInDatasFromPath and matcher', () => {
+				des.extractAndSetChildren(
+					defaultDataAtomicDataGroup,
+					defaultDataAtomicObjectMatcher
 				);
-				expect(mockExtractDataAtomicValue).toHaveBeenCalledWith(
-					defaultTestDataGroup,
-					defaultTestObjectMatcher.cora
+				expect(
+					mockGetFinalDataAtomicValueWithNameInDatas
+				).toHaveBeenLastCalledWith(
+					defaultDataAtomicDataGroup,
+					['someAtomicName'],
+					undefined
+				);
+
+				const someDataGroup: DataGroup = {
+					name: 'someName',
+					children: [],
+				};
+
+				const someOtherMatcher: Matcher = {
+					react: 'someField',
+					cora: 'someDataGroup/someDataGroup/someDataAtomic',
+					required: true,
+					matchingAttributes: [{ key: 'someKey', value: 'someValue' }],
+				};
+
+				des.extractAndSetChildren(someDataGroup, someOtherMatcher);
+
+				expect(
+					mockGetFinalDataAtomicValueWithNameInDatas
+				).toHaveBeenLastCalledWith(
+					someDataGroup,
+					['someDataGroup', 'someDataGroup', 'someDataAtomic'],
+					someOtherMatcher.matchingAttributes
 				);
 			});
 
-			it('adds value returned by extractDataAtomicValue to objectToSet with matcher.react as key', () => {
-				mockExtractDataAtomicValue.mockReturnValueOnce('someValue');
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					defaultTestObjectMatcher,
-					objectToSet
+			it('returns value returned by getFinalDataAtomicValueWithNameInDatas', () => {
+				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+					'someFinalValue'
+				);
+				const returnedValue = des.extractAndSetChildren(
+					defaultDataAtomicDataGroup,
+					defaultDataAtomicObjectMatcher
 				);
 
-				expect(objectToSet).toStrictEqual({
-					someAtomicName: 'someValue',
-				});
+				expect(returnedValue).toStrictEqual('someFinalValue');
 
-				mockExtractDataAtomicValue.mockReturnValueOnce('someOtherValue');
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					defaultTestObjectMatcher,
-					objectToSet
+				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+					'someOtherValue'
+				);
+				const returnedValue2 = des.extractAndSetChildren(
+					defaultDataAtomicDataGroup,
+					defaultDataAtomicObjectMatcher
 				);
 
-				expect(objectToSet).toStrictEqual({
-					someAtomicName: 'someOtherValue',
-				});
+				expect(returnedValue2).toStrictEqual('someOtherValue');
 			});
 
 			it('adds value returned by extractDataAtomicValue to objectToSet with OTHER matcher.react as key', () => {
@@ -121,74 +201,42 @@ describe('The ElementSetter', () => {
 					react: 'someOtherAtomicName',
 					cora: 'someAtomicName',
 				};
-				mockExtractDataAtomicValue.mockReturnValueOnce('someValue');
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					testObjectMatcher,
-					objectToSet
+				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+					'someValue'
+				);
+				const returnedValue = des.extractAndSetChildren(
+					defaultDataAtomicDataGroup,
+					testObjectMatcher
 				);
 
-				expect(objectToSet).toStrictEqual({
-					someOtherAtomicName: 'someValue',
-				});
-			});
-
-			it('if extractDataAtomicValue returns undefined AND field not required, does not add value to object', () => {
-				mockExtractDataAtomicValue.mockReturnValueOnce(undefined);
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					defaultTestObjectMatcher,
-					objectToSet
-				);
-
-				expect(objectToSet).not.toHaveProperty('someAtomicName');
-			});
-
-			it('if extractDataAtomicValue returns undefined BUT field IS required, does add empty string to object', () => {
-				mockExtractDataAtomicValue.mockReturnValueOnce(undefined);
-				const testObjectMatcher: Matcher = {
-					react: 'someAtomicName',
-					cora: 'someAtomicName',
-					required: true,
-				};
-				extractAndSetChildren(
-					defaultTestDataGroup,
-					testObjectMatcher,
-					objectToSet
-				);
-
-				expect(objectToSet).toStrictEqual({
-					someAtomicName: '',
-				});
+				expect(returnedValue).toStrictEqual('someValue');
 			});
 		});
 
 		describe('if multiple', () => {
 			it('does not call extractFirstDataAtomicWithNameInData', () => {
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					defaulMultipleTestObjectMatcher,
-					objectToSet
+				des.extractAndSetChildren(
+					defaultMultipleDataAtomicDataGroup,
+					defaulMultipleDataAtomicObjectMatcher
 				);
 				expect(mockExtractDataAtomicValue).not.toHaveBeenCalled();
 			});
 
-			it('does call getAllDataAtomicsWithNameInData with dataGroup, nameInData and matchingAttributes', () => {
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					defaulMultipleTestObjectMatcher,
-					objectToSet
+			it('does call getAllDataAtomicsWithNameInData with dataGroup, nameInData from getNameInDatasFromPath and matchingAttributes', () => {
+				des.extractAndSetChildren(
+					defaultMultipleDataAtomicDataGroup,
+					defaulMultipleDataAtomicObjectMatcher
 				);
 
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledWith(
-					defaultMultipleTestDataGroup,
-					defaulMultipleTestObjectMatcher.cora,
+					defaultMultipleDataAtomicDataGroup,
+					[defaulMultipleDataAtomicObjectMatcher.cora],
 					undefined
 				);
 
 				const multipleTestObjectMatcher: Matcher = {
 					react: 'someMultipleField',
-					cora: 'someOTHERMultipleAtomicNameInData',
+					cora: 'someDataGroupNameInData/someMultipleDataAtomicNameInData',
 					multiple: true,
 					matchingAttributes: [
 						{
@@ -198,290 +246,471 @@ describe('The ElementSetter', () => {
 					],
 				};
 
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					multipleTestObjectMatcher,
-					objectToSet
+				des.extractAndSetChildren(
+					defaultMultipleDataAtomicDataGroup,
+					multipleTestObjectMatcher
 				);
 
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledWith(
-					defaultMultipleTestDataGroup,
-					multipleTestObjectMatcher.cora,
+					defaultMultipleDataAtomicDataGroup,
+					['someDataGroupNameInData', 'someMultipleDataAtomicNameInData'],
 					multipleTestObjectMatcher.matchingAttributes
 				);
 			});
 
-			it('if getAllDataAtomicsWithNameInData returns empty array AND field not required, does not add anything to object', () => {
-				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([]);
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					defaulMultipleTestObjectMatcher,
-					objectToSet
-				);
-
-				expect(objectToSet).not.toHaveProperty('someMultipleField');
-			});
-
-			it('if getAllDataAtomicsWithNameInData returns empty array AND field IS required, DOES add empty array to object with matcher.react', () => {
-				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([]);
-				const multipleTestObjectMatcher: Matcher = {
-					react: 'someMultipleField',
-					cora: 'someMultipleAtomicNameInData',
-					multiple: true,
-					required: true,
-				};
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					multipleTestObjectMatcher,
-					objectToSet
-				);
-
-				expect(objectToSet).toStrictEqual({
-					someMultipleField: [],
-				});
-			});
-
-			it('if getAllDataAtomicsWithNameInData returns empty array AND field IS required, DOES add empty array to object with other matcher.react', () => {
-				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([]);
-				const multipleTestObjectMatcher: Matcher = {
-					react: 'someOtherMultipleField',
-					cora: 'someMultipleAtomicNameInData',
-					multiple: true,
-					required: true,
-				};
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					multipleTestObjectMatcher,
-					objectToSet
-				);
-
-				expect(objectToSet).toStrictEqual({
-					someOtherMultipleField: [],
-				});
-			});
-
-			it('if getAllDataAtomicValuesWithNameInData returns non-empty array, does add said array to object with matcher.react as key', () => {
+			it('returns value returned by getAllDataAtomicValuesWithNameInData', () => {
 				const arrayToAdd = ['someAtomic', 'someOtherAtomic', 'someMore'];
 				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([
 					'someAtomic',
 					'someOtherAtomic',
 					'someMore',
 				]);
-				extractAndSetChildren(
-					defaultMultipleTestDataGroup,
-					defaulMultipleTestObjectMatcher,
-					objectToSet
+				const returnedValue = des.extractAndSetChildren(
+					defaultMultipleDataAtomicDataGroup,
+					defaulMultipleDataAtomicObjectMatcher
 				);
 
-				expect(objectToSet).toStrictEqual({
-					someMultipleField: arrayToAdd,
-				});
+				expect(returnedValue).toStrictEqual(arrayToAdd);
+			});
+		});
+	});
+
+	describe('If a matcher was passed', () => {
+		const someDefaultFinalMatcher: Matcher = {
+			react: 'someFinalField',
+			cora: 'someOtherDataAtomic',
+		};
+
+		const someDefaultDataGroup: DataGroup = {
+			name: 'someName',
+			children: [],
+		};
+
+		it('expect getDataGroupWithNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and matchingAttributes', () => {
+			const someMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
+
+			expect(mockGetDataGroupWithNameInDatas).toHaveBeenLastCalledWith(
+				someDefaultDataGroup,
+				['someDataGroup', 'someOtherDataGroup'],
+				undefined
+			);
+
+			const someOtherMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someOtherDataGroup/someFinalDataGroup',
+				matcher: someDefaultFinalMatcher,
+				matchingAttributes: [{ key: 'someKey', value: 'someValue' }],
+			};
+
+			const someOtherDataGroup: DataGroup = {
+				name: 'someName',
+				children: [
+					{
+						name: 'someName',
+						value: 'someValue',
+					},
+				],
+			};
+
+			des.extractAndSetChildren(someOtherDataGroup, someOtherMatcher);
+
+			expect(mockGetDataGroupWithNameInDatas).toHaveBeenLastCalledWith(
+				someOtherDataGroup,
+				['someOtherDataGroup', 'someFinalDataGroup'],
+				someOtherMatcher.matchingAttributes
+			);
+		});
+
+		it('expect getAllDataAtomicValuesWithNameInData and getFinalDataAtomicValueWithNameInDatas to not be called', () => {
+			const someMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
+
+			expect(mockGetAllDataAtomicValuesWithNameInData).not.toHaveBeenCalled();
+
+			expect(mockGetFinalDataAtomicValueWithNameInDatas).not.toHaveBeenCalled();
+		});
+
+		it('does not call extractAndSetChildren if dataGroup returned by getDataGroupWithNameInData is undefined', () => {
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(undefined);
+
+			const extractAndSetChildrenSpy = jest.spyOn(des, 'extractAndSetChildren');
+
+			const someMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
+
+			expect(extractAndSetChildrenSpy).toHaveBeenCalledTimes(1);
+		});
+
+		it('expect extractAndSetChildren to be called with dataGroup returned by getDataGroupWithNameInDatas and matcher set in matcher', () => {
+			const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
+				name: 'someFinalDataGroupName',
+				children: [
+					{
+						name: 'someFinalName',
+						value: 'someFinalValue',
+					},
+				],
+			};
+
+			const extractAndSetChildrenSpy = jest.spyOn(des, 'extractAndSetChildren');
+
+			const someMatcher: Matcher = {
+				react: 'someField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(
+				dataGroupReturnedByGetDataGroupWithNameInDatas
+			);
+			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
+
+			expect(extractAndSetChildrenSpy).toHaveBeenCalledTimes(2);
+			expect(extractAndSetChildrenSpy).toHaveBeenNthCalledWith(
+				2,
+				dataGroupReturnedByGetDataGroupWithNameInDatas,
+				someDefaultFinalMatcher
+			);
+		});
+
+		it('calls possiblySetReturnValue with value from extractAndSetChildren, matcher.react, matcher.required, matcher.multiple, returns result', () => {
+			const possiblySetReturnValueSpy = jest.spyOn(
+				des,
+				'possiblySetReturnValue'
+			);
+
+			const someMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+				name: 'someOtherDataGroup',
+				children: [
+					{
+						name: 'someOtherDataAtomic',
+						value: 'someFinalValue',
+					},
+				],
+			});
+
+			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+				'someFinalValue'
+			);
+
+			const returned = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someMatcher
+			);
+
+			expect(possiblySetReturnValueSpy).toHaveReturnedWith(returned);
+
+			expect(possiblySetReturnValueSpy).toHaveBeenCalledWith(
+				'someFinalValue',
+				someDefaultFinalMatcher.react,
+				someDefaultFinalMatcher.required,
+				someDefaultFinalMatcher.multiple
+			);
+
+			const someFinalMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: false,
+				required: true,
+			};
+
+			const someOtherMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+				name: 'someOtherDataGroup',
+				children: [
+					{
+						name: 'someOtherDataAtomic',
+						value: 'someFinalValue',
+					},
+				],
+			});
+
+			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+				'someOtherFinalValue'
+			);
+
+			const returned2 = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someOtherMatcher
+			);
+
+			expect(possiblySetReturnValueSpy).toHaveBeenCalledWith(
+				'someOtherFinalValue',
+				someFinalMatcher.react,
+				someFinalMatcher.required,
+				someFinalMatcher.multiple
+			);
+
+			expect(possiblySetReturnValueSpy).toHaveReturnedWith(returned2);
+		});
+
+		it('if extractAndSetChildren returns !== undefined, should return object containing key: matcher.react and value: what extractAndSetChildren returns', () => {
+			const someMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+				name: 'someOtherDataGroup',
+				children: [
+					{
+						name: 'someOtherDataAtomic',
+						value: 'someFinalValue',
+					},
+				],
+			});
+
+			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+				'someFinalValue'
+			);
+
+			const returned = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someMatcher
+			);
+
+			expect(returned).toStrictEqual({
+				someFinalField: 'someFinalValue',
+			});
+		});
+
+		it('if extractAndSetChildren returns === undefined, and field is required should return object containing key: matcher.react and value: ""', () => {
+			const someFinalMatcher: Matcher = {
+				react: 'someFinalField',
+				cora: 'someOtherDataAtomic',
+				required: true,
+			};
+
+			const someMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+				name: 'someOtherDataGroup',
+				children: [
+					{
+						name: 'someOtherDataAtomic',
+						value: 'someFinalValue',
+					},
+				],
+			});
+
+			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(undefined);
+
+			const returned = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someMatcher
+			);
+
+			expect(returned).toStrictEqual({
+				someFinalField: '',
+			});
+		});
+
+		it('if extractAndSetChildren returns === undefined, and field is not required, should return undefined', () => {
+			const someMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				multiple: true,
+				matcher: someDefaultFinalMatcher,
+			};
+
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+				name: 'someOtherDataGroup',
+				children: [
+					{
+						name: 'someOtherDataAtomic',
+						value: 'someFinalValue',
+					},
+				],
+			});
+
+			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(undefined);
+
+			const returned = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someMatcher
+			);
+
+			expect(returned).toStrictEqual(undefined);
+		});
+
+		it('if getDataGroupWithNameInData returns undefined, return undefined', () => {
+			const someMatcher: Matcher = {
+				react: 'someInitialField',
+				cora: 'someDataGroup/someOtherDataGroup',
+				matcher: someDefaultFinalMatcher,
+			};
+			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(undefined);
+
+			const returned = des.extractAndSetChildren(
+				someDefaultDataGroup,
+				someMatcher
+			);
+
+			expect(returned).toStrictEqual(undefined);
+		});
+		// it('if getDataGroupWithNameInData returns undefined, ')
+	});
+
+	describe('PathParser', () => {
+		describe('getNameInDatasFromPath', () => {
+			it('takes a string and returns an array', () => {
+				const nameInDatas = des.getNameInDatasFromPath('');
+				expect(nameInDatas).toStrictEqual([]);
+			});
+			it('returns an empty array if string is empty', () => {
+				const nameInDatas = des.getNameInDatasFromPath('');
+				expect(nameInDatas).toStrictEqual([]);
+			});
+
+			it('returns an array containing one string if string does not contain split-character', () => {
+				const nameInDatas = des.getNameInDatasFromPath('id');
+				expect(nameInDatas).toStrictEqual(['id']);
+			});
+
+			it('returns an array containing several string if string DOES contain split-character /', () => {
+				const nameInDatas = des.getNameInDatasFromPath('recordinfo/id');
+				expect(nameInDatas).toStrictEqual(['recordinfo', 'id']);
+			});
+		});
+	});
+
+	describe('possiblySetReturnValue', () => {
+		it('takes value, fieldName, multiple and required', () => {
+			des.possiblySetReturnValue('someValue', 'fieldName', true, true);
+		});
+
+		it('if value is undefined and required===false, return empty object', () => {
+			const returned = des.possiblySetReturnValue(
+				undefined,
+				'fieldName',
+				false,
+				false
+			);
+
+			expect(returned).toBeUndefined();
+		});
+
+		it('if value is undefined, required===true and multiple===false, return object containing fieldName: ""', () => {
+			let returned = des.possiblySetReturnValue(
+				undefined,
+				'fieldName',
+				true,
+				false
+			);
+
+			expect(returned).toStrictEqual({
+				fieldName: '',
+			});
+
+			returned = des.possiblySetReturnValue(
+				undefined,
+				'otherFieldName',
+				true,
+				false
+			);
+
+			expect(returned).toStrictEqual({
+				otherFieldName: '',
+			});
+		});
+
+		it('if value is undefined, required===true and multiple===true, return object containing fieldName: []', () => {
+			let returned = des.possiblySetReturnValue(
+				undefined,
+				'fieldName',
+				true,
+				true
+			);
+
+			expect(returned).toStrictEqual({
+				fieldName: [],
+			});
+
+			returned = des.possiblySetReturnValue(
+				undefined,
+				'otherFieldName',
+				true,
+				true
+			);
+
+			expect(returned).toStrictEqual({
+				otherFieldName: [],
+			});
+		});
+
+		it('if value is not undefined, return object containing fieldName: value', () => {
+			let returned = des.possiblySetReturnValue('someValue', 'fieldName');
+
+			expect(returned).toStrictEqual({
+				fieldName: 'someValue',
+			});
+
+			returned = des.possiblySetReturnValue(
+				['someValue'],
+				'someOtherFieldName'
+			);
+
+			expect(returned).toStrictEqual({
+				someOtherFieldName: ['someValue'],
+			});
+
+			returned = des.possiblySetReturnValue(
+				{ someKey: 'someValue' },
+				'fieldName'
+			);
+
+			expect(returned).toStrictEqual({
+				fieldName: { someKey: 'someValue' },
+			});
+
+			returned = des.possiblySetReturnValue(
+				[{ someKey: 'someValue' }],
+				'fieldName'
+			);
+
+			expect(returned).toStrictEqual({
+				fieldName: [{ someKey: 'someValue' }],
 			});
 		});
 	});
 });
-
-// import { Matcher } from './Converter';
-// import { DataGroup } from './CoraData';
-// import extractAndSetDataAtomic from './DataAtomicConverter';
-
-// const defaultTestDataGroup: DataGroup = {
-// 	name: 'someName',
-// 	children: [
-// 		{
-// 			name: 'someAtomicName',
-// 			value: 'someAtomicValue',
-// 		},
-// 	],
-// };
-
-// const defaultTestObjectMatcher: Matcher = {
-// 	react: 'someAtomicName',
-// 	cora: 'someAtomicName',
-// };
-
-// let objectToReturn: any = {};
-
-// beforeEach(() => {
-// 	objectToReturn = {};
-// });
-
-// it('takes a DataGroup and a top-level-matcher', () => {
-// 	extractAndSetDataAtomic(defaultTestDataGroup, defaultTestObjectMatcher, {});
-// });
-
-// describe('Handles DataAtomics', () => {
-// 	describe('extracts a DataAtomic value from the top level and returns it', () => {
-// 		it('with a value', () => {
-// 			extractAndSetDataAtomic(
-// 				defaultTestDataGroup,
-// 				defaultTestObjectMatcher,
-// 				objectToReturn
-// 			);
-
-// 			expect(objectToReturn).toHaveProperty('someAtomicName');
-// 			expect(objectToReturn).toStrictEqual({
-// 				someAtomicName: 'someAtomicValue',
-// 			});
-// 		});
-
-// 		it('with another value', () => {
-// 			const testDataGroup: DataGroup = {
-// 				name: 'someName',
-// 				children: [
-// 					{
-// 						name: 'someAtomicName',
-// 						value: 'someOtherAtomicValue',
-// 					},
-// 				],
-// 			};
-
-// 			extractAndSetDataAtomic(
-// 				testDataGroup,
-// 				defaultTestObjectMatcher,
-// 				objectToReturn
-// 			);
-// 			expect(objectToReturn).toStrictEqual({
-// 				someAtomicName: 'someOtherAtomicValue',
-// 			});
-// 		});
-
-// 		it('with a different name in data', () => {
-// 			const testDataGroup: DataGroup = {
-// 				name: 'someName',
-// 				children: [
-// 					{
-// 						name: 'someAtomicName',
-// 						value: 'someOtherAtomicValue',
-// 					},
-// 					{
-// 						name: 'someOtherAtomicName',
-// 						value: 'someInterestingAtomicValue',
-// 					},
-// 				],
-// 			};
-// 			const testObjectMatcher: Matcher = {
-// 				react: 'someAtomicName',
-// 				cora: 'someOtherAtomicName',
-// 			};
-
-// 			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-// 			expect(objectToReturn).toStrictEqual({
-// 				someAtomicName: 'someInterestingAtomicValue',
-// 			});
-// 		});
-
-// 		it('with a different react path', () => {
-// 			const testDataGroup: DataGroup = {
-// 				name: 'someName',
-// 				children: [
-// 					{
-// 						name: 'someAtomicName',
-// 						value: 'someOtherAtomicValue',
-// 					},
-// 					{
-// 						name: 'someOtherAtomicName',
-// 						value: 'someInterestingAtomicValue',
-// 					},
-// 				],
-// 			};
-
-// 			const testObjectMatcher: Matcher = {
-// 				react: 'someOtherAtomicName',
-// 				cora: 'someOtherAtomicName',
-// 			};
-
-// 			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-// 			expect(objectToReturn).toHaveProperty('someOtherAtomicName');
-// 			expect(objectToReturn).toStrictEqual({
-// 				someOtherAtomicName: 'someInterestingAtomicValue',
-// 			});
-// 		});
-// 	});
-
-// 	it('does not fill the specified field if the DataAtomic does not exist', () => {
-// 		const testDataGroup: DataGroup = {
-// 			name: 'someName',
-// 			children: [
-// 				{
-// 					name: 'someOtherAtomicName',
-// 					value: 'someOtherAtomicValue',
-// 				},
-// 			],
-// 		};
-// 		const testObjectMatcher: Matcher = {
-// 			react: 'someAtomicName',
-// 			cora: 'someAtomicName',
-// 		};
-// 		extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-// 		expect(objectToReturn).not.toHaveProperty('someAtomicName');
-// 		expect(objectToReturn).toStrictEqual({});
-// 	});
-
-// 	it('does not fill the specified field if the children array is empty', () => {
-// 		const testDataGroup: DataGroup = {
-// 			name: 'someName',
-// 			children: [],
-// 		};
-// 		const testObjectMatcher: Matcher = {
-// 			react: 'someAtomicName',
-// 			cora: 'someAtomicName',
-// 		};
-
-// 		extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-// 		expect(objectToReturn).not.toHaveProperty('someAtomicName');
-// 		expect(objectToReturn).toStrictEqual({});
-// 	});
-
-// 	describe('does fill the specified field with an empty string if the DataAtomic does not exist BUT the field is required', () => {
-// 		it('if the nameInData does not exist', () => {
-// 			const testDataGroup: DataGroup = {
-// 				name: 'someName',
-// 				children: [
-// 					{
-// 						name: 'someOtherAtomicName',
-// 						value: 'someOtherAtomicValue',
-// 					},
-// 				],
-// 			};
-// 			const testObjectMatcher: Matcher = {
-// 				react: 'someAtomicName',
-// 				cora: 'someAtomicName',
-// 				required: true,
-// 			};
-// 			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-// 			expect(objectToReturn).toHaveProperty('someAtomicName');
-// 			expect(objectToReturn).toStrictEqual({
-// 				someAtomicName: '',
-// 			});
-// 		});
-// 		it('if the children array is empty', () => {
-// 			const testDataGroup: DataGroup = {
-// 				name: 'someName',
-// 				children: [],
-// 			};
-// 			const testObjectMatcher: Matcher = {
-// 				react: 'someAtomicName',
-// 				cora: 'someAtomicName',
-// 				required: true,
-// 			};
-
-// 			extractAndSetDataAtomic(testDataGroup, testObjectMatcher, objectToReturn);
-
-// 			expect(objectToReturn).toHaveProperty('someAtomicName');
-// 			expect(objectToReturn).toStrictEqual({
-// 				someAtomicName: '',
-// 			});
-// 		});
-// 	});
-
-// 	it.todo('handle single DataAtomics');
-// 	it.todo('handle multiple DataAtomics');
-// 	it.todo('handle single DataAtomics with attributes');
-// 	it.todo('handle multiple DataAtomics with attributes');
-// 	it.todo('');
-// });

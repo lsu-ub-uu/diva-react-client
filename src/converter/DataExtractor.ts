@@ -10,8 +10,24 @@ export const getAllChildrenWithNameInData = (
 
 export const getAllDataAtomicValuesWithNameInData = (
 	dataGroup: DataGroup,
-	nameInData: string,
+	nameInDatas: string[],
 	matchingAttributes?: AttributeMatcher[]
 ): string[] => {
 	return [];
+};
+
+export const getFinalDataAtomicValueWithNameInDatas = (
+	dataGroup: DataGroup,
+	nameInDatas: string[],
+	matchingAttributes?: AttributeMatcher[]
+): string | undefined => {
+	return '';
+};
+
+export const getDataGroupWithNameInDatas = (
+	dataGroup: DataGroup,
+	nameInDatas: string[],
+	matchingAttributes?: AttributeMatcher[]
+): DataGroup | undefined => {
+	return undefined;
 };
