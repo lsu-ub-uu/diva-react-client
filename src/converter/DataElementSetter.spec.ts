@@ -3,7 +3,7 @@ import { DataGroup } from './CoraData';
 import extractDataAtomicValue from './DataAtomicConverter';
 import * as des from './DataElementSetter';
 import {
-	getAllDataAtomicValuesWithNameInData,
+	extractAllDataAtomicValuesFollowingNameInDatas,
 	getDataGroupWithNameInDatas,
 	getFinalDataAtomicValueWithNameInDatas,
 } from './DataExtractor';
@@ -16,8 +16,8 @@ const mockExtractDataAtomicValue =
 jest.mock('./DataExtractor');
 
 const mockGetAllDataAtomicValuesWithNameInData =
-	getAllDataAtomicValuesWithNameInData as jest.MockedFunction<
-		typeof getAllDataAtomicValuesWithNameInData
+	extractAllDataAtomicValuesFollowingNameInDatas as jest.MockedFunction<
+		typeof extractAllDataAtomicValuesFollowingNameInDatas
 	>;
 
 const mockGetFinalDataAtomicValueWithNameInDatas =
@@ -222,7 +222,7 @@ describe('The ElementSetter', () => {
 				expect(mockExtractDataAtomicValue).not.toHaveBeenCalled();
 			});
 
-			it('does call getAllDataAtomicsWithNameInData with dataGroup, nameInData from getNameInDatasFromPath and matchingAttributes', () => {
+			it('does call getAllDataAtomicsWithNameInData with dataGroup and nameInData from getNameInDatasFromPath', () => {
 				des.extractAndSetChildren(
 					defaultMultipleDataAtomicDataGroup,
 					defaulMultipleDataAtomicObjectMatcher
@@ -230,8 +230,7 @@ describe('The ElementSetter', () => {
 
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledWith(
 					defaultMultipleDataAtomicDataGroup,
-					[defaulMultipleDataAtomicObjectMatcher.cora],
-					undefined
+					[defaulMultipleDataAtomicObjectMatcher.cora]
 				);
 
 				const multipleTestObjectMatcher: Matcher = {
@@ -253,8 +252,7 @@ describe('The ElementSetter', () => {
 
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledWith(
 					defaultMultipleDataAtomicDataGroup,
-					['someDataGroupNameInData', 'someMultipleDataAtomicNameInData'],
-					multipleTestObjectMatcher.matchingAttributes
+					['someDataGroupNameInData', 'someMultipleDataAtomicNameInData']
 				);
 			});
 

@@ -1,6 +1,9 @@
 import {
 	getAllChildrenWithNameInData,
+	getAllDataAtomicsWithNameInData,
 	getFirstChildWithNameInData,
+	getFirstDataAtomicWithNameInData,
+	getFirstDataGroupWithNameInData,
 } from '../../src/converter/CoraDataUtils';
 import {
 	DataGroup,
@@ -137,39 +140,180 @@ describe('getAllChildrenWithNameInData', () => {
 	});
 });
 
+const dataGroupWithEmptyChildren: DataGroup = {
+	name: 'someName',
+	children: [],
+};
+
+const dataGroupWithNonMatchingDataAtomics: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someUninterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someOtherUninterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someUninterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+		},
+	],
+};
+
+const dataGroupWithOnlyMatchingAtomics: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someInterestingChildName',
+			value: 'someOtherValue',
+		},
+		{
+			name: 'someUninterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+		},
+	],
+};
+
+const dataGroupWithOnlyMatchingGroups: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+		},
+		{
+			name: 'someOtherUninterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+		},
+	],
+};
+
+const dataGroupWithOneMatchingAtomicAndOneMatchingGroup: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someUninterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someOtherUninterestingChildName',
+			value: 'someValue',
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+		},
+		{
+			name: 'someInterestingChildName',
+			value: 'someValue',
+		},
+	],
+};
+
+const dataGroupWithSeveralMatchingDataGroups: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'firstChild',
+					value: 'someValue',
+				},
+			],
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'secondChild',
+					value: 'someValue',
+				},
+			],
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'thirdChild',
+					value: 'someValue',
+				},
+			],
+		},
+	],
+};
+const dataGroupWithSeveralMatchingAtomics: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			value: 'firstMatch',
+		},
+		{
+			name: 'someInterestingChildName',
+			value: 'second',
+		},
+		{
+			name: 'someInterestingChildName',
+			value: 'third',
+		},
+	],
+};
+
 describe('getFirstChildWithNameInData', () => {
 	it('should return null if no child exists', () => {
-		const dataGroupWithEmptyChildren: DataGroup = {
-			name: 'someName',
-			children: [],
-		};
-
 		expect(
 			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName')
 		).toBe(null);
 	});
 
 	it('should return null if no matching child exists', () => {
-		const dataGroupWithNonMatchingChildren: DataGroup = {
-			name: 'someName',
-			children: [
-				{
-					name: 'someUninterestingName',
-					value: 'someValue',
-				},
-			],
-		};
-
 		expect(
 			getFirstChildWithNameInData(
-				dataGroupWithNonMatchingChildren,
+				dataGroupWithNonMatchingDataAtomics,
 				'someChildName'
 			)
 		).toBe(null);
 
 		expect(
 			getFirstChildWithNameInData(
-				dataGroupWithNonMatchingChildren,
+				dataGroupWithNonMatchingDataAtomics,
 				'someOtherChildName'
 			)
 		).toBe(null);
@@ -260,5 +404,179 @@ describe('getFirstChildWithNameInData', () => {
 		expect(child).not.toBe(undefined);
 		expect(child.name).toBe('someChildName');
 		expect(child.value).toBe('someValue');
+	});
+});
+
+describe('getFirstDataAtomicWithNameInData', () => {
+	it('should take dataGroup and nameInData', () => {
+		getFirstDataAtomicWithNameInData(
+			dataGroupWithEmptyChildren,
+			'someChildName'
+		);
+	});
+
+	it('if dataGroup has no children, should return undefined', () => {
+		expect(
+			getFirstDataAtomicWithNameInData(
+				dataGroupWithEmptyChildren,
+				'someChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching child, should return undefined', () => {
+		expect(
+			getFirstDataAtomicWithNameInData(
+				dataGroupWithNonMatchingDataAtomics,
+				'someChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching DataAtomic, should return undefined', () => {
+		expect(
+			getFirstDataAtomicWithNameInData(
+				dataGroupWithOnlyMatchingGroups,
+				'someInterestingChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has matching DataAtomic, should return that DataAtomic', () => {
+		expect(
+			getFirstDataAtomicWithNameInData(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+				'someInterestingChildName'
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			value: 'someValue',
+		});
+	});
+	it('if dataGroup has several matching DataAtomics, should return the first of them', () => {
+		expect(
+			getFirstDataAtomicWithNameInData(
+				dataGroupWithSeveralMatchingAtomics,
+				'someInterestingChildName'
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			value: 'firstMatch',
+		});
+	});
+});
+
+describe('getAllDataAtomicsWithNameInData', () => {
+	it('should take dataGroup and nameInData', () => {
+		getAllDataAtomicsWithNameInData(
+			dataGroupWithEmptyChildren,
+			'someChildName'
+		);
+	});
+	it('if dataGroup has no children, should return empty array', () => {
+		expect(
+			getAllDataAtomicsWithNameInData(
+				dataGroupWithEmptyChildren,
+				'someChildName'
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has no matching children, should return empty array', () => {
+		expect(
+			getAllDataAtomicsWithNameInData(
+				dataGroupWithNonMatchingDataAtomics,
+				'someChildName'
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has no matching DataAtomic, should return empty array', () => {
+		expect(
+			getAllDataAtomicsWithNameInData(
+				dataGroupWithOnlyMatchingGroups,
+				'someInterestingChildName'
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has matching DataAtomic, should return array containing that DataAtomic', () => {
+		expect(
+			getAllDataAtomicsWithNameInData(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+				'someInterestingChildName'
+			)
+		).toStrictEqual([{ name: 'someInterestingChildName', value: 'someValue' }]);
+	});
+	it('if dataGroup has several matching DataAtomic, should return array containing all the matching DataAtomics', () => {
+		expect(
+			getAllDataAtomicsWithNameInData(
+				dataGroupWithSeveralMatchingAtomics,
+				'someInterestingChildName'
+			)
+		).toStrictEqual([
+			{ name: 'someInterestingChildName', value: 'firstMatch' },
+			{ name: 'someInterestingChildName', value: 'second' },
+			{ name: 'someInterestingChildName', value: 'third' },
+		]);
+	});
+});
+
+describe('getFirstDataGroupWithNameInData', () => {
+	it('should take dataGroup and nameInData', () => {
+		getFirstDataGroupWithNameInData(
+			dataGroupWithEmptyChildren,
+			'someChildName'
+		);
+	});
+	it('if dataGroup has no children, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInData(
+				dataGroupWithEmptyChildren,
+				'someChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching child, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInData(
+				dataGroupWithNonMatchingDataAtomics,
+				'someChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching DataGroup, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInData(
+				dataGroupWithOnlyMatchingAtomics,
+				'someInterestingChildName'
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has matching DataGroup, should return that DataGroup', () => {
+		expect(
+			getFirstDataGroupWithNameInData(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+				'someInterestingChildName'
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+		});
+	});
+	it('if dataGroup has several matching DataGroups, should return the first of them', () => {
+		expect(
+			getFirstDataGroupWithNameInData(
+				dataGroupWithSeveralMatchingDataGroups,
+				'someInterestingChildName'
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'firstChild',
+					value: 'someValue',
+				},
+			],
+		});
 	});
 });

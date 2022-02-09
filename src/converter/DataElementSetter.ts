@@ -2,7 +2,7 @@
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
 import {
-	getAllDataAtomicValuesWithNameInData,
+	extractAllDataAtomicValuesFollowingNameInDatas,
 	getDataGroupWithNameInDatas,
 	getFinalDataAtomicValueWithNameInDatas,
 } from './DataExtractor';
@@ -53,10 +53,9 @@ const extracAtomicValues = (
 	matcher: Matcher
 ) => {
 	if (matcher.multiple) {
-		const values = getAllDataAtomicValuesWithNameInData(
+		const values = extractAllDataAtomicValuesFollowingNameInDatas(
 			dataGroup,
-			nameInDatas,
-			matcher.matchingAttributes
+			nameInDatas
 		);
 
 		return values;
