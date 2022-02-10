@@ -1,11 +1,11 @@
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
+import { extractDataGroupFollowingNameInDatas } from './CoraDataUtilsWrappers';
 import extractDataAtomicValue from './DataAtomicConverter';
 import * as des from './DataElementSetter';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
-	getDataGroupWithNameInDatas,
-	getFinalDataAtomicValueWithNameInDatas,
+	extractOneDataAtomicValueFollowingNameInDatas,
 } from './DataExtractor';
 
 jest.mock('./DataAtomicConverter');
@@ -20,14 +20,15 @@ const mockGetAllDataAtomicValuesWithNameInData =
 		typeof extractAllDataAtomicValuesFollowingNameInDatas
 	>;
 
-const mockGetFinalDataAtomicValueWithNameInDatas =
-	getFinalDataAtomicValueWithNameInDatas as jest.MockedFunction<
-		typeof getFinalDataAtomicValueWithNameInDatas
+const mockExtractOneDataAtomicValueFollowingNameInDatas =
+	extractOneDataAtomicValueFollowingNameInDatas as jest.MockedFunction<
+		typeof extractOneDataAtomicValueFollowingNameInDatas
 	>;
 
-const mockGetDataGroupWithNameInDatas =
-	getDataGroupWithNameInDatas as jest.MockedFunction<
-		typeof getDataGroupWithNameInDatas
+jest.mock('./CoraDataUtilsWrappers');
+const mockExtractDataGroupFollowingNameInDatas =
+	extractDataGroupFollowingNameInDatas as jest.MockedFunction<
+		typeof extractDataGroupFollowingNameInDatas
 	>;
 
 const defaultDataAtomicDataGroup: DataGroup = {
@@ -83,11 +84,11 @@ beforeAll(() => {
 	mockExtractDataAtomicValue.mockReturnValue(
 		'someDefaultValueFromExtractDataAtomicValue'
 	);
-	mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValue(
+	mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValue(
 		'someDefaultValueFromGetFinalDataAtomicValueWithNameInDatas'
 	);
 
-	mockGetDataGroupWithNameInDatas.mockReturnValue(undefined);
+	mockExtractDataGroupFollowingNameInDatas.mockReturnValue(undefined);
 
 	mockGetAllDataAtomicValuesWithNameInData.mockReturnValue([
 		'someDefaultValue',
@@ -138,13 +139,13 @@ describe('The ElementSetter', () => {
 		});
 
 		describe('if not multiple', () => {
-			it('calls getFinalDataAtomicValueWithNameInDatas with dataGroup, result from getNameInDatasFromPath and matcher', () => {
+			it('calls extractOneDataAtomicValueFollowingNameInDatas with dataGroup, result from getNameInDatasFromPath and matcher', () => {
 				des.extractAndSetChildren(
 					defaultDataAtomicDataGroup,
 					defaultDataAtomicObjectMatcher
 				);
 				expect(
-					mockGetFinalDataAtomicValueWithNameInDatas
+					mockExtractOneDataAtomicValueFollowingNameInDatas
 				).toHaveBeenLastCalledWith(
 					defaultDataAtomicDataGroup,
 					['someAtomicName'],
@@ -166,7 +167,7 @@ describe('The ElementSetter', () => {
 				des.extractAndSetChildren(someDataGroup, someOtherMatcher);
 
 				expect(
-					mockGetFinalDataAtomicValueWithNameInDatas
+					mockExtractOneDataAtomicValueFollowingNameInDatas
 				).toHaveBeenLastCalledWith(
 					someDataGroup,
 					['someDataGroup', 'someDataGroup', 'someDataAtomic'],
@@ -174,8 +175,8 @@ describe('The ElementSetter', () => {
 				);
 			});
 
-			it('returns value returned by getFinalDataAtomicValueWithNameInDatas', () => {
-				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+			it('returns value returned by extractOneDataAtomicValueFollowingNameInDatas', () => {
+				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 					'someFinalValue'
 				);
 				const returnedValue = des.extractAndSetChildren(
@@ -185,7 +186,7 @@ describe('The ElementSetter', () => {
 
 				expect(returnedValue).toStrictEqual('someFinalValue');
 
-				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 					'someOtherValue'
 				);
 				const returnedValue2 = des.extractAndSetChildren(
@@ -201,7 +202,7 @@ describe('The ElementSetter', () => {
 					react: 'someOtherAtomicName',
 					cora: 'someAtomicName',
 				};
-				mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 					'someValue'
 				);
 				const returnedValue = des.extractAndSetChildren(
@@ -284,7 +285,7 @@ describe('The ElementSetter', () => {
 			children: [],
 		};
 
-		it('expect getDataGroupWithNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and matchingAttributes', () => {
+		it('expect extractDataGroupFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and matchingAttributes', () => {
 			const someMatcher: Matcher = {
 				react: 'someField',
 				cora: 'someDataGroup/someOtherDataGroup',
@@ -294,7 +295,7 @@ describe('The ElementSetter', () => {
 
 			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
 
-			expect(mockGetDataGroupWithNameInDatas).toHaveBeenLastCalledWith(
+			expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenLastCalledWith(
 				someDefaultDataGroup,
 				['someDataGroup', 'someOtherDataGroup'],
 				undefined
@@ -319,14 +320,14 @@ describe('The ElementSetter', () => {
 
 			des.extractAndSetChildren(someOtherDataGroup, someOtherMatcher);
 
-			expect(mockGetDataGroupWithNameInDatas).toHaveBeenLastCalledWith(
+			expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenLastCalledWith(
 				someOtherDataGroup,
 				['someOtherDataGroup', 'someFinalDataGroup'],
 				someOtherMatcher.matchingAttributes
 			);
 		});
 
-		it('expect getAllDataAtomicValuesWithNameInData and getFinalDataAtomicValueWithNameInDatas to not be called', () => {
+		it('expect getAllDataAtomicValuesWithNameInData and extractOneDataAtomicValueFollowingNameInDatas to not be called', () => {
 			const someMatcher: Matcher = {
 				react: 'someField',
 				cora: 'someDataGroup/someOtherDataGroup',
@@ -338,11 +339,13 @@ describe('The ElementSetter', () => {
 
 			expect(mockGetAllDataAtomicValuesWithNameInData).not.toHaveBeenCalled();
 
-			expect(mockGetFinalDataAtomicValueWithNameInDatas).not.toHaveBeenCalled();
+			expect(
+				mockExtractOneDataAtomicValueFollowingNameInDatas
+			).not.toHaveBeenCalled();
 		});
 
 		it('does not call extractAndSetChildren if dataGroup returned by getDataGroupWithNameInData is undefined', () => {
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(undefined);
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
 
 			const extractAndSetChildrenSpy = jest.spyOn(des, 'extractAndSetChildren');
 
@@ -358,7 +361,7 @@ describe('The ElementSetter', () => {
 			expect(extractAndSetChildrenSpy).toHaveBeenCalledTimes(1);
 		});
 
-		it('expect extractAndSetChildren to be called with dataGroup returned by getDataGroupWithNameInDatas and matcher set in matcher', () => {
+		it('expect extractAndSetChildren to be called with dataGroup returned by extractDataGroupFollowingNameInDatas and matcher set in matcher', () => {
 			const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
 				name: 'someFinalDataGroupName',
 				children: [
@@ -378,7 +381,7 @@ describe('The ElementSetter', () => {
 				matcher: someDefaultFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
 				dataGroupReturnedByGetDataGroupWithNameInDatas
 			);
 			des.extractAndSetChildren(someDefaultDataGroup, someMatcher);
@@ -404,7 +407,7 @@ describe('The ElementSetter', () => {
 				matcher: someDefaultFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce({
 				name: 'someOtherDataGroup',
 				children: [
 					{
@@ -414,7 +417,7 @@ describe('The ElementSetter', () => {
 				],
 			});
 
-			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+			mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 				'someFinalValue'
 			);
 
@@ -446,7 +449,7 @@ describe('The ElementSetter', () => {
 				matcher: someFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce({
 				name: 'someOtherDataGroup',
 				children: [
 					{
@@ -456,7 +459,7 @@ describe('The ElementSetter', () => {
 				],
 			});
 
-			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+			mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 				'someOtherFinalValue'
 			);
 
@@ -483,7 +486,7 @@ describe('The ElementSetter', () => {
 				matcher: someDefaultFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce({
 				name: 'someOtherDataGroup',
 				children: [
 					{
@@ -493,7 +496,7 @@ describe('The ElementSetter', () => {
 				],
 			});
 
-			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(
+			mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 				'someFinalValue'
 			);
 
@@ -521,7 +524,7 @@ describe('The ElementSetter', () => {
 				matcher: someFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce({
 				name: 'someOtherDataGroup',
 				children: [
 					{
@@ -531,7 +534,9 @@ describe('The ElementSetter', () => {
 				],
 			});
 
-			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(undefined);
+			mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
+				undefined
+			);
 
 			const returned = des.extractAndSetChildren(
 				someDefaultDataGroup,
@@ -551,7 +556,7 @@ describe('The ElementSetter', () => {
 				matcher: someDefaultFinalMatcher,
 			};
 
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce({
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce({
 				name: 'someOtherDataGroup',
 				children: [
 					{
@@ -561,7 +566,9 @@ describe('The ElementSetter', () => {
 				],
 			});
 
-			mockGetFinalDataAtomicValueWithNameInDatas.mockReturnValueOnce(undefined);
+			mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
+				undefined
+			);
 
 			const returned = des.extractAndSetChildren(
 				someDefaultDataGroup,
@@ -577,7 +584,7 @@ describe('The ElementSetter', () => {
 				cora: 'someDataGroup/someOtherDataGroup',
 				matcher: someDefaultFinalMatcher,
 			};
-			mockGetDataGroupWithNameInDatas.mockReturnValueOnce(undefined);
+			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
 
 			const returned = des.extractAndSetChildren(
 				someDefaultDataGroup,

@@ -1,7 +1,13 @@
 import { DataGroup } from './CoraData';
-import { getFirstDataGroupWithNameInData } from './CoraDataUtils';
-import { getAllDataAtomicValuesWithNameInData } from './CoraDataUtilsWrappers';
-import * as de from './DataExtractor';
+import {
+	extractDataGroupFollowingNameInDatas,
+	getAllDataAtomicValuesWithNameInData,
+	getFirstDataAtomicValueWithNameInData,
+} from './CoraDataUtilsWrappers';
+import {
+	extractAllDataAtomicValuesFollowingNameInDatas,
+	extractOneDataAtomicValueFollowingNameInDatas,
+} from './DataExtractor';
 
 jest.mock('./CoraDataUtilsWrappers');
 
@@ -10,11 +16,16 @@ const mockGetAllDataAtomicValuesWithNameInData =
 		typeof getAllDataAtomicValuesWithNameInData
 	>;
 
+const mockGetFirstDataAtomicValueWithNameInData =
+	getFirstDataAtomicValueWithNameInData as jest.MockedFunction<
+		typeof getFirstDataAtomicValueWithNameInData
+	>;
+
 jest.mock('./CoraDataUtils');
 
-const mockGetFirstDataGroupWithNameInData =
-	getFirstDataGroupWithNameInData as jest.MockedFunction<
-		typeof getFirstDataGroupWithNameInData
+const mockExtractDataGroupFollowingNameInDatas =
+	extractDataGroupFollowingNameInDatas as jest.MockedFunction<
+		typeof extractDataGroupFollowingNameInDatas
 	>;
 
 const someEmptyDataGroup: DataGroup = {
@@ -53,24 +64,21 @@ const someTwoLevelDataGroup: DataGroup = {
 	],
 };
 
-const extractAllDataAtomicValuesFollowingNameInDatasSpy = jest.spyOn(
-	de,
-	'extractAllDataAtomicValuesFollowingNameInDatas'
-);
-
 beforeAll(() => {
 	mockGetAllDataAtomicValuesWithNameInData.mockReturnValue([]);
-	mockGetFirstDataGroupWithNameInData.mockReturnValue(someNonEmptyDataGroup);
+	mockExtractDataGroupFollowingNameInDatas.mockReturnValue(
+		someNonEmptyDataGroup
+	);
 });
 
 describe('DataExtractor', () => {
-	describe('getAllDataAtomicValuesWithNameInDatas', () => {
+	describe('extractAllDataAtomicValuesFollowingNameInDatas', () => {
 		it('takes dataGroup, an array of nameInDatas', () => {
-			de.extractAllDataAtomicValuesFollowingNameInDatas(someEmptyDataGroup, []);
+			extractAllDataAtomicValuesFollowingNameInDatas(someEmptyDataGroup, []);
 		});
 
 		it('if the array of nameInDatas is empty, returns an empty array', () => {
-			const returned = de.extractAllDataAtomicValuesFollowingNameInDatas(
+			const returned = extractAllDataAtomicValuesFollowingNameInDatas(
 				someEmptyDataGroup,
 				[]
 			);
@@ -79,7 +87,7 @@ describe('DataExtractor', () => {
 		});
 
 		it('if the dataGroup does not contain any elements, returns an empty array', () => {
-			const returned = de.extractAllDataAtomicValuesFollowingNameInDatas(
+			const returned = extractAllDataAtomicValuesFollowingNameInDatas(
 				someEmptyDataGroup,
 				['someNameInData', 'someOtherNameInData']
 			);
@@ -88,199 +96,171 @@ describe('DataExtractor', () => {
 		});
 
 		describe('if there are at least 2 nameInDatas in the array', () => {
-			it('passes the first of nameInDatas to getFirstDataGroupWithNameInData', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
+			it('calls extractDataGroupFollowingNameInDatas with the dataGroup', () => {
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					1
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
 					someNonEmptyDataGroup,
-					['someInterestingChildDataGroup', 'someAtomic']
+					expect.any(Array)
 				);
 
-				expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-					1,
-					expect.any(Object),
-					'someInterestingChildDataGroup'
-				);
+				extractAllDataAtomicValuesFollowingNameInDatas(someTwoLevelDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
 
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someOtherInterestingChildDataGroup', 'someAtomic']
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					2
 				);
-
-				expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-					2,
-					expect.any(Object),
-					'someOtherInterestingChildDataGroup'
-				);
-			});
-
-			it('passes the dataGroup to getFirstDataGroupWithNameInData', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someFoo', 'someAtomic']
-				);
-
-				expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-					1,
-					someNonEmptyDataGroup,
-					expect.any(String)
-				);
-
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
 					someTwoLevelDataGroup,
-					['someFoo', 'someAtomic']
-				);
-
-				expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-					2,
-					someTwoLevelDataGroup,
-					expect.any(String)
+					expect.any(Array)
 				);
 			});
 
-			it('if getFirstDataGroupWithNameInData returns undefined, does not call extractAllDataAtomicValuesFollowingNameInDatas', () => {
-				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(undefined);
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someFoo', 'someAtomic']
+			it('calls extractDataGroupFollowingNameInDatas with all but the last nameInDatas', () => {
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					1
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					expect.any(Object),
+					['someNameInData']
 				);
 
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenCalledTimes(1);
-			});
+				extractAllDataAtomicValuesFollowingNameInDatas(someTwoLevelDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+					'someAtomicNameInData',
+				]);
 
-			it('if getFirstDataGroupWithNameInData returns undefined, returns empty array', () => {
-				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(undefined);
-
-				expect(
-					de.extractAllDataAtomicValuesFollowingNameInDatas(
-						someNonEmptyDataGroup,
-						['someFoo', 'someAtomic']
-					)
-				).toStrictEqual([]);
-			});
-
-			it('if getFirstDataGroupWithNameInData returns DataGroup, passes it to extractAllDataAtomicValuesFollowingNameInDatas', () => {
-				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
-					someNonEmptyDataGroup
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					2
 				);
-
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someFoo', 'someAtomic']
-				);
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenNthCalledWith(2, someNonEmptyDataGroup, expect.any(Array));
-
-				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
-					someTwoLevelDataGroup
-				);
-
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someFoo', 'someAtomic']
-				);
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenNthCalledWith(4, someTwoLevelDataGroup, expect.any(Array));
-			});
-
-			it('if getFirstDataGroupWithNameInData returns DataGroup, passes remaining array of nameInDatas to extractAllDataAtomicValuesFollowingNameInDatas', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someFoo', 'someAtomic']
-				);
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenNthCalledWith(2, expect.any(Object), ['someAtomic']);
-
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					expect.any(Object),
 					[
 						'someNameInData',
 						'someOtherNameInData',
 						'someThirdNameInData',
-						'someAtomic',
+						'someFourthNameInData',
 					]
 				);
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns undefined, returns empty array', () => {
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+
 				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenNthCalledWith(4, expect.any(Object), [
+					extractAllDataAtomicValuesFollowingNameInDatas(
+						someNonEmptyDataGroup,
+						['someNameInData', 'someOtherNameInData']
+					)
+				).toStrictEqual([]);
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes it to getAllDataAtomicValuesWithNameInData', () => {
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+					someNestedDataGroup
+				);
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
 					'someOtherNameInData',
-					'someThirdNameInData',
-					'someAtomic',
 				]);
-			});
 
-			it('repeatedly calls extractAllDataAtomicValuesFollowingNameInDatas until only 1 nameInData is left', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['one', 'two', 'three', 'four', 'five', 'six']
-				);
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenCalledTimes(6);
-
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['one', 'two', 'three', 'four']
-				);
-				expect(
-					extractAllDataAtomicValuesFollowingNameInDatasSpy
-				).toHaveBeenCalledTimes(10);
-			});
-
-			it('returns whatever extractAllDataAtomicValuesFollowingNameInDatas returns (in the end whatever getAllDataAtomicValuesWithNameInData returns)', () => {
-				let returnedFromGetAllDataAtomicValuesWithNameInData = ['someValue'];
-
-				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce(
-					returnedFromGetAllDataAtomicValuesWithNameInData
-				);
-
-				const atomicValues = de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someInterestingChildDataGroup', 'someAtomic']
-				);
-
-				expect(atomicValues).toStrictEqual(['someValue']);
-
-				returnedFromGetAllDataAtomicValuesWithNameInData = [
-					'someValue',
-					'someOtherValue',
-					'someThirdValue',
-				];
-
-				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce(
-					returnedFromGetAllDataAtomicValuesWithNameInData
-				);
-
-				const atomicValues2 = de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someInterestingChildDataGroup', 'someAtomic']
-				);
-
-				expect(atomicValues2).toStrictEqual(
-					returnedFromGetAllDataAtomicValuesWithNameInData
-				);
-			});
-
-			it('only calls getAllDataAtomicValuesWithNameInData once', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['one', 'two', 'three', 'four', 'five', 'six']
-				);
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledTimes(
 					1
 				);
+				expect(
+					mockGetAllDataAtomicValuesWithNameInData
+				).toHaveBeenLastCalledWith(someNestedDataGroup, expect.any(String));
+
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+					someTwoLevelDataGroup
+				);
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledTimes(
+					2
+				);
+				expect(
+					mockGetAllDataAtomicValuesWithNameInData
+				).toHaveBeenLastCalledWith(someTwoLevelDataGroup, expect.any(String));
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes last nameInData to getAllDataAtomicValuesWithNameInData', () => {
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledTimes(
+					1
+				);
+				expect(
+					mockGetAllDataAtomicValuesWithNameInData
+				).toHaveBeenLastCalledWith(expect.any(Object), 'someOtherNameInData');
+
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+					'someAtomicNameInData',
+				]);
+
+				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledTimes(
+					2
+				);
+				expect(
+					mockGetAllDataAtomicValuesWithNameInData
+				).toHaveBeenLastCalledWith(expect.any(Object), 'someAtomicNameInData');
+			});
+
+			it('returns whatever getAllDataAtomicValuesWithNameInData returns', () => {
+				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([]);
+
+				expect(
+					extractAllDataAtomicValuesFollowingNameInDatas(
+						someNonEmptyDataGroup,
+						['someNameInData', 'someOtherNameInData']
+					)
+				).toStrictEqual([]);
+
+				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([
+					'someFoo',
+					'someBar',
+				]);
+
+				expect(
+					extractAllDataAtomicValuesFollowingNameInDatas(
+						someNonEmptyDataGroup,
+						['someNameInData', 'someOtherNameInData']
+					)
+				).toStrictEqual(['someFoo', 'someBar']);
 			});
 		});
 
 		describe('if there is only one nameInData in the array', () => {
 			it('calls getAllDataAtomicValuesWithNameInData with dataGroup and nameInData', () => {
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
-					someNonEmptyDataGroup,
-					['someNameInData']
-				);
+				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+				]);
 
 				expect(mockGetAllDataAtomicValuesWithNameInData).toHaveBeenCalledWith(
 					someNonEmptyDataGroup,
@@ -297,7 +277,7 @@ describe('DataExtractor', () => {
 					],
 				};
 
-				de.extractAllDataAtomicValuesFollowingNameInDatas(
+				extractAllDataAtomicValuesFollowingNameInDatas(
 					someOtherNonEmptyDataGroup,
 					['someOtherNameInData']
 				);
@@ -311,7 +291,7 @@ describe('DataExtractor', () => {
 			it('returns whatever getAllDataAtomicValuesWithNameInData is returning', () => {
 				mockGetAllDataAtomicValuesWithNameInData.mockReturnValueOnce([]);
 				expect(
-					de.extractAllDataAtomicValuesFollowingNameInDatas(
+					extractAllDataAtomicValuesFollowingNameInDatas(
 						someNonEmptyDataGroup,
 						['someNameInData']
 					)
@@ -321,7 +301,7 @@ describe('DataExtractor', () => {
 					'someValue',
 				]);
 				expect(
-					de.extractAllDataAtomicValuesFollowingNameInDatas(
+					extractAllDataAtomicValuesFollowingNameInDatas(
 						someNonEmptyDataGroup,
 						['someNameInData']
 					)
@@ -332,12 +312,260 @@ describe('DataExtractor', () => {
 					'someOtherValue',
 				]);
 				expect(
-					de.extractAllDataAtomicValuesFollowingNameInDatas(
+					extractAllDataAtomicValuesFollowingNameInDatas(
 						someNonEmptyDataGroup,
 						['someNameInData']
 					)
 				).toStrictEqual(['someValue', 'someOtherValue']);
 			});
 		});
+	});
+
+	describe('extractOneDataAtomicValueFollowingNameInDatas', () => {
+		it('takes dataGroup, an array of nameInDatas', () => {
+			extractOneDataAtomicValueFollowingNameInDatas(someEmptyDataGroup, []);
+		});
+
+		it('if the array of nameInDatas is empty, returns undefined', () => {
+			const returned = extractOneDataAtomicValueFollowingNameInDatas(
+				someEmptyDataGroup,
+				[]
+			);
+
+			expect(returned).toStrictEqual(undefined);
+		});
+
+		it('if the dataGroup does not contain any elements, returns undefined', () => {
+			const returned = extractOneDataAtomicValueFollowingNameInDatas(
+				someEmptyDataGroup,
+				['someNameInData', 'someOtherNameInData']
+			);
+
+			expect(returned).toStrictEqual(undefined);
+		});
+
+		describe('if there are at least 2 nameInDatas in the array', () => {
+			it('calls extractDataGroupFollowingNameInDatas with the dataGroup', () => {
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					1
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					someNonEmptyDataGroup,
+					expect.any(Array)
+				);
+
+				extractOneDataAtomicValueFollowingNameInDatas(someTwoLevelDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					2
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					someTwoLevelDataGroup,
+					expect.any(Array)
+				);
+			});
+
+			it('calls extractDataGroupFollowingNameInDatas with all but the last nameInDatas', () => {
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					1
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					expect.any(Object),
+					['someNameInData']
+				);
+
+				extractOneDataAtomicValueFollowingNameInDatas(someTwoLevelDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+					'someAtomicNameInData',
+				]);
+
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
+					2
+				);
+				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
+					expect.any(Object),
+					[
+						'someNameInData',
+						'someOtherNameInData',
+						'someThirdNameInData',
+						'someFourthNameInData',
+					]
+				);
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns undefined, returns undefined', () => {
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+
+				expect(
+					extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+						'someNameInData',
+						'someOtherNameInData',
+					])
+				).toStrictEqual(undefined);
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes it to getAllDataAtomicValuesWithNameInData', () => {
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+					someNestedDataGroup
+				);
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledTimes(
+					1
+				);
+				expect(
+					mockGetFirstDataAtomicValueWithNameInData
+				).toHaveBeenLastCalledWith(someNestedDataGroup, expect.any(String));
+
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+					someTwoLevelDataGroup
+				);
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledTimes(
+					2
+				);
+				expect(
+					mockGetFirstDataAtomicValueWithNameInData
+				).toHaveBeenLastCalledWith(someTwoLevelDataGroup, expect.any(String));
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes last nameInData to getAllDataAtomicValuesWithNameInData', () => {
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+				]);
+
+				expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledTimes(
+					1
+				);
+				expect(
+					mockGetFirstDataAtomicValueWithNameInData
+				).toHaveBeenLastCalledWith(expect.any(Object), 'someOtherNameInData');
+
+				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+					'someAtomicNameInData',
+				]);
+
+				expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledTimes(
+					2
+				);
+				expect(
+					mockGetFirstDataAtomicValueWithNameInData
+				).toHaveBeenLastCalledWith(expect.any(Object), 'someAtomicNameInData');
+			});
+
+			it('returns whatever getAllDataAtomicValuesWithNameInData returns', () => {
+				mockGetFirstDataAtomicValueWithNameInData.mockReturnValueOnce('');
+
+				expect(
+					extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+						'someNameInData',
+						'someOtherNameInData',
+					])
+				).toStrictEqual([]);
+
+				mockGetFirstDataAtomicValueWithNameInData.mockReturnValueOnce(
+					'someFoo'
+				);
+
+				expect(
+					extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+						'someNameInData',
+						'someOtherNameInData',
+					])
+				).toStrictEqual('someFoo');
+			});
+		});
+
+		// describe('if there is only one nameInData in the array', () => {
+		// 	it('calls getAllDataAtomicValuesWithNameInData with dataGroup and nameInData', () => {
+		// 		extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
+		// 			'someNameInData',
+		// 		]);
+
+		// 		expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledWith(
+		// 			someNonEmptyDataGroup,
+		// 			'someNameInData'
+		// 		);
+
+		// 		const someOtherNonEmptyDataGroup: DataGroup = {
+		// 			name: 'someOtherNonEmptyDataGroup',
+		// 			children: [
+		// 				{
+		// 					name: 'someOtherChild',
+		// 					value: 'someOtherValue',
+		// 				},
+		// 			],
+		// 		};
+
+		// 		extractOneDataAtomicValueFollowingNameInDatas(
+		// 			someOtherNonEmptyDataGroup,
+		// 			['someOtherNameInData']
+		// 		);
+
+		// 		expect(mockGetFirstDataAtomicValueWithNameInData).toHaveBeenCalledWith(
+		// 			someOtherNonEmptyDataGroup,
+		// 			'someOtherNameInData'
+		// 		);
+		// 	});
+
+		// 	it('returns whatever getAllDataAtomicValuesWithNameInData is returning', () => {
+		// 		mockGetFirstDataAtomicValueWithNameInData.mockReturnValueOnce([]);
+		// 		expect(
+		// 			extractOneDataAtomicValueFollowingNameInDatas(
+		// 				someNonEmptyDataGroup,
+		// 				['someNameInData']
+		// 			)
+		// 		).toStrictEqual([]);
+
+		// 		mockGetFirstDataAtomicValueWithNameInData.mockReturnValueOnce([
+		// 			'someValue',
+		// 		]);
+		// 		expect(
+		// 			extractOneDataAtomicValueFollowingNameInDatas(
+		// 				someNonEmptyDataGroup,
+		// 				['someNameInData']
+		// 			)
+		// 		).toStrictEqual(['someValue']);
+
+		// 		mockGetFirstDataAtomicValueWithNameInData.mockReturnValueOnce([
+		// 			'someValue',
+		// 			'someOtherValue',
+		// 		]);
+		// 		expect(
+		// 			extractOneDataAtomicValueFollowingNameInDatas(
+		// 				someNonEmptyDataGroup,
+		// 				['someNameInData']
+		// 			)
+		// 		).toStrictEqual(['someValue', 'someOtherValue']);
+		// 	});
+		// });
 	});
 });

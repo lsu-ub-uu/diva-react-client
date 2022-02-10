@@ -1,10 +1,9 @@
-/* eslint-disable no-param-reassign */
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
+import { extractDataGroupFollowingNameInDatas } from './CoraDataUtilsWrappers';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
-	getDataGroupWithNameInDatas,
-	getFinalDataAtomicValueWithNameInDatas,
+	extractOneDataAtomicValueFollowingNameInDatas,
 } from './DataExtractor';
 
 export const extractAndSetChildren = (
@@ -25,7 +24,7 @@ const extractDeeperNestedValues = (
 	nameInDatas: string[],
 	matcher: Matcher
 ) => {
-	const finalDataGroup = getDataGroupWithNameInDatas(
+	const finalDataGroup = extractDataGroupFollowingNameInDatas(
 		dataGroup,
 		nameInDatas,
 		matcher.matchingAttributes
@@ -61,7 +60,7 @@ const extracAtomicValues = (
 		return values;
 	}
 
-	const value = getFinalDataAtomicValueWithNameInDatas(
+	const value = extractOneDataAtomicValueFollowingNameInDatas(
 		dataGroup,
 		nameInDatas,
 		matcher.matchingAttributes
