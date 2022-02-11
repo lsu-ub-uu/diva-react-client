@@ -1,16 +1,9 @@
-import { AttributeMatcher } from './Converter';
-import { DataAtomic, DataGroup } from './CoraData';
+import { DataGroup } from './CoraData';
 import {
 	extractDataGroupFollowingNameInDatas,
 	getAllDataAtomicValuesWithNameInData,
+	getFirstDataAtomicValueWithNameInData,
 } from './CoraDataUtilsWrappers';
-
-// export const getAllChildrenWithNameInData = (
-// 	dataGroup: DataGroup,
-// 	nameInData: string
-// ): (DataGroup | DataAtomic)[] => {
-// 	return [];
-// };
 
 export const extractAllDataAtomicValuesFollowingNameInDatas = (
 	dataGroup: DataGroup,
@@ -47,8 +40,7 @@ const getFinalDataGroup = (dataGroup: DataGroup, nameInDatas: string[]) => {
 
 export const extractOneDataAtomicValueFollowingNameInDatas = (
 	dataGroup: DataGroup,
-	nameInDatas: string[],
-	matchingAttributes?: AttributeMatcher[]
+	nameInDatas: string[]
 ): string | undefined => {
 	let finalDataGroup: DataGroup | undefined = dataGroup;
 
@@ -58,20 +50,13 @@ export const extractOneDataAtomicValueFollowingNameInDatas = (
 			return undefined;
 		}
 	}
-
-	return undefined;
+	return getFirstDataAtomicValueWithNameInData(
+		finalDataGroup,
+		nameInDatas[nameInDatas.length - 1]
+	);
 };
-
-// export const getDataGroupWithNameInDatas = (
-// 	dataGroup: DataGroup,
-// 	nameInDatas: string[],
-// 	matchingAttributes?: AttributeMatcher[]
-// ): DataGroup | undefined => {
-// 	return undefined;
-// };
 
 export default {
 	extractAllDataAtomicValuesFollowingNameInDatas,
 	extractOneDataAtomicValueFollowingNameInDatas,
-	// getDataGroupWithNameInDatas,
 };

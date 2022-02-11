@@ -1,18 +1,19 @@
 import { Matcher } from './Converter';
 import { DataGroup } from './CoraData';
 import { extractDataGroupFollowingNameInDatas } from './CoraDataUtilsWrappers';
+import { possiblySetReturnValue } from './ElementSetter';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
 	extractOneDataAtomicValueFollowingNameInDatas,
-} from './DataExtractor';
+} from './RecursiveExtractor';
 
-export const extractAndSetChildren = (
+export const extractAndReturnChildren = (
 	dataGroup: DataGroup,
 	matcher: Matcher
-): string | string[] | undefined => {
+): string | string[] | Object | undefined => {
 	const nameInDatas = getNameInDatasFromPath(matcher.cora);
 
-	if (matcher.matcher !== undefined) {
+	if (matcher.nextMatcher !== undefined) {
 		return extractDeeperNestedValues(dataGroup, nameInDatas, matcher);
 	}
 
@@ -30,20 +31,20 @@ const extractDeeperNestedValues = (
 		matcher.matchingAttributes
 	);
 
-	const nextMatcher = <Matcher>matcher.matcher;
+	const nextMatcher = <Matcher>matcher.nextMatcher;
 
-	if (finalDataGroup !== undefined) {
-		const value = extractAndSetChildren(finalDataGroup, nextMatcher);
-
-		return possiblySetReturnValue(
-			value,
-			nextMatcher.react,
-			nextMatcher.required,
-			nextMatcher.multiple
-		);
+	if (finalDataGroup === undefined) {
+		return undefined;
 	}
 
-	return undefined;
+	const value = extractAndReturnChildren(finalDataGroup, nextMatcher);
+
+	return possiblySetReturnValue(
+		value,
+		nextMatcher.react,
+		nextMatcher.required,
+		nextMatcher.multiple
+	);
 };
 
 const extracAtomicValues = (
@@ -62,8 +63,7 @@ const extracAtomicValues = (
 
 	const value = extractOneDataAtomicValueFollowingNameInDatas(
 		dataGroup,
-		nameInDatas,
-		matcher.matchingAttributes
+		nameInDatas
 	);
 
 	return value;
@@ -77,29 +77,7 @@ export const getNameInDatasFromPath = (path: string): string[] => {
 	return [];
 };
 
-export const possiblySetReturnValue = (
-	value: string | string[] | {} | undefined,
-	fieldName: string,
-	required?: boolean,
-	multiple?: boolean
-): any | undefined => {
-	const objectToReturn: any = {};
-	if (value !== undefined) {
-		objectToReturn[fieldName] = value;
-		return objectToReturn;
-	}
-
-	if (!required) {
-		return undefined;
-	}
-
-	if (multiple) {
-		objectToReturn[fieldName] = [];
-	} else {
-		objectToReturn[fieldName] = '';
-	}
-
-	return objectToReturn;
+export default {
+	extractAndReturnChildren,
+	getNameInDatasFromPath,
 };
-
-export default { extractAndSetChildren, getNameInDatasFromPath };
