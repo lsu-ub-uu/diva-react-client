@@ -7,7 +7,9 @@ export type FieldMatcher = {
 	required?: boolean;
 	nextMatcher?: Matcher;
 	multiple?: boolean;
-	matchingAttributes?: AttributeMatcher[];
+	attributesToMatch?: {
+		[key: string]: string;
+	};
 };
 
 export type Matcher = FieldMatcher[];

@@ -28,7 +28,7 @@ const extractDeeperNestedValues = (
 	const finalDataGroup = extractDataGroupFollowingNameInDatas(
 		dataGroup,
 		nameInDatas,
-		matcher.matchingAttributes
+		matcher.attributesToMatch
 	);
 
 	const nextMatcher = <Matcher>matcher.nextMatcher;

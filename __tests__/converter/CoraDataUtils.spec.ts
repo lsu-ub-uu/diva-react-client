@@ -4,6 +4,7 @@ import {
 	getFirstChildWithNameInData,
 	getFirstDataAtomicWithNameInData,
 	getFirstDataGroupWithNameInData,
+	getFirstDataGroupWithNameInDataAndAttribues,
 } from '../../src/converter/CoraDataUtils';
 import {
 	DataGroup,
@@ -145,7 +146,7 @@ const dataGroupWithEmptyChildren: DataGroup = {
 	children: [],
 };
 
-const dataGroupWithNonMatchingDataAtomics: DataGroup = {
+const dataGroupWithNonMatchingDataElements: DataGroup = {
 	name: 'someName',
 	children: [
 		{
@@ -306,14 +307,14 @@ describe('getFirstChildWithNameInData', () => {
 	it('should return null if no matching child exists', () => {
 		expect(
 			getFirstChildWithNameInData(
-				dataGroupWithNonMatchingDataAtomics,
+				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
 		).toBe(null);
 
 		expect(
 			getFirstChildWithNameInData(
-				dataGroupWithNonMatchingDataAtomics,
+				dataGroupWithNonMatchingDataElements,
 				'someOtherChildName'
 			)
 		).toBe(null);
@@ -426,7 +427,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	it('if dataGroup has no matching child, should return undefined', () => {
 		expect(
 			getFirstDataAtomicWithNameInData(
-				dataGroupWithNonMatchingDataAtomics,
+				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
 		).toBe(undefined);
@@ -481,7 +482,7 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	it('if dataGroup has no matching children, should return empty array', () => {
 		expect(
 			getAllDataAtomicsWithNameInData(
-				dataGroupWithNonMatchingDataAtomics,
+				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
 		).toStrictEqual([]);
@@ -534,7 +535,7 @@ describe('getFirstDataGroupWithNameInData', () => {
 	it('if dataGroup has no matching child, should return undefined', () => {
 		expect(
 			getFirstDataGroupWithNameInData(
-				dataGroupWithNonMatchingDataAtomics,
+				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
 		).toBe(undefined);
@@ -577,6 +578,277 @@ describe('getFirstDataGroupWithNameInData', () => {
 					value: 'someValue',
 				},
 			],
+		});
+	});
+});
+
+const dataGroupWithNonMatchingAttributes: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someUninterestingKey: 'someUninterestingValue',
+			},
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherUninterestingChildName',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someOtherUninterestingKey: 'someOtherUninterestingValue',
+			},
+		},
+	],
+};
+
+const dataGroupWithOneMatchingAtomicAndOneMatchingGroupWithAttributes: DataGroup =
+	{
+		name: 'someName',
+		children: [
+			{
+				name: 'someUninterestingChildName',
+				value: 'someValue',
+			},
+			{
+				name: 'someOtherUninterestingChildName',
+				value: 'someValue',
+			},
+			{
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'someOtherChild',
+						value: 'someValue',
+					},
+				],
+			},
+			{
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'someOtherChild',
+						value: 'someValue',
+					},
+				],
+				attributes: {
+					someUninterestingKey: 'someUninterestingValue',
+				},
+			},
+			{
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'someOtherChild',
+						value: 'someValue',
+					},
+				],
+				attributes: {
+					someInterestingKey: 'someInterestingValue',
+				},
+			},
+			{
+				name: 'someInterestingChildName',
+				value: 'someValue',
+			},
+		],
+	};
+const dataGroupWithMultipleMatchingGroupWithAttributes: DataGroup = {
+	name: 'someName',
+	children: [
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'childOfTheFirstMatchingDataGroup',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someInterestingKey: 'someInterestingValue',
+			},
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someUninterestingKey: 'someUninterestingValue',
+			},
+		},
+		{
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someInterestingKey: 'someInterestingValue',
+			},
+		},
+		{
+			name: 'someInterestingChildName',
+			value: 'someValue',
+		},
+	],
+};
+
+describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
+	it('should take dataGroup, nameInData and AttributeMatcher', () => {
+		getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroupWithEmptyChildren,
+			'someChildName',
+			{ someKey: 'someValue' }
+		);
+	});
+	it('if dataGroup has no children, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithEmptyChildren,
+				'someChildName',
+				{ someKey: 'someValue' }
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has empty nameInData, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithEmptyChildren,
+				'',
+				{ someKey: 'someValue' }
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching child, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithNonMatchingDataElements,
+				'someChildName',
+				{ someKey: 'someValue' }
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has no matching DataGroup, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithOnlyMatchingAtomics,
+				'someInterestingChildName',
+				{ someKey: 'someValue' }
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has child with maching nameInData, but not attribute, should return undefined', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithNonMatchingAttributes,
+				'someInterestingChildName',
+				{ someKey: 'someValue' }
+			)
+		).toBe(undefined);
+	});
+	it('if dataGroup has child matching both nameInData and attribute, should return that DataGroup', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroupWithAttributes,
+				'someInterestingChildName',
+				{
+					someInterestingKey: 'someInterestingValue',
+				}
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'someOtherChild',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someInterestingKey: 'someInterestingValue',
+			},
+		});
+	});
+
+	it('if dataGroup has multiple children matching both nameInData and attribute, should return the first DataGroup', () => {
+		expect(
+			getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithMultipleMatchingGroupWithAttributes,
+				'someInterestingChildName',
+				{
+					someInterestingKey: 'someInterestingValue',
+				}
+			)
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			children: [
+				{
+					name: 'childOfTheFirstMatchingDataGroup',
+					value: 'someValue',
+				},
+			],
+			attributes: {
+				someInterestingKey: 'someInterestingValue',
+			},
+		});
+	});
+
+	describe('with no passed attributesToMatch', () => {
+		it('if dataGroup has matching DataGroup, should return that DataGroup', () => {
+			expect(
+				getFirstDataGroupWithNameInDataAndAttribues(
+					dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+					'someInterestingChildName'
+				)
+			).toStrictEqual({
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'someOtherChild',
+						value: 'someValue',
+					},
+				],
+			});
+		});
+		it('if dataGroup has several matching DataGroups, should return the first of them', () => {
+			expect(
+				getFirstDataGroupWithNameInDataAndAttribues(
+					dataGroupWithSeveralMatchingDataGroups,
+					'someInterestingChildName'
+				)
+			).toStrictEqual({
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'firstChild',
+						value: 'someValue',
+					},
+				],
+			});
 		});
 	});
 });

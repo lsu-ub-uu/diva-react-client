@@ -4,8 +4,13 @@ export abstract class DataElement {
 	repeatId?: string;
 }
 
+export type Attributes = {
+	[key: string]: string;
+};
+
 export interface DataGroup extends DataElement {
 	children: (DataAtomic | DataGroup | RecordLink)[];
+	attributes?: Attributes;
 }
 
 export interface DataAtomic extends DataElement {

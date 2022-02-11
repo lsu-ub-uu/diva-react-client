@@ -1,9 +1,8 @@
-import { AttributeMatcher } from './Converter';
-import { DataGroup } from './CoraData';
+import { Attributes, DataGroup } from './CoraData';
 import {
 	getAllDataAtomicsWithNameInData,
 	getFirstDataAtomicWithNameInData,
-	getFirstDataGroupWithNameInData,
+	getFirstDataGroupWithNameInDataAndAttribues,
 } from './CoraDataUtils';
 
 export function getFirstDataAtomicValueWithNameInData(
@@ -32,23 +31,36 @@ export function getAllDataAtomicValuesWithNameInData(
 export const extractDataGroupFollowingNameInDatas = (
 	dataGroup: DataGroup,
 	nameInDatas: string[],
-	matchingAttributes?: AttributeMatcher[]
+	attributesToMatch?: Attributes
 ): DataGroup | undefined => {
 	if (nameInDatas.length === 0 || dataGroup.children.length === 0) {
 		return undefined;
 	}
 
-	const nextDataGroup = getFirstDataGroupWithNameInData(
-		dataGroup,
-		nameInDatas[0]
-	);
+	let nextDataGroup;
+	if (nameInDatas.length === 1) {
+		nextDataGroup = getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroup,
+			nameInDatas[0],
+			attributesToMatch
+		);
+	} else {
+		nextDataGroup = getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroup,
+			nameInDatas[0]
+		);
+	}
 
 	if (nameInDatas.length === 1 || nextDataGroup === undefined) {
 		return nextDataGroup;
 	}
 
 	const nextNameInDatas = nameInDatas.slice(1);
-	return extractDataGroupFollowingNameInDatas(nextDataGroup, nextNameInDatas);
+	return extractDataGroupFollowingNameInDatas(
+		nextDataGroup,
+		nextNameInDatas,
+		attributesToMatch
+	);
 };
 
 export default {

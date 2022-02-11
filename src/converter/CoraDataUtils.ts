@@ -1,4 +1,5 @@
-import { DataAtomic, DataGroup } from './CoraData';
+import { isEqual } from 'lodash';
+import { Attributes, DataAtomic, DataGroup } from './CoraData';
 
 export function getFirstChildWithNameInData(
 	dataGroup: DataGroup,
@@ -79,10 +80,36 @@ export function getFirstDataGroupWithNameInData(
 	return firstMatchingDataGroup;
 }
 
+export function getFirstDataGroupWithNameInDataAndAttribues(
+	dataGroup: DataGroup,
+	nameInData: string,
+	attributesToMatch?: Attributes
+): DataGroup | undefined {
+	const dataGroups = <DataGroup[]>dataGroup.children.filter((child) => {
+		return Object.prototype.hasOwnProperty.call(child, 'children');
+	});
+
+	const firstMatchingDataGroup = dataGroups.find((child) => {
+		const matchingNameInData = child.name === nameInData;
+		let matchingAttributes = false;
+		if (attributesToMatch === undefined && child.attributes === undefined) {
+			return matchingNameInData;
+		}
+		if (attributesToMatch !== undefined && child.attributes !== undefined) {
+			matchingAttributes = isEqual(attributesToMatch, child.attributes);
+		}
+
+		return matchingAttributes && matchingNameInData;
+	});
+
+	return firstMatchingDataGroup;
+}
+
 export default {
 	getFirstChildWithNameInData,
 	getAllChildrenWithNameInData,
 	getFirstDataAtomicWithNameInData,
 	getAllDataAtomicsWithNameInData,
 	getFirstDataGroupWithNameInData,
+	getFirstDataGroupWithNameInDataAndAttribues,
 };
