@@ -1,83 +1,28 @@
-import { Matcher } from './Converter';
+import { ConverterObject, Matcher } from './Converter';
 import { DataGroup } from './CoraData';
-import { extractDataGroupFollowingNameInDatas } from './CoraDataUtilsWrappers';
 import { possiblySetReturnValue } from './ElementSetter';
-import {
-	extractAllDataAtomicValuesFollowingNameInDatas,
-	extractOneDataAtomicValueFollowingNameInDatas,
-} from './RecursiveExtractor';
+import { extractAndReturnChildren } from './FieldMatcherExtractor';
 
-export const extractAndReturnChildren = (
-	dataGroup: DataGroup,
-	matcher: Matcher
-): string | string[] | Object | undefined => {
-	const nameInDatas = getNameInDatasFromPath(matcher.cora);
+const extractWithMatcher = (dataGroup: DataGroup, matcher: Matcher) => {
+	const objectToReturn: ConverterObject = {};
 
-	if (matcher.nextMatcher !== undefined) {
-		return extractDeeperNestedValues(dataGroup, nameInDatas, matcher);
-	}
-
-	return extracAtomicValues(dataGroup, nameInDatas, matcher);
-};
-
-const extractDeeperNestedValues = (
-	dataGroup: DataGroup,
-	nameInDatas: string[],
-	matcher: Matcher
-) => {
-	const finalDataGroup = extractDataGroupFollowingNameInDatas(
-		dataGroup,
-		nameInDatas,
-		matcher.matchingAttributes
-	);
-
-	const nextMatcher = <Matcher>matcher.nextMatcher;
-
-	if (finalDataGroup === undefined) {
-		return undefined;
-	}
-
-	const value = extractAndReturnChildren(finalDataGroup, nextMatcher);
-
-	return possiblySetReturnValue(
-		value,
-		nextMatcher.react,
-		nextMatcher.required,
-		nextMatcher.multiple
-	);
-};
-
-const extracAtomicValues = (
-	dataGroup: DataGroup,
-	nameInDatas: string[],
-	matcher: Matcher
-) => {
-	if (matcher.multiple) {
-		const values = extractAllDataAtomicValuesFollowingNameInDatas(
-			dataGroup,
-			nameInDatas
+	matcher.forEach((fieldMatcher) => {
+		const extracted = extractAndReturnChildren(dataGroup, fieldMatcher);
+		const partOfAnObject = possiblySetReturnValue(
+			extracted,
+			fieldMatcher.react
 		);
 
-		return values;
-	}
+		if (
+			partOfAnObject !== undefined &&
+			Object.keys(partOfAnObject).length > 0
+		) {
+			const availableKeys = Object.keys(partOfAnObject);
+			objectToReturn[availableKeys[0]] = partOfAnObject[availableKeys[0]];
+		}
+	});
 
-	const value = extractOneDataAtomicValueFollowingNameInDatas(
-		dataGroup,
-		nameInDatas
-	);
-
-	return value;
+	return objectToReturn;
 };
 
-export const getNameInDatasFromPath = (path: string): string[] => {
-	if (path !== '') {
-		return path.split('/');
-	}
-
-	return [];
-};
-
-export default {
-	extractAndReturnChildren,
-	getNameInDatasFromPath,
-};
+export default extractWithMatcher;

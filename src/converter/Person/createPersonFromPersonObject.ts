@@ -1,7 +1,7 @@
 import ExternalUrl from '../../control/ExternalUrl';
 import Name from '../../control/Name';
 import Person from '../../control/Person';
-import { PersonObject } from './PersonDefinitions';
+import { PersonObject } from './PersonDefinitionsOld';
 
 export const createPersonFromPersonObject = (
 	personObject: PersonObject

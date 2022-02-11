@@ -1,7 +1,7 @@
 import Name from '../src/control/Name';
 import Person from '../src/control/Person';
 import { DataGroup } from '../src/converter/CoraData';
-import { PersonObject } from '../src/converter/Person/PersonDefinitions';
+import { PersonObject } from '../src/converter/Person/PersonDefinitionsOld';
 
 export const completePersonDataGroup: DataGroup = {
 	name: 'person',

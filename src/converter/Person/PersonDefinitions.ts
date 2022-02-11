@@ -1,113 +1,87 @@
-export type objectName = {
+import { Matcher } from '../Converter';
+
+type NameObject = {
 	familyName: string;
 	givenName: string;
 };
 
-// const PersonMatcher = [
-// 	{
-// 		react: 'id',
-// 		cora: 'recordinfo/id',
-// 	},
-// 	{
-// 		react: 'authorisedName',
-// 		cora: 'authorisedName(NameMatcher)',
-// 	},
-// 	{
-// 		react: 'alternativeNames[]',
-// 		cora: 'alternativeName[](NameMatcher)',
-// 	},
-// 	{
-// 		react: 'authorisedName',
-// 		cora: 'name#type:authorised(NameMatcher)',
-// 	},
-// 	{
-// 		react: 'alternativeNames[]',
-// 		cora: 'name#type:alternative[](NameMatcher)',
-// 	},
-// 	{
-// 		react: 'orcidIDs[]',
-// 		cora: 'ORCID_ID[]',
-// 	},
-// ];
-
-// const NameMatcher = [
-// 	{
-// 		react: 'familyName',
-// 		cora: 'familyName',
-// 	},
-// 	{
-// 		react: 'givenName',
-// 		cora: 'givenName',
-// 	},
-// 	{
-// 		react: 'language',
-// 		cora: '#lang',
-// 	},
-// ];
-
-export type PersonObject = {
-	person: {
-		recordInfo: {
-			id: string;
-			// type: {
-			// 	recordType: string;
-			// };
-			// createdBy: {
-			// 	user: string;
-			// };
-			// dataDivider: {
-			// 	system: string;
-			// };
-			// tsCreated: string;
-			// updated: {
-			// 	updatedBy: {
-			// 		user: string;
-			// 	};
-			// 	tsUpdated: string;
-			// }[];
-			// public: string;
-			domain?: string[];
-		};
-		authorisedName: objectName;
-		academicTitle?: string;
-		yearOfBirth?: string;
-		yearOfDeath?: string;
-		emailAddress?: string;
-		alternativeName?: objectName[];
-		externalURL?: {
-			linkTitle: string;
-			URL: string;
-		}[];
-		otherAffiliation?: {
-			affiliation: string;
-			affiliationFromYear: string;
-			affiliationUntilYear: string;
-		}[];
-		ORCID_ID?: string[];
-		VIAF_ID?: string[];
-		Libris_ID?: string[];
-		biographyEnglish?: {
-			biography: string;
-			language: string;
-		};
-		biographySwedish?: {
-			biography: string;
-			language: string;
-		};
-		personDomainPart?: {
-			personDomainPart: string;
-		}[];
-	};
+type ExternalUrlObject = {
+	linkTitle: string;
+	URL: string;
 };
 
-export const personMultipleDefinition = [
-	'updated',
-	'domain',
-	'alternativeName',
-	'externalURL',
-	'otherAffiliation',
-	'ORCID_ID',
-	'VIAF_ID',
-	'Libris_ID',
-	'personDomainPart',
+type BiographyObject = {
+	biography: string;
+	language: string;
+};
+
+export type PersonObject = {
+	id: string;
+
+	domains?: string[];
+
+	authorisedName: NameObject;
+
+	academicTitle?: string;
+
+	yearOfBirth?: string;
+
+	yearOfDeath?: string;
+
+	emailAddress?: string;
+
+	alternativeNames?: NameObject[];
+
+	externalURLs?: ExternalUrlObject[];
+
+	otherAffiliation?: {
+		affiliation: string;
+		affiliationFromYear: string;
+		affiliationUntilYear: string;
+	}[];
+
+	orcids?: string[];
+
+	viafIDs?: string[];
+
+	librisIDs?: string[];
+
+	biographyEnglish?: BiographyObject;
+
+	biographySwedish?: BiographyObject;
+
+	personDomainPart?: string[];
+};
+
+const NameMatcher: Matcher = [
+	{
+		cora: 'familyName',
+		react: 'familyName',
+	},
+	{
+		cora: 'givenName',
+		react: 'givenName',
+	},
+];
+
+export const personMatcher: Matcher = [
+	{
+		react: 'id',
+		cora: 'recordInfo/id',
+		required: true,
+	},
+	{
+		react: 'domains',
+		cora: 'recordInfo/domain',
+		multiple: true,
+	},
+	{
+		react: 'authorisedName',
+		cora: 'authorisedName',
+		nextMatcher: NameMatcher,
+	},
+	{
+		react: 'academicTitle',
+		cora: 'academicTitle',
+	},
 ];

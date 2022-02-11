@@ -1,8 +1,7 @@
 import { DataGroup } from './CoraData';
-import { possiblySetReturnValue } from './ElementSetter';
-import { extractAndReturnChildren } from './MatcherExtractor';
+import extractWithMatcher from './MatcherExtractor';
 
-export type Matcher = {
+export type FieldMatcher = {
 	react: string;
 	cora: string;
 	required?: boolean;
@@ -10,6 +9,8 @@ export type Matcher = {
 	multiple?: boolean;
 	matchingAttributes?: AttributeMatcher[];
 };
+
+export type Matcher = FieldMatcher[];
 
 export type AttributeMatcher = {
 	key: string;
@@ -20,21 +21,8 @@ export type ConverterObject = {
 	[key: string]: ConverterObject | string | {} | string[];
 };
 
-const convertToObject = <T>(dataGroup: DataGroup, matchers: Matcher[]) => {
-	const objectToReturn: ConverterObject = {};
-
-	matchers.forEach((matcher) => {
-		const extracted = extractAndReturnChildren(dataGroup, matcher);
-		const partOfAnObject = possiblySetReturnValue(extracted, matcher.react);
-
-		if (
-			partOfAnObject !== undefined &&
-			Object.keys(partOfAnObject).length > 0
-		) {
-			const availableKeys = Object.keys(partOfAnObject);
-			objectToReturn[availableKeys[0]] = partOfAnObject[availableKeys[0]];
-		}
-	});
+const convertToObject = <T>(dataGroup: DataGroup, matchers: FieldMatcher[]) => {
+	const objectToReturn = extractWithMatcher(dataGroup, matchers);
 
 	return <T>(<unknown>objectToReturn);
 };

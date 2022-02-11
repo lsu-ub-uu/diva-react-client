@@ -1,7 +1,7 @@
 import { DataGroup } from '../CoraData';
 import GenericConverter from '../GenericConverter';
 import createPersonFromPersonObject from './createPersonFromPersonObject';
-import { personMultipleDefinition, PersonObject } from './PersonDefinitions';
+import { personMultipleDefinition, PersonObject } from './PersonDefinitionsOld';
 
 const convertPersonDataGroupToPerson = (personDataGroup: DataGroup) => {
 	const genericConverter = new GenericConverter(personMultipleDefinition);

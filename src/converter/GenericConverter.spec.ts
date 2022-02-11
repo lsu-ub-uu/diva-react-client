@@ -5,7 +5,7 @@ import {
 	objectName,
 	personMultipleDefinition,
 	PersonObject,
-} from './Person/PersonDefinitions';
+} from './Person/PersonDefinitionsOld';
 
 describe('GenericConverter', () => {
 	describe('GenericConverter', () => {

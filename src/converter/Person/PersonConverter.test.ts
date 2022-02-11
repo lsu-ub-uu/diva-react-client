@@ -4,7 +4,7 @@ import Person from '../../control/Person';
 import GenericConverter from '../GenericConverter';
 import createPersonFromPersonObject from './createPersonFromPersonObject';
 import convertPersonDataGroupToPerson from './PersonConverter';
-import { personMultipleDefinition, PersonObject } from './PersonDefinitions';
+import { personMultipleDefinition, PersonObject } from './PersonDefinitionsOld';
 
 const mockConvertToGenericObject = jest.fn();
 
@@ -16,7 +16,7 @@ jest.mock('../GenericConverter', () => {
 	});
 });
 
-jest.mock('./PersonDefinitions');
+jest.mock('./PersonDefinitionsOld');
 
 jest.mock('./createPersonFromPersonObject');
 const mockCreatePersonFromPersonObject =

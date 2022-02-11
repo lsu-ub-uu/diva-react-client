@@ -1,4 +1,4 @@
-import { Matcher } from './Converter';
+import { FieldMatcher } from './Converter';
 import { DataGroup } from './CoraData';
 import extractDataAtomicValue from './DataAtomicConverter';
 
@@ -12,7 +12,7 @@ const defaultTestDataGroup: DataGroup = {
 	],
 };
 
-const defaultTestObjectMatcher: Matcher = {
+const defaultTestObjectMatcher: FieldMatcher = {
 	react: 'someAtomicName',
 	cora: 'someAtomicName',
 };
@@ -65,7 +65,7 @@ describe('extractDataAtomicValue', () => {
 						},
 					],
 				};
-				const testObjectMatcher: Matcher = {
+				const testObjectMatcher: FieldMatcher = {
 					react: 'someAtomicName',
 					cora: 'someOtherAtomicName',
 				};
@@ -90,7 +90,7 @@ describe('extractDataAtomicValue', () => {
 						},
 					],
 				};
-				const testObjectMatcher: Matcher = {
+				const testObjectMatcher: FieldMatcher = {
 					react: 'someAtomicName',
 					cora: 'someAtomicName',
 				};
@@ -107,7 +107,7 @@ describe('extractDataAtomicValue', () => {
 					name: 'someName',
 					children: [],
 				};
-				const testObjectMatcher: Matcher = {
+				const testObjectMatcher: FieldMatcher = {
 					react: 'someAtomicName',
 					cora: 'someAtomicName',
 				};
