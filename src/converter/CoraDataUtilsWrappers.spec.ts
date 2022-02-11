@@ -448,7 +448,7 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 			undefined
 		);
 	});
-	it('if getFirstDataGroupWithNameInData returns DataGroup, passes matchingAttributes to extractDataGroupFollowingNameInDatas', () => {
+	it('if getFirstDataGroupWithNameInData returns DataGroup, passes attributesToMatch to extractDataGroupFollowingNameInDatas', () => {
 		cduw.extractDataGroupFollowingNameInDatas(
 			someNonEmptyDataGroup,
 			['someFoo', 'someAtomic'],
