@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getPersonById } from '../control/api';
-import Person from '../control/Person';
+import { PersonObject } from '../converter/Person/PersonDefinitions';
 
 const useGetPersonById = (
 	id: string
-): { person?: Person; isLoading: boolean; error?: Error } => {
-	const [person, setPerson] = useState<Person>();
+): { person?: PersonObject; isLoading: boolean; error?: Error } => {
+	const [person, setPerson] = useState<PersonObject>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<Error | undefined>();
 

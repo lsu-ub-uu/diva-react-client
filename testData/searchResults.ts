@@ -1,6 +1,3 @@
-import List from '../src/control/List';
-import Name from '../src/control/Name';
-import Person from '../src/control/Person';
 import { DataListWrapper, RecordWrapper } from '../src/converter/CoraData';
 
 export const dataListContainingOnePerson: DataListWrapper = {
@@ -2139,9 +2136,3 @@ export const onePerson: RecordWrapper = {
 		},
 	},
 };
-
-const person = new Person('authority-person:112', new Name('Enequist', 'Gerd'));
-
-export const listContainingOnePerson = new List([person], 1, 1, 1);
-
-export default { getGerd: getDataListContainingOnePerson };

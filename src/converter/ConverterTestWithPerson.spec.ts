@@ -20,6 +20,10 @@ const expectedPerson: PersonObject = {
 		givenName: 'Urban',
 	},
 	academicTitle: 'titel',
+	recordType: 'person',
+	orcids: ['0000-0001-6885-2022'],
+	viafIDs: ['q122'],
+	librisIDs: ['12321'],
 };
 
 const personDataGroup: DataGroup = {

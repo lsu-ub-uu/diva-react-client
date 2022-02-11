@@ -1,10 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '../../src/components/CardList';
-import { threePersonObjects } from '../../testData/personData';
-import Person from '../../src/control/Person';
-import Name from '../../src/control/Name';
+import {
+	createPersonObject,
+	threePersonObjects,
+} from '../../testData/personObjectData';
 import Card from '../../src/components/Card';
+import { PersonObject } from '../../src/converter/Person/PersonDefinitions';
 
 jest.mock('../../src/components/Card', () => {
 	return jest.fn(() => null);
@@ -32,8 +34,8 @@ describe('The List component', () => {
 		const listItems = screen.getAllByRole('listitem');
 		expect(listItems).toHaveLength(3);
 
-		const person: Person = new Person('4', new Name('Foo', 'Bar'));
-		const fourPersonObjects: Person[] = Array.from(threePersonObjects);
+		const person: PersonObject = createPersonObject('4', 'Foo', 'Bar');
+		const fourPersonObjects: PersonObject[] = Array.from(threePersonObjects);
 		fourPersonObjects.push(person);
 
 		rerender(<CardList list={fourPersonObjects} />);

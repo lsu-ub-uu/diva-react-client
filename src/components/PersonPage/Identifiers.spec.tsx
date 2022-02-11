@@ -4,8 +4,9 @@ import React from 'react';
 import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
+	createPersonObject,
 	personWithDomain,
-} from '../../../testData/personData';
+} from '../../../testData/personObjectData';
 import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
 
@@ -51,14 +52,14 @@ describe('identifiers', () => {
 			2,
 			expect.objectContaining({
 				label: 'ORCID',
-				list: person.orcidIDs,
+				list: person.orcids,
 			}),
 			expect.any(Object)
 		);
 	});
 	it('should call ListWithLabel with VIAF and viafIds if they exist on person', () => {
 		const person = createCompletePerson();
-		person.orcidIDs = [];
+		person.orcids = [];
 		person.librisIDs = [];
 		render(<Identifiers person={person} />);
 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
@@ -73,7 +74,7 @@ describe('identifiers', () => {
 	});
 	it('should call ListWithLabel with Libris-id and librisIDs if they exist on person', () => {
 		const person = createCompletePerson();
-		person.orcidIDs = [];
+		person.orcids = [];
 		person.viafIDs = [];
 		render(<Identifiers person={person} />);
 		expect(ListWithLabel).toHaveBeenCalledTimes(2);
@@ -86,8 +87,21 @@ describe('identifiers', () => {
 			expect.any(Object)
 		);
 	});
-	it('should not call ListWithLabel for ORCID if person has no ORCIDs, VIAFs or Libris ids', () => {
+	it('should not call ListWithLabel if person has no ORCIDs, VIAFs or Libris ids', () => {
 		render(<Identifiers person={personWithDomain} />);
 		expect(ListWithLabel).toHaveBeenCalledTimes(1);
+
+		const personWithEmptyIdentifiers = createPersonObject(
+			'someId',
+			'someName',
+			'someFirstName'
+		);
+
+		personWithEmptyIdentifiers.orcids = [];
+		personWithEmptyIdentifiers.viafIDs = [];
+		personWithEmptyIdentifiers.librisIDs = [];
+
+		render(<Identifiers person={personWithEmptyIdentifiers} />);
+		expect(ListWithLabel).toHaveBeenCalledTimes(2);
 	});
 });

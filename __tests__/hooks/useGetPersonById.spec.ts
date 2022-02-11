@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { getPersonById } from '../../src/control/api';
 import useGetPersonById from '../../src/hooks/useGetPersonById';
-import { personWithDomain } from '../../testData/personData';
+import { personWithDomain } from '../../testData/personObjectData';
 
 jest.mock('../../src/control/api');
 

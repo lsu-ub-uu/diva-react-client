@@ -1,10 +1,12 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { threePersonObjects } from '../../../testData/personData';
+import {
+	createListWithPersons,
+	threePersonObjects,
+} from '../../../testData/personObjectData';
 import { searchPersonsByNameSearch } from '../../control/api';
 import List from '../../control/List';
-import Person from '../../control/Person';
 import useApi from '../../hooks/useApi';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
 
@@ -191,8 +193,3 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 		});
 	});
 });
-
-function createListWithPersons(persons: Person[]) {
-	const toNumber = persons.length;
-	return new List(persons, 1, toNumber, toNumber * 2);
-}

@@ -5,7 +5,7 @@ import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
 	personWithDomain,
-} from '../../../testData/personData';
+} from '../../../testData/personObjectData';
 import Identifiers from './Identifiers';
 import ListWithLabel from './ListWithLabel';
 import PersonView from './PersonView';
@@ -60,6 +60,14 @@ describe('PersonView', () => {
 	});
 
 	it('should NOT render title if empty', () => {
+		const person = createMinimumPersonWithIdAndName();
+		person.academicTitle = '';
+		render(<PersonView person={person} />);
+
+		expect(screen.queryByTestId('personTitle')).not.toBeInTheDocument();
+	});
+
+	it('should NOT render title if undefined', () => {
 		const person = createMinimumPersonWithIdAndName();
 		render(<PersonView person={person} />);
 

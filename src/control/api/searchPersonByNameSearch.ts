@@ -1,13 +1,16 @@
+import convertToObject from '../../converter/Converter';
 import {
 	DataGroup,
 	DataListWrapper,
 	RecordWrapper,
 } from '../../converter/CoraData';
-import convertPersonDataGroupToPerson from '../../converter/Person/PersonConverter';
+import {
+	personMatcher,
+	PersonObject,
+} from '../../converter/Person/PersonDefinitions';
 import httpClient from '../HttpClient';
 import { IHttpClientRequestParameters } from '../IHttpClient';
 import List from '../List';
-import Person from '../Person';
 
 const searchEndpoint = 'record/searchResult/';
 const nameSearch = `publicPersonSearch?searchData=`;
@@ -104,13 +107,16 @@ const composeReturnData = (
 };
 
 function extractListFromDataList(dataListWrapper: DataListWrapper): List {
-	let persons: Person[] = [];
+	let persons: PersonObject[] = [];
 
 	if (dataListWrapper.dataList.data.length > 0) {
 		const records: RecordWrapper[] = dataListWrapper.dataList.data;
 
 		persons = records.map((recordWrapper) => {
-			return convertPersonDataGroupToPerson(recordWrapper.record.data);
+			return convertToObject<PersonObject>(
+				recordWrapper.record.data,
+				personMatcher
+			);
 		});
 	}
 	const fromNumber = parseInt(dataListWrapper.dataList.fromNo, 10);

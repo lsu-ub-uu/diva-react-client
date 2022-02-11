@@ -5,7 +5,7 @@ import { useParams as actualUseParams } from 'react-router-dom';
 import PersonPage from '.';
 import PersonView from './PersonView';
 import useGetPersonById from '../../hooks/useGetPersonById';
-import { personWithDomain } from '../../../testData/personData';
+import { personWithDomain } from '../../../testData/personObjectData';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<

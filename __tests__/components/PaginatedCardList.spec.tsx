@@ -2,11 +2,10 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import PaginatedCardList from '../../src/components/PaginatedCardList';
 import {
+	createListWithPersons,
 	personWithDomain,
 	threePersonObjects,
-} from '../../testData/personData';
-import Person from '../../src/control/Person';
-import List from '../../src/control/List';
+} from '../../testData/personObjectData';
 import PaginationComponent from '../../src/components/PaginationComponent';
 import CardList from '../../src/components/CardList';
 
@@ -122,8 +121,3 @@ describe('PaginatedCardList', () => {
 		);
 	});
 });
-
-function createListWithPersons(persons: Person[]) {
-	const toNumber = persons.length;
-	return new List(persons, 1, toNumber, toNumber * 2);
-}

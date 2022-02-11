@@ -3,12 +3,12 @@ import { act } from 'react-dom/test-utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { screen } from '@testing-library/react';
 import PersonSearch from '.';
-import Person from '../../control/Person';
 import List from '../../control/List';
 import {
+	createListWithPersons,
 	personWithDomain,
 	threePersonObjects,
-} from '../../../testData/personData';
+} from '../../../testData/personObjectData';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
 import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
@@ -491,9 +491,4 @@ function mockReturnFromUsePersonSearchParams(
 		setStart: mockedSetStart,
 		setRows: mockedSetRows,
 	});
-}
-
-function createListWithPersons(persons: Person[]) {
-	const toNumber = persons.length;
-	return new List(persons, 1, toNumber, toNumber * 2);
 }

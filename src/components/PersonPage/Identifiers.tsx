@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Person from '../../control/Person';
+import { PersonObject } from '../../converter/Person/PersonDefinitions';
 import ListWithLabel from './ListWithLabel';
 
 const StyledDiv = styled.div`
@@ -9,21 +9,25 @@ const StyledDiv = styled.div`
 	column-gap: 0.5em;
 `;
 
-const Identifiers = function ({ person }: { person: Person }) {
+const possiblyOutputListWithLabel = (
+	list: string[] | undefined,
+	label: string
+) => {
+	if (list !== undefined && list.length > 0) {
+		return <ListWithLabel list={list} label={label} />;
+	}
+	return undefined;
+};
+
+const Identifiers = function ({ person }: { person: PersonObject }) {
 	return (
 		<StyledDiv>
 			<ListWithLabel list={[person.id]} label="pID" />
-			{person.orcidIDs.length > 0 && (
-				<ListWithLabel list={person.orcidIDs} label="ORCID" />
-			)}
+			{possiblyOutputListWithLabel(person.orcids, 'ORCID')}
 
-			{person.viafIDs.length > 0 && (
-				<ListWithLabel list={person.viafIDs} label="VIAF" />
-			)}
+			{possiblyOutputListWithLabel(person.viafIDs, 'VIAF')}
 
-			{person.librisIDs.length > 0 && (
-				<ListWithLabel list={person.librisIDs} label="Libris-id" />
-			)}
+			{possiblyOutputListWithLabel(person.librisIDs, 'Libris-id')}
 		</StyledDiv>
 	);
 };

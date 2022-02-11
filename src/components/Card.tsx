@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Listable from '../control/Listable';
+import { PersonObject } from '../converter/Person/PersonDefinitions';
 
 const CardSection = styled.section`
 	box-shadow: ${(props) => props.theme.boxShadow};
@@ -18,15 +19,25 @@ const CardSection = styled.section`
 type Props = {
 	item: Listable;
 };
+
 const Card = function ({ item }: Props) {
 	return (
 		<CardSection>
-			<Link className="headingLink" to={item.getLink()}>
-				{item.presentation()}
+			<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
+				{getPresentation(item)}
 			</Link>
 			<p className="gray">{item.id}</p>
 		</CardSection>
 	);
+};
+
+const getPresentation = (item: Listable) => {
+	if (item.recordType === 'person') {
+		const person: PersonObject = item as PersonObject;
+		return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
+	}
+
+	return `${item.recordType}: ${item.id}`;
 };
 
 export default Card;

@@ -4,21 +4,21 @@ import {
 	getPersonById,
 } from '../../src/control/api';
 import searchPersonsByNameSearch from '../../src/control/api/searchPersonByNameSearch';
-import Person from '../../src/control/Person';
 import { onePerson } from '../../testData/searchResults';
 
 import httpClient from '../../src/control/HttpClient';
-import convertPersonDataGroupToPerson from '../../src/converter/Person/PersonConverter';
+import convertToObject from '../../src/converter/Converter';
+import {
+	personMatcher,
+	PersonObject,
+} from '../../src/converter/Person/PersonDefinitions';
 
-jest.mock('../../src/converter/Person/PersonConverter');
-
-const mockConvertPersonDataGroupToPerson =
-	convertPersonDataGroupToPerson as jest.MockedFunction<
-		typeof convertPersonDataGroupToPerson
-	>;
+jest.mock('../../src/converter/Converter');
+const mockConvertToObject = convertToObject as jest.MockedFunction<
+	typeof convertToObject
+>;
 
 jest.mock('../../src/control/HttpClient');
-
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
@@ -90,37 +90,38 @@ describe('Api', () => {
 
 			await getPersonById('someId');
 
-			expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledTimes(1);
-			expect(mockConvertPersonDataGroupToPerson).toHaveBeenCalledWith(
-				onePerson.record.data
+			expect(mockConvertToObject).toHaveBeenCalledTimes(1);
+			expect(mockConvertToObject).toHaveBeenCalledWith(
+				onePerson.record.data,
+				personMatcher
 			);
 		});
 
 		it('should resolve with a person if a person could be found', async () => {
-			const expectedPersons: Person[] = createMockPersons(1);
+			const expectedPersons: PersonObject[] = createMockPersons(1);
 
-			mockConvertPersonDataGroupToPerson.mockReturnValueOnce(
-				expectedPersons[0]
-			);
+			mockConvertToObject.mockReturnValueOnce(expectedPersons[0]);
 
 			expect.assertions(1);
 
-			const person: Person = await getPersonById('someId');
+			const person: PersonObject = await getPersonById('someId');
 
 			expect(person).toStrictEqual(expectedPersons[0]);
 		});
 	});
 });
 
-function createMockPersons(amount: number): Person[] {
-	const mockPersons: Person[] = [];
+function createMockPersons(amount: number): PersonObject[] {
+	const mockPersons: PersonObject[] = [];
 	for (let index = 0; index < amount; index += 1) {
-		mockPersons.push(
-			new Person(`someId-${index}`, {
+		mockPersons.push({
+			id: `someId-${index}`,
+			authorisedName: {
 				familyName: `SomeFamilyName${index}`,
 				givenName: `SomeGivenName${index}`,
-			})
-		);
+			},
+			recordType: 'person',
+		});
 	}
 	return mockPersons;
 }

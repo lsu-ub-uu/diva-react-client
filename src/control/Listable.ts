@@ -1,7 +1,6 @@
 interface Listable {
 	id: string;
-	presentation(): string;
-	getLink(): string;
+	recordType: string;
 }
 
 export default Listable;

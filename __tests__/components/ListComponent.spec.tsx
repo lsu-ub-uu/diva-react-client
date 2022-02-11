@@ -4,14 +4,19 @@ import ListComponent from '../../src/components/ListComponent';
 import List from '../../src/control/List';
 
 import CardList from '../../src/components/CardList';
-import { threePersonObjects } from '../../testData/personData';
+import Listable from '../../src/control/Listable';
 
 jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);
 });
 
 const emptyList = new List([], 1, 0, 0);
-const threePersonList = new List(threePersonObjects, 1, 3, 3);
+const data: Listable[] = [
+	{ id: '1', recordType: 'someRecordType' },
+	{ id: '2', recordType: 'someRecordType' },
+	{ id: '3', recordType: 'someRecordType' },
+];
+const listWithThreeObjects = new List(data, 1, 3, 3);
 
 describe('ListComponent...', () => {
 	it('should take a List', () => {
@@ -30,12 +35,12 @@ describe('ListComponent...', () => {
 			expect.any(Object)
 		);
 
-		rerender(<ListComponent list={threePersonList} />);
+		rerender(<ListComponent list={listWithThreeObjects} />);
 		expect(CardList).toHaveBeenCalledTimes(2);
 		expect(CardList).toHaveBeenNthCalledWith(
 			2,
 			expect.objectContaining({
-				list: threePersonObjects,
+				list: data,
 			}),
 			expect.any(Object)
 		);

@@ -1,4 +1,5 @@
 import { Matcher } from '../Converter';
+import { RecordObject } from '../GenericDefinitions';
 
 type NameObject = {
 	familyName: string;
@@ -15,9 +16,7 @@ type BiographyObject = {
 	language: string;
 };
 
-export type PersonObject = {
-	id: string;
-
+export interface PersonObject extends RecordObject {
 	domains?: string[];
 
 	authorisedName: NameObject;
@@ -51,7 +50,7 @@ export type PersonObject = {
 	biographySwedish?: BiographyObject;
 
 	personDomainPart?: string[];
-};
+}
 
 const NameMatcher: Matcher = [
 	{
@@ -83,5 +82,25 @@ export const personMatcher: Matcher = [
 	{
 		react: 'academicTitle',
 		cora: 'academicTitle',
+	},
+	{
+		react: 'recordType',
+		cora: 'recordInfo/type/linkedRecordId',
+		required: true,
+	},
+	{
+		react: 'orcids',
+		cora: 'ORCID_ID',
+		multiple: true,
+	},
+	{
+		react: 'viafIDs',
+		cora: 'VIAF_ID',
+		multiple: true,
+	},
+	{
+		react: 'librisIDs',
+		cora: 'Libris_ID',
+		multiple: true,
 	},
 ];
