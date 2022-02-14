@@ -11,6 +11,19 @@ const NameMatcher: Matcher = [
 	},
 ];
 
+const ExternalURLMatcher: Matcher = [
+	{
+		propertyName: 'URL',
+		nameInDataPath: 'URL',
+		required: true,
+	},
+	{
+		propertyName: 'linkTitle',
+		nameInDataPath: 'linkTitle',
+		required: true,
+	},
+];
+
 export const personMatcher: Matcher = [
 	{
 		propertyName: 'id',
@@ -49,6 +62,12 @@ export const personMatcher: Matcher = [
 	{
 		propertyName: 'librisIDs',
 		nameInDataPath: 'Libris_ID',
+		multiple: true,
+	},
+	{
+		propertyName: 'externalURLs',
+		nameInDataPath: 'externalURL',
+		nextMatcher: ExternalURLMatcher,
 		multiple: true,
 	},
 ];
