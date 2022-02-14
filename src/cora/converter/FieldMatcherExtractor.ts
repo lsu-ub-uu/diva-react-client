@@ -25,6 +25,11 @@ const extractDeeperNestedValues = (
 	nameInDatas: string[],
 	matcher: FieldMatcher
 ) => {
+	// if multiple
+	// extractAllDataGroupsFollowingNameInDatas
+	// map over result, and call extractWithMatcher
+	// return array containing results from all calls to extractWithMatcher
+
 	const finalDataGroup = extractDataGroupFollowingNameInDatas(
 		dataGroup,
 		nameInDatas,

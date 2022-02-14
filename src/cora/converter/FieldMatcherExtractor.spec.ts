@@ -329,8 +329,7 @@ describe('The ElementSetter', () => {
 				someOtherMatcher.attributesToMatch
 			);
 		});
-
-		it('expect getAllDataAtomicValuesWithNameInData and extractOneDataAtomicValueFollowingNameInDatas to not be called with input values', () => {
+		it('expect extractAllDataAtomicValuesFollowingNameInDatas and extractOneDataAtomicValueFollowingNameInDatas to not be called with input values', () => {
 			const someMatcher: FieldMatcher = {
 				propertyName: 'someField',
 				nameInDataPath: 'someDataGroup/someOtherDataGroup',
@@ -352,100 +351,127 @@ describe('The ElementSetter', () => {
 			]);
 		});
 
-		it('does not call extractWithMatcher if dataGroup returned by getDataGroupWithNameInData is undefined', () => {
-			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+		describe('if multiple', () => {
+			it.todo('calls extractAllDataGroupsFollowingNameInDatas');
 
-			const someMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				multiple: true,
-				nextMatcher: someDefaultFinalMatcher,
-			};
-
-			des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
-
-			expect(mockExtractWithMatcher).not.toHaveBeenCalled();
-		});
-
-		it('expect extractWithMatcher to be called with dataGroup returned by extractDataGroupFollowingNameInDatas and nextMatcher set in matcher', () => {
-			const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
-				name: 'someFinalDataGroupName',
-				children: [
-					{
-						name: 'someFinalName',
-						value: 'someFinalValue',
-					},
-				],
-			};
-
-			const someMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				multiple: true,
-				nextMatcher: someDefaultFinalMatcher,
-			};
-
-			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
-				dataGroupReturnedByGetDataGroupWithNameInDatas
-			);
-			des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
-
-			expect(mockExtractWithMatcher).toHaveBeenCalledTimes(1);
-			expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
-				1,
-				dataGroupReturnedByGetDataGroupWithNameInDatas,
-				someDefaultFinalMatcher
-			);
-		});
-
-		it('returns whatever extractWithMatcher returns', () => {
-			const someMatcherWithNextMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				nextMatcher: someDefaultFinalMatcher,
-			};
-
-			mockExtractWithMatcher.mockReturnValueOnce({
-				someNiceKey: 'someNiceValue',
+			describe('if extractAllDataGroupsFollowingNameInDatas returns empty array', () => {
+				it.todo('if property IS required, returns empty array');
+				it.todo('if property is NOT required, returns undefined');
 			});
 
-			let returned = des.extractAndReturnChildren(
-				someDefaultDataGroup,
-				someMatcherWithNextMatcher
-			);
-
-			expect(returned).toStrictEqual({
-				someNiceKey: 'someNiceValue',
-			});
-
-			mockExtractWithMatcher.mockReturnValueOnce({
-				someOtherKey: 'someOtherValue',
-			});
-
-			returned = des.extractAndReturnChildren(
-				someDefaultDataGroup,
-				someMatcherWithNextMatcher
-			);
-
-			expect(returned).toStrictEqual({
-				someOtherKey: 'someOtherValue',
+			describe('if extractAllDataGroupsFollowingNameInDatas returns dataGroups', () => {
+				it.todo('calls extractWithMatcher on each of them with nextMatcher');
+				it.todo(
+					'returns array containing results from all calls to extractWithMatcher'
+				);
+				it.todo(
+					'if extractWithMatcher returns an empty object, that object is not included in the return array'
+				);
+				it.todo(
+					'if extractWithMatcher returns an empty object, that object is not included in the return array'
+				);
+				it.todo(
+					'if extractWithMatcher returns only empty objects, the required field of the parent matcher decides (see above)'
+				);
 			});
 		});
 
-		it('if extractDataGroupFollowingNameInDatas returns undefined, return undefined', () => {
-			const someMatcher: FieldMatcher = {
-				propertyName: 'someInitialField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				nextMatcher: someDefaultFinalMatcher,
-			};
-			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+		describe('if not multiple', () => {
+			it('does not call extractWithMatcher if dataGroup returned by extractDataGroupFollowingNameInData is undefined', () => {
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
 
-			const returned = des.extractAndReturnChildren(
-				someDefaultDataGroup,
-				someMatcher
-			);
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
 
-			expect(returned).toStrictEqual(undefined);
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(mockExtractWithMatcher).not.toHaveBeenCalled();
+			});
+
+			it('expect extractWithMatcher to be called with dataGroup returned by extractDataGroupFollowingNameInDatas and nextMatcher set in matcher', () => {
+				const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
+					name: 'someFinalDataGroupName',
+					children: [
+						{
+							name: 'someFinalName',
+							value: 'someFinalValue',
+						},
+					],
+				};
+
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
+
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+					dataGroupReturnedByGetDataGroupWithNameInDatas
+				);
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(mockExtractWithMatcher).toHaveBeenCalledTimes(1);
+				expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+					1,
+					dataGroupReturnedByGetDataGroupWithNameInDatas,
+					someDefaultFinalMatcher
+				);
+			});
+
+			it('returns whatever extractWithMatcher returns', () => {
+				const someMatcherWithNextMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					nextMatcher: someDefaultFinalMatcher,
+				};
+
+				mockExtractWithMatcher.mockReturnValueOnce({
+					someNiceKey: 'someNiceValue',
+				});
+
+				let returned = des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someMatcherWithNextMatcher
+				);
+
+				expect(returned).toStrictEqual({
+					someNiceKey: 'someNiceValue',
+				});
+
+				mockExtractWithMatcher.mockReturnValueOnce({
+					someOtherKey: 'someOtherValue',
+				});
+
+				returned = des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someMatcherWithNextMatcher
+				);
+
+				expect(returned).toStrictEqual({
+					someOtherKey: 'someOtherValue',
+				});
+			});
+
+			it('if extractDataGroupFollowingNameInDatas returns undefined, return undefined', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someInitialField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					nextMatcher: someDefaultFinalMatcher,
+				};
+				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+
+				const returned = des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someMatcher
+				);
+
+				expect(returned).toStrictEqual(undefined);
+			});
 		});
 	});
 
