@@ -9,6 +9,9 @@ describe('Full test of converter', () => {
 			personDataGroup,
 			personMatcher
 		);
+
+		console.log(personObject);
+
 		expect(personObject).toStrictEqual(expectedPerson);
 	});
 });
@@ -25,6 +28,16 @@ const expectedPerson: Person = {
 	orcids: ['0000-0001-6885-2022'],
 	viafIDs: ['q122'],
 	librisIDs: ['12321'],
+	externalURLs: [
+		{
+			linkTitle: 'Min profilsida UU',
+			URL: 'https://mp.uu.se/web/profilsidor/start/-/emp/N99-921',
+		},
+		{
+			linkTitle: 'ResearchGate',
+			URL: 'https://www.researchgate.net',
+		},
+	],
 };
 
 const personDataGroup: DataGroup = {

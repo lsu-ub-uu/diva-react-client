@@ -58,6 +58,11 @@ export const createCompletePerson = () => {
 		},
 	];
 
+	completePerson.externalURLs = [
+		{ URL: 'http://du.se', linkTitle: 'DU' },
+		{ URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+	];
+
 	return completePerson;
 };
 
