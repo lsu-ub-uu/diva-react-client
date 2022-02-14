@@ -3,7 +3,6 @@ import { act } from 'react-dom/test-utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { screen } from '@testing-library/react';
 import PersonSearch from '.';
-import List from '../../control/List';
 import {
 	createListWithPersons,
 	personWithDomain,
@@ -14,6 +13,7 @@ import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from '../PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
+import List from '../../cora/types/List';
 
 jest.mock('./useSearchPersonsByNameSearch');
 const mockedTriggerSearchWithParams = jest.fn();

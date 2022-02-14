@@ -1,5 +1,5 @@
-import List from '../src/control/List';
-import { Person } from '../src/types/Person';
+import List from '../src/cora/types/List';
+import { Person } from '../src/cora/types/Person';
 
 export const personWithDomain: Person = {
 	id: '2',

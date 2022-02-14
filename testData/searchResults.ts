@@ -1,4 +1,4 @@
-import { DataListWrapper, RecordWrapper } from '../src/cora-data/CoraData';
+import { DataListWrapper, RecordWrapper } from '../src/cora/cora-data/CoraData';
 
 export const dataListContainingOnePerson: DataListWrapper = {
 	dataList: {

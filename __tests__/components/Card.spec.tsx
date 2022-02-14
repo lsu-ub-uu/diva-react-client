@@ -3,8 +3,8 @@ import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import Card from '../../src/components/Card';
-import Listable from '../../src/control/Listable';
-import { Person } from '../../src/types/Person';
+import Listable from '../../src/cora/types/Listable';
+import { Person } from '../../src/cora/types/Person';
 import { createPersonObject } from '../../testData/personObjectData';
 
 jest.mock('react-router-dom', () => ({

@@ -1,22 +1,23 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'whatwg-fetch';
 import {
 	searchPersonsByNameSearch as searchPersonsByNameSearchExport,
 	getPersonById,
 } from './api';
 import searchPersonsByNameSearch from './api/searchPersonByNameSearch';
-import { onePerson } from '../../testData/searchResults';
 
-import httpClient from './HttpClient';
+import httpClient from './http/HttpClient';
 import convertToObject from '../converter/Converter';
 import { personMatcher } from '../converter/definitions/PersonDefinitions';
 import { Person } from '../types/Person';
+import { onePerson } from '../../../testData/searchResults';
 
-jest.mock('../../src/converter/Converter');
+jest.mock('../converter/Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
 	typeof convertToObject
 >;
 
-jest.mock('../../src/control/HttpClient');
+jest.mock('./http/HttpClient');
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;

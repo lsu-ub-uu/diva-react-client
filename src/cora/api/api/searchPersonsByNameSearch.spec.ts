@@ -1,21 +1,21 @@
-import httpClient from '../HttpClient';
+import httpClient from '../http/HttpClient';
 import searchPersonsByNameSearch from './searchPersonByNameSearch';
-import List from '../List';
-import {
-	dataListContainingFourPersons,
-	dataListContainingOnePerson,
-	dataListContainingTwoOfFifteen,
-} from '../../../testData/searchResults';
+import List from '../../types/List';
 import convertToObject from '../../converter/Converter';
 import { personMatcher } from '../../converter/definitions/PersonDefinitions';
+import {
+	dataListContainingFourPersons,
+	dataListContainingTwoOfFifteen,
+	dataListContainingOnePerson,
+} from '../../../../testData/searchResults';
 
-jest.mock('../../../src/control/HttpClient');
+jest.mock('../http/HttpClient');
 
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
 
-jest.mock('../../../src/converter/Converter');
+jest.mock('../../converter/Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
 	typeof convertToObject
 >;

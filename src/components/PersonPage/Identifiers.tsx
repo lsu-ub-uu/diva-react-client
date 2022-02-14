@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Person } from '../../types/Person';
+import { Person } from '../../cora/types/Person';
 import ListWithLabel from './ListWithLabel';
 
 const StyledDiv = styled.div`

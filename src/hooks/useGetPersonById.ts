@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getPersonById } from '../control/api';
-import { Person } from '../types/Person';
+import { getPersonById } from '../cora/api/api';
+import { Person } from '../cora/types/Person';
 
 const useGetPersonById = (
 	id: string

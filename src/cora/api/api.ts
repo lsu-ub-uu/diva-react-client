@@ -1,8 +1,8 @@
 import convertToObject from '../converter/Converter';
 import { RecordWrapper } from '../cora-data/CoraData';
 import { personMatcher } from '../converter/definitions/PersonDefinitions';
-import httpClient from './HttpClient';
-import { IHttpClientRequestParameters } from './IHttpClient';
+import httpClient from './http/HttpClient';
+import { IHttpClientRequestParameters } from './http/IHttpClient';
 import { Person } from '../types/Person';
 
 export function getPersonById(id: string): Promise<Person> {

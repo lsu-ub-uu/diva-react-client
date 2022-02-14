@@ -6,7 +6,7 @@ import {
 	threePersonObjects,
 } from '../../testData/personObjectData';
 import Card from '../../src/components/Card';
-import { Person } from '../../src/types/Person';
+import { Person } from '../../src/cora/types/Person';
 
 jest.mock('../../src/components/Card', () => {
 	return jest.fn(() => null);

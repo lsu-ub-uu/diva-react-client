@@ -5,10 +5,10 @@ import {
 	createListWithPersons,
 	threePersonObjects,
 } from '../../../testData/personObjectData';
-import { searchPersonsByNameSearch } from '../../control/api';
-import List from '../../control/List';
 import useApi from '../../hooks/useApi';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
+import List from '../../cora/types/List';
+import { searchPersonsByNameSearch } from '../../cora/api/api';
 
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;

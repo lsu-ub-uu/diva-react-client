@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import ListComponent from '../../src/components/ListComponent';
-import List from '../../src/control/List';
 
 import CardList from '../../src/components/CardList';
-import Listable from '../../src/control/Listable';
+import List from '../../src/cora/types/List';
+import Listable from '../../src/cora/types/Listable';
 
 jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);

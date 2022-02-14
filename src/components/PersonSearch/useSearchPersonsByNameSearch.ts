@@ -1,5 +1,5 @@
 import React from 'react';
-import { searchPersonsByNameSearch } from '../../control/api';
+import { searchPersonsByNameSearch } from '../../cora/api/api';
 import useApi from '../../hooks/useApi';
 
 const useSearchPersonsByNameSearch = (

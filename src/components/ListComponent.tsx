@@ -1,5 +1,5 @@
 import React from 'react';
-import List from '../control/List';
+import List from '../cora/types/List';
 import CardList from './CardList';
 
 function ListComponent({ list }: { list: List }) {

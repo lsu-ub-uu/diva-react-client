@@ -1,5 +1,5 @@
 import React from 'react';
-import { Person } from '../../types/Person';
+import { Person } from '../../cora/types/Person';
 import Identifiers from './Identifiers';
 import ListWithLabel from './ListWithLabel';
 

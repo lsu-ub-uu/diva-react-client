@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { getPersonById } from '../../src/control/api';
+import { getPersonById } from '../../src/cora/api/api';
 import useGetPersonById from '../../src/hooks/useGetPersonById';
 import { personWithDomain } from '../../testData/personObjectData';
 
-jest.mock('../../src/control/api');
+jest.mock('../../src/cora/api/api');
 
 const mockedGetPersonById = getPersonById as jest.MockedFunction<
 	typeof getPersonById

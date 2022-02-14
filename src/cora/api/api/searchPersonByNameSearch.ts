@@ -5,9 +5,9 @@ import {
 	RecordWrapper,
 } from '../../cora-data/CoraData';
 import { personMatcher } from '../../converter/definitions/PersonDefinitions';
-import httpClient from '../HttpClient';
-import { IHttpClientRequestParameters } from '../IHttpClient';
-import List from '../List';
+import httpClient from '../http/HttpClient';
+import { IHttpClientRequestParameters } from '../http/IHttpClient';
+import List from '../../types/List';
 import { Person } from '../../types/Person';
 
 const searchEndpoint = 'record/searchResult/';
