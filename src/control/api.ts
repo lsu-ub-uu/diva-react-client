@@ -1,13 +1,11 @@
 import convertToObject from '../converter/Converter';
-import { RecordWrapper } from '../converter/CoraData';
-import {
-	personMatcher,
-	PersonObject,
-} from '../converter/Person/PersonDefinitions';
+import { RecordWrapper } from '../cora-data/CoraData';
+import { personMatcher } from '../converter/definitions/PersonDefinitions';
 import httpClient from './HttpClient';
 import { IHttpClientRequestParameters } from './IHttpClient';
+import { Person } from '../types/Person';
 
-export function getPersonById(id: string): Promise<PersonObject> {
+export function getPersonById(id: string): Promise<Person> {
 	return new Promise((resolve, reject) => {
 		if (id === '') {
 			reject(new Error('No id was passed to getPersonById.'));
@@ -19,7 +17,7 @@ export function getPersonById(id: string): Promise<PersonObject> {
 			httpClient
 				.get<RecordWrapper>(parameters)
 				.then((recordWrapper) => {
-					const person = convertToObject<PersonObject>(
+					const person = convertToObject<Person>(
 						recordWrapper.record.data,
 						personMatcher
 					);

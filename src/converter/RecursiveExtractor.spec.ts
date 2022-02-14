@@ -1,15 +1,15 @@
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import {
 	extractDataGroupFollowingNameInDatas,
 	getAllDataAtomicValuesWithNameInData,
 	getFirstDataAtomicValueWithNameInData,
-} from './CoraDataUtilsWrappers';
+} from '../cora-data/CoraDataUtilsWrappers';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
 	extractOneDataAtomicValueFollowingNameInDatas,
 } from './RecursiveExtractor';
 
-jest.mock('./CoraDataUtilsWrappers');
+jest.mock('../cora-data/CoraDataUtilsWrappers');
 
 const mockGetAllDataAtomicValuesWithNameInData =
 	getAllDataAtomicValuesWithNameInData as jest.MockedFunction<
@@ -20,8 +20,6 @@ const mockGetFirstDataAtomicValueWithNameInData =
 	getFirstDataAtomicValueWithNameInData as jest.MockedFunction<
 		typeof getFirstDataAtomicValueWithNameInData
 	>;
-
-jest.mock('./CoraDataUtils');
 
 const mockExtractDataGroupFollowingNameInDatas =
 	extractDataGroupFollowingNameInDatas as jest.MockedFunction<

@@ -2,16 +2,14 @@ import 'whatwg-fetch';
 import {
 	searchPersonsByNameSearch as searchPersonsByNameSearchExport,
 	getPersonById,
-} from '../../src/control/api';
-import searchPersonsByNameSearch from '../../src/control/api/searchPersonByNameSearch';
+} from './api';
+import searchPersonsByNameSearch from './api/searchPersonByNameSearch';
 import { onePerson } from '../../testData/searchResults';
 
-import httpClient from '../../src/control/HttpClient';
-import convertToObject from '../../src/converter/Converter';
-import {
-	personMatcher,
-	PersonObject,
-} from '../../src/converter/Person/PersonDefinitions';
+import httpClient from './HttpClient';
+import convertToObject from '../converter/Converter';
+import { personMatcher } from '../converter/definitions/PersonDefinitions';
+import { Person } from '../types/Person';
 
 jest.mock('../../src/converter/Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
@@ -98,21 +96,21 @@ describe('Api', () => {
 		});
 
 		it('should resolve with a person if a person could be found', async () => {
-			const expectedPersons: PersonObject[] = createMockPersons(1);
+			const expectedPersons: Person[] = createMockPersons(1);
 
 			mockConvertToObject.mockReturnValueOnce(expectedPersons[0]);
 
 			expect.assertions(1);
 
-			const person: PersonObject = await getPersonById('someId');
+			const person: Person = await getPersonById('someId');
 
 			expect(person).toStrictEqual(expectedPersons[0]);
 		});
 	});
 });
 
-function createMockPersons(amount: number): PersonObject[] {
-	const mockPersons: PersonObject[] = [];
+function createMockPersons(amount: number): Person[] {
+	const mockPersons: Person[] = [];
 	for (let index = 0; index < amount; index += 1) {
 		mockPersons.push({
 			id: `someId-${index}`,

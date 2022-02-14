@@ -1,13 +1,13 @@
-import httpClient from '../../../src/control/HttpClient';
-import searchPersonsByNameSearch from '../../../src/control/api/searchPersonByNameSearch';
-import List from '../../../src/control/List';
+import httpClient from '../HttpClient';
+import searchPersonsByNameSearch from './searchPersonByNameSearch';
+import List from '../List';
 import {
 	dataListContainingFourPersons,
 	dataListContainingOnePerson,
 	dataListContainingTwoOfFifteen,
 } from '../../../testData/searchResults';
-import convertToObject from '../../../src/converter/Converter';
-import { personMatcher } from '../../../src/converter/Person/PersonDefinitions';
+import convertToObject from '../../converter/Converter';
+import { personMatcher } from '../../converter/definitions/PersonDefinitions';
 
 jest.mock('../../../src/control/HttpClient');
 

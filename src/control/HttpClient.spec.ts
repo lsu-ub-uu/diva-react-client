@@ -1,6 +1,6 @@
 import axios from 'axios';
-import httpClient from '../../src/control/HttpClient';
-import { IHttpClientRequestParameters } from '../../src/control/IHttpClient';
+import httpClient from './HttpClient';
+import { IHttpClientRequestParameters } from './IHttpClient';
 
 jest.mock('axios');
 

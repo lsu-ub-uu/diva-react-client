@@ -1,6 +1,6 @@
 import { FieldMatcher, Matcher } from './Converter';
 import extractWithMatcher from './MatcherExtractor';
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import { possiblySetReturnValue } from './ElementSetter';
 import { extractAndReturnChildren } from './FieldMatcherExtractor';
 
@@ -35,8 +35,8 @@ const defaultTestDataGroup: DataGroup = {
 
 const defaultTestObjectMatchers: FieldMatcher[] = [
 	{
-		react: 'someDefaultAtomicName',
-		cora: 'someDefaultAtomicName',
+		propertyName: 'someDefaultAtomicName',
+		nameInDataPath: 'someDefaultAtomicName',
 	},
 ];
 
@@ -56,20 +56,20 @@ const someDataGroupWithTwoChildren: DataGroup = {
 
 const matcherWithFourFieldMatchers: Matcher = [
 	{
-		react: 'someAtomicName',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName',
+		nameInDataPath: 'someAtomicName',
 	},
 	{
-		react: 'someAtomicName2',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName2',
+		nameInDataPath: 'someAtomicName',
 	},
 	{
-		react: 'someAtomicName3',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName3',
+		nameInDataPath: 'someAtomicName',
 	},
 	{
-		react: 'someAtomicName4',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName4',
+		nameInDataPath: 'someAtomicName',
 	},
 ];
 

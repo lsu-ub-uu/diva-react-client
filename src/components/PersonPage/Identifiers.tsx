@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { PersonObject } from '../../converter/Person/PersonDefinitions';
+import { Person } from '../../types/Person';
 import ListWithLabel from './ListWithLabel';
 
 const StyledDiv = styled.div`
@@ -19,7 +19,7 @@ const possiblyOutputListWithLabel = (
 	return undefined;
 };
 
-const Identifiers = function ({ person }: { person: PersonObject }) {
+const Identifiers = function ({ person }: { person: Person }) {
 	return (
 		<StyledDiv>
 			<ListWithLabel list={[person.id]} label="pID" />

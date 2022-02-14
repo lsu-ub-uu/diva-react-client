@@ -1,10 +1,11 @@
 import convertToObject from './Converter';
-import { DataGroup } from './CoraData';
-import { personMatcher, PersonObject } from './Person/PersonDefinitions';
+import { DataGroup } from '../cora-data/CoraData';
+import { personMatcher } from './definitions/PersonDefinitions';
+import { Person } from '../types/Person';
 
 describe('Full test of converter', () => {
 	it('Converts every field', () => {
-		const personObject: PersonObject = convertToObject<PersonObject>(
+		const personObject: Person = convertToObject<Person>(
 			personDataGroup,
 			personMatcher
 		);
@@ -12,7 +13,7 @@ describe('Full test of converter', () => {
 	});
 });
 
-const expectedPerson: PersonObject = {
+const expectedPerson: Person = {
 	id: 'authority-person:11685',
 	domains: ['du', 'hig', 'ivl', 'ltu', 'miun', 'ths', 'umu', 'uu'],
 	authorisedName: {

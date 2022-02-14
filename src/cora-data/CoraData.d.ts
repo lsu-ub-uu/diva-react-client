@@ -42,14 +42,14 @@ type Permissions = {
 	write?: string[];
 };
 
-type Record = {
+type CoraRecord = {
 	data: DataGroup;
 	permissions?: Permissions;
 	actionLinks?: ActionLinks;
 };
 
 type RecordWrapper = {
-	record: Record;
+	record: CoraRecord;
 };
 
 type DataList = {

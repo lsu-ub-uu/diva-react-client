@@ -3,14 +3,12 @@ import {
 	DataGroup,
 	DataListWrapper,
 	RecordWrapper,
-} from '../../converter/CoraData';
-import {
-	personMatcher,
-	PersonObject,
-} from '../../converter/Person/PersonDefinitions';
+} from '../../cora-data/CoraData';
+import { personMatcher } from '../../converter/definitions/PersonDefinitions';
 import httpClient from '../HttpClient';
 import { IHttpClientRequestParameters } from '../IHttpClient';
 import List from '../List';
+import { Person } from '../../types/Person';
 
 const searchEndpoint = 'record/searchResult/';
 const nameSearch = `publicPersonSearch?searchData=`;
@@ -107,16 +105,13 @@ const composeReturnData = (
 };
 
 function extractListFromDataList(dataListWrapper: DataListWrapper): List {
-	let persons: PersonObject[] = [];
+	let persons: Person[] = [];
 
 	if (dataListWrapper.dataList.data.length > 0) {
 		const records: RecordWrapper[] = dataListWrapper.dataList.data;
 
 		persons = records.map((recordWrapper) => {
-			return convertToObject<PersonObject>(
-				recordWrapper.record.data,
-				personMatcher
-			);
+			return convertToObject<Person>(recordWrapper.record.data, personMatcher);
 		});
 	}
 	const fromNumber = parseInt(dataListWrapper.dataList.fromNo, 10);

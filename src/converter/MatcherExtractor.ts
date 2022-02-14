@@ -1,5 +1,5 @@
 import { ConverterObject, Matcher } from './Converter';
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import { possiblySetReturnValue } from './ElementSetter';
 import { extractAndReturnChildren } from './FieldMatcherExtractor';
 
@@ -10,7 +10,7 @@ const extractWithMatcher = (dataGroup: DataGroup, matcher: Matcher) => {
 		const extracted = extractAndReturnChildren(dataGroup, fieldMatcher);
 		const partOfAnObject = possiblySetReturnValue(
 			extracted,
-			fieldMatcher.react
+			fieldMatcher.propertyName
 		);
 
 		if (

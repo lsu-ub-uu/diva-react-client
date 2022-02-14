@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import Card from '../../src/components/Card';
 import Listable from '../../src/control/Listable';
-import { PersonObject } from '../../src/converter/Person/PersonDefinitions';
+import { Person } from '../../src/types/Person';
 import { createPersonObject } from '../../testData/personObjectData';
 
 jest.mock('react-router-dom', () => ({
@@ -20,7 +20,7 @@ const someListable: Listable = {
 	recordType: 'someRecordType',
 };
 
-const somePerson: PersonObject = createPersonObject(
+const somePerson: Person = createPersonObject(
 	'someId',
 	'someFamilyName',
 	'someLastName'

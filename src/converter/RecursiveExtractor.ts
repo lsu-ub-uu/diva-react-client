@@ -1,9 +1,9 @@
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import {
 	extractDataGroupFollowingNameInDatas,
 	getAllDataAtomicValuesWithNameInData,
 	getFirstDataAtomicValueWithNameInData,
-} from './CoraDataUtilsWrappers';
+} from '../cora-data/CoraDataUtilsWrappers';
 
 export const extractAllDataAtomicValuesFollowingNameInDatas = (
 	dataGroup: DataGroup,

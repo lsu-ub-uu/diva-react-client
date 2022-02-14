@@ -1,6 +1,6 @@
 import { FieldMatcher, Matcher } from './Converter';
-import { DataGroup } from './CoraData';
-import { extractDataGroupFollowingNameInDatas } from './CoraDataUtilsWrappers';
+import { DataGroup } from '../cora-data/CoraData';
+import { extractDataGroupFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
 import * as des from './FieldMatcherExtractor';
 import extractWithMatcher from './MatcherExtractor';
 import {
@@ -27,7 +27,7 @@ const mockExtractOneDataAtomicValueFollowingNameInDatas =
 		typeof extractOneDataAtomicValueFollowingNameInDatas
 	>;
 
-jest.mock('./CoraDataUtilsWrappers');
+jest.mock('../cora-data/CoraDataUtilsWrappers');
 const mockExtractDataGroupFollowingNameInDatas =
 	extractDataGroupFollowingNameInDatas as jest.MockedFunction<
 		typeof extractDataGroupFollowingNameInDatas
@@ -49,8 +49,8 @@ const defaultDataAtomicDataGroup: DataGroup = {
 };
 
 const defaultDataAtomicObjectMatcher: FieldMatcher = {
-	react: 'someAtomicName',
-	cora: 'someAtomicName',
+	propertyName: 'someAtomicName',
+	nameInDataPath: 'someAtomicName',
 };
 
 const defaultMultipleDataAtomicDataGroup: DataGroup = {
@@ -80,8 +80,8 @@ const defaultMultipleDataAtomicDataGroup: DataGroup = {
 };
 
 const defaulMultipleDataAtomicObjectMatcher: FieldMatcher = {
-	react: 'someMultipleField',
-	cora: 'someMultipleAtomicNameInData',
+	propertyName: 'someMultipleField',
+	nameInDataPath: 'someMultipleAtomicNameInData',
 	multiple: true,
 };
 
@@ -117,27 +117,27 @@ describe('The ElementSetter', () => {
 			};
 
 			const someMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataAtomic',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataAtomic',
 				multiple: true,
 			};
 
 			des.extractAndReturnChildren(someDataGroup, someMatcher);
 
 			expect(getNameInDatasFromPathSpy).toHaveBeenLastCalledWith(
-				someMatcher.cora
+				someMatcher.nameInDataPath
 			);
 
 			const someOtherMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someDataGroup/someDataAtomic',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someDataGroup/someDataAtomic',
 				required: true,
 			};
 
 			des.extractAndReturnChildren(someDataGroup, someOtherMatcher);
 
 			expect(getNameInDatasFromPathSpy).toHaveBeenLastCalledWith(
-				someOtherMatcher.cora
+				someOtherMatcher.nameInDataPath
 			);
 		});
 
@@ -159,8 +159,8 @@ describe('The ElementSetter', () => {
 				};
 
 				const someOtherMatcher: FieldMatcher = {
-					react: 'someField',
-					cora: 'someDataGroup/someDataGroup/someDataAtomic',
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someDataGroup/someDataAtomic',
 					required: true,
 					attributesToMatch: { someKey: 'someValue' },
 				};
@@ -200,8 +200,8 @@ describe('The ElementSetter', () => {
 
 			it('adds value returned by extractOneDataAtomicValueFollowingNameInDatas to objectToSet with OTHER matcher.react as key', () => {
 				const testObjectMatcher: FieldMatcher = {
-					react: 'someOtherAtomicName',
-					cora: 'someAtomicName',
+					propertyName: 'someOtherAtomicName',
+					nameInDataPath: 'someAtomicName',
 				};
 				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 					'someValue'
@@ -235,12 +235,13 @@ describe('The ElementSetter', () => {
 				expect(
 					mockExtractAllDataAtomicValuesFollowingNameInDatas
 				).toHaveBeenCalledWith(defaultMultipleDataAtomicDataGroup, [
-					defaulMultipleDataAtomicObjectMatcher.cora,
+					defaulMultipleDataAtomicObjectMatcher.nameInDataPath,
 				]);
 
 				const multipleTestObjectMatcher: FieldMatcher = {
-					react: 'someMultipleField',
-					cora: 'someDataGroupNameInData/someMultipleDataAtomicNameInData',
+					propertyName: 'someMultipleField',
+					nameInDataPath:
+						'someDataGroupNameInData/someMultipleDataAtomicNameInData',
 					multiple: true,
 					attributesToMatch: { lang: 'en' },
 				};
@@ -277,8 +278,8 @@ describe('The ElementSetter', () => {
 
 	describe('If a matcher was passed', () => {
 		const someDefaultFinalFieldMatcher: FieldMatcher = {
-			react: 'someFinalField',
-			cora: 'someOtherDataAtomic',
+			propertyName: 'someFinalField',
+			nameInDataPath: 'someOtherDataAtomic',
 		};
 		const someDefaultFinalMatcher: Matcher = [someDefaultFinalFieldMatcher];
 
@@ -289,8 +290,8 @@ describe('The ElementSetter', () => {
 
 		it('expect extractDataGroupFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and attributesToMatch', () => {
 			const someMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				multiple: true,
 				nextMatcher: someDefaultFinalMatcher,
 			};
@@ -304,8 +305,8 @@ describe('The ElementSetter', () => {
 			);
 
 			const someOtherMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someOtherDataGroup/someFinalDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someOtherDataGroup/someFinalDataGroup',
 				nextMatcher: someDefaultFinalMatcher,
 				attributesToMatch: { someKey: 'someValue' },
 			};
@@ -331,8 +332,8 @@ describe('The ElementSetter', () => {
 
 		it('expect getAllDataAtomicValuesWithNameInData and extractOneDataAtomicValueFollowingNameInDatas to not be called with input values', () => {
 			const someMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				multiple: true,
 				nextMatcher: someDefaultFinalMatcher,
 			};
@@ -355,8 +356,8 @@ describe('The ElementSetter', () => {
 			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
 
 			const someMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				multiple: true,
 				nextMatcher: someDefaultFinalMatcher,
 			};
@@ -378,8 +379,8 @@ describe('The ElementSetter', () => {
 			};
 
 			const someMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				multiple: true,
 				nextMatcher: someDefaultFinalMatcher,
 			};
@@ -399,8 +400,8 @@ describe('The ElementSetter', () => {
 
 		it('returns whatever extractWithMatcher returns', () => {
 			const someMatcherWithNextMatcher: FieldMatcher = {
-				react: 'someField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				nextMatcher: someDefaultFinalMatcher,
 			};
 
@@ -433,8 +434,8 @@ describe('The ElementSetter', () => {
 
 		it('if extractDataGroupFollowingNameInDatas returns undefined, return undefined', () => {
 			const someMatcher: FieldMatcher = {
-				react: 'someInitialField',
-				cora: 'someDataGroup/someOtherDataGroup',
+				propertyName: 'someInitialField',
+				nameInDataPath: 'someDataGroup/someOtherDataGroup',
 				nextMatcher: someDefaultFinalMatcher,
 			};
 			mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);

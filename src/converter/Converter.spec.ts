@@ -1,5 +1,5 @@
 import convertToObject, { FieldMatcher, Matcher } from './Converter';
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import extractWithMatcher from './MatcherExtractor';
 
 jest.mock('./MatcherExtractor');
@@ -25,29 +25,29 @@ type SomeTestObject = {
 
 const someTestMatcher: Matcher = [
 	{
-		react: 'someAtomicName',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName',
+		nameInDataPath: 'someAtomicName',
 		required: true,
 	},
 	{
-		react: 'someOtherAtomicName',
-		cora: 'someOtherAtomicName',
+		propertyName: 'someOtherAtomicName',
+		nameInDataPath: 'someOtherAtomicName',
 	},
 	{
-		react: 'someGroup',
-		cora: 'someGroup',
+		propertyName: 'someGroup',
+		nameInDataPath: 'someGroup',
 		required: true,
 		nextMatcher: [
 			{
-				react: 'someAtomic',
-				cora: 'someAtomic',
+				propertyName: 'someAtomic',
+				nameInDataPath: 'someAtomic',
 				required: true,
 			},
 		],
 	},
 	{
-		react: 'someMultiple',
-		cora: 'someMultiple',
+		propertyName: 'someMultiple',
+		nameInDataPath: 'someMultiple',
 		multiple: true,
 	},
 ];
@@ -68,8 +68,8 @@ const defaultTestDataGroup: DataGroup = {
 
 const defaultTestObjectMatcher: FieldMatcher[] = [
 	{
-		react: 'someDefaultAtomicName',
-		cora: 'someDefaultAtomicName',
+		propertyName: 'someDefaultAtomicName',
+		nameInDataPath: 'someDefaultAtomicName',
 	},
 ];
 
@@ -89,12 +89,12 @@ const someDataGroupWithTwoChildren: DataGroup = {
 
 const matcherWithTwoFieldMatchers: FieldMatcher[] = [
 	{
-		react: 'someAtomicName',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName',
+		nameInDataPath: 'someAtomicName',
 	},
 	{
-		react: 'someAtomicName2',
-		cora: 'someAtomicName',
+		propertyName: 'someAtomicName2',
+		nameInDataPath: 'someAtomicName',
 	},
 ];
 

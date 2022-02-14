@@ -6,7 +6,7 @@ import {
 	threePersonObjects,
 } from '../../testData/personObjectData';
 import Card from '../../src/components/Card';
-import { PersonObject } from '../../src/converter/Person/PersonDefinitions';
+import { Person } from '../../src/types/Person';
 
 jest.mock('../../src/components/Card', () => {
 	return jest.fn(() => null);
@@ -34,8 +34,8 @@ describe('The List component', () => {
 		const listItems = screen.getAllByRole('listitem');
 		expect(listItems).toHaveLength(3);
 
-		const person: PersonObject = createPersonObject('4', 'Foo', 'Bar');
-		const fourPersonObjects: PersonObject[] = Array.from(threePersonObjects);
+		const person: Person = createPersonObject('4', 'Foo', 'Bar');
+		const fourPersonObjects: Person[] = Array.from(threePersonObjects);
 		fourPersonObjects.push(person);
 
 		rerender(<CardList list={fourPersonObjects} />);

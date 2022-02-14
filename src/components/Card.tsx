@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Listable from '../control/Listable';
-import { PersonObject } from '../converter/Person/PersonDefinitions';
+import { Person } from '../types/Person';
 
 const CardSection = styled.section`
 	box-shadow: ${(props) => props.theme.boxShadow};
@@ -33,7 +33,7 @@ const Card = function ({ item }: Props) {
 
 const getPresentation = (item: Listable) => {
 	if (item.recordType === 'person') {
-		const person: PersonObject = item as PersonObject;
+		const person: Person = item as Person;
 		return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
 	}
 

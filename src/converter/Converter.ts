@@ -1,9 +1,9 @@
-import { DataGroup } from './CoraData';
+import { DataGroup } from '../cora-data/CoraData';
 import extractWithMatcher from './MatcherExtractor';
 
 export type FieldMatcher = {
-	react: string;
-	cora: string;
+	propertyName: string;
+	nameInDataPath: string;
 	required?: boolean;
 	nextMatcher?: Matcher;
 	multiple?: boolean;
@@ -23,8 +23,8 @@ export type ConverterObject = {
 	[key: string]: ConverterObject | string | {} | string[];
 };
 
-const convertToObject = <T>(dataGroup: DataGroup, matchers: FieldMatcher[]) => {
-	const objectToReturn = extractWithMatcher(dataGroup, matchers);
+const convertToObject = <T>(dataGroup: DataGroup, matcher: Matcher) => {
+	const objectToReturn = extractWithMatcher(dataGroup, matcher);
 
 	return <T>(<unknown>objectToReturn);
 };

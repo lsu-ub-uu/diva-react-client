@@ -5,12 +5,8 @@ import {
 	getFirstDataAtomicWithNameInData,
 	getFirstDataGroupWithNameInData,
 	getFirstDataGroupWithNameInDataAndAttribues,
-} from '../../src/converter/CoraDataUtils';
-import {
-	DataGroup,
-	DataElement,
-	DataAtomic,
-} from '../../src/converter/CoraData';
+} from './CoraDataUtils';
+import { DataGroup, DataElement, DataAtomic } from './CoraData';
 
 describe('getAllChildrenWithNameInData', () => {
 	it('should return empty list if there are no children', () => {

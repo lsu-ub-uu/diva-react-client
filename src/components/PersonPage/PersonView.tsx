@@ -1,9 +1,9 @@
 import React from 'react';
-import { PersonObject } from '../../converter/Person/PersonDefinitions';
+import { Person } from '../../types/Person';
 import Identifiers from './Identifiers';
 import ListWithLabel from './ListWithLabel';
 
-const PersonView = function ({ person }: { person: PersonObject }) {
+const PersonView = function ({ person }: { person: Person }) {
 	let alternativeNames: string[] = [];
 	if (person.alternativeNames !== undefined) {
 		alternativeNames = person.alternativeNames.map((name) => {
