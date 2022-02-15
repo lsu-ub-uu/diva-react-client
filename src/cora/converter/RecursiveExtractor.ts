@@ -1,6 +1,6 @@
 import { DataGroup } from '../cora-data/CoraData';
 import {
-	extractDataGroupFollowingNameInDatas,
+	extractFirstDataGroupWithAttributesFollowingNameInDatas,
 	getAllDataAtomicValuesWithNameInData,
 	getFirstDataAtomicValueWithNameInData,
 } from '../cora-data/CoraDataUtilsWrappers';
@@ -30,10 +30,11 @@ export const extractAllDataAtomicValuesFollowingNameInDatas = (
 const getFinalDataGroup = (dataGroup: DataGroup, nameInDatas: string[]) => {
 	const dataGroupNameInDatas = nameInDatas.slice(0, -1);
 
-	const finalDataGroup = extractDataGroupFollowingNameInDatas(
-		dataGroup,
-		dataGroupNameInDatas
-	);
+	const finalDataGroup =
+		extractFirstDataGroupWithAttributesFollowingNameInDatas(
+			dataGroup,
+			dataGroupNameInDatas
+		);
 
 	return finalDataGroup;
 };

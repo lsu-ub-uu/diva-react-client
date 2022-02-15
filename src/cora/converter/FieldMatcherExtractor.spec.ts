@@ -1,6 +1,6 @@
 import { FieldMatcher, Matcher } from './Converter';
 import { DataGroup } from '../cora-data/CoraData';
-import { extractDataGroupFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
+import { extractFirstDataGroupWithAttributesFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
 import * as des from './FieldMatcherExtractor';
 import extractWithMatcher from './MatcherExtractor';
 import {
@@ -28,9 +28,9 @@ const mockExtractOneDataAtomicValueFollowingNameInDatas =
 	>;
 
 jest.mock('../cora-data/CoraDataUtilsWrappers');
-const mockExtractDataGroupFollowingNameInDatas =
-	extractDataGroupFollowingNameInDatas as jest.MockedFunction<
-		typeof extractDataGroupFollowingNameInDatas
+const mockExtractDataGroupWithAttributesFollowingNameInDatas =
+	extractFirstDataGroupWithAttributesFollowingNameInDatas as jest.MockedFunction<
+		typeof extractFirstDataGroupWithAttributesFollowingNameInDatas
 	>;
 
 const someEmptyDataGroup: DataGroup = {
@@ -90,7 +90,9 @@ beforeAll(() => {
 		'someDefaultValueFromGetFinalDataAtomicValueWithNameInDatas'
 	);
 
-	mockExtractDataGroupFollowingNameInDatas.mockReturnValue(someEmptyDataGroup);
+	mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValue(
+		someEmptyDataGroup
+	);
 
 	mockExtractAllDataAtomicValuesFollowingNameInDatas.mockReturnValue([
 		'someDefaultValue',
@@ -288,7 +290,7 @@ describe('The ElementSetter', () => {
 			children: [],
 		};
 
-		it('expect extractDataGroupFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and attributesToMatch', () => {
+		it('expect extractDataGroupWithAttributesFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and attributesToMatch', () => {
 			const someMatcher: FieldMatcher = {
 				propertyName: 'someField',
 				nameInDataPath: 'someDataGroup/someOtherDataGroup',
@@ -298,7 +300,9 @@ describe('The ElementSetter', () => {
 
 			des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
 
-			expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenLastCalledWith(
+			expect(
+				mockExtractDataGroupWithAttributesFollowingNameInDatas
+			).toHaveBeenLastCalledWith(
 				someDefaultDataGroup,
 				['someDataGroup', 'someOtherDataGroup'],
 				undefined
@@ -323,7 +327,9 @@ describe('The ElementSetter', () => {
 
 			des.extractAndReturnChildren(someOtherDataGroup, someOtherMatcher);
 
-			expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenLastCalledWith(
+			expect(
+				mockExtractDataGroupWithAttributesFollowingNameInDatas
+			).toHaveBeenLastCalledWith(
 				someOtherDataGroup,
 				['someOtherDataGroup', 'someFinalDataGroup'],
 				someOtherMatcher.attributesToMatch
@@ -378,7 +384,9 @@ describe('The ElementSetter', () => {
 
 		describe('if not multiple', () => {
 			it('does not call extractWithMatcher if dataGroup returned by extractDataGroupFollowingNameInData is undefined', () => {
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
 
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someField',
@@ -392,7 +400,7 @@ describe('The ElementSetter', () => {
 				expect(mockExtractWithMatcher).not.toHaveBeenCalled();
 			});
 
-			it('expect extractWithMatcher to be called with dataGroup returned by extractDataGroupFollowingNameInDatas and nextMatcher set in matcher', () => {
+			it('expect extractWithMatcher to be called with dataGroup returned by extractDataGroupWithAttributesFollowingNameInDatas and nextMatcher set in matcher', () => {
 				const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
 					name: 'someFinalDataGroupName',
 					children: [
@@ -410,7 +418,7 @@ describe('The ElementSetter', () => {
 					nextMatcher: someDefaultFinalMatcher,
 				};
 
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					dataGroupReturnedByGetDataGroupWithNameInDatas
 				);
 				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
@@ -457,13 +465,15 @@ describe('The ElementSetter', () => {
 				});
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns undefined, return undefined', () => {
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns undefined, return undefined', () => {
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someInitialField',
 					nameInDataPath: 'someDataGroup/someOtherDataGroup',
 					nextMatcher: someDefaultFinalMatcher,
 				};
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
 
 				const returned = des.extractAndReturnChildren(
 					someDefaultDataGroup,

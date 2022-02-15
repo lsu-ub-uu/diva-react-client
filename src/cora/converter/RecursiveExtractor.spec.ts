@@ -1,6 +1,6 @@
 import { DataGroup } from '../cora-data/CoraData';
 import {
-	extractDataGroupFollowingNameInDatas,
+	extractFirstDataGroupWithAttributesFollowingNameInDatas,
 	getAllDataAtomicValuesWithNameInData,
 	getFirstDataAtomicValueWithNameInData,
 } from '../cora-data/CoraDataUtilsWrappers';
@@ -21,9 +21,9 @@ const mockGetFirstDataAtomicValueWithNameInData =
 		typeof getFirstDataAtomicValueWithNameInData
 	>;
 
-const mockExtractDataGroupFollowingNameInDatas =
-	extractDataGroupFollowingNameInDatas as jest.MockedFunction<
-		typeof extractDataGroupFollowingNameInDatas
+const mockExtractDataGroupWithAttributesFollowingNameInDatas =
+	extractFirstDataGroupWithAttributesFollowingNameInDatas as jest.MockedFunction<
+		typeof extractFirstDataGroupWithAttributesFollowingNameInDatas
 	>;
 
 const someEmptyDataGroup: DataGroup = {
@@ -64,7 +64,7 @@ const someTwoLevelDataGroup: DataGroup = {
 
 beforeAll(() => {
 	mockGetAllDataAtomicValuesWithNameInData.mockReturnValue([]);
-	mockExtractDataGroupFollowingNameInDatas.mockReturnValue(
+	mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValue(
 		someNonEmptyDataGroup
 	);
 });
@@ -94,47 +94,44 @@ describe('DataExtractor', () => {
 		});
 
 		describe('if there are at least 2 nameInDatas in the array', () => {
-			it('calls extractDataGroupFollowingNameInDatas with the dataGroup', () => {
+			it('calls extractDataGroupWithAttributesFollowingNameInDatas with the dataGroup', () => {
 				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					1
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					someNonEmptyDataGroup,
-					expect.any(Array)
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(1);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(someNonEmptyDataGroup, expect.any(Array));
 
 				extractAllDataAtomicValuesFollowingNameInDatas(someTwoLevelDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					2
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					someTwoLevelDataGroup,
-					expect.any(Array)
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(2);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(someTwoLevelDataGroup, expect.any(Array));
 			});
 
-			it('calls extractDataGroupFollowingNameInDatas with all but the last nameInDatas', () => {
+			it('calls extractDataGroupWithAttributesFollowingNameInDatas with all but the last nameInDatas', () => {
 				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					1
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					expect.any(Object),
-					['someNameInData']
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(1);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(expect.any(Object), ['someNameInData']);
 
 				extractAllDataAtomicValuesFollowingNameInDatas(someTwoLevelDataGroup, [
 					'someNameInData',
@@ -144,22 +141,23 @@ describe('DataExtractor', () => {
 					'someAtomicNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					2
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					expect.any(Object),
-					[
-						'someNameInData',
-						'someOtherNameInData',
-						'someThirdNameInData',
-						'someFourthNameInData',
-					]
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(2);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(expect.any(Object), [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+				]);
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns undefined, returns empty array', () => {
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns undefined, returns empty array', () => {
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
 
 				expect(
 					extractAllDataAtomicValuesFollowingNameInDatas(
@@ -169,8 +167,8 @@ describe('DataExtractor', () => {
 				).toStrictEqual([]);
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes it to getAllDataAtomicValuesWithNameInData', () => {
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns dataGroup, passes it to getAllDataAtomicValuesWithNameInData', () => {
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					someNestedDataGroup
 				);
 				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
@@ -185,7 +183,7 @@ describe('DataExtractor', () => {
 					mockGetAllDataAtomicValuesWithNameInData
 				).toHaveBeenLastCalledWith(someNestedDataGroup, expect.any(String));
 
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					someTwoLevelDataGroup
 				);
 				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
@@ -201,7 +199,7 @@ describe('DataExtractor', () => {
 				).toHaveBeenLastCalledWith(someTwoLevelDataGroup, expect.any(String));
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes last nameInData to getAllDataAtomicValuesWithNameInData', () => {
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns dataGroup, passes last nameInData to getAllDataAtomicValuesWithNameInData', () => {
 				extractAllDataAtomicValuesFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
@@ -343,47 +341,44 @@ describe('DataExtractor', () => {
 		});
 
 		describe('if there are at least 2 nameInDatas in the array', () => {
-			it('calls extractDataGroupFollowingNameInDatas with the dataGroup', () => {
+			it('calls extractDataGroupWithAttributesFollowingNameInDatas with the dataGroup', () => {
 				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					1
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					someNonEmptyDataGroup,
-					expect.any(Array)
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(1);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(someNonEmptyDataGroup, expect.any(Array));
 
 				extractOneDataAtomicValueFollowingNameInDatas(someTwoLevelDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					2
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					someTwoLevelDataGroup,
-					expect.any(Array)
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(2);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(someTwoLevelDataGroup, expect.any(Array));
 			});
 
-			it('calls extractDataGroupFollowingNameInDatas with all but the last nameInDatas', () => {
+			it('calls extractDataGroupWithAttributesFollowingNameInDatas with all but the last nameInDatas', () => {
 				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					1
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					expect.any(Object),
-					['someNameInData']
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(1);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(expect.any(Object), ['someNameInData']);
 
 				extractOneDataAtomicValueFollowingNameInDatas(someTwoLevelDataGroup, [
 					'someNameInData',
@@ -393,22 +388,23 @@ describe('DataExtractor', () => {
 					'someAtomicNameInData',
 				]);
 
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledTimes(
-					2
-				);
-				expect(mockExtractDataGroupFollowingNameInDatas).toHaveBeenCalledWith(
-					expect.any(Object),
-					[
-						'someNameInData',
-						'someOtherNameInData',
-						'someThirdNameInData',
-						'someFourthNameInData',
-					]
-				);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledTimes(2);
+				expect(
+					mockExtractDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenCalledWith(expect.any(Object), [
+					'someNameInData',
+					'someOtherNameInData',
+					'someThirdNameInData',
+					'someFourthNameInData',
+				]);
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns undefined, returns undefined', () => {
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(undefined);
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns undefined, returns undefined', () => {
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
 
 				expect(
 					extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
@@ -418,8 +414,8 @@ describe('DataExtractor', () => {
 				).toStrictEqual(undefined);
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes it to getFirstDataAtomicValueWithNameInData', () => {
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns dataGroup, passes it to getFirstDataAtomicValueWithNameInData', () => {
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					someNestedDataGroup
 				);
 				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
@@ -434,7 +430,7 @@ describe('DataExtractor', () => {
 					mockGetFirstDataAtomicValueWithNameInData
 				).toHaveBeenLastCalledWith(someNestedDataGroup, expect.any(String));
 
-				mockExtractDataGroupFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					someTwoLevelDataGroup
 				);
 				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
@@ -450,7 +446,7 @@ describe('DataExtractor', () => {
 				).toHaveBeenLastCalledWith(someTwoLevelDataGroup, expect.any(String));
 			});
 
-			it('if extractDataGroupFollowingNameInDatas returns dataGroup, passes last nameInData to getFirstDataAtomicValueWithNameInData', () => {
+			it('if extractDataGroupWithAttributesFollowingNameInDatas returns dataGroup, passes last nameInData to getFirstDataAtomicValueWithNameInData', () => {
 				extractOneDataAtomicValueFollowingNameInDatas(someNonEmptyDataGroup, [
 					'someNameInData',
 					'someOtherNameInData',

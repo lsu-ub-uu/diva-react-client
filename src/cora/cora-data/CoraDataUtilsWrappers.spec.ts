@@ -2,6 +2,7 @@ import { DataGroup } from './CoraData';
 import {
 	getAllDataAtomicsWithNameInData,
 	getFirstDataAtomicWithNameInData,
+	getFirstDataGroupWithNameInData,
 	getFirstDataGroupWithNameInDataAndAttribues,
 } from './CoraDataUtils';
 import * as cduw from './CoraDataUtilsWrappers';
@@ -18,9 +19,14 @@ const mockGetAllDataAtomicsWithNameInData =
 		typeof getAllDataAtomicsWithNameInData
 	>;
 
-const mockGetFirstDataGroupWithNameInData =
+const mockGetFirstDataGroupWithNameInDataAndAttributes =
 	getFirstDataGroupWithNameInDataAndAttribues as jest.MockedFunction<
 		typeof getFirstDataGroupWithNameInDataAndAttribues
+	>;
+
+const mockGetFirstDataGroupWithNameInData =
+	getFirstDataGroupWithNameInData as jest.MockedFunction<
+		typeof getFirstDataGroupWithNameInData
 	>;
 
 const extractDataGroupFollowingNameInDatasSpy = jest.spyOn(
@@ -71,6 +77,10 @@ beforeAll(() => {
 	});
 
 	mockGetAllDataAtomicsWithNameInData.mockReturnValue([]);
+
+	mockGetFirstDataGroupWithNameInDataAndAttributes.mockReturnValue(
+		someNonEmptyDataGroup
+	);
 
 	mockGetFirstDataGroupWithNameInData.mockReturnValue(someNonEmptyDataGroup);
 });
@@ -129,7 +139,7 @@ describe('getFirstDataAtomicValueWithNameInData', () => {
 		).toBeUndefined();
 	});
 
-	it("if getFirstDataAtomicWithNameInData returns dataAtomic, should return it's strin value", () => {
+	it("if getFirstDataAtomicWithNameInData returns dataAtomic, should return it's string value", () => {
 		mockGetFirstDataAtomicWithNameInData.mockReturnValueOnce({
 			name: 'someChildName',
 			value: 'someInterestingValue',
@@ -234,7 +244,6 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 	it('passes the first of nameInDatas to getFirstDataGroupWithNameInData', () => {
 		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
 			'someInterestingChildDataGroup',
-			'someAtomic',
 		]);
 
 		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
@@ -245,11 +254,10 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 
 		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
 			'someOtherInterestingChildDataGroup',
-			'someAtomic',
 		]);
 
 		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			3,
+			2,
 			expect.any(Object),
 			'someOtherInterestingChildDataGroup'
 		);
@@ -257,7 +265,6 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 	it('passes the dataGroup to getFirstDataGroupWithNameInData', () => {
 		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
 			'someFoo',
-			'someAtomic',
 		]);
 
 		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
@@ -268,79 +275,12 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 
 		cduw.extractDataGroupFollowingNameInDatas(someTwoLevelDataGroup, [
 			'someFoo',
-			'someAtomic',
 		]);
 
 		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			3,
-			someTwoLevelDataGroup,
-			expect.any(String)
-		);
-	});
-	it('passes the attributesToMatch (if they exist) to getFirstDataGroupWithNameInData', () => {
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			['someAtomic'],
-			{ someKey: 'someValue' }
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			1,
-			someNonEmptyDataGroup,
-			expect.any(String),
-			{ someKey: 'someValue' }
-		);
-
-		cduw.extractDataGroupFollowingNameInDatas(
-			someTwoLevelDataGroup,
-			['someAtomic'],
-			{ someOtherKey: 'someOtherValue' }
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
 			2,
 			someTwoLevelDataGroup,
-			expect.any(String),
-			{ someOtherKey: 'someOtherValue' }
-		);
-	});
-	it("IF it's not the last nameInData, does not pass the attributesToMatch to getFirstDataGroupWithNameInData", () => {
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			['someFoo', 'someAtomic'],
-			{ someKey: 'someValue' }
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			1,
-			someNonEmptyDataGroup,
 			expect.any(String)
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			2,
-			someNonEmptyDataGroup,
-			expect.any(String),
-			{ someKey: 'someValue' }
-		);
-
-		cduw.extractDataGroupFollowingNameInDatas(
-			someTwoLevelDataGroup,
-			['someFoo', 'someAtomic'],
-			{ someOtherKey: 'someOtherValue' }
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			3,
-			someTwoLevelDataGroup,
-			expect.any(String)
-		);
-
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			4,
-			someNonEmptyDataGroup,
-			expect.any(String),
-			{ someOtherKey: 'someOtherValue' }
 		);
 	});
 	it('if getFirstDataGroupWithNameInData returns undefined, returns undefined', () => {
@@ -353,35 +293,46 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 			])
 		).toStrictEqual(undefined);
 	});
+	it('does recursively call extractDataGroupFollowingNameInDatas once for each nameInData', () => {
+		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
+			'someNameInData',
+			'someOtherNameInData',
+			'someThirdNameInData',
+			'someAtomic',
+		]);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(4);
 
-	describe('if there is only 1 nameInData', () => {
-		it('does not call extractDataGroupFollowingNameInDatas again', () => {
-			cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
-				'someInterestingChildDataGroup',
-			]);
+		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
+			'someNameInData',
+			'someOtherNameInData',
+		]);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(6);
+	});
 
-			expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(1);
-		});
+	it('if getFirstDataGroupWithNameInData returns DataGroup, passes remaining array of nameInDatas to extractDataGroupFollowingNameInDatas', () => {
+		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
+			'someFoo',
+			'someAtomic',
+		]);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(2);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+			2,
+			expect.any(Object),
+			['someAtomic']
+		);
 
-		it('returns whatever getFirstDataGroupWithNameInData returns', () => {
-			mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
-				someNonEmptyDataGroup
-			);
-
-			expect(
-				cduw.extractDataGroupFollowingNameInDatas(someTwoLevelDataGroup, [
-					'someInterestingChildDataGroup',
-				])
-			).toStrictEqual(someNonEmptyDataGroup);
-
-			mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(undefined);
-
-			expect(
-				cduw.extractDataGroupFollowingNameInDatas(someTwoLevelDataGroup, [
-					'someInterestingChildDataGroup',
-				])
-			).toStrictEqual(undefined);
-		});
+		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
+			'someNameInData',
+			'someOtherNameInData',
+			'someThirdNameInData',
+			'someAtomic',
+		]);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(6);
+		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+			4,
+			expect.any(Object),
+			['someOtherNameInData', 'someThirdNameInData', 'someAtomic']
+		);
 	});
 
 	it('if getFirstDataGroupWithNameInData returns DataGroup, passes it to extractDataGroupFollowingNameInDatas', () => {
@@ -403,8 +354,7 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
 			2,
 			someNonEmptyDataGroup,
-			expect.any(Array),
-			undefined
+			expect.any(Array)
 		);
 
 		mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
@@ -418,67 +368,10 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
 			4,
 			someTwoLevelDataGroup,
-			expect.any(Array),
-			undefined
+			expect.any(Array)
 		);
 	});
-	it('if getFirstDataGroupWithNameInData returns DataGroup, passes remaining array of nameInDatas to extractDataGroupFollowingNameInDatas', () => {
-		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
-			'someFoo',
-			'someAtomic',
-		]);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(2);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
-			2,
-			expect.any(Object),
-			['someAtomic'],
-			undefined
-		);
 
-		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
-			'someNameInData',
-			'someOtherNameInData',
-			'someThirdNameInData',
-			'someAtomic',
-		]);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
-			4,
-			expect.any(Object),
-			['someOtherNameInData', 'someThirdNameInData', 'someAtomic'],
-			undefined
-		);
-	});
-	it('if getFirstDataGroupWithNameInData returns DataGroup, passes attributesToMatch to extractDataGroupFollowingNameInDatas', () => {
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			['someFoo', 'someAtomic'],
-			{ someKey: 'someValue' }
-		);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(2);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
-			2,
-			expect.any(Object),
-			expect.any(Array),
-			{ someKey: 'someValue' }
-		);
-
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			[
-				'someNameInData',
-				'someOtherNameInData',
-				'someThirdNameInData',
-				'someAtomic',
-			],
-			{ someOtherKey: 'someOtherValue' }
-		);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
-			4,
-			expect.any(Object),
-			expect.any(Array),
-			{ someOtherKey: 'someOtherValue' }
-		);
-	});
 	it('repeatedly calls extractDataGroupFollowingNameInDatas until no nameInData is left', () => {
 		cduw.extractDataGroupFollowingNameInDatas(someNonEmptyDataGroup, [
 			'one',
@@ -498,53 +391,6 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 		]);
 		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(10);
 	});
-	it('only calls extractDataGroupFollowingNameInDatas with attributesToMatch on the last nameInData', () => {
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			['one', 'two', 'three', 'four', 'five', 'six'],
-			{ someKey: 'someValue' }
-		);
-
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(6);
-		[1, 2, 3, 4, 5].forEach((n) => {
-			expectGetFirstDataGroupWithNameInDataToNthNotHaveBeenCalledWithAttributes(
-				n
-			);
-		});
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			6,
-			expect.any(Object),
-			expect.any(String),
-			{ someKey: 'someValue' }
-		);
-
-		cduw.extractDataGroupFollowingNameInDatas(
-			someNonEmptyDataGroup,
-			['one', 'two', 'three', 'four'],
-			{ someOtherKey: 'someOtherValue' }
-		);
-		expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenCalledTimes(10);
-
-		[7, 8, 9].forEach((n) => {
-			expectGetFirstDataGroupWithNameInDataToNthNotHaveBeenCalledWithAttributes(
-				n
-			);
-		});
-		expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-			10,
-			expect.any(Object),
-			expect.any(String),
-			{ someOtherKey: 'someOtherValue' }
-		);
-	});
-	const expectGetFirstDataGroupWithNameInDataToNthNotHaveBeenCalledWithAttributes =
-		(n: number) => {
-			expect(mockGetFirstDataGroupWithNameInData).toHaveBeenNthCalledWith(
-				n,
-				expect.any(Object),
-				expect.any(String)
-			);
-		};
 	it('returns whatever extractDataGroupFollowingNameInDatas returns last', () => {
 		const someFinalDataGroup: DataGroup = {
 			name: 'someFinalDataGroup',
@@ -593,5 +439,277 @@ describe('extractDataGroupFollowingNameInDatas', () => {
 		);
 
 		expect(returnedDataGroup2).toStrictEqual(someOtherFinalDataGroup);
+	});
+});
+
+describe('extractFirstDataGroupWithAttributesFollowingNameInDatas', () => {
+	it('if nameInDatas.length=== 0, return undefined', () => {
+		expect(
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				[]
+			)
+		).toBeUndefined();
+	});
+
+	it('if dataGroup has no children, return undefined', () => {
+		expect(
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someEmptyDataGroup,
+				['someNameInData']
+			)
+		).toBeUndefined();
+	});
+
+	describe('if there are at least 2 nameInDatas', () => {
+		it('passes all but the last nameInData to extractDataGroupFollowingNameInDatas', () => {
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				['someInterestingChildDataGroup', 'someAtomic']
+			);
+
+			expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+				1,
+				expect.any(Object),
+				['someInterestingChildDataGroup']
+			);
+
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				[
+					'someInterestingChildDataGroup',
+					'someOtherInterestingChildDataGroup',
+					'someThirdInterestingChildDataGroup',
+					'someAtomic',
+				]
+			);
+
+			expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+				2,
+				expect.any(Object),
+				[
+					'someInterestingChildDataGroup',
+					'someOtherInterestingChildDataGroup',
+					'someThirdInterestingChildDataGroup',
+				]
+			);
+		});
+		it('passes the dataGroup to extractDataGroupFollowingNameInDatas', () => {
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				['someInterestingChildDataGroup', 'someAtomic']
+			);
+
+			expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+				1,
+				someNonEmptyDataGroup,
+				expect.any(Array)
+			);
+
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someTwoLevelDataGroup,
+				['someInterestingChildDataGroup', 'someOtherInterestingChildDataGroup']
+			);
+
+			expect(extractDataGroupFollowingNameInDatasSpy).toHaveBeenNthCalledWith(
+				2,
+				someTwoLevelDataGroup,
+				expect.any(Array)
+			);
+		});
+		it('if extractDataGroupFollowingNameInDatas returns undefined, return undefined', () => {
+			mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(undefined);
+			const returned =
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someNonEmptyDataGroup,
+					['someInterestingChildDataGroup', 'someAtomic']
+				);
+
+			expect(returned).toBeUndefined();
+		});
+
+		describe('if extractDataGroupFollowingNameInDatas returns dataGroup', () => {
+			it('call getFirstDataGroupWithNameInDataAndAttributes with that dataGroup', () => {
+				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
+					someNestedDataGroup
+				);
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someAtomic']
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(
+					someNestedDataGroup,
+					expect.any(String),
+					undefined
+				);
+
+				mockGetFirstDataGroupWithNameInData.mockReturnValueOnce(
+					someNonEmptyDataGroup
+				);
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someAtomic']
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(
+					someNonEmptyDataGroup,
+					expect.any(String),
+					undefined
+				);
+			});
+			it('call getFirstDataGroupWithNameInDataAndAttributes with the remaining nameInData', () => {
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					[
+						'someInterestingChildDataGroup',
+						'someOtherInterestingChildDataGroup',
+						'someFinalDataGroup',
+					]
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(
+					expect.any(Object),
+					'someFinalDataGroup',
+					undefined
+				);
+
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someOtherFinalDataGroup']
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(
+					expect.any(Object),
+					'someOtherFinalDataGroup',
+					undefined
+				);
+			});
+			it('call getFirstDataGroupWithNameInDataAndAttributes with possible attributes', () => {
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someFinalDataGroup'],
+					{
+						someAttribute: 'foo',
+						someOtherAttribute: 'bar',
+					}
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(expect.any(Object), expect.any(String), {
+					someAttribute: 'foo',
+					someOtherAttribute: 'bar',
+				});
+
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someOtherFinalDataGroup'],
+					{
+						bar: 'foo',
+					}
+				);
+
+				expect(
+					mockGetFirstDataGroupWithNameInDataAndAttributes
+				).toHaveBeenLastCalledWith(expect.any(Object), expect.any(String), {
+					bar: 'foo',
+				});
+			});
+			it('returns whatever getFirstDataGroupWithNameInDataAndAttributes returns', () => {
+				mockGetFirstDataGroupWithNameInDataAndAttributes.mockReturnValueOnce(
+					someNestedDataGroup
+				);
+				let returned =
+					cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+						someTwoLevelDataGroup,
+						['someInterestingChildDataGroup', 'someAtomic']
+					);
+
+				expect(returned).toStrictEqual(someNestedDataGroup);
+
+				mockGetFirstDataGroupWithNameInDataAndAttributes.mockReturnValueOnce(
+					someTwoLevelDataGroup
+				);
+				returned = cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup', 'someAtomic']
+				);
+
+				expect(returned).toStrictEqual(someTwoLevelDataGroup);
+			});
+		});
+	});
+
+	describe('if there is only 1 nameInData', () => {
+		it('does not call extractDataGroupFollowingNameInDatas', () => {
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				['someInterestingChildDataGroup']
+			);
+
+			expect(extractDataGroupFollowingNameInDatasSpy).not.toHaveBeenCalled();
+		});
+
+		it('does not call getFirstDataGroupWithNameInData', () => {
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someNonEmptyDataGroup,
+				['someInterestingChildDataGroup']
+			);
+
+			expect(mockGetFirstDataGroupWithNameInData).not.toHaveBeenCalled();
+		});
+
+		it('calls getFirstDataGroupWithNameInDataAndAttributes', () => {
+			cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+				someTwoLevelDataGroup,
+				['someInterestingChildDataGroup'],
+				{
+					someAttribute: 'foo',
+				}
+			);
+
+			expect(
+				mockGetFirstDataGroupWithNameInDataAndAttributes
+			).toHaveBeenCalledWith(
+				someTwoLevelDataGroup,
+				'someInterestingChildDataGroup',
+				{
+					someAttribute: 'foo',
+				}
+			);
+		});
+
+		it('returns whatever getFirstDataGroupWithNameInDataAndAttributes returns', () => {
+			mockGetFirstDataGroupWithNameInDataAndAttributes.mockReturnValueOnce(
+				someTwoLevelDataGroup
+			);
+
+			expect(
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup']
+				)
+			).toStrictEqual(someTwoLevelDataGroup);
+
+			mockGetFirstDataGroupWithNameInDataAndAttributes.mockReturnValueOnce(
+				undefined
+			);
+
+			expect(
+				cduw.extractFirstDataGroupWithAttributesFollowingNameInDatas(
+					someTwoLevelDataGroup,
+					['someInterestingChildDataGroup']
+				)
+			).toStrictEqual(undefined);
+		});
 	});
 });

@@ -2,6 +2,7 @@ import { Attributes, DataGroup } from './CoraData';
 import {
 	getAllDataAtomicsWithNameInData,
 	getFirstDataAtomicWithNameInData,
+	getFirstDataGroupWithNameInData,
 	getFirstDataGroupWithNameInDataAndAttribues,
 } from './CoraDataUtils';
 
@@ -28,7 +29,7 @@ export function getAllDataAtomicValuesWithNameInData(
 	});
 }
 
-export const extractDataGroupFollowingNameInDatas = (
+export const extractFirstDataGroupWithAttributesFollowingNameInDatas = (
 	dataGroup: DataGroup,
 	nameInDatas: string[],
 	attributesToMatch?: Attributes
@@ -37,34 +38,61 @@ export const extractDataGroupFollowingNameInDatas = (
 		return undefined;
 	}
 
-	let nextDataGroup;
-	if (nameInDatas.length === 1) {
-		nextDataGroup = getFirstDataGroupWithNameInDataAndAttribues(
+	let finalDataGroup: DataGroup | undefined = dataGroup;
+	if (nameInDatas.length !== 1) {
+		const firstNameInDatas = nameInDatas.slice(0, -1);
+
+		finalDataGroup = extractDataGroupFollowingNameInDatas(
 			dataGroup,
-			nameInDatas[0],
-			attributesToMatch
+			firstNameInDatas
 		);
-	} else {
-		nextDataGroup = getFirstDataGroupWithNameInDataAndAttribues(
-			dataGroup,
-			nameInDatas[0]
-		);
+
+		if (finalDataGroup === undefined) {
+			return undefined;
+		}
 	}
+
+	const lastNameInData = nameInDatas[nameInDatas.length - 1];
+	return getFirstDataGroupWithNameInDataAndAttribues(
+		finalDataGroup,
+		lastNameInData,
+		attributesToMatch
+	);
+};
+
+export const extractDataGroupFollowingNameInDatas = (
+	dataGroup: DataGroup,
+	nameInDatas: string[]
+): DataGroup | undefined => {
+	if (nameInDatas.length === 0 || dataGroup.children.length === 0) {
+		return undefined;
+	}
+
+	const nextDataGroup = getFirstDataGroupWithNameInData(
+		dataGroup,
+		nameInDatas[0]
+	);
 
 	if (nameInDatas.length === 1 || nextDataGroup === undefined) {
 		return nextDataGroup;
 	}
 
 	const nextNameInDatas = nameInDatas.slice(1);
-	return extractDataGroupFollowingNameInDatas(
-		nextDataGroup,
-		nextNameInDatas,
-		attributesToMatch
-	);
+	return extractDataGroupFollowingNameInDatas(nextDataGroup, nextNameInDatas);
+};
+
+export const extractAllDataGroupsWithAttributesFollowingNameInDatas = (
+	dataGroup: DataGroup,
+	nameInDatas: string[],
+	attributesToMatch?: Attributes
+): DataGroup | undefined => {
+	return undefined;
 };
 
 export default {
 	getFirstDataAtomicWithNameInData,
 	getAllDataAtomicValuesWithNameInData,
 	extractDataGroupFollowingNameInDatas,
+	extractFirstDataGroupWithAttributesFollowingNameInDatas,
+	extractAllDataGroupsWithAttributesFollowingNameInDatas,
 };

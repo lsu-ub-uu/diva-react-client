@@ -1,6 +1,6 @@
 import { ConverterObject, FieldMatcher, Matcher } from './Converter';
 import { DataGroup } from '../cora-data/CoraData';
-import { extractDataGroupFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
+import { extractFirstDataGroupWithAttributesFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
 import extractWithMatcher from './MatcherExtractor';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
@@ -30,11 +30,12 @@ const extractDeeperNestedValues = (
 	// map over result, and call extractWithMatcher
 	// return array containing results from all calls to extractWithMatcher
 
-	const finalDataGroup = extractDataGroupFollowingNameInDatas(
-		dataGroup,
-		nameInDatas,
-		matcher.attributesToMatch
-	);
+	const finalDataGroup =
+		extractFirstDataGroupWithAttributesFollowingNameInDatas(
+			dataGroup,
+			nameInDatas,
+			matcher.attributesToMatch
+		);
 
 	const nextMatcher = <Matcher>matcher.nextMatcher;
 
