@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { ConverterObject, FieldMatcher, Matcher } from './Converter';
 import { DataGroup } from '../cora-data/CoraData';
 import {
@@ -9,7 +10,6 @@ import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
 	extractOneDataAtomicValueFollowingNameInDatas,
 } from './RecursiveExtractor';
-import { isEqual } from 'lodash';
 
 export const extractAndReturnChildren = (
 	dataGroup: DataGroup,
@@ -29,11 +29,6 @@ const extractDeeperNestedValues = (
 	nameInDatas: string[],
 	matcher: FieldMatcher
 ) => {
-	// if multiple
-	// extractAllDataGroupsFollowingNameInDatas
-	// map over result, and call extractWithMatcher
-	// return array containing results from all calls to extractWithMatcher
-
 	if (matcher.multiple) {
 		const matchingDataGroups =
 			extractAllDataGroupsWithAttributesFollowingNameInDatas(
