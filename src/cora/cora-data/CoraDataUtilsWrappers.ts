@@ -1,6 +1,7 @@
 import { Attributes, DataGroup } from './CoraData';
 import {
 	getAllDataAtomicsWithNameInData,
+	getAllDataGroupsWithNameInDataAndAttributes,
 	getFirstDataAtomicWithNameInData,
 	getFirstDataGroupWithNameInData,
 	getFirstDataGroupWithNameInDataAndAttribues,
@@ -44,12 +45,15 @@ export const extractFirstDataGroupWithAttributesFollowingNameInDatas = (
 		return undefined;
 	}
 
-	const lastNameInData = nameInDatas[nameInDatas.length - 1];
+	const lastNameInData = getLastNameInData(nameInDatas);
 	return getFirstDataGroupWithNameInDataAndAttribues(
 		finalDataGroup,
 		lastNameInData,
 		attributesToMatch
 	);
+};
+const getLastNameInData = (nameInDatas: string[]) => {
+	return nameInDatas[nameInDatas.length - 1];
 };
 
 const getFinalDataGroup = (dataGroup: DataGroup, nameInDatas: string[]) => {
@@ -58,7 +62,6 @@ const getFinalDataGroup = (dataGroup: DataGroup, nameInDatas: string[]) => {
 	}
 
 	const firstNameInDatas = nameInDatas.slice(0, -1);
-
 	return extractDataGroupFollowingNameInDatas(dataGroup, firstNameInDatas);
 };
 
@@ -66,16 +69,22 @@ export const extractAllDataGroupsWithAttributesFollowingNameInDatas = (
 	dataGroup: DataGroup,
 	nameInDatas: string[],
 	attributesToMatch?: Attributes
-): DataGroup | undefined => {
+): DataGroup[] | undefined => {
 	if (nameInDatas.length === 0 || dataGroup.children.length === 0) {
 		return undefined;
 	}
 
 	const finalDataGroup = getFinalDataGroup(dataGroup, nameInDatas);
-
 	if (finalDataGroup === undefined) {
 		return undefined;
 	}
+
+	const lastNameInData = getLastNameInData(nameInDatas);
+	return getAllDataGroupsWithNameInDataAndAttributes(
+		finalDataGroup,
+		lastNameInData,
+		attributesToMatch
+	);
 };
 
 export const extractDataGroupFollowingNameInDatas = (
