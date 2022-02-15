@@ -38,18 +38,10 @@ export const extractFirstDataGroupWithAttributesFollowingNameInDatas = (
 		return undefined;
 	}
 
-	let finalDataGroup: DataGroup | undefined = dataGroup;
-	if (nameInDatas.length !== 1) {
-		const firstNameInDatas = nameInDatas.slice(0, -1);
+	const finalDataGroup = getFinalDataGroup(dataGroup, nameInDatas);
 
-		finalDataGroup = extractDataGroupFollowingNameInDatas(
-			dataGroup,
-			firstNameInDatas
-		);
-
-		if (finalDataGroup === undefined) {
-			return undefined;
-		}
+	if (finalDataGroup === undefined) {
+		return undefined;
 	}
 
 	const lastNameInData = nameInDatas[nameInDatas.length - 1];
@@ -58,6 +50,32 @@ export const extractFirstDataGroupWithAttributesFollowingNameInDatas = (
 		lastNameInData,
 		attributesToMatch
 	);
+};
+
+const getFinalDataGroup = (dataGroup: DataGroup, nameInDatas: string[]) => {
+	if (nameInDatas.length === 1) {
+		return dataGroup;
+	}
+
+	const firstNameInDatas = nameInDatas.slice(0, -1);
+
+	return extractDataGroupFollowingNameInDatas(dataGroup, firstNameInDatas);
+};
+
+export const extractAllDataGroupsWithAttributesFollowingNameInDatas = (
+	dataGroup: DataGroup,
+	nameInDatas: string[],
+	attributesToMatch?: Attributes
+): DataGroup | undefined => {
+	if (nameInDatas.length === 0 || dataGroup.children.length === 0) {
+		return undefined;
+	}
+
+	const finalDataGroup = getFinalDataGroup(dataGroup, nameInDatas);
+
+	if (finalDataGroup === undefined) {
+		return undefined;
+	}
 };
 
 export const extractDataGroupFollowingNameInDatas = (
@@ -79,14 +97,6 @@ export const extractDataGroupFollowingNameInDatas = (
 
 	const nextNameInDatas = nameInDatas.slice(1);
 	return extractDataGroupFollowingNameInDatas(nextDataGroup, nextNameInDatas);
-};
-
-export const extractAllDataGroupsWithAttributesFollowingNameInDatas = (
-	dataGroup: DataGroup,
-	nameInDatas: string[],
-	attributesToMatch?: Attributes
-): DataGroup | undefined => {
-	return undefined;
 };
 
 export default {

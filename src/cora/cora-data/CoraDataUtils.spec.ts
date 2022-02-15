@@ -1,141 +1,10 @@
-import {
-	getAllChildrenWithNameInData,
-	getAllDataAtomicsWithNameInData,
-	getFirstChildWithNameInData,
-	getFirstDataAtomicWithNameInData,
-	getFirstDataGroupWithNameInData,
-	getFirstDataGroupWithNameInDataAndAttribues,
-} from './CoraDataUtils';
+import * as cdu from './CoraDataUtils';
 import { DataGroup, DataElement, DataAtomic } from './CoraData';
 
-describe('getAllChildrenWithNameInData', () => {
-	it('should return empty list if there are no children', () => {
-		const dataGroupWithEmptyChildren: DataGroup = {
-			name: 'someName',
-			children: [],
-		};
-
-		const children = getAllChildrenWithNameInData(
-			dataGroupWithEmptyChildren,
-			'someChildName'
-		);
-
-		expect(children).toStrictEqual([]);
-		expect(children).toHaveLength(0);
-	});
-	it('should return empty list if no child with given name in data exists', () => {
-		const dataGroupWithNonMatchingChildren: DataGroup = {
-			name: 'someName',
-			children: [
-				{
-					name: 'someUninterestingName',
-					value: 'someValue',
-				},
-				{
-					name: 'someOtherUninterestingName',
-					value: 'someOtherValue',
-				},
-			],
-		};
-
-		const children = getAllChildrenWithNameInData(
-			dataGroupWithNonMatchingChildren,
-			'someChildName'
-		);
-
-		expect(children).toStrictEqual([]);
-		expect(children).toHaveLength(0);
-	});
-	it('should return a list containing all dataElements with given name in data', () => {
-		const dataGroupWithSomeMatchingChildren: DataGroup = {
-			name: 'someName',
-			children: [
-				{
-					name: 'someUninterestingName',
-					value: 'someValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someInterestingValue',
-				},
-				{
-					name: 'someOtherUninterestingName',
-					value: 'someOtherValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someOtherInterestingValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someOther2InterestingValue',
-				},
-			],
-		};
-
-		const children = getAllChildrenWithNameInData(
-			dataGroupWithSomeMatchingChildren,
-			'someInterestingName'
-		);
-
-		expect(children).toStrictEqual([
-			{
-				name: 'someInterestingName',
-				value: 'someInterestingValue',
-			},
-			{
-				name: 'someInterestingName',
-				value: 'someOtherInterestingValue',
-			},
-			{
-				name: 'someInterestingName',
-				value: 'someOther2InterestingValue',
-			},
-		]);
-		expect(children).toHaveLength(3);
-	});
-	it('should not return dataElements with non-matching name in data', () => {
-		const dataGroupWithSomeMatchingChildren: DataGroup = {
-			name: 'someName',
-			children: [
-				{
-					name: 'someUninterestingName',
-					value: 'someValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someInterestingValue',
-				},
-				{
-					name: 'someOtherUninterestingName',
-					value: 'someOtherValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someOtherInterestingValue',
-				},
-				{
-					name: 'someInterestingName',
-					value: 'someOther2InterestingValue',
-				},
-			],
-		};
-
-		const children = getAllChildrenWithNameInData(
-			dataGroupWithSomeMatchingChildren,
-			'someInterestingName'
-		);
-
-		expect(children).not.toContain({
-			name: 'someUninterestingName',
-			value: 'someValue',
-		});
-		expect(children).not.toContain({
-			name: 'someOtherUninterestingName',
-			value: 'someOtherValue',
-		});
-	});
-});
+const getAllDataGroupsWithNameInDataAndAttributesSpy = jest.spyOn(
+	cdu,
+	'getAllDataGroupsWithNameInDataAndAttributes'
+);
 
 const dataGroupWithEmptyChildren: DataGroup = {
 	name: 'someName',
@@ -293,23 +162,150 @@ const dataGroupWithSeveralMatchingAtomics: DataGroup = {
 	],
 };
 
-describe('getFirstChildWithNameInData', () => {
+describe('cdu.getAllChildrenWithNameInData', () => {
+	it('should return empty list if there are no children', () => {
+		const children = cdu.getAllChildrenWithNameInData(
+			dataGroupWithEmptyChildren,
+			'someChildName'
+		);
+
+		expect(children).toStrictEqual([]);
+		expect(children).toHaveLength(0);
+	});
+	it('should return empty list if no child with given name in data exists', () => {
+		const dataGroupWithNonMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+			],
+		};
+
+		const children = cdu.getAllChildrenWithNameInData(
+			dataGroupWithNonMatchingChildren,
+			'someChildName'
+		);
+
+		expect(children).toStrictEqual([]);
+		expect(children).toHaveLength(0);
+	});
+	it('should return a list containing all dataElements with given name in data', () => {
+		const dataGroupWithSomeMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someInterestingValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOtherInterestingValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOther2InterestingValue',
+				},
+			],
+		};
+
+		const children = cdu.getAllChildrenWithNameInData(
+			dataGroupWithSomeMatchingChildren,
+			'someInterestingName'
+		);
+
+		expect(children).toStrictEqual([
+			{
+				name: 'someInterestingName',
+				value: 'someInterestingValue',
+			},
+			{
+				name: 'someInterestingName',
+				value: 'someOtherInterestingValue',
+			},
+			{
+				name: 'someInterestingName',
+				value: 'someOther2InterestingValue',
+			},
+		]);
+		expect(children).toHaveLength(3);
+	});
+	it('should not return dataElements with non-matching name in data', () => {
+		const dataGroupWithSomeMatchingChildren: DataGroup = {
+			name: 'someName',
+			children: [
+				{
+					name: 'someUninterestingName',
+					value: 'someValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someInterestingValue',
+				},
+				{
+					name: 'someOtherUninterestingName',
+					value: 'someOtherValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOtherInterestingValue',
+				},
+				{
+					name: 'someInterestingName',
+					value: 'someOther2InterestingValue',
+				},
+			],
+		};
+
+		const children = cdu.getAllChildrenWithNameInData(
+			dataGroupWithSomeMatchingChildren,
+			'someInterestingName'
+		);
+
+		expect(children).not.toContain({
+			name: 'someUninterestingName',
+			value: 'someValue',
+		});
+		expect(children).not.toContain({
+			name: 'someOtherUninterestingName',
+			value: 'someOtherValue',
+		});
+	});
+});
+
+describe('cdu.getFirstChildWithNameInData', () => {
 	it('should return null if no child exists', () => {
 		expect(
-			getFirstChildWithNameInData(dataGroupWithEmptyChildren, 'someChildName')
+			cdu.getFirstChildWithNameInData(
+				dataGroupWithEmptyChildren,
+				'someChildName'
+			)
 		).toBe(null);
 	});
 
 	it('should return null if no matching child exists', () => {
 		expect(
-			getFirstChildWithNameInData(
+			cdu.getFirstChildWithNameInData(
 				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
 		).toBe(null);
 
 		expect(
-			getFirstChildWithNameInData(
+			cdu.getFirstChildWithNameInData(
 				dataGroupWithNonMatchingDataElements,
 				'someOtherChildName'
 			)
@@ -328,7 +324,7 @@ describe('getFirstChildWithNameInData', () => {
 		};
 
 		const child: DataAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(
+			cdu.getFirstChildWithNameInData(
 				dataGroupWithOneMatchingChild,
 				'someChildName'
 			)
@@ -353,7 +349,7 @@ describe('getFirstChildWithNameInData', () => {
 		};
 
 		const child2 = <DataElement>(
-			getFirstChildWithNameInData(
+			cdu.getFirstChildWithNameInData(
 				dataGroupWithOneMatchingAndOneOtherChild,
 				'someOtherChildName'
 			)
@@ -393,7 +389,7 @@ describe('getFirstChildWithNameInData', () => {
 		};
 
 		const child: DataAtomic = <DataAtomic>(
-			getFirstChildWithNameInData(
+			cdu.getFirstChildWithNameInData(
 				dataGroupWithMultipleMatchingChildren,
 				'someChildName'
 			)
@@ -404,9 +400,9 @@ describe('getFirstChildWithNameInData', () => {
 	});
 });
 
-describe('getFirstDataAtomicWithNameInData', () => {
+describe('cdu.getFirstDataAtomicWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
-		getFirstDataAtomicWithNameInData(
+		cdu.getFirstDataAtomicWithNameInData(
 			dataGroupWithEmptyChildren,
 			'someChildName'
 		);
@@ -414,7 +410,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 
 	it('if dataGroup has no children, should return undefined', () => {
 		expect(
-			getFirstDataAtomicWithNameInData(
+			cdu.getFirstDataAtomicWithNameInData(
 				dataGroupWithEmptyChildren,
 				'someChildName'
 			)
@@ -422,7 +418,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	});
 	it('if dataGroup has no matching child, should return undefined', () => {
 		expect(
-			getFirstDataAtomicWithNameInData(
+			cdu.getFirstDataAtomicWithNameInData(
 				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
@@ -430,7 +426,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	});
 	it('if dataGroup has no matching DataAtomic, should return undefined', () => {
 		expect(
-			getFirstDataAtomicWithNameInData(
+			cdu.getFirstDataAtomicWithNameInData(
 				dataGroupWithOnlyMatchingGroups,
 				'someInterestingChildName'
 			)
@@ -438,7 +434,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	});
 	it('if dataGroup has matching DataAtomic, should return that DataAtomic', () => {
 		expect(
-			getFirstDataAtomicWithNameInData(
+			cdu.getFirstDataAtomicWithNameInData(
 				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
 				'someInterestingChildName'
 			)
@@ -449,7 +445,7 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	});
 	it('if dataGroup has several matching DataAtomics, should return the first of them', () => {
 		expect(
-			getFirstDataAtomicWithNameInData(
+			cdu.getFirstDataAtomicWithNameInData(
 				dataGroupWithSeveralMatchingAtomics,
 				'someInterestingChildName'
 			)
@@ -460,16 +456,16 @@ describe('getFirstDataAtomicWithNameInData', () => {
 	});
 });
 
-describe('getAllDataAtomicsWithNameInData', () => {
+describe('cdu.getAllDataAtomicsWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
-		getAllDataAtomicsWithNameInData(
+		cdu.getAllDataAtomicsWithNameInData(
 			dataGroupWithEmptyChildren,
 			'someChildName'
 		);
 	});
 	it('if dataGroup has no children, should return empty array', () => {
 		expect(
-			getAllDataAtomicsWithNameInData(
+			cdu.getAllDataAtomicsWithNameInData(
 				dataGroupWithEmptyChildren,
 				'someChildName'
 			)
@@ -477,7 +473,7 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	});
 	it('if dataGroup has no matching children, should return empty array', () => {
 		expect(
-			getAllDataAtomicsWithNameInData(
+			cdu.getAllDataAtomicsWithNameInData(
 				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
@@ -485,7 +481,7 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	});
 	it('if dataGroup has no matching DataAtomic, should return empty array', () => {
 		expect(
-			getAllDataAtomicsWithNameInData(
+			cdu.getAllDataAtomicsWithNameInData(
 				dataGroupWithOnlyMatchingGroups,
 				'someInterestingChildName'
 			)
@@ -493,7 +489,7 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	});
 	it('if dataGroup has matching DataAtomic, should return array containing that DataAtomic', () => {
 		expect(
-			getAllDataAtomicsWithNameInData(
+			cdu.getAllDataAtomicsWithNameInData(
 				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
 				'someInterestingChildName'
 			)
@@ -501,7 +497,7 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	});
 	it('if dataGroup has several matching DataAtomic, should return array containing all the matching DataAtomics', () => {
 		expect(
-			getAllDataAtomicsWithNameInData(
+			cdu.getAllDataAtomicsWithNameInData(
 				dataGroupWithSeveralMatchingAtomics,
 				'someInterestingChildName'
 			)
@@ -513,16 +509,16 @@ describe('getAllDataAtomicsWithNameInData', () => {
 	});
 });
 
-describe('getFirstDataGroupWithNameInData', () => {
+describe('cdu.getFirstDataGroupWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
-		getFirstDataGroupWithNameInData(
+		cdu.getFirstDataGroupWithNameInData(
 			dataGroupWithEmptyChildren,
 			'someChildName'
 		);
 	});
 	it('if dataGroup has no children, should return undefined', () => {
 		expect(
-			getFirstDataGroupWithNameInData(
+			cdu.getFirstDataGroupWithNameInData(
 				dataGroupWithEmptyChildren,
 				'someChildName'
 			)
@@ -530,7 +526,7 @@ describe('getFirstDataGroupWithNameInData', () => {
 	});
 	it('if dataGroup has no matching child, should return undefined', () => {
 		expect(
-			getFirstDataGroupWithNameInData(
+			cdu.getFirstDataGroupWithNameInData(
 				dataGroupWithNonMatchingDataElements,
 				'someChildName'
 			)
@@ -538,7 +534,7 @@ describe('getFirstDataGroupWithNameInData', () => {
 	});
 	it('if dataGroup has no matching DataGroup, should return undefined', () => {
 		expect(
-			getFirstDataGroupWithNameInData(
+			cdu.getFirstDataGroupWithNameInData(
 				dataGroupWithOnlyMatchingAtomics,
 				'someInterestingChildName'
 			)
@@ -546,7 +542,7 @@ describe('getFirstDataGroupWithNameInData', () => {
 	});
 	it('if dataGroup has matching DataGroup, should return that DataGroup', () => {
 		expect(
-			getFirstDataGroupWithNameInData(
+			cdu.getFirstDataGroupWithNameInData(
 				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
 				'someInterestingChildName'
 			)
@@ -562,7 +558,7 @@ describe('getFirstDataGroupWithNameInData', () => {
 	});
 	it('if dataGroup has several matching DataGroups, should return the first of them', () => {
 		expect(
-			getFirstDataGroupWithNameInData(
+			cdu.getFirstDataGroupWithNameInData(
 				dataGroupWithSeveralMatchingDataGroups,
 				'someInterestingChildName'
 			)
@@ -714,67 +710,79 @@ const dataGroupWithMultipleMatchingGroupWithAttributes: DataGroup = {
 	],
 };
 
-describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
+describe('cdu.getFirstDataGroupWithNameInDataAndAttribues', () => {
 	it('should take dataGroup, nameInData and AttributeMatcher', () => {
-		getFirstDataGroupWithNameInDataAndAttribues(
+		cdu.getFirstDataGroupWithNameInDataAndAttribues(
 			dataGroupWithEmptyChildren,
 			'someChildName',
 			{ someKey: 'someValue' }
 		);
 	});
-	it('if dataGroup has no children, should return undefined', () => {
+
+	it('should call getAllDataGroupsWithNameInDataAndAttributes with dataGroup, nameInData and attributes', () => {
+		cdu.getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroupWithEmptyChildren,
+			'someChildName',
+			{ someKey: 'someValue' }
+		);
+
 		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithEmptyChildren,
-				'someChildName',
-				{ someKey: 'someValue' }
-			)
-		).toBe(undefined);
+			getAllDataGroupsWithNameInDataAndAttributesSpy
+		).toHaveBeenCalledTimes(1);
+
+		expect(
+			getAllDataGroupsWithNameInDataAndAttributesSpy
+		).toHaveBeenLastCalledWith(dataGroupWithEmptyChildren, 'someChildName', {
+			someKey: 'someValue',
+		});
+
+		cdu.getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroupWithMultipleMatchingGroupWithAttributes,
+			'someOtherChildName',
+			{ someOtherKey: 'someOtherValue' }
+		);
+
+		expect(
+			getAllDataGroupsWithNameInDataAndAttributesSpy
+		).toHaveBeenCalledTimes(2);
+
+		expect(
+			getAllDataGroupsWithNameInDataAndAttributesSpy
+		).toHaveBeenLastCalledWith(
+			dataGroupWithMultipleMatchingGroupWithAttributes,
+			'someOtherChildName',
+			{ someOtherKey: 'someOtherValue' }
+		);
 	});
-	it('if dataGroup has empty nameInData, should return undefined', () => {
-		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithEmptyChildren,
-				'',
-				{ someKey: 'someValue' }
-			)
-		).toBe(undefined);
+	it('if getAllDataGroupsWithNameInDataAndAttributes returns empty array, return undefined', () => {
+		const returned = cdu.getFirstDataGroupWithNameInDataAndAttribues(
+			dataGroupWithEmptyChildren,
+			'someChildName',
+			{ someKey: 'someValue' }
+		);
+
+		expect(returned).toBeUndefined();
 	});
-	it('if dataGroup has no matching child, should return undefined', () => {
+	it('if getAllDataGroupsWithNameInDataAndAttributes returns non-empty array, return first element from array', () => {
 		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithNonMatchingDataElements,
-				'someChildName',
-				{ someKey: 'someValue' }
+			cdu.getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithSeveralMatchingDataGroups,
+				'someInterestingChildName'
 			)
-		).toBe(undefined);
-	});
-	it('if dataGroup has no matching DataGroup, should return undefined', () => {
-		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithOnlyMatchingAtomics,
-				'someInterestingChildName',
-				{ someKey: 'someValue' }
-			)
-		).toBe(undefined);
-	});
-	it('if dataGroup has child with maching nameInData, but not attribute, should return undefined', () => {
-		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithNonMatchingAttributes,
-				'someInterestingChildName',
-				{ someKey: 'someValue' }
-			)
-		).toBe(undefined);
-	});
-	it('if dataGroup has child matching both nameInData and attribute, should return that DataGroup', () => {
-		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithOneMatchingAtomicAndOneMatchingGroupWithAttributes,
-				'someInterestingChildName',
+		).toStrictEqual({
+			name: 'someInterestingChildName',
+			children: [
 				{
-					someInterestingKey: 'someInterestingValue',
-				}
+					name: 'firstChild',
+					value: 'someValue',
+				},
+			],
+		});
+
+		expect(
+			cdu.getFirstDataGroupWithNameInDataAndAttribues(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+				'someInterestingChildName'
 			)
 		).toStrictEqual({
 			name: 'someInterestingChildName',
@@ -784,43 +792,74 @@ describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
 					value: 'someValue',
 				},
 			],
-			attributes: {
-				someInterestingKey: 'someInterestingValue',
-			},
 		});
 	});
+});
 
-	it('if dataGroup has multiple children matching both nameInData and attribute, should return the first DataGroup', () => {
+describe('cdu.getAllDataGroupsWithNameInDataAndAttributes', () => {
+	it('should take dataGroup, nameInData and AttributeMatcher', () => {
+		cdu.getAllDataGroupsWithNameInDataAndAttributes(
+			dataGroupWithEmptyChildren,
+			'someChildName',
+			{ someKey: 'someValue' }
+		);
+	});
+	it('if dataGroup has no children, should return empty array', () => {
 		expect(
-			getFirstDataGroupWithNameInDataAndAttribues(
-				dataGroupWithMultipleMatchingGroupWithAttributes,
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithEmptyChildren,
+				'someChildName',
+				{ someKey: 'someValue' }
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has empty nameInData, should return empty array', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithEmptyChildren,
+				'',
+				{ someKey: 'someValue' }
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has no matching child, should return empty array', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithNonMatchingDataElements,
+				'someChildName',
+				{ someKey: 'someValue' }
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has no matching DataGroup, should return empty array', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithOnlyMatchingAtomics,
+				'someInterestingChildName',
+				{ someKey: 'someValue' }
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has child with maching nameInData, but not attribute, should return empty array', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithNonMatchingAttributes,
+				'someInterestingChildName',
+				{ someKey: 'someValue' }
+			)
+		).toStrictEqual([]);
+	});
+	it('if dataGroup has child matching both nameInData and attribute, should return array containing that DataGroup', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithOneMatchingAtomicAndOneMatchingGroupWithAttributes,
 				'someInterestingChildName',
 				{
 					someInterestingKey: 'someInterestingValue',
 				}
 			)
-		).toStrictEqual({
-			name: 'someInterestingChildName',
-			children: [
-				{
-					name: 'childOfTheFirstMatchingDataGroup',
-					value: 'someValue',
-				},
-			],
-			attributes: {
-				someInterestingKey: 'someInterestingValue',
-			},
-		});
-	});
-
-	describe('with no passed attributesToMatch', () => {
-		it('if dataGroup has matching DataGroup, should return that DataGroup', () => {
-			expect(
-				getFirstDataGroupWithNameInDataAndAttribues(
-					dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
-					'someInterestingChildName'
-				)
-			).toStrictEqual({
+		).toStrictEqual([
+			{
 				name: 'someInterestingChildName',
 				children: [
 					{
@@ -828,23 +867,104 @@ describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
 						value: 'someValue',
 					},
 				],
-			});
-		});
-		it('if dataGroup has several matching DataGroups, should return the first of them', () => {
-			expect(
-				getFirstDataGroupWithNameInDataAndAttribues(
-					dataGroupWithSeveralMatchingDataGroups,
-					'someInterestingChildName'
-				)
-			).toStrictEqual({
+				attributes: {
+					someInterestingKey: 'someInterestingValue',
+				},
+			},
+		]);
+	});
+
+	it('if dataGroup has multiple children matching both nameInData and attribute, should return all of them', () => {
+		expect(
+			cdu.getAllDataGroupsWithNameInDataAndAttributes(
+				dataGroupWithMultipleMatchingGroupWithAttributes,
+				'someInterestingChildName',
+				{
+					someInterestingKey: 'someInterestingValue',
+				}
+			)
+		).toStrictEqual([
+			{
 				name: 'someInterestingChildName',
 				children: [
 					{
-						name: 'firstChild',
+						name: 'childOfTheFirstMatchingDataGroup',
 						value: 'someValue',
 					},
 				],
-			});
+				attributes: {
+					someInterestingKey: 'someInterestingValue',
+				},
+			},
+			{
+				name: 'someInterestingChildName',
+				children: [
+					{
+						name: 'someOtherChild',
+						value: 'someValue',
+					},
+				],
+				attributes: {
+					someInterestingKey: 'someInterestingValue',
+				},
+			},
+		]);
+	});
+
+	describe('with no passed attributesToMatch', () => {
+		it('if dataGroup has matching DataGroup, should return array containing that DataGroup', () => {
+			expect(
+				cdu.getAllDataGroupsWithNameInDataAndAttributes(
+					dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
+					'someInterestingChildName'
+				)
+			).toStrictEqual([
+				{
+					name: 'someInterestingChildName',
+					children: [
+						{
+							name: 'someOtherChild',
+							value: 'someValue',
+						},
+					],
+				},
+			]);
+		});
+		it('if dataGroup has several matching DataGroups, should return all of them', () => {
+			expect(
+				cdu.getAllDataGroupsWithNameInDataAndAttributes(
+					dataGroupWithSeveralMatchingDataGroups,
+					'someInterestingChildName'
+				)
+			).toStrictEqual([
+				{
+					name: 'someInterestingChildName',
+					children: [
+						{
+							name: 'firstChild',
+							value: 'someValue',
+						},
+					],
+				},
+				{
+					name: 'someInterestingChildName',
+					children: [
+						{
+							name: 'secondChild',
+							value: 'someValue',
+						},
+					],
+				},
+				{
+					name: 'someInterestingChildName',
+					children: [
+						{
+							name: 'thirdChild',
+							value: 'someValue',
+						},
+					],
+				},
+			]);
 		});
 	});
 });

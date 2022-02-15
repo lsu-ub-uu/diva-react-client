@@ -85,11 +85,29 @@ export function getFirstDataGroupWithNameInDataAndAttribues(
 	nameInData: string,
 	attributesToMatch?: Attributes
 ): DataGroup | undefined {
+	const matchingDataGroups = getAllDataGroupsWithNameInDataAndAttributes(
+		dataGroup,
+		nameInData,
+		attributesToMatch
+	);
+
+	if (matchingDataGroups.length === 0) {
+		return undefined;
+	}
+
+	return matchingDataGroups[0];
+}
+
+export const getAllDataGroupsWithNameInDataAndAttributes = (
+	dataGroup: DataGroup,
+	nameInData: string,
+	attributesToMatch?: Attributes
+): DataGroup[] => {
 	const dataGroups = <DataGroup[]>dataGroup.children.filter((child) => {
 		return Object.prototype.hasOwnProperty.call(child, 'children');
 	});
 
-	const firstMatchingDataGroup = dataGroups.find((child) => {
+	const matchingDataGroups = dataGroups.filter((child) => {
 		const matchingNameInData = child.name === nameInData;
 		let matchingAttributes = false;
 		if (attributesToMatch === undefined && child.attributes === undefined) {
@@ -102,8 +120,8 @@ export function getFirstDataGroupWithNameInDataAndAttribues(
 		return matchingAttributes && matchingNameInData;
 	});
 
-	return firstMatchingDataGroup;
-}
+	return matchingDataGroups;
+};
 
 export default {
 	getFirstChildWithNameInData,
@@ -112,4 +130,5 @@ export default {
 	getAllDataAtomicsWithNameInData,
 	getFirstDataGroupWithNameInData,
 	getFirstDataGroupWithNameInDataAndAttribues,
+	getAllDataGroupsWithNameInDataAndAttributes,
 };
