@@ -162,7 +162,7 @@ const dataGroupWithSeveralMatchingAtomics: DataGroup = {
 	],
 };
 
-describe('cdu.getAllChildrenWithNameInData', () => {
+describe('getAllChildrenWithNameInData', () => {
 	it('should return empty list if there are no children', () => {
 		const children = cdu.getAllChildrenWithNameInData(
 			dataGroupWithEmptyChildren,
@@ -286,7 +286,7 @@ describe('cdu.getAllChildrenWithNameInData', () => {
 	});
 });
 
-describe('cdu.getFirstChildWithNameInData', () => {
+describe('getFirstChildWithNameInData', () => {
 	it('should return null if no child exists', () => {
 		expect(
 			cdu.getFirstChildWithNameInData(
@@ -400,7 +400,7 @@ describe('cdu.getFirstChildWithNameInData', () => {
 	});
 });
 
-describe('cdu.getFirstDataAtomicWithNameInData', () => {
+describe('getFirstDataAtomicWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
 		cdu.getFirstDataAtomicWithNameInData(
 			dataGroupWithEmptyChildren,
@@ -456,7 +456,7 @@ describe('cdu.getFirstDataAtomicWithNameInData', () => {
 	});
 });
 
-describe('cdu.getAllDataAtomicsWithNameInData', () => {
+describe('getAllDataAtomicsWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
 		cdu.getAllDataAtomicsWithNameInData(
 			dataGroupWithEmptyChildren,
@@ -509,7 +509,7 @@ describe('cdu.getAllDataAtomicsWithNameInData', () => {
 	});
 });
 
-describe('cdu.getFirstDataGroupWithNameInData', () => {
+describe('getFirstDataGroupWithNameInData', () => {
 	it('should take dataGroup and nameInData', () => {
 		cdu.getFirstDataGroupWithNameInData(
 			dataGroupWithEmptyChildren,
@@ -710,7 +710,7 @@ const dataGroupWithMultipleMatchingGroupWithAttributes: DataGroup = {
 	],
 };
 
-describe('cdu.getFirstDataGroupWithNameInDataAndAttribues', () => {
+describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
 	it('should take dataGroup, nameInData and AttributeMatcher', () => {
 		cdu.getFirstDataGroupWithNameInDataAndAttribues(
 			dataGroupWithEmptyChildren,
@@ -796,7 +796,7 @@ describe('cdu.getFirstDataGroupWithNameInDataAndAttribues', () => {
 	});
 });
 
-describe('cdu.getAllDataGroupsWithNameInDataAndAttributes', () => {
+describe('getAllDataGroupsWithNameInDataAndAttributes', () => {
 	it('should take dataGroup, nameInData and AttributeMatcher', () => {
 		cdu.getAllDataGroupsWithNameInDataAndAttributes(
 			dataGroupWithEmptyChildren,
