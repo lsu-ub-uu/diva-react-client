@@ -10,11 +10,6 @@ type ExternalUrl = {
 	URL: string;
 };
 
-type Biography = {
-	biography: string;
-	language: string;
-};
-
 export interface Person extends Record {
 	domains?: string[];
 
@@ -44,9 +39,9 @@ export interface Person extends Record {
 
 	librisIDs?: string[];
 
-	biographyEnglish?: Biography;
+	biographyEnglish?: string;
 
-	biographySwedish?: Biography;
+	biographySwedish?: string;
 
 	personDomainPart?: string[];
 }

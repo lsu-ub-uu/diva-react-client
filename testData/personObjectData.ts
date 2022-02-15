@@ -63,6 +63,8 @@ export const createCompletePerson = () => {
 		{ URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
 	];
 
+	completePerson.biographySwedish = 'A nice biography<br/> foobar';
+
 	return completePerson;
 };
 

@@ -70,6 +70,14 @@ export const personMatcher: Matcher = [
 		nextMatcher: ExternalURLMatcher,
 		multiple: true,
 	},
+	{
+		propertyName: 'biographySwedish',
+		nameInDataPath: 'biographySwedish/biography',
+	},
+	{
+		propertyName: 'biographyEnglish',
+		nameInDataPath: 'biographyEnglish/biography',
+	},
 ];
 
 export default personMatcher;

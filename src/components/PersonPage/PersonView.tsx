@@ -12,6 +12,8 @@ const PersonView = function ({ person }: { person: Person }) {
 		});
 	}
 
+	console.log(person);
+
 	return (
 		<>
 			<h1>{displayName(person)}</h1>
@@ -26,6 +28,12 @@ const PersonView = function ({ person }: { person: Person }) {
 					return <ExternalLink URL={link.URL} text={link.linkTitle} />;
 				})}
 			<Identifiers person={person} />
+			{person.biographySwedish && (
+				<div>
+					Biografi
+					<p dangerouslySetInnerHTML={{ __html: person.biographySwedish }} />
+				</div>
+			)}
 		</>
 	);
 };

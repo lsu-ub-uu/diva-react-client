@@ -38,6 +38,10 @@ const expectedPerson: Person = {
 			URL: 'https://www.researchgate.net',
 		},
 	],
+	biographySwedish:
+		'<p>En biografi är en redogörelse för en persons liv. Om framställningen är gjord av författaren själv kallas den självbiografi eller memoarer. Ordet biografi kommer av grekiskans biographia, av bios, "liv", och graphō, "skriva". En författare av biografier kallas biograf.</p>',
+	biographyEnglish:
+		'<p>A biography is an account of a person\'s life. If the production is made by the author himself, it is called autobiography or memoirs. The word biography comes from the Greek biography, of bios, "life", and graphō, "write". An author of biographies is called cinema. :)</p>',
 };
 
 const personDataGroup: DataGroup = {

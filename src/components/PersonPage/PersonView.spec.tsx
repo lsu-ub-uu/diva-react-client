@@ -174,4 +174,27 @@ describe('PersonView', () => {
 			expect.any(Object)
 		);
 	});
+
+	describe('biography', () => {
+		it('if no biographySwedish, should not show biography', () => {
+			render(<PersonView person={createMinimumPersonWithIdAndName()} />);
+
+			expect(screen.queryByText(/Biografi/i)).not.toBeInTheDocument();
+		});
+
+		it('if biographySwedish, shows label "Biografi"', () => {
+			render(<PersonView person={createCompletePerson()} />);
+
+			expect(screen.queryByText(/Biografi/i)).toBeInTheDocument();
+		});
+
+		it('if biographySwedish, displays swedish biography', () => {
+			const completePerson = createCompletePerson();
+			render(<PersonView person={completePerson} />);
+
+			const biographySwedish = completePerson.biographySwedish as string;
+
+			expect(screen.queryByText(biographySwedish)).toBeInTheDocument();
+		});
+	});
 });
