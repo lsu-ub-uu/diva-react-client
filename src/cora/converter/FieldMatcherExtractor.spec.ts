@@ -1,6 +1,9 @@
-import { FieldMatcher, Matcher } from './Converter';
+import { ConverterObject, FieldMatcher, Matcher } from './Converter';
 import { DataGroup } from '../cora-data/CoraData';
-import { extractFirstDataGroupWithAttributesFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
+import {
+	extractAllDataGroupsWithAttributesFollowingNameInDatas,
+	extractFirstDataGroupWithAttributesFollowingNameInDatas,
+} from '../cora-data/CoraDataUtilsWrappers';
 import * as des from './FieldMatcherExtractor';
 import extractWithMatcher from './MatcherExtractor';
 import {
@@ -28,9 +31,14 @@ const mockExtractOneDataAtomicValueFollowingNameInDatas =
 	>;
 
 jest.mock('../cora-data/CoraDataUtilsWrappers');
-const mockExtractDataGroupWithAttributesFollowingNameInDatas =
+const mockExtractFirstDataGroupWithAttributesFollowingNameInDatas =
 	extractFirstDataGroupWithAttributesFollowingNameInDatas as jest.MockedFunction<
 		typeof extractFirstDataGroupWithAttributesFollowingNameInDatas
+	>;
+
+const mockExtractAllDataGroupsWithAttributesFollowingNameInDatas =
+	extractAllDataGroupsWithAttributesFollowingNameInDatas as jest.MockedFunction<
+		typeof extractAllDataGroupsWithAttributesFollowingNameInDatas
 	>;
 
 const someEmptyDataGroup: DataGroup = {
@@ -90,7 +98,7 @@ beforeAll(() => {
 		'someDefaultValueFromGetFinalDataAtomicValueWithNameInDatas'
 	);
 
-	mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValue(
+	mockExtractFirstDataGroupWithAttributesFollowingNameInDatas.mockReturnValue(
 		someEmptyDataGroup
 	);
 
@@ -290,108 +298,389 @@ describe('The ElementSetter', () => {
 			children: [],
 		};
 
-		it('expect extractDataGroupWithAttributesFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and attributesToMatch', () => {
-			const someMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				multiple: true,
-				nextMatcher: someDefaultFinalMatcher,
-			};
+		const someDefaultMultipleMatcherWithAttributes: FieldMatcher = {
+			propertyName: 'someField',
+			nameInDataPath: 'someDataGroup/someOtherDataGroup',
+			multiple: true,
+			nextMatcher: someDefaultFinalMatcher,
+			attributesToMatch: {
+				someAttribute: 'someKey',
+			},
+		};
 
-			des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+		describe('if not multiple', () => {
+			it('expect extractFirstDataGroupWithAttributesFollowingNameInDatas to have been called with dataGroup, nameInDatas from getNameInDatasFromPath and attributesToMatch', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					nextMatcher: someDefaultFinalMatcher,
+				};
 
-			expect(
-				mockExtractDataGroupWithAttributesFollowingNameInDatas
-			).toHaveBeenLastCalledWith(
-				someDefaultDataGroup,
-				['someDataGroup', 'someOtherDataGroup'],
-				undefined
-			);
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
 
-			const someOtherMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someOtherDataGroup/someFinalDataGroup',
-				nextMatcher: someDefaultFinalMatcher,
-				attributesToMatch: { someKey: 'someValue' },
-			};
+				expect(
+					mockExtractFirstDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenLastCalledWith(
+					someDefaultDataGroup,
+					['someDataGroup', 'someOtherDataGroup'],
+					undefined
+				);
 
-			const someOtherDataGroup: DataGroup = {
-				name: 'someName',
-				children: [
-					{
-						name: 'someName',
-						value: 'someValue',
-					},
-				],
-			};
+				const someOtherMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someOtherDataGroup/someFinalDataGroup',
+					nextMatcher: someDefaultFinalMatcher,
+					attributesToMatch: { someKey: 'someValue' },
+				};
 
-			des.extractAndReturnChildren(someOtherDataGroup, someOtherMatcher);
+				const someOtherDataGroup: DataGroup = {
+					name: 'someName',
+					children: [
+						{
+							name: 'someName',
+							value: 'someValue',
+						},
+					],
+				};
 
-			expect(
-				mockExtractDataGroupWithAttributesFollowingNameInDatas
-			).toHaveBeenLastCalledWith(
-				someOtherDataGroup,
-				['someOtherDataGroup', 'someFinalDataGroup'],
-				someOtherMatcher.attributesToMatch
-			);
+				des.extractAndReturnChildren(someOtherDataGroup, someOtherMatcher);
+
+				expect(
+					mockExtractFirstDataGroupWithAttributesFollowingNameInDatas
+				).toHaveBeenLastCalledWith(
+					someOtherDataGroup,
+					['someOtherDataGroup', 'someFinalDataGroup'],
+					someOtherMatcher.attributesToMatch
+				);
+			});
+			it('expect extractAllDataAtomicValuesFollowingNameInDatas and extractOneDataAtomicValueFollowingNameInDatas to not be called with input values', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					nextMatcher: someDefaultFinalMatcher,
+				};
+
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(
+					mockExtractAllDataAtomicValuesFollowingNameInDatas
+				).not.toHaveBeenCalled();
+
+				expect(
+					mockExtractOneDataAtomicValueFollowingNameInDatas
+				).not.toHaveBeenCalledWith(someDefaultDataGroup, [
+					'someDataGroup',
+					'someOtherDataGroup',
+				]);
+			});
 		});
-		it('expect extractAllDataAtomicValuesFollowingNameInDatas and extractOneDataAtomicValueFollowingNameInDatas to not be called with input values', () => {
-			const someMatcher: FieldMatcher = {
-				propertyName: 'someField',
-				nameInDataPath: 'someDataGroup/someOtherDataGroup',
-				multiple: true,
-				nextMatcher: someDefaultFinalMatcher,
-			};
-
-			des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
-
-			expect(
-				mockExtractAllDataAtomicValuesFollowingNameInDatas
-			).not.toHaveBeenCalled();
-
-			expect(
-				mockExtractOneDataAtomicValueFollowingNameInDatas
-			).not.toHaveBeenCalledWith(someDefaultDataGroup, [
-				'someDataGroup',
-				'someOtherDataGroup',
-			]);
-		});
-
 		describe('if multiple', () => {
-			it.todo('calls extractAllDataGroupsFollowingNameInDatas');
+			it('does not call extractFirstDataGroupWithAttributesFollowingNameInDatas', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
 
-			describe('if extractAllDataGroupsFollowingNameInDatas returns empty array', () => {
-				it.todo('if property IS required, returns empty array');
-				it.todo('if property is NOT required, returns undefined');
+				expect(
+					mockExtractFirstDataGroupWithAttributesFollowingNameInDatas
+				).not.toHaveBeenCalled();
+			});
+
+			it('calls extractAllDataGroupsFollowingNameInDatas with dataGroup', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(
+					1,
+					someDefaultDataGroup,
+					expect.any(Array),
+					undefined
+				);
+
+				des.extractAndReturnChildren(someEmptyDataGroup, someMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(
+					2,
+					someEmptyDataGroup,
+					expect.any(Array),
+					undefined
+				);
+			});
+
+			it('calls extractAllDataGroupsFollowingNameInDatas with nameInDatas', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(
+					1,
+					expect.any(Object),
+					['someDataGroup', 'someOtherDataGroup'],
+					undefined
+				);
+
+				const someOtherMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someFirstDataGroup/someSecondDataGroup/someThird',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someOtherMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(
+					2,
+					expect.any(Object),
+					['someFirstDataGroup', 'someSecondDataGroup', 'someThird'],
+					undefined
+				);
+			});
+
+			it('calls extractAllDataGroupsFollowingNameInDatas with possible attributes', () => {
+				const someMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+					attributesToMatch: {
+						someAttribute: 'someKey',
+					},
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(1, expect.any(Object), expect.any(Array), {
+					someAttribute: 'someKey',
+				});
+
+				const someOtherMatcher: FieldMatcher = {
+					propertyName: 'someField',
+					nameInDataPath: 'someDataGroup/someOtherDataGroup',
+					multiple: true,
+					nextMatcher: someDefaultFinalMatcher,
+					attributesToMatch: {
+						someOtherAttribute: 'someOtherKey',
+					},
+				};
+				des.extractAndReturnChildren(someDefaultDataGroup, someOtherMatcher);
+
+				expect(
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
+				).toHaveBeenNthCalledWith(2, expect.any(Object), expect.any(Array), {
+					someOtherAttribute: 'someOtherKey',
+				});
+			});
+
+			it('if extractAllDataGroupsFollowingNameInDatas returns empty array, returns undefined', () => {
+				mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					[]
+				);
+				const returned = des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someDefaultMultipleMatcherWithAttributes
+				);
+
+				expect(returned).toBeUndefined();
+			});
+
+			it('if extractAllDataGroupsFollowingNameInDatas returns undefined, returns undefined', () => {
+				mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
+				const returned = des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someDefaultMultipleMatcherWithAttributes
+				);
+
+				expect(returned).toBeUndefined();
 			});
 
 			describe('if extractAllDataGroupsFollowingNameInDatas returns dataGroups', () => {
-				it.todo('calls extractWithMatcher on each of them with nextMatcher');
-				it.todo(
-					'returns array containing results from all calls to extractWithMatcher'
-				);
-				it.todo(
-					'if extractWithMatcher returns an empty object, that object is not included in the return array'
-				);
-				it.todo(
-					'if extractWithMatcher returns an empty object, that object is not included in the return array'
-				);
-				it.todo(
-					'if extractWithMatcher returns only empty objects, the required field of the parent matcher decides (see above)'
-				);
+				it('calls extractWithMatcher on each of them with nextMatcher', () => {
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup]
+					);
+					des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						1,
+						expect.any(Object),
+						someDefaultMultipleMatcherWithAttributes.nextMatcher
+					);
+
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup, someDefaultDataGroup, someDefaultDataGroup]
+					);
+					des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(mockExtractWithMatcher).toHaveBeenCalledTimes(4);
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						2,
+						expect.any(Object),
+						someDefaultMultipleMatcherWithAttributes.nextMatcher
+					);
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						4,
+						expect.any(Object),
+						someDefaultMultipleMatcherWithAttributes.nextMatcher
+					);
+				});
+				it('calls extractWithMatcher with each of them', () => {
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup]
+					);
+					des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						1,
+						someDefaultDataGroup,
+						expect.any(Object)
+					);
+
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+					);
+					des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						2,
+						someDefaultDataGroup,
+						expect.any(Object)
+					);
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						3,
+						someEmptyDataGroup,
+						expect.any(Object)
+					);
+					expect(mockExtractWithMatcher).toHaveBeenNthCalledWith(
+						4,
+						someDefaultDataGroup,
+						expect.any(Object)
+					);
+				});
+				it('returns array containing results from all calls to extractWithMatcher', () => {
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+					);
+
+					const converterObjects: ConverterObject[] = [
+						{
+							someProperty: { someFoo: 'someBar' },
+						},
+						{
+							someProperty2: { someFoo2: 'someBar2' },
+						},
+						{
+							someProperty3: { someFoo3: 'someBar2' },
+						},
+					];
+
+					converterObjects.forEach((obj) => {
+						mockExtractWithMatcher.mockReturnValueOnce(obj);
+					});
+
+					const returned = des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(returned).toStrictEqual(converterObjects);
+				});
+				it('if extractWithMatcher returns an empty object, that object is not included in the return array', () => {
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+					);
+
+					const converterObjects: ConverterObject[] = [
+						{
+							someProperty: { someFoo: 'someBar' },
+						},
+						{},
+						{
+							someProperty3: { someFoo3: 'someBar2' },
+						},
+					];
+
+					converterObjects.forEach((obj) => {
+						mockExtractWithMatcher.mockReturnValueOnce(obj);
+					});
+
+					const returned = des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(returned).toStrictEqual([
+						{
+							someProperty: { someFoo: 'someBar' },
+						},
+						{
+							someProperty3: { someFoo3: 'someBar2' },
+						},
+					]);
+				});
+				it('if extractWithMatcher returns only empty objects, an empty array is returned', () => {
+					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+					);
+
+					const converterObjects: ConverterObject[] = [{}, {}, {}];
+
+					converterObjects.forEach((obj) => {
+						mockExtractWithMatcher.mockReturnValueOnce(obj);
+					});
+
+					const returned = des.extractAndReturnChildren(
+						someDefaultDataGroup,
+						someDefaultMultipleMatcherWithAttributes
+					);
+
+					expect(returned).toStrictEqual([]);
+				});
 			});
 		});
 
 		describe('if not multiple', () => {
 			it('does not call extractWithMatcher if dataGroup returned by extractDataGroupFollowingNameInData is undefined', () => {
-				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractFirstDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					undefined
 				);
 
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someField',
 					nameInDataPath: 'someDataGroup/someOtherDataGroup',
-					multiple: true,
 					nextMatcher: someDefaultFinalMatcher,
 				};
 
@@ -400,7 +689,7 @@ describe('The ElementSetter', () => {
 				expect(mockExtractWithMatcher).not.toHaveBeenCalled();
 			});
 
-			it('expect extractWithMatcher to be called with dataGroup returned by extractDataGroupWithAttributesFollowingNameInDatas and nextMatcher set in matcher', () => {
+			it('expect extractWithMatcher to be called with dataGroup returned by extractFirstDataGroupWithAttributesFollowingNameInDatas and nextMatcher set in matcher', () => {
 				const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
 					name: 'someFinalDataGroupName',
 					children: [
@@ -414,11 +703,10 @@ describe('The ElementSetter', () => {
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someField',
 					nameInDataPath: 'someDataGroup/someOtherDataGroup',
-					multiple: true,
 					nextMatcher: someDefaultFinalMatcher,
 				};
 
-				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractFirstDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					dataGroupReturnedByGetDataGroupWithNameInDatas
 				);
 				des.extractAndReturnChildren(someDefaultDataGroup, someMatcher);
@@ -465,13 +753,13 @@ describe('The ElementSetter', () => {
 				});
 			});
 
-			it('if extractDataGroupWithAttributesFollowingNameInDatas returns undefined, return undefined', () => {
+			it('if extractFirstDataGroupWithAttributesFollowingNameInDatas returns undefined, return undefined', () => {
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someInitialField',
 					nameInDataPath: 'someDataGroup/someOtherDataGroup',
 					nextMatcher: someDefaultFinalMatcher,
 				};
-				mockExtractDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
+				mockExtractFirstDataGroupWithAttributesFollowingNameInDatas.mockReturnValueOnce(
 					undefined
 				);
 

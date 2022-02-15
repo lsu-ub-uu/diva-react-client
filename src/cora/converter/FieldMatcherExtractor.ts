@@ -1,16 +1,20 @@
 import { ConverterObject, FieldMatcher, Matcher } from './Converter';
 import { DataGroup } from '../cora-data/CoraData';
-import { extractFirstDataGroupWithAttributesFollowingNameInDatas } from '../cora-data/CoraDataUtilsWrappers';
+import {
+	extractAllDataGroupsWithAttributesFollowingNameInDatas,
+	extractFirstDataGroupWithAttributesFollowingNameInDatas,
+} from '../cora-data/CoraDataUtilsWrappers';
 import extractWithMatcher from './MatcherExtractor';
 import {
 	extractAllDataAtomicValuesFollowingNameInDatas,
 	extractOneDataAtomicValueFollowingNameInDatas,
 } from './RecursiveExtractor';
+import { isEqual } from 'lodash';
 
 export const extractAndReturnChildren = (
 	dataGroup: DataGroup,
 	matcher: FieldMatcher
-): string | string[] | undefined | ConverterObject => {
+): string | string[] | undefined | ConverterObject | ConverterObject[] => {
 	const nameInDatas = getNameInDatasFromPath(matcher.nameInDataPath);
 
 	if (matcher.nextMatcher !== undefined) {
@@ -29,6 +33,31 @@ const extractDeeperNestedValues = (
 	// extractAllDataGroupsFollowingNameInDatas
 	// map over result, and call extractWithMatcher
 	// return array containing results from all calls to extractWithMatcher
+
+	if (matcher.multiple) {
+		const matchingDataGroups =
+			extractAllDataGroupsWithAttributesFollowingNameInDatas(
+				dataGroup,
+				nameInDatas,
+				matcher.attributesToMatch
+			);
+
+		if (matchingDataGroups === undefined || matchingDataGroups.length === 0) {
+			return undefined;
+		}
+
+		const nextMatcher = <Matcher>matcher.nextMatcher;
+
+		const extracted = matchingDataGroups.map((matchingDataGroup) => {
+			return extractWithMatcher(matchingDataGroup, nextMatcher);
+		});
+
+		const filtered = extracted.filter((element) => {
+			return !isEqual(element, {});
+		});
+
+		return filtered;
+	}
 
 	const finalDataGroup =
 		extractFirstDataGroupWithAttributesFollowingNameInDatas(
