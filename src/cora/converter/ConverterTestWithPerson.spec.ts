@@ -10,38 +10,80 @@ describe('Full test of converter', () => {
 			personMatcher
 		);
 
-		console.log(personObject);
-
 		expect(personObject).toStrictEqual(expectedPerson);
 	});
 });
 
 const expectedPerson: Person = {
-	id: 'authority-person:11685',
+	id: 'authority-person:1',
+	recordType: 'person',
 	domains: ['du', 'hig', 'ivl', 'ltu', 'miun', 'ths', 'umu', 'uu'],
 	authorisedName: {
-		familyName: 'Ericsson',
-		givenName: 'Urban',
+		familyName: 'FamilyName',
+		givenName: 'GivenName',
 	},
 	academicTitle: 'titel',
-	recordType: 'person',
-	orcids: ['0000-0001-6885-2022'],
-	viafIDs: ['q122'],
-	librisIDs: ['12321'],
+	yearOfBirth: '1965',
+	yearOfDeath: '2222',
+	emailAddress: 'someone@something.some',
+	alternativeNames: [
+		{
+			familyName: 'FamilyName',
+			givenName: 'G',
+		},
+		{
+			familyName: 'F',
+			givenName: 'GivenName',
+		},
+	],
 	externalURLs: [
 		{
-			linkTitle: 'Min profilsida UU',
-			URL: 'https://mp.uu.se/web/profilsidor/start/-/emp/N99-921',
+			linkTitle: 'MP',
+			URL: 'https://mp.uu.se/',
 		},
 		{
 			linkTitle: 'ResearchGate',
 			URL: 'https://www.researchgate.net',
 		},
 	],
-	biographySwedish:
-		'<p>En biografi är en redogörelse för en persons liv. Om framställningen är gjord av författaren själv kallas den självbiografi eller memoarer. Ordet biografi kommer av grekiskans biographia, av bios, "liv", och graphō, "skriva". En författare av biografier kallas biograf.</p>',
+	otherAffiliation: {
+		affiliation: 'Någon högskola',
+		affiliationFromYear: '1998',
+		affiliationUntilYear: '2000',
+	},
+	orcids: ['someOrcid', 'someOtherOrcid'],
+	viafIDs: ['someViafId', 'someOtherViafId'],
+	librisIDs: ['someLibrisId', 'someOtherLibrisId'],
 	biographyEnglish:
 		'<p>A biography is an account of a person\'s life. If the production is made by the author himself, it is called autobiography or memoirs. The word biography comes from the Greek biography, of bios, "life", and graphō, "write". An author of biographies is called cinema. :)</p>',
+	biographySwedish:
+		'<p>En biografi är en redogörelse för en persons liv. Om framställningen är gjord av författaren själv kallas den självbiografi eller memoarer. Ordet biografi kommer av grekiskans biographia, av bios, "liv", och graphō, "skriva". En författare av biografier kallas biograf.</p>',
+	personDomainParts: [
+		{
+			recordId: 'authority-person:1:du',
+		},
+		{
+			recordId: 'authority-person:1:hig',
+		},
+		{
+			recordId: 'authority-person:1:ivl',
+		},
+		{
+			recordId: 'authority-person:1:ltu',
+		},
+		{
+			recordId: 'authority-person:1:miun',
+		},
+		{
+			recordId: 'authority-person:1:ths',
+		},
+		{
+			recordId: 'authority-person:1:umu',
+		},
+		{
+			recordId: 'authority-person:1:uu',
+		},
+	],
 };
 
 const personDataGroup: DataGroup = {
@@ -52,7 +94,7 @@ const personDataGroup: DataGroup = {
 			children: [
 				{
 					name: 'id',
-					value: 'authority-person:11685',
+					value: 'authority-person:1',
 				},
 				{
 					name: 'type',
@@ -148,11 +190,11 @@ const personDataGroup: DataGroup = {
 			children: [
 				{
 					name: 'familyName',
-					value: 'Ericsson',
+					value: 'FamilyName',
 				},
 				{
 					name: 'givenName',
-					value: 'Urban',
+					value: 'GivenName',
 				},
 			],
 		},
@@ -162,32 +204,54 @@ const personDataGroup: DataGroup = {
 		},
 		{
 			name: 'emailAddress',
-			value: 'urban.ericsson@ub.uu.se',
+			value: 'someone@something.some',
+		},
+		{
+			name: 'yearOfBirth',
+			value: '1965',
+		},
+		{
+			name: 'yearOfDeath',
+			value: '2222',
 		},
 		{
 			name: 'alternativeName',
 			children: [
 				{
 					name: 'familyName',
-					value: 'Ericsson',
+					value: 'FamilyName',
 				},
 				{
 					name: 'givenName',
-					value: 'K',
+					value: 'G',
 				},
 			],
 			repeatId: '0',
+		},
+		{
+			name: 'alternativeName',
+			children: [
+				{
+					name: 'familyName',
+					value: 'F',
+				},
+				{
+					name: 'givenName',
+					value: 'GivenName',
+				},
+			],
+			repeatId: '1',
 		},
 		{
 			name: 'externalURL',
 			children: [
 				{
 					name: 'linkTitle',
-					value: 'Min profilsida UU',
+					value: 'MP',
 				},
 				{
 					name: 'URL',
-					value: 'https://mp.uu.se/web/profilsidor/start/-/emp/N99-921',
+					value: 'https://mp.uu.se/',
 				},
 			],
 			repeatId: '0',
@@ -211,7 +275,7 @@ const personDataGroup: DataGroup = {
 			children: [
 				{
 					name: 'affiliation',
-					value: 'Säffle högskola',
+					value: 'Någon högskola',
 				},
 				{
 					name: 'affiliationFromYear',
@@ -226,18 +290,33 @@ const personDataGroup: DataGroup = {
 		},
 		{
 			name: 'ORCID_ID',
-			value: '0000-0001-6885-2022',
+			value: 'someOrcid',
+			repeatId: '0',
+		},
+		{
+			name: 'ORCID_ID',
+			value: 'someOtherOrcid',
+			repeatId: '1',
+		},
+		{
+			name: 'VIAF_ID',
+			value: 'someViafId',
 			repeatId: '0',
 		},
 		{
 			name: 'VIAF_ID',
-			value: 'q122',
+			value: 'someOtherViafId',
+			repeatId: '1',
+		},
+		{
+			name: 'Libris_ID',
+			value: 'someLibrisId',
 			repeatId: '0',
 		},
 		{
 			name: 'Libris_ID',
-			value: '12321',
-			repeatId: '0',
+			value: 'someOtherLibrisId',
+			repeatId: '1',
 		},
 		{
 			name: 'biographyEnglish',
@@ -276,7 +355,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:du',
+					value: 'authority-person:1:du',
 				},
 			],
 			repeatId: '0',
@@ -290,7 +369,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:hig',
+					value: 'authority-person:1:hig',
 				},
 			],
 			repeatId: '1',
@@ -304,7 +383,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:ivl',
+					value: 'authority-person:1:ivl',
 				},
 			],
 			repeatId: '2',
@@ -318,7 +397,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:ltu',
+					value: 'authority-person:1:ltu',
 				},
 			],
 			repeatId: '3',
@@ -332,7 +411,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:miun',
+					value: 'authority-person:1:miun',
 				},
 			],
 			repeatId: '4',
@@ -346,7 +425,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:ths',
+					value: 'authority-person:1:ths',
 				},
 			],
 			repeatId: '5',
@@ -360,7 +439,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:umu',
+					value: 'authority-person:1:umu',
 				},
 			],
 			repeatId: '6',
@@ -374,7 +453,7 @@ const personDataGroup: DataGroup = {
 				},
 				{
 					name: 'linkedRecordId',
-					value: 'authority-person:11685:uu',
+					value: 'authority-person:1:uu',
 				},
 			],
 			repeatId: '7',

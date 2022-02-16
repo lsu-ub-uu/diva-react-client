@@ -24,10 +24,31 @@ const ExternalURLMatcher: Matcher = [
 	},
 ];
 
+const OtherAffiliationMatcher: Matcher = [
+	{
+		propertyName: 'affiliation',
+		nameInDataPath: 'affiliation',
+		required: true,
+	},
+	{
+		propertyName: 'affiliationFromYear',
+		nameInDataPath: 'affiliationFromYear',
+	},
+	{
+		propertyName: 'affiliationUntilYear',
+		nameInDataPath: 'affiliationUntilYear',
+	},
+];
+
 export const personMatcher: Matcher = [
 	{
 		propertyName: 'id',
 		nameInDataPath: 'recordInfo/id',
+		required: true,
+	},
+	{
+		propertyName: 'recordType',
+		nameInDataPath: 'recordInfo/type/linkedRecordId',
 		required: true,
 	},
 	{
@@ -45,9 +66,33 @@ export const personMatcher: Matcher = [
 		nameInDataPath: 'academicTitle',
 	},
 	{
-		propertyName: 'recordType',
-		nameInDataPath: 'recordInfo/type/linkedRecordId',
-		required: true,
+		propertyName: 'yearOfBirth',
+		nameInDataPath: 'yearOfBirth',
+	},
+	{
+		propertyName: 'yearOfDeath',
+		nameInDataPath: 'yearOfDeath',
+	},
+	{
+		propertyName: 'emailAddress',
+		nameInDataPath: 'emailAddress',
+	},
+	{
+		propertyName: 'alternativeNames',
+		nameInDataPath: 'alternativeName',
+		multiple: true,
+		nextMatcher: NameMatcher,
+	},
+	{
+		propertyName: 'externalURLs',
+		nameInDataPath: 'externalURL',
+		nextMatcher: ExternalURLMatcher,
+		multiple: true,
+	},
+	{
+		propertyName: 'otherAffiliation',
+		nameInDataPath: 'otherAffiliation',
+		nextMatcher: OtherAffiliationMatcher,
 	},
 	{
 		propertyName: 'orcids',
@@ -65,18 +110,24 @@ export const personMatcher: Matcher = [
 		multiple: true,
 	},
 	{
-		propertyName: 'externalURLs',
-		nameInDataPath: 'externalURL',
-		nextMatcher: ExternalURLMatcher,
-		multiple: true,
+		propertyName: 'biographyEnglish',
+		nameInDataPath: 'biographyEnglish/biography',
 	},
 	{
 		propertyName: 'biographySwedish',
 		nameInDataPath: 'biographySwedish/biography',
 	},
 	{
-		propertyName: 'biographyEnglish',
-		nameInDataPath: 'biographyEnglish/biography',
+		propertyName: 'personDomainParts',
+		nameInDataPath: 'personDomainPart',
+		multiple: true,
+		nextMatcher: [
+			{
+				propertyName: 'recordId',
+				nameInDataPath: 'linkedRecordId',
+				required: true,
+			},
+		],
 	},
 ];
 

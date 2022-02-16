@@ -31,7 +31,7 @@ export interface Person extends Record {
 		affiliation: string;
 		affiliationFromYear: string;
 		affiliationUntilYear: string;
-	}[];
+	};
 
 	orcids?: string[];
 
@@ -43,5 +43,7 @@ export interface Person extends Record {
 
 	biographySwedish?: string;
 
-	personDomainPart?: string[];
+	personDomainParts?: {
+		recordId: string;
+	}[];
 }

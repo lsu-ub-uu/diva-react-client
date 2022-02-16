@@ -31,7 +31,7 @@ const PersonView = function ({ person }: { person: Person }) {
 			{person.biographySwedish && (
 				<div>
 					Biografi
-					<p dangerouslySetInnerHTML={{ __html: person.biographySwedish }} />
+					<p>{person.biographySwedish}</p>
 				</div>
 			)}
 		</>
