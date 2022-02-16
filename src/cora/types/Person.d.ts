@@ -1,6 +1,6 @@
 import { Record } from './GenericDefinitions';
 
-type Name = {
+export type Name = {
 	familyName: string;
 	givenName: string;
 };
