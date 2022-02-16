@@ -42,7 +42,7 @@ describe('identifiers', () => {
 			expect.any(Object)
 		);
 	});
-	it('should call ListWithLabel with ORCID and orcidIds if they exist on person', () => {
+	it('should call ListWithLabel with ORCID, omitEmptyStrings and orcids if they exist on person', () => {
 		const person = createCompletePerson();
 		person.viafIDs = [];
 		person.librisIDs = [];
@@ -53,6 +53,7 @@ describe('identifiers', () => {
 			expect.objectContaining({
 				label: 'ORCID',
 				list: person.orcids,
+				omitEmptyStrings: true,
 			}),
 			expect.any(Object)
 		);
@@ -68,6 +69,7 @@ describe('identifiers', () => {
 			expect.objectContaining({
 				label: 'VIAF',
 				list: person.viafIDs,
+				omitEmptyStrings: true,
 			}),
 			expect.any(Object)
 		);
@@ -83,6 +85,7 @@ describe('identifiers', () => {
 			expect.objectContaining({
 				label: 'Libris-id',
 				list: person.librisIDs,
+				omitEmptyStrings: true,
 			}),
 			expect.any(Object)
 		);

@@ -14,7 +14,7 @@ const possiblyOutputListWithLabel = (
 	label: string
 ) => {
 	if (list !== undefined && list.length > 0) {
-		return <ListWithLabel list={list} label={label} />;
+		return <ListWithLabel list={list} label={label} omitEmptyStrings />;
 	}
 	return undefined;
 };
