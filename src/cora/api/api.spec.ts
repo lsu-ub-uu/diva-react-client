@@ -2,20 +2,26 @@
 import 'whatwg-fetch';
 import {
 	searchPersonsByNameSearch as searchPersonsByNameSearchExport,
-	getPersonById,
+	getRecordById,
 } from './api';
 import searchPersonsByNameSearch from './api/searchPersonByNameSearch';
 
 import httpClient from './http/HttpClient';
-import convertToObject from '../converter/Converter';
-import { personMatcher } from '../converter/definitions/PersonDefinitions';
 import { Person } from '../types/Person';
-import { onePerson } from '../../../testData/searchResults';
+import {
+	onePerson,
+	getDataListContainingFourPersons,
+} from '../../../testData/searchResults';
+import SupportedRecordType from '../types/RecordTypes';
+import convertToObjectWithRecordType from '../converter/RecordTypeConverter';
+import { createCompletePerson } from '../../../testData/personObjectData';
+import { PersonDomainPart } from '../types/PersonDomainPart';
 
-jest.mock('../converter/Converter');
-const mockConvertToObject = convertToObject as jest.MockedFunction<
-	typeof convertToObject
->;
+jest.mock('../converter/RecordTypeConverter');
+const mockConvertToObjectWithRecordType =
+	convertToObjectWithRecordType as jest.MockedFunction<
+		typeof convertToObjectWithRecordType
+	>;
 
 jest.mock('./http/HttpClient');
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
@@ -34,31 +40,62 @@ describe('Api', () => {
 		);
 	});
 
-	describe('getPersonById', () => {
-		it('should exist and take an ID', () => {
-			getPersonById('someId');
+	describe('getRecordById', () => {
+		describe('parameters', () => {
+			it('should take a SupportedRecordType and an ID', () => {
+				getRecordById(SupportedRecordType.Person, 'someId');
+			});
+
+			it('should reject with error if empty id given and not call httpClient', async () => {
+				expect.assertions(2);
+
+				try {
+					await getRecordById(SupportedRecordType.Person, '');
+				} catch (error: unknown) {
+					const castError: Error = <Error>error;
+					expect(castError.message).toStrictEqual(
+						'getRecordById was called with recordType person but no id.'
+					);
+					expect(mockHttpClientGet).toHaveBeenCalledTimes(0);
+				}
+			});
+
+			it('should reject with error if empty id given and not call httpClient, recordType in message should reflect the parameter', async () => {
+				expect.assertions(2);
+
+				try {
+					await getRecordById(SupportedRecordType.PersonDomainPart, '');
+				} catch (error: unknown) {
+					const castError: Error = <Error>error;
+					expect(castError.message).toStrictEqual(
+						'getRecordById was called with recordType personDomainPart but no id.'
+					);
+					expect(mockHttpClientGet).toHaveBeenCalledTimes(0);
+				}
+			});
 		});
 
-		it('should reject with error if empty id given and not call httpClient', async () => {
-			expect.assertions(2);
-
-			try {
-				await getPersonById('');
-			} catch (error: unknown) {
-				const castError: Error = <Error>error;
-				expect(castError.message).toStrictEqual(
-					'No id was passed to getPersonById.'
-				);
-				expect(mockHttpClientGet).toHaveBeenCalledTimes(0);
-			}
-		});
-
-		it('should correctly call httpClient', async () => {
+		it('should correctly call httpClient with id', async () => {
 			const expectedUrl = 'baseUrl/record/person/someId';
 
 			expect.assertions(2);
 
-			await getPersonById('someId');
+			await getRecordById(SupportedRecordType.Person, 'someId');
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+			expect(mockHttpClientGet).toHaveBeenCalledWith(
+				expect.objectContaining({
+					url: expectedUrl,
+				})
+			);
+		});
+
+		it('should correctly call httpClient with recordType', async () => {
+			const expectedUrl = 'baseUrl/record/personDomainPart/someId';
+
+			expect.assertions(2);
+
+			await getRecordById(SupportedRecordType.PersonDomainPart, 'someId');
 
 			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
 			expect(mockHttpClientGet).toHaveBeenCalledWith(
@@ -76,7 +113,7 @@ describe('Api', () => {
 			expect.assertions(2);
 
 			try {
-				await getPersonById('someId');
+				await getRecordById(SupportedRecordType.PersonDomainPart, 'someId');
 			} catch (error: unknown) {
 				const castError: Error = <Error>error;
 				expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
@@ -84,43 +121,83 @@ describe('Api', () => {
 			}
 		});
 
-		it('should pass recordData received from httpClient to convertPersonDataGroupToPerson', async () => {
-			expect.assertions(2);
+		it('should pass recordData received from httpClient to convertToObject', async () => {
+			mockHttpClientGet.mockResolvedValueOnce(onePerson);
+			expect.assertions(4);
 
-			await getPersonById('someId');
+			await getRecordById(SupportedRecordType.Person, 'someId');
 
-			expect(mockConvertToObject).toHaveBeenCalledTimes(1);
-			expect(mockConvertToObject).toHaveBeenCalledWith(
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(1);
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
 				onePerson.record.data,
-				personMatcher
+				expect.any(String)
+			);
+
+			const anotherPerson = getDataListContainingFourPersons().dataList.data[2];
+			mockHttpClientGet.mockResolvedValueOnce(anotherPerson);
+
+			await getRecordById(SupportedRecordType.Person, 'someId');
+
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(2);
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
+				anotherPerson.record.data,
+				expect.any(String)
 			);
 		});
 
-		it('should resolve with a person if a person could be found', async () => {
-			const expectedPersons: Person[] = createMockPersons(1);
+		it('should pass recordType to convertToObject', async () => {
+			expect.assertions(4);
 
-			mockConvertToObject.mockReturnValueOnce(expectedPersons[0]);
+			await getRecordById(SupportedRecordType.Person, 'someId');
+
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(1);
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
+				expect.any(Object),
+				SupportedRecordType.Person
+			);
+
+			await getRecordById(SupportedRecordType.PersonDomainPart, 'someId');
+
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(2);
+			expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
+				expect.any(Object),
+				SupportedRecordType.PersonDomainPart
+			);
+		});
+
+		it('should resolve with an object of type T if one could be found', async () => {
+			const expectedPerson = createCompletePerson();
+
+			mockConvertToObjectWithRecordType.mockReturnValueOnce(expectedPerson);
 
 			expect.assertions(1);
 
-			const person: Person = await getPersonById('someId');
+			const person: Person = await getRecordById<Person>(
+				SupportedRecordType.Person,
+				'someId'
+			);
 
-			expect(person).toStrictEqual(expectedPersons[0]);
+			expect(person).toStrictEqual(expectedPerson);
+		});
+
+		it('should resolve with an object of type T if one could be found', async () => {
+			const expectedPersonDomainPart: PersonDomainPart = {
+				id: 'someId',
+				recordType: 'personDomainPart',
+			};
+
+			mockConvertToObjectWithRecordType.mockReturnValueOnce(
+				expectedPersonDomainPart
+			);
+
+			expect.assertions(1);
+
+			const returned: PersonDomainPart = await getRecordById<PersonDomainPart>(
+				SupportedRecordType.PersonDomainPart,
+				'someId'
+			);
+
+			expect(returned).toStrictEqual(expectedPersonDomainPart);
 		});
 	});
 });
-
-function createMockPersons(amount: number): Person[] {
-	const mockPersons: Person[] = [];
-	for (let index = 0; index < amount; index += 1) {
-		mockPersons.push({
-			id: `someId-${index}`,
-			authorisedName: {
-				familyName: `SomeFamilyName${index}`,
-				givenName: `SomeGivenName${index}`,
-			},
-			recordType: 'person',
-		});
-	}
-	return mockPersons;
-}
