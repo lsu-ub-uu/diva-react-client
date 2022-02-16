@@ -40,7 +40,9 @@ const PersonView = function ({ person }: { person: Person }) {
 			)}
 			{person.externalURLs !== undefined &&
 				person.externalURLs.map((link) => {
-					return <ExternalLink URL={link.URL} text={link.linkTitle} />;
+					return (
+						<ExternalLink key={link.URL} URL={link.URL} text={link.linkTitle} />
+					);
 				})}
 			<Identifiers person={person} />
 			{person.biographySwedish && (
