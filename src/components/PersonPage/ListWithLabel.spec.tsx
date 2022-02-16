@@ -4,10 +4,17 @@ import { render, screen } from '@testing-library/react';
 import ListWithLabel from './ListWithLabel';
 
 const defaultList = ['someElement', 'someOtherElement'];
+const listContainingEmptyStrings = ['', 'someElement', '', 'someOtherElement'];
 
 describe('ListWithLabel...', () => {
 	it('takes a list of strings and a label', () => {
 		render(<ListWithLabel list={defaultList} label="someLabel" />);
+	});
+
+	it('takes an optional boolean omitEmptyStrings', () => {
+		render(
+			<ListWithLabel list={defaultList} label="someLabel" omitEmptyStrings />
+		);
 	});
 
 	describe('the label', () => {
@@ -44,6 +51,38 @@ describe('ListWithLabel...', () => {
 
 	it('displays the list elements if the list is not empty', () => {
 		render(<ListWithLabel list={defaultList} label="someLabel" />);
+
+		const listItems = screen.getAllByRole('listitem');
+
+		expect(listItems).toHaveLength(2);
+
+		expect(listItems[0]).toHaveTextContent('someElement');
+		expect(listItems[1]).toHaveTextContent('someOtherElement');
+	});
+
+	it('displays empty strings if omitEmptyStrings has not been passed', () => {
+		render(
+			<ListWithLabel list={listContainingEmptyStrings} label="someLabel" />
+		);
+
+		const listItems = screen.getAllByRole('listitem');
+
+		expect(listItems).toHaveLength(4);
+
+		expect(listItems[0]).toHaveTextContent('');
+		expect(listItems[1]).toHaveTextContent('someElement');
+		expect(listItems[2]).toHaveTextContent('');
+		expect(listItems[3]).toHaveTextContent('someOtherElement');
+	});
+
+	it('does NOT display empty strings if omitEmptyStrings HAS been passed', () => {
+		render(
+			<ListWithLabel
+				list={listContainingEmptyStrings}
+				label="someLabel"
+				omitEmptyStrings
+			/>
+		);
 
 		const listItems = screen.getAllByRole('listitem');
 

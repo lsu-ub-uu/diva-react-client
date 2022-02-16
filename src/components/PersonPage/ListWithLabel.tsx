@@ -11,16 +11,27 @@ const StyledUl = styled.ul`
 const ListWithLabel = function ({
 	list,
 	label,
+	omitEmptyStrings,
 }: {
 	list: string[];
 	label: string;
+	// eslint-disable-next-line react/require-default-props
+	omitEmptyStrings?: boolean;
 }) {
-	return list.length > 0 ? (
+	let listToDisplay = list;
+	if (omitEmptyStrings) {
+		listToDisplay = list.filter((element) => {
+			return element !== '';
+		});
+	}
+
+	return listToDisplay.length > 0 ? (
 		<>
 			{label !== '' && <b>{label}:</b>}
 			<StyledUl>
-				{list.map((id) => (
-					<li key={id}>{id}</li>
+				{listToDisplay.map((text, key) => (
+					// eslint-disable-next-line react/no-array-index-key
+					<li key={`${key}-${text}`}>{text}</li>
 				))}
 			</StyledUl>
 		</>
