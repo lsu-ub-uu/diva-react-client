@@ -12,8 +12,6 @@ const PersonView = function ({ person }: { person: Person }) {
 		});
 	}
 
-	console.log(person);
-
 	return (
 		<>
 			<h1>{displayName(person)}</h1>
