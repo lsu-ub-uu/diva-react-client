@@ -26,16 +26,16 @@ const ExternalURLMatcher: Matcher = [
 
 const OtherAffiliationMatcher: Matcher = [
 	{
-		propertyName: 'affiliation',
+		propertyName: 'name',
 		nameInDataPath: 'affiliation',
 		required: true,
 	},
 	{
-		propertyName: 'affiliationFromYear',
+		propertyName: 'fromYear',
 		nameInDataPath: 'affiliationFromYear',
 	},
 	{
-		propertyName: 'affiliationUntilYear',
+		propertyName: 'untilYear',
 		nameInDataPath: 'affiliationUntilYear',
 	},
 ];

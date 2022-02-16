@@ -197,4 +197,108 @@ describe('PersonView', () => {
 			expect(screen.queryByText(biographySwedish)).toBeInTheDocument();
 		});
 	});
+
+	describe('Other affiliation', () => {
+		it('should not display affiliation if it is not set', () => {
+			render(<PersonView person={createMinimumPersonWithIdAndName()} />);
+			expect(screen.queryByTestId('otherAffiliation')).not.toBeInTheDocument();
+		});
+		it('should display affiliation if it is set', () => {
+			const person = createCompletePerson();
+			const { rerender } = render(<PersonView person={person} />);
+
+			expect(screen.getByText(/SomeOtherAffiliation/)).toBeInTheDocument();
+
+			const person2 = createMinimumPersonWithIdAndName();
+			person2.otherAffiliation = {
+				name: 'SomeDifferentAffiliation',
+			};
+			rerender(<PersonView person={person2} />);
+
+			expect(
+				screen.queryByText(/SomeOtherAffiliation/)
+			).not.toBeInTheDocument();
+
+			expect(screen.getByText(/SomeDifferentAffiliation/)).toBeInTheDocument();
+		});
+
+		it('should display affiliation years if they are set', () => {
+			const person = createCompletePerson();
+			const { rerender } = render(<PersonView person={person} />);
+
+			expect(screen.getByText(/ \(2000 - 2001\)/)).toBeInTheDocument();
+
+			const person2 = createMinimumPersonWithIdAndName();
+
+			person2.otherAffiliation = {
+				name: 'SomeDifferentAffiliation',
+				fromYear: '3000',
+				untilYear: '4000',
+			};
+			rerender(<PersonView person={person2} />);
+
+			expect(screen.queryByText(/ \(2000 - 2001\)/)).not.toBeInTheDocument();
+
+			expect(screen.getByText(/ \(3000 - 4000\)/)).toBeInTheDocument();
+		});
+
+		it('should not display affiliationYears if they are not set', () => {
+			const person = createMinimumPersonWithIdAndName();
+			person.otherAffiliation = {
+				name: 'SomeAffiliation',
+			};
+			const { rerender } = render(<PersonView person={person} />);
+
+			expect(screen.queryByText(/ \( - \)/)).not.toBeInTheDocument();
+
+			const person2 = createMinimumPersonWithIdAndName();
+
+			person2.otherAffiliation = {
+				name: 'SomeDifferentAffiliation',
+			};
+			rerender(<PersonView person={person2} />);
+
+			expect(screen.queryByText(/ \( - \)/)).not.toBeInTheDocument();
+		});
+
+		it('should display fromYear if it is set', () => {
+			const person = createMinimumPersonWithIdAndName();
+			person.otherAffiliation = {
+				name: 'SomeAffiliation',
+				fromYear: '1999',
+			};
+			const { rerender } = render(<PersonView person={person} />);
+
+			expect(screen.getByText(/ \(1999 - \)/)).toBeInTheDocument();
+
+			const person2 = createMinimumPersonWithIdAndName();
+			person2.otherAffiliation = {
+				name: 'SomeAffiliation',
+				fromYear: '1234',
+			};
+			rerender(<PersonView person={person2} />);
+
+			expect(screen.getByText(/ \(1234 - \)/)).toBeInTheDocument();
+		});
+
+		it('should display untilYear if it is set', () => {
+			const person = createMinimumPersonWithIdAndName();
+			person.otherAffiliation = {
+				name: 'SomeAffiliation',
+				untilYear: '1999',
+			};
+			const { rerender } = render(<PersonView person={person} />);
+
+			expect(screen.getByText(/ \( - 1999\)/)).toBeInTheDocument();
+
+			const person2 = createMinimumPersonWithIdAndName();
+			person2.otherAffiliation = {
+				name: 'SomeAffiliation',
+				untilYear: '1234',
+			};
+			rerender(<PersonView person={person2} />);
+
+			expect(screen.getByText(/ \( - 1234\)/)).toBeInTheDocument();
+		});
+	});
 });

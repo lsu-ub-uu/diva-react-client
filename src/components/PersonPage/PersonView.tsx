@@ -12,6 +12,23 @@ const PersonView = function ({ person }: { person: Person }) {
 		});
 	}
 
+	const possiblyGetOtherAffiliationText = () => {
+		if (person.otherAffiliation === undefined) {
+			return undefined;
+		}
+		const affiliation = person.otherAffiliation;
+
+		let otherAffiliationText = person.otherAffiliation.name;
+
+		if (affiliation.fromYear || affiliation.untilYear) {
+			otherAffiliationText += ` (${displayYear(
+				affiliation.fromYear
+			)} - ${displayYear(affiliation.untilYear)})`;
+		}
+
+		return otherAffiliationText;
+	};
+
 	return (
 		<>
 			<h1>{displayName(person)}</h1>
@@ -32,12 +49,21 @@ const PersonView = function ({ person }: { person: Person }) {
 					<p>{person.biographySwedish}</p>
 				</div>
 			)}
+			{possiblyGetOtherAffiliationText() && (
+				<div data-testid="otherAffiliation">
+					{possiblyGetOtherAffiliationText()}
+				</div>
+			)}
 		</>
 	);
 };
 
 const displayName = (person: Person) => {
 	return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
+};
+
+const displayYear = (year: string | undefined) => {
+	return year !== undefined ? year : '';
 };
 
 export default PersonView;

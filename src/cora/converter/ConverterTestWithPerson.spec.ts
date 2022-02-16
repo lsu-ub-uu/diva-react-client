@@ -47,9 +47,9 @@ const expectedPerson: Person = {
 		},
 	],
 	otherAffiliation: {
-		affiliation: 'Någon högskola',
-		affiliationFromYear: '1998',
-		affiliationUntilYear: '2000',
+		name: 'Någon högskola',
+		fromYear: '1998',
+		untilYear: '2000',
 	},
 	orcids: ['someOrcid', 'someOtherOrcid'],
 	viafIDs: ['someViafId', 'someOtherViafId'],

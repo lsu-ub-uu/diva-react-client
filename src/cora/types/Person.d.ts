@@ -28,9 +28,9 @@ export interface Person extends Record {
 	externalURLs?: ExternalUrl[];
 
 	otherAffiliation?: {
-		affiliation: string;
-		affiliationFromYear: string;
-		affiliationUntilYear: string;
+		name: string;
+		fromYear?: string;
+		untilYear?: string;
 	};
 
 	orcids?: string[];

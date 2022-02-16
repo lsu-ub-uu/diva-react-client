@@ -65,6 +65,12 @@ export const createCompletePerson = () => {
 
 	completePerson.biographySwedish = 'A nice biography<br/> foobar';
 
+	completePerson.otherAffiliation = {
+		name: 'SomeOtherAffiliation',
+		fromYear: '2000',
+		untilYear: '2001',
+	};
+
 	return completePerson;
 };
 
