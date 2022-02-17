@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Main = styled.div`
+const Main = styled.main`
 	grid-area: main;
 `;
 

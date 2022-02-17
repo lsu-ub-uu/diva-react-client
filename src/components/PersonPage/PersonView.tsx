@@ -10,13 +10,17 @@ const StyledPersonView = styled.div`
 	grid-template-rows: auto;
 	grid-template-areas:
 		'top top top top top'
-		'left left left right right'
+		'left left left left right'
 		'main main main main main';
-	row-gap: 1em;
+	row-gap: 1.3em;
 `;
 
 const Top = styled.div`
 	grid-area: top;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto;
+	row-gap: 0.2em;
 `;
 
 const Left = styled.div`
@@ -29,6 +33,10 @@ const Right = styled.div`
 
 const Main = styled.div`
 	grid-area: main;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto;
+	row-gap: 1em;
 `;
 
 const PersonView = function ({ person }: { person: Person }) {
@@ -54,7 +62,7 @@ const PersonView = function ({ person }: { person: Person }) {
 			<Top>
 				<h1>{displayName(person)}</h1>
 				{person.academicTitle !== undefined && person.academicTitle !== '' && (
-					<section data-testid="personTitle">{person.academicTitle}</section>
+					<p data-testid="personTitle">{person.academicTitle}</p>
 				)}
 			</Top>
 			<Left>

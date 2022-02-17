@@ -26,7 +26,29 @@ const GlobalStyle = createGlobalStyle`
   a:focus, button:focus, input[type=submit]:focus, input[type=checkbox]:focus, [tabindex]:focus,.card:focus {
     outline:2px solid ${(props) => props.theme.primary};
     outline-offset:0.25em;
-}
+  }
+
+  a {
+    color: ${(props) => props.theme.primary};
+    text-decoration: none;
+  
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  a:visited {
+    color: ${(props) => props.theme.primaryAccent};
+    text-decoration: none;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
 
 `;
 
