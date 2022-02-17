@@ -3,9 +3,11 @@ import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
 import PersonPage from '.';
 import PersonView from './PersonView';
-import { personWithDomain } from '../../../testData/personObjectData';
+import {
+	createCompletePerson,
+	personWithDomain,
+} from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
-import { getRecordById } from '../../cora/api/api';
 import { RecordType } from '../../cora/types/Record';
 
 jest.mock('react-router-dom');
@@ -23,27 +25,17 @@ jest.mock('./PersonView', () => {
 	});
 });
 
-const createMinimalResult = (): {
-	result: {
-		hasData: boolean;
-		isError: boolean;
-		data?: any;
-		error?: Error;
+let Child: (props: any) => JSX.Element;
+
+const mockedRecordFetcher = jest.fn();
+jest.mock('../RecordFetcher', () => {
+	return function RFetcher(props: any) {
+		mockedRecordFetcher(props);
+		const { children } = props;
+		Child = children;
+		return null;
 	};
-	isLoading: boolean;
-	setApiParams: any;
-} => {
-	return {
-		result: {
-			hasData: false,
-			isError: false,
-			data: undefined,
-			error: undefined,
-		},
-		isLoading: true,
-		setApiParams: jest.fn(),
-	};
-};
+});
 
 beforeAll(() => {
 	mockUseApi.mockReturnValue({
@@ -54,55 +46,10 @@ beforeAll(() => {
 });
 
 describe('The Person component', () => {
-	it('should call hook with getRecordById', () => {
+	it('should render RecordFetcher with recordType RecordType.Person', () => {
 		render(<PersonPage />);
-		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(getRecordById, expect.any(Object));
-	});
-	it('should call hook with personId if personId exists', () => {
-		render(<PersonPage />);
-		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(
-			expect.any(Function),
-			expect.objectContaining({
-				recordType: expect.any(String),
-				id: 'someId',
-			})
-		);
 
-		useParams.mockReturnValueOnce({ personId: 'someOtherId' });
-		render(<PersonPage />);
-		expect(mockUseApi).toHaveBeenCalledTimes(2);
-		expect(mockUseApi).toHaveBeenCalledWith(
-			expect.any(Function),
-			expect.objectContaining({
-				recordType: expect.any(String),
-				id: 'someOtherId',
-			})
-		);
-	});
-
-	it('should call hook with empty string if personId does not exist', () => {
-		useParams.mockReturnValueOnce({});
-
-		render(<PersonPage />);
-		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(
-			expect.any(Function),
-			expect.objectContaining({
-				recordType: expect.any(String),
-				id: '',
-			})
-		);
-	});
-
-	it('should call hook with RecordType.person ', () => {
-		useParams.mockReturnValueOnce({});
-
-		render(<PersonPage />);
-		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(
-			expect.any(Function),
+		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				recordType: RecordType.Person,
 				id: expect.any(String),
@@ -110,61 +57,89 @@ describe('The Person component', () => {
 		);
 	});
 
-	it('should show loading if hook is loading', () => {
-		const toReturn = createMinimalResult();
-		toReturn.isLoading = true;
-		mockUseApi.mockReturnValue(toReturn);
+	it('should render RecordFetcher id from useParams', () => {
+		useParams.mockReturnValueOnce({ personId: 'someNiceId' });
 		render(<PersonPage />);
-		expect(screen.getByText(/Hämtar persondata.../i)).toBeInTheDocument();
+
+		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				recordType: expect.any(String),
+				id: 'someNiceId',
+			})
+		);
+
+		useParams.mockReturnValueOnce({ personId: 'someOtherId' });
+		render(<PersonPage />);
+
+		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				recordType: expect.any(String),
+				id: 'someOtherId',
+			})
+		);
 	});
 
-	it('should not show loading if hook is not loading', () => {
-		const toReturn = createMinimalResult();
-		toReturn.isLoading = false;
-		mockUseApi.mockReturnValue(toReturn);
+	it('should not render RecordFetcher if id from useParams is empty string or undefined', () => {
+		useParams.mockReturnValueOnce({ personId: '' });
 		render(<PersonPage />);
-		expect(screen.queryByText(/Hämtar persondata.../i)).not.toBeInTheDocument();
+
+		expect(mockedRecordFetcher).not.toHaveBeenCalled();
+
+		useParams.mockReturnValueOnce({});
+		render(<PersonPage />);
+
+		expect(mockedRecordFetcher).not.toHaveBeenCalled();
 	});
 
-	it('should show error message if hook returns error', () => {
-		const toReturn = createMinimalResult();
-		toReturn.result.error = new Error('Some Error from hook');
-		mockUseApi.mockReturnValue(toReturn);
-		render(<PersonPage />);
+	it('should render "Ange ID för att hämta person." if id from useParams is empty string or undefined', () => {
+		useParams.mockReturnValueOnce({ personId: '' });
+		const { rerender } = render(<PersonPage />);
+
 		expect(
-			screen.getByText(/Någonting gick fel: Some Error from hook/i)
+			screen.getByText(/Ange ID för att hämta person./)
+		).toBeInTheDocument();
+
+		useParams.mockReturnValueOnce({});
+		rerender(<PersonPage />);
+
+		expect(
+			screen.getByText(/Ange ID för att hämta person./)
 		).toBeInTheDocument();
 	});
 
-	it('should not show error message if hook does not return error', () => {
-		const toReturn = createMinimalResult();
-		mockUseApi.mockReturnValue(toReturn);
+	it('should not render "Ange ID för att hämta person." if id from useParams is NOT empty string or undefined', () => {
+		useParams.mockReturnValueOnce({ personId: 'some' });
 		render(<PersonPage />);
+
 		expect(
-			screen.queryByText(/Någonting gick fel: Some Error from hook/i)
+			screen.queryByText(/Ange ID för att hämta person./)
 		).not.toBeInTheDocument();
 	});
 
-	it('should not call PersonView if no person returned', () => {
-		const toReturn = createMinimalResult();
-		mockUseApi.mockReturnValue(toReturn);
-
+	it('should render PersonView with person from RecordFetcher', () => {
 		render(<PersonPage />);
 
-		expect(PersonView).not.toHaveBeenCalled();
-	});
-
-	it('should call PersonView if hook returns person and hook not loading', () => {
-		const toReturn = createMinimalResult();
-		toReturn.result.data = personWithDomain;
-		mockUseApi.mockReturnValue(toReturn);
-
-		render(<PersonPage />);
+		render(<Child record={personWithDomain} />);
 
 		expect(PersonView).toHaveBeenCalledTimes(1);
 		expect(PersonView).toHaveBeenCalledWith(
 			expect.objectContaining({
 				person: personWithDomain,
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('should render PersonView with person from RecordFetcher 2', () => {
+		const person = createCompletePerson();
+		render(<PersonPage />);
+
+		render(<Child record={person} />);
+
+		expect(PersonView).toHaveBeenCalledTimes(1);
+		expect(PersonView).toHaveBeenCalledWith(
+			expect.objectContaining({
+				person,
 			}),
 			expect.any(Object)
 		);
