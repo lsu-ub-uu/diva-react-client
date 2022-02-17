@@ -1,0 +1,24 @@
+import React from 'react';
+import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
+import { RecordType } from '../../cora/types/Record';
+import RecordFetcher from '../RecordFetcher';
+import PersonDomainPartView from './PersonDomainPartView';
+
+const PersonDomainPartWrapper = function ({ id }: { id: string }) {
+	if (id === '') {
+		return <div />;
+	}
+
+	return (
+		<RecordFetcher<PersonDomainPart>
+			recordType={RecordType.PersonDomainPart}
+			id={id}
+		>
+			{(injectedProps) => (
+				<PersonDomainPartView personDomainPart={injectedProps.record} />
+			)}
+		</RecordFetcher>
+	);
+};
+
+export default PersonDomainPartWrapper;
