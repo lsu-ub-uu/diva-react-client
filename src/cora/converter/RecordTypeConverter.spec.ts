@@ -2,7 +2,7 @@ import { createMinimumPersonWithIdAndName } from '../../../testData/personObject
 import { DataGroup } from '../cora-data/CoraData';
 import { Person } from '../types/Person';
 import { PersonDomainPart } from '../types/PersonDomainPart';
-import SupportedRecordType from '../types/RecordTypes';
+import { RecordType } from '../types/Record';
 import convertToObject from './Converter';
 import getMatcherForRecordType from './definitions';
 import personMatcher from './definitions/PersonDefinitions';
@@ -34,10 +34,10 @@ beforeAll(() => {
 
 describe('RecordTypeConverter', () => {
 	it('takes dataGroup and recordType', () => {
-		convertToObjectWithRecordType(someDataGroup, SupportedRecordType.Person);
+		convertToObjectWithRecordType(someDataGroup, RecordType.Person);
 	});
 	it('passes dataGroup to convertToObject', () => {
-		convertToObjectWithRecordType(someDataGroup, SupportedRecordType.Person);
+		convertToObjectWithRecordType(someDataGroup, RecordType.Person);
 
 		expect(mockConvertToObject).toHaveBeenNthCalledWith(
 			1,
@@ -50,10 +50,7 @@ describe('RecordTypeConverter', () => {
 			children: [{ name: 'someOtherChild', value: 'someValue' }],
 		};
 
-		convertToObjectWithRecordType(
-			someOtherDataGroup,
-			SupportedRecordType.Person
-		);
+		convertToObjectWithRecordType(someOtherDataGroup, RecordType.Person);
 
 		expect(mockConvertToObject).toHaveBeenNthCalledWith(
 			2,
@@ -63,22 +60,19 @@ describe('RecordTypeConverter', () => {
 	});
 
 	it('calls getMatcherForRecordType with recordType', () => {
-		convertToObjectWithRecordType(someDataGroup, SupportedRecordType.Person);
+		convertToObjectWithRecordType(someDataGroup, RecordType.Person);
 		expect(mockGetMatcherForRecordType).toHaveBeenLastCalledWith(
-			SupportedRecordType.Person
+			RecordType.Person
 		);
-		convertToObjectWithRecordType(
-			someDataGroup,
-			SupportedRecordType.PersonDomainPart
-		);
+		convertToObjectWithRecordType(someDataGroup, RecordType.PersonDomainPart);
 		expect(mockGetMatcherForRecordType).toHaveBeenLastCalledWith(
-			SupportedRecordType.PersonDomainPart
+			RecordType.PersonDomainPart
 		);
 	});
 
 	it('calls convertToObject with matcher returned from getMatcherForRecordType', () => {
 		mockGetMatcherForRecordType.mockReturnValueOnce(personMatcher);
-		convertToObjectWithRecordType(someDataGroup, SupportedRecordType.Person);
+		convertToObjectWithRecordType(someDataGroup, RecordType.Person);
 
 		expect(mockConvertToObject).toHaveBeenLastCalledWith(
 			expect.any(Object),
@@ -86,10 +80,7 @@ describe('RecordTypeConverter', () => {
 		);
 
 		mockGetMatcherForRecordType.mockReturnValueOnce(personDomainPartMatcher);
-		convertToObjectWithRecordType(
-			someDataGroup,
-			SupportedRecordType.PersonDomainPart
-		);
+		convertToObjectWithRecordType(someDataGroup, RecordType.PersonDomainPart);
 
 		expect(mockConvertToObject).toHaveBeenLastCalledWith(
 			expect.any(Object),
@@ -100,7 +91,7 @@ describe('RecordTypeConverter', () => {
 	it('returns person if type was person', () => {
 		const person: Person = convertToObjectWithRecordType<Person>(
 			someDataGroup,
-			SupportedRecordType.Person
+			RecordType.Person
 		);
 
 		expect(person).toBeDefined();
@@ -110,7 +101,7 @@ describe('RecordTypeConverter', () => {
 		const person: PersonDomainPart =
 			convertToObjectWithRecordType<PersonDomainPart>(
 				someDataGroup,
-				SupportedRecordType.PersonDomainPart
+				RecordType.PersonDomainPart
 			);
 
 		expect(person).toBeDefined();

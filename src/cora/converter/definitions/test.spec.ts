@@ -1,19 +1,16 @@
 import getMatcherForRecordType from '.';
-import SupportedRecordType from '../../types/RecordTypes';
+import { RecordType } from '../../types/Record';
 import personMatcher from './PersonDefinitions';
 import personDomainPartMatcher from './PersonDomainPartDefinitions';
 
-const recordTypes = [
-	SupportedRecordType.Person,
-	SupportedRecordType.PersonDomainPart,
-];
+const recordTypes = [RecordType.Person, RecordType.PersonDomainPart];
 
 const matchers = [personMatcher, personDomainPartMatcher];
 
 describe('Definitions', () => {
 	describe('getMatcherForRecordType', () => {
 		it('takes recordType', () => {
-			getMatcherForRecordType(SupportedRecordType.Person);
+			getMatcherForRecordType(RecordType.Person);
 		});
 
 		it('returns correct matcher for recordType', () => {

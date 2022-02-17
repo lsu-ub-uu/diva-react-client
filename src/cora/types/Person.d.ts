@@ -1,4 +1,4 @@
-import { Record } from './GenericDefinitions';
+import { Record } from './Record';
 
 export type Name = {
 	familyName: string;

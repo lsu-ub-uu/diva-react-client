@@ -1,11 +1,11 @@
 import { DataGroup } from '../cora-data/CoraData';
-import SupportedRecordType from '../types/RecordTypes';
+import { RecordType } from '../types/Record';
 import convertToObject from './Converter';
 import getMatcherForRecordType from './definitions';
 
 const convertToObjectWithRecordType = <T>(
 	dataGroup: DataGroup,
-	recordType: SupportedRecordType
+	recordType: RecordType
 ): T => {
 	const matcher = getMatcherForRecordType(recordType);
 

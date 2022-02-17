@@ -1,6 +1,5 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { screen } from '@testing-library/react';
 import PersonSearch from '.';
 import {

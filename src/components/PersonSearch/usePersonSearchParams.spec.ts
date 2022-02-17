@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { useSearchParams } from 'react-router-dom';
 import usePersonSearchParams from './usePersonSearchParams';
