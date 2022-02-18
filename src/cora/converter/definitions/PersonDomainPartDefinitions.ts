@@ -1,5 +1,21 @@
 import { Matcher } from '../Converter';
 
+const AffiliationMatcher: Matcher = [
+	{
+		propertyName: 'name',
+		nameInDataPath: 'organisationLink/linkedRecordId',
+		required: true,
+	},
+	{
+		propertyName: 'fromYear',
+		nameInDataPath: 'affiliationFromYear',
+	},
+	{
+		propertyName: 'untilYear',
+		nameInDataPath: 'affiliationUntilYear',
+	},
+];
+
 const personDomainPartMatcher: Matcher = [
 	{
 		propertyName: 'id',
@@ -15,6 +31,12 @@ const personDomainPartMatcher: Matcher = [
 		propertyName: 'identifiers',
 		nameInDataPath: 'identifier',
 		multiple: true,
+	},
+	{
+		propertyName: 'affiliations',
+		nameInDataPath: 'affiliation',
+		multiple: true,
+		nextMatcher: AffiliationMatcher,
 	},
 ];
 
