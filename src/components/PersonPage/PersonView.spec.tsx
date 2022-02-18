@@ -7,6 +7,7 @@ import {
 } from '../../../testData/personObjectData';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
+import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import PersonView from './PersonView';
 
 const ComponentToTest = PersonView;
@@ -18,6 +19,12 @@ jest.mock('./Identifiers', () => {
 });
 
 jest.mock('./PersonalInfo', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./PersonDomainPartWrapper', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -226,5 +233,47 @@ describe('PersonView', () => {
 			}),
 			expect.any(Object)
 		);
+	});
+
+	describe('PersonDomainParts', () => {
+		it('should not render PersonDomainPartWrapper if there are no personDomainParts', () => {
+			render(<ComponentToTest person={personWithDomain} />);
+
+			expect(PersonDomainPartWrapper).not.toHaveBeenCalled();
+		});
+
+		it('should render PersonDomainPartWrapper for each of the personDomainParts', () => {
+			const person = createCompletePerson();
+			render(<ComponentToTest person={person} />);
+
+			expect(PersonDomainPartWrapper).toHaveBeenCalledTimes(3);
+		});
+
+		it('should render PersonDomainPartWrapper with each of the personDomainParts', () => {
+			const person = createCompletePerson();
+			render(<ComponentToTest person={person} />);
+
+			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					id: 'personDomainPart1',
+				}),
+				expect.any(Object)
+			);
+			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+				2,
+				expect.objectContaining({
+					id: 'personDomainPart2',
+				}),
+				expect.any(Object)
+			);
+			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+				3,
+				expect.objectContaining({
+					id: 'personDomainPart3',
+				}),
+				expect.any(Object)
+			);
+		});
 	});
 });

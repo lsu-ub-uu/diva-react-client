@@ -71,6 +71,18 @@ export const createCompletePerson = () => {
 		untilYear: '2001',
 	};
 
+	completePerson.personDomainParts = [
+		{
+			recordId: 'personDomainPart1',
+		},
+		{
+			recordId: 'personDomainPart2',
+		},
+		{
+			recordId: 'personDomainPart3',
+		},
+	];
+
 	return completePerson;
 };
 

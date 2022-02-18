@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Person } from '../../cora/types/Person';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
+import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -83,6 +84,12 @@ const PersonView = function ({ person }: { person: Person }) {
 						{possiblyGetOtherAffiliationText()}
 					</div>
 				)}
+				{person.personDomainParts !== undefined &&
+					person.personDomainParts.map((part) => {
+						return (
+							<PersonDomainPartWrapper key={part.recordId} id={part.recordId} />
+						);
+					})}
 			</Main>
 		</StyledPersonView>
 	);
