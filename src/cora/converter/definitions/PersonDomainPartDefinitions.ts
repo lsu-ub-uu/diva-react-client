@@ -2,7 +2,7 @@ import { Matcher } from '../Converter';
 
 const AffiliationMatcher: Matcher = [
 	{
-		propertyName: 'name',
+		propertyName: 'id',
 		nameInDataPath: 'organisationLink/linkedRecordId',
 		required: true,
 	},

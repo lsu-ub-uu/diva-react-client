@@ -3,8 +3,15 @@ import React from 'react';
 import PersonDomainPartView from './PersonDomainPartView';
 import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
 import ListWithLabel from './ListWithLabel';
+import OrganisationFetcher from '../OrganisationFetcher';
 
 jest.mock('./ListWithLabel', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('../OrganisationFetcher', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -25,6 +32,16 @@ const someOtherPersonDomainPart: PersonDomainPart = {
 	id: 'someOtherId',
 	recordType: 'personDomainPart',
 	identifiers: ['someOtherIdentifier'],
+};
+
+const somePersonDomainPartWithOrganisations: PersonDomainPart = {
+	id: 'someId',
+	recordType: 'personDomainPart',
+	affiliations: [
+		{ id: 'someOrganisationId' },
+		{ id: 'someOrganisationId2' },
+		{ id: 'someOrganisationId3' },
+	],
 };
 
 describe('PersonDomainPartView', () => {
@@ -83,5 +100,50 @@ describe('PersonDomainPartView', () => {
 			}),
 			expect.any(Object)
 		);
+	});
+
+	describe('Organisations', () => {
+		it('if there are no affiliations, should not call OrganisationFetcher', () => {
+			render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
+			expect(OrganisationFetcher).not.toHaveBeenCalled();
+		});
+
+		it('if there ARE affiliations, should call OrganisationFetcher for each organisation', () => {
+			render(
+				<PersonDomainPartView
+					personDomainPart={somePersonDomainPartWithOrganisations}
+				/>
+			);
+			expect(OrganisationFetcher).toHaveBeenCalledTimes(3);
+		});
+		it('if there ARE affiliations, should call OrganisationFetcher with each organisationId', () => {
+			render(
+				<PersonDomainPartView
+					personDomainPart={somePersonDomainPartWithOrganisations}
+				/>
+			);
+			expect(OrganisationFetcher).toHaveBeenCalledTimes(3);
+			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					id: 'someOrganisationId',
+				}),
+				expect.any(Object)
+			);
+			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+				2,
+				expect.objectContaining({
+					id: 'someOrganisationId2',
+				}),
+				expect.any(Object)
+			);
+			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+				3,
+				expect.objectContaining({
+					id: 'someOrganisationId3',
+				}),
+				expect.any(Object)
+			);
+		});
 	});
 });

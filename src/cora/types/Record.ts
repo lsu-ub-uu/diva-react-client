@@ -6,4 +6,5 @@ export type Record = {
 export enum RecordType {
 	Person = 'person',
 	PersonDomainPart = 'personDomainPart',
+	Organisation = 'organisation',
 }
