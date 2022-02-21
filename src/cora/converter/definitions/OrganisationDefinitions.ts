@@ -17,8 +17,8 @@ const organisationMatcher: Matcher = [
 		required: true,
 	},
 	{
-		propertyName: 'alternativeName',
-		nameInDataPath: 'organisationAlternativeName/name',
+		propertyName: 'organisationType',
+		nameInDataPath: 'organisationType',
 		required: true,
 	},
 ];

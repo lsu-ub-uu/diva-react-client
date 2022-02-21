@@ -7,4 +7,7 @@ export enum RecordType {
 	Person = 'person',
 	PersonDomainPart = 'personDomainPart',
 	Organisation = 'organisation',
+	MetadataItemCollection = 'metadataItemCollection',
+	GenericCollectionItem = 'genericCollectionItem',
+	CoraText = 'coraText',
 }
