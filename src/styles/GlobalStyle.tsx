@@ -42,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
-  h1 {
+  h1, h2 {
     margin: 0;
   }
 

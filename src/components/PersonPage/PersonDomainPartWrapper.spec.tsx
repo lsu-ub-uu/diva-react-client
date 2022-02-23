@@ -31,12 +31,14 @@ const somePersonDomainPart: PersonDomainPart = {
 	id: 'someId',
 	recordType: 'personDomainPart',
 	identifiers: ['someIdentifier'],
+	domain: 'someDomain',
 };
 
 const someOtherPersonDomainPart: PersonDomainPart = {
 	id: 'someOtherId',
 	recordType: 'personDomainPart',
 	identifiers: ['someOtherIdentifier'],
+	domain: 'someOtherDomain',
 };
 
 beforeAll(() => {

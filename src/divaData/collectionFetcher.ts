@@ -1,10 +1,10 @@
-import { getRecordById } from '../api/api';
+import { getRecordById } from '../cora/api/api';
 import {
 	GenericCollectionItem,
 	MetadataItemCollection,
-} from '../types/Collection';
-import { CoraText } from '../types/CoraText';
-import { RecordType } from '../types/Record';
+} from '../cora/types/Collection';
+import { CoraText } from '../cora/types/CoraText';
+import { RecordType } from '../cora/types/Record';
 
 const fetchCollection = async (id: string) => {
 	const miCollection = await getRecordById<MetadataItemCollection>(
@@ -35,12 +35,6 @@ const fetchCollection = async (id: string) => {
 	);
 
 	return collection;
-};
-
-export const fetchCollectionItem = async (
-	id: string
-): Promise<GenericCollectionItem> => {
-	return getRecordById(RecordType.GenericCollectionItem, id);
 };
 
 export default fetchCollection;

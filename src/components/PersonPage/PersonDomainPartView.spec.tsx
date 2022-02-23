@@ -4,6 +4,12 @@ import PersonDomainPartView from './PersonDomainPartView';
 import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
 import ListWithLabel from './ListWithLabel';
 import OrganisationFetcher from '../OrganisationFetcher';
+import getDomainCollection from '../../divaData/collections';
+
+jest.mock('../../divaData/collections');
+const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
+	typeof getDomainCollection
+>;
 
 jest.mock('./ListWithLabel', () => {
 	return jest.fn(() => {
@@ -20,18 +26,21 @@ jest.mock('../OrganisationFetcher', () => {
 const someBarePersonDomainPart: PersonDomainPart = {
 	id: 'someId',
 	recordType: 'personDomainPart',
+	domain: 'someDomainId',
 };
 
 const somePersonDomainPart: PersonDomainPart = {
 	id: 'someId',
 	recordType: 'personDomainPart',
 	identifiers: ['someIdentifier'],
+	domain: 'someDomainId',
 };
 
 const someOtherPersonDomainPart: PersonDomainPart = {
 	id: 'someOtherId',
 	recordType: 'personDomainPart',
 	identifiers: ['someOtherIdentifier'],
+	domain: 'someOtherDomainId',
 };
 
 const somePersonDomainPartWithOrganisations: PersonDomainPart = {
@@ -42,21 +51,48 @@ const somePersonDomainPartWithOrganisations: PersonDomainPart = {
 		{ id: 'someOrganisationId2' },
 		{ id: 'someOrganisationId3' },
 	],
+	domain: 'someId',
 };
+
+beforeAll(() => {
+	const someDomainCollection = new Map();
+	someDomainCollection.set('someDomainId', 'Some university');
+	someDomainCollection.set('someOtherDomainId', 'Some other university');
+	mockGetDomainCollection.mockReturnValue(someDomainCollection);
+});
 
 describe('PersonDomainPartView', () => {
 	it('should take a personDomainPart', () => {
 		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
 	});
-	it('should render "personDomainPart:id"', () => {
+
+	it('should render domain name from getDomainCollection', () => {
 		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
 
-		expect(screen.getByText(/PersonDomainPart: someId/));
+		expect(getDomainCollection).toHaveBeenCalledTimes(1);
+		expectHeadingWithText('Some university');
+
 		render(
 			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
 		);
 
-		expect(screen.getByText(/PersonDomainPart: someOtherId/));
+		expectHeadingWithText('Some other university');
+	});
+
+	it('should render "Domän: domainId" if domain ID not in domainCollection', () => {
+		mockGetDomainCollection.mockReturnValueOnce(new Map());
+		const { rerender } = render(
+			<PersonDomainPartView personDomainPart={somePersonDomainPart} />
+		);
+
+		expect(getDomainCollection).toHaveBeenCalledTimes(1);
+		expectHeadingWithText('DomänId: someDomainId');
+
+		mockGetDomainCollection.mockReturnValueOnce(new Map());
+		rerender(
+			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
+		);
+		expectHeadingWithText('DomänId: someOtherDomainId');
 	});
 
 	it('should NOT call ListWithLabel with identifiers if identifiers undefined', () => {
@@ -147,3 +183,7 @@ describe('PersonDomainPartView', () => {
 		});
 	});
 });
+
+function expectHeadingWithText(name: string) {
+	expect(screen.getByRole('heading', { name })).toBeInTheDocument();
+}

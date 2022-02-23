@@ -5,7 +5,8 @@
 		"jest": true
 	},
 	"globals": {
-		"JSX": true
+		"JSX": true,
+		"NodeJS": true
 	},
 	"extends": [
 		"plugin:react/recommended",

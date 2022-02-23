@@ -34,6 +34,7 @@ const someObject: Organisation = {
 	recordType: 'organisation',
 	name: 'someOrganisationName',
 	alternativeName: 'someAlternativeOrganisationName',
+	organisationType: 'subOrgansation',
 };
 
 const someOtherObject: Organisation = {
@@ -41,6 +42,7 @@ const someOtherObject: Organisation = {
 	recordType: 'organisation',
 	name: 'someOtherOrganisationName',
 	alternativeName: 'someOtherAlternatieOrganisationName',
+	organisationType: 'subOrgansation',
 };
 
 beforeAll(() => {

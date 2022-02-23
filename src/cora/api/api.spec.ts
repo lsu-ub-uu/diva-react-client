@@ -183,6 +183,7 @@ describe('Api', () => {
 			const expectedPersonDomainPart: PersonDomainPart = {
 				id: 'someId',
 				recordType: 'personDomainPart',
+				domain: 'someDomain',
 			};
 
 			mockConvertToObjectWithRecordType.mockReturnValueOnce(

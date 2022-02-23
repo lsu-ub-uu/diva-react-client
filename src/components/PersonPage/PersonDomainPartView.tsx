@@ -1,5 +1,6 @@
 import React from 'react';
 import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
+import getDomainCollection from '../../divaData/collections';
 import OrganisationFetcher from '../OrganisationFetcher';
 import ListWithLabel from './ListWithLabel';
 
@@ -8,9 +9,15 @@ const PersonDomainPartView = function ({
 }: {
 	personDomainPart: PersonDomainPart;
 }) {
+	const domainCollection = getDomainCollection();
+
+	const title =
+		domainCollection.get(personDomainPart.domain) ||
+		`DomänId: ${personDomainPart.domain}`;
+
 	return (
 		<>
-			<p>PersonDomainPart: {personDomainPart.id}</p>
+			<h2>{title}</h2>
 			{personDomainPart.identifiers && (
 				<ListWithLabel
 					list={personDomainPart.identifiers}

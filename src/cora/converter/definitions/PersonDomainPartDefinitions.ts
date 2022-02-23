@@ -28,6 +28,11 @@ const personDomainPartMatcher: Matcher = [
 		required: true,
 	},
 	{
+		propertyName: 'domain',
+		nameInDataPath: 'recordInfo/domain',
+		required: true,
+	},
+	{
 		propertyName: 'identifiers',
 		nameInDataPath: 'identifier',
 		multiple: true,
