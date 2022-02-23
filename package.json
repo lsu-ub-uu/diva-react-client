@@ -55,7 +55,7 @@
 		"type-check": "tsc --noEmit",
 		"type-check:watch": "npm run type-check -- --watch",
 		"build": "npm run build:types && npm run build:js",
-		"build:prod": "npm run build:types && parcel build ./src/index.html --dist-dir ./dist --public-url '/'",
+		"build:prod": "npm run build:types && parcel build ./src/index.html --dist-dir ./dist --public-url $BASENAME",
 		"build:types": "tsc --emitDeclarationOnly",
 		"build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
 		"start": "parcel -p 3000 src/index.html",
