@@ -9,6 +9,8 @@ describe('collections', () => {
 		it('returns map', () => {
 			const map = getDomainCollection();
 
+			map.set('kth', 'Kungliga Tekniska Högskolan');
+
 			expect(map.get('kth')).toStrictEqual('Kungliga Tekniska Högskolan');
 		});
 	});
