@@ -96,6 +96,9 @@ const PersonView = function ({ person }: { person: Person }) {
 };
 
 const displayName = (person: Person) => {
+	if (person.authorisedName === undefined) {
+		return person.id;
+	}
 	return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
 };
 

@@ -5,6 +5,7 @@ import {
 	createMinimumPersonWithIdAndName,
 	personWithDomain,
 } from '../../../testData/personObjectData';
+import { Person } from '../../cora/types/Person';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
@@ -47,6 +48,37 @@ describe('PersonView', () => {
 		expect(
 			screen.getByRole('heading', { name: 'SomeLastName, SomeFirstName' })
 		).toBeInTheDocument();
+	});
+
+	it('if the person does not have an authorised name, display id', () => {
+		const somePersonWithoutName: Person = {
+			id: 'someId',
+			recordType: 'person',
+		};
+		const { rerender } = render(
+			<ComponentToTest person={somePersonWithoutName} />
+		);
+
+		expect(screen.getByRole('heading', { name: 'someId' })).toBeInTheDocument();
+
+		// renderWithRouter(<Card item={somePersonWithoutName} />);
+		// expect(
+		// 	screen.getByRole('link', { name: 'someId' })
+		// ).toBeInTheDocument();
+
+		const someOtherPersonWithoutName: Person = {
+			id: 'someOtherId',
+			recordType: 'person',
+		};
+		rerender(<ComponentToTest person={someOtherPersonWithoutName} />);
+		expect(
+			screen.getByRole('heading', { name: 'someOtherId' })
+		).toBeInTheDocument();
+
+		// renderWithRouter(<Card item={someOtherPersonWithoutName} />);
+		// expect(
+		// 	screen.getByRole('link', { name: 'someOtherId' })
+		// ).toBeInTheDocument();
 	});
 
 	describe('academicTitle', () => {
