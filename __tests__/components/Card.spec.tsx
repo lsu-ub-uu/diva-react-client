@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Card from '../../src/components/Card';
 import Listable from '../../src/cora/types/Listable';
 import { Person } from '../../src/cora/types/Person';
+import { renderWithRouter } from '../../test-utils';
 import { createPersonObject } from '../../testData/personObjectData';
 
 jest.mock('react-router-dom', () => ({
@@ -88,6 +89,26 @@ describe('The Card component', () => {
 				expect(links[0].textContent).toStrictEqual(
 					'someFamilyName, someLastName'
 				);
+			});
+
+			it('if the person does not have an authorised name, display id', () => {
+				const somePersonWithoutName: Person = {
+					id: 'someId',
+					recordType: 'person',
+				};
+				renderWithRouter(<Card item={somePersonWithoutName} />);
+				expect(
+					screen.getByRole('link', { name: 'someId' })
+				).toBeInTheDocument();
+
+				const someOtherPersonWithoutName: Person = {
+					id: 'someOtherId',
+					recordType: 'person',
+				};
+				renderWithRouter(<Card item={someOtherPersonWithoutName} />);
+				expect(
+					screen.getByRole('link', { name: 'someOtherId' })
+				).toBeInTheDocument();
 			});
 		});
 	});

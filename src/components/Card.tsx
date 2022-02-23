@@ -34,6 +34,9 @@ const Card = function ({ item }: Props) {
 const getPresentation = (item: Listable) => {
 	if (item.recordType === 'person') {
 		const person: Person = item as Person;
+		if (person.authorisedName === undefined) {
+			return person.id;
+		}
 		return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
 	}
 

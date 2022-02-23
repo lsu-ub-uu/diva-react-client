@@ -13,7 +13,7 @@ type ExternalUrl = {
 export interface Person extends Record {
 	domains?: string[];
 
-	authorisedName: Name;
+	authorisedName?: Name;
 
 	academicTitle?: string;
 
