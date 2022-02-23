@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fetchCollection from './collectionFetcher';
 import { serializeMap } from './mapHandler';
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fetchCollectionsWithBaseDir from './fetchCollections';
 
 jest.setTimeout(10000);
