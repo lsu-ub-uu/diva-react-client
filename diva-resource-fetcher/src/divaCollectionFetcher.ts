@@ -21,7 +21,7 @@ const fetchAndSaveCollection = async (
 				return serializeMap(map);
 			})
 			.then((stringifiedMap) => {
-				const stringToSave = `const ${collectionId} = '${stringifiedMap}'
+				const stringToSave = `const ${collectionId} = ${stringifiedMap}
 export default ${collectionId};
 `;
 

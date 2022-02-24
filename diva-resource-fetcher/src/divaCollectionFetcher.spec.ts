@@ -118,7 +118,7 @@ describe('divaCollectionFetcher', () => {
 			mockSerializeMap.mockReturnValueOnce(stringifiedMap);
 			await fetchAndSaveCollection('someCollectionId', 'somePathToFile');
 
-			const expectedString = `const someCollectionId = '${stringifiedMap}'
+			const expectedString = `const someCollectionId = ${stringifiedMap}
 export default someCollectionId;
 `;
 
@@ -130,7 +130,7 @@ export default someCollectionId;
 			mockSerializeMap.mockReturnValueOnce(stringifiedMap2);
 			await fetchAndSaveCollection('someOtherCollectionId', 'somePathToFile');
 
-			const expectedString2 = `const someOtherCollectionId = '${stringifiedMap2}'
+			const expectedString2 = `const someOtherCollectionId = ${stringifiedMap2}
 export default someOtherCollectionId;
 `;
 
