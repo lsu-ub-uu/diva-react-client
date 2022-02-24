@@ -61,11 +61,6 @@ describe('PersonView', () => {
 
 		expect(screen.getByRole('heading', { name: 'someId' })).toBeInTheDocument();
 
-		// renderWithRouter(<Card item={somePersonWithoutName} />);
-		// expect(
-		// 	screen.getByRole('link', { name: 'someId' })
-		// ).toBeInTheDocument();
-
 		const someOtherPersonWithoutName: Person = {
 			id: 'someOtherId',
 			recordType: 'person',
@@ -74,11 +69,6 @@ describe('PersonView', () => {
 		expect(
 			screen.getByRole('heading', { name: 'someOtherId' })
 		).toBeInTheDocument();
-
-		// renderWithRouter(<Card item={someOtherPersonWithoutName} />);
-		// expect(
-		// 	screen.getByRole('link', { name: 'someOtherId' })
-		// ).toBeInTheDocument();
 	});
 
 	describe('academicTitle', () => {
