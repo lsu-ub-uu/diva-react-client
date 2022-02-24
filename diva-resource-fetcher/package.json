@@ -5,6 +5,9 @@
 	"source": "src/index.ts",
 	"main": "dist/index.js",
 	"module": "dist/module.js",
+	"bin": {
+		"divaResourceFetcher": "bin/cli"
+	},
 	"scripts": {
 		"test": "jest --watch",
 		"build": "parcel build"
