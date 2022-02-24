@@ -5,25 +5,36 @@
 		"jest": true
 	},
 	"globals": {
+		"JSX": true,
 		"NodeJS": true
 	},
-	"extends": ["airbnb", "plugin:prettier/recommended", "prettier/prettier"],
+	"extends": [
+		"plugin:react/recommended",
+		"airbnb",
+		"plugin:prettier/recommended",
+		"prettier/prettier"
+	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
 		"ecmaVersion": 13,
 		"sourceType": "module"
 	},
-	"plugins": ["@typescript-eslint"],
+	"plugins": ["react", "@typescript-eslint", "html"],
 	"rules": {
 		"no-use-before-define": "off",
 		"@typescript-eslint/no-use-before-define": ["off"],
 		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": ["error"],
+		"react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
 		"import/extensions": [
 			"error",
 			"ignorePackages",
 			{
-				"ts": "never"
+				"ts": "never",
+				"tsx": "never"
 			}
 		],
 		"func-names": ["error", "as-needed"],
@@ -32,7 +43,7 @@
 	},
 	"overrides": [
 		{
-			"files": ["*.spec.ts", "*.test.ts"],
+			"files": ["*.spec.ts", "*.spec.tsx", "*.test.tsx", "*.test.ts"],
 			"rules": {
 				"import/no-extraneous-dependencies": "off"
 			}
