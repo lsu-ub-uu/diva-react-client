@@ -30,6 +30,7 @@
 		"@types/testing-library__jest-dom": "^5.14.2",
 		"@typescript-eslint/eslint-plugin": "^5.12.0",
 		"@typescript-eslint/parser": "^5.12.0",
+		"diva-resource-fetcher": "file:../diva-resource-fetcher",
 		"eslint": "^8.9.0",
 		"eslint-config-airbnb": "^19.0.4",
 		"eslint-config-prettier": "^8.4.0",
@@ -64,7 +65,7 @@
 		"coverage:dev": "jest --coverage /;exit 0",
 		"coverage:deploy": "jest --coverage",
 		"coverage:show": "firefox ~/workspace/diva-react-client/coverage/lcov-report/index.html",
-		"fetch-diva-lists": "tsc ./src/divaData/fetchCollections.ts"
+		"fetch-diva-resources": "npx divaResourceFetcher ./lists/"
 	},
 	"author": "Library Systems Unit - Uppsala University Library",
 	"license": "GPL-3.0"
