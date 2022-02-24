@@ -12,7 +12,7 @@ import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from '../PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
-import List from '../../cora/types/List';
+import {List} from 'diva-cora-ts-api-wrapper';
 
 jest.mock('./useSearchPersonsByNameSearch');
 const mockedTriggerSearchWithParams = jest.fn();

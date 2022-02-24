@@ -1,12 +1,10 @@
 import { render, screen } from '@testing-library/react';
+import { getRecordById, Person, RecordType } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import {
 	createCompletePerson,
 	personWithDomain,
 } from '../../testData/personObjectData';
-import { getRecordById } from '../cora/api/api';
-import { Person } from '../cora/types/Person';
-import { RecordType } from '../cora/types/Record';
 import useApi from '../hooks/useApi';
 import RecordFetcher from './RecordFetcher';
 

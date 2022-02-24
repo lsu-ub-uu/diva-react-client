@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Person } from '../cora/types/Person';
-import Listable from '../cora/types/Listable';
+import { Listable, Person } from 'diva-cora-ts-api-wrapper';
 
 const CardSection = styled.section`
 	box-shadow: ${(props) => props.theme.boxShadow};

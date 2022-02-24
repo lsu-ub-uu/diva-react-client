@@ -1,6 +1,6 @@
 import httpClient from '../http/HttpClient';
 import searchPersonsByNameSearch from './searchPersonByNameSearch';
-import List from '../../types/List';
+import { List } from '../../types/List';
 import convertToObject from '../../converter/Converter';
 import { personMatcher } from '../../converter/definitions/PersonDefinitions';
 import {

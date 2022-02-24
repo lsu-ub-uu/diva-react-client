@@ -1,6 +1,5 @@
+import { getRecordById, RecordType } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
-import { getRecordById } from '../cora/api/api';
-import { RecordType } from '../cora/types/Record';
 import useApi from '../hooks/useApi';
 
 type InjectedRecordProp<T> = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
+import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/collections';
 import OrganisationFetcher from '../OrganisationFetcher';
 import ListWithLabel from './ListWithLabel';

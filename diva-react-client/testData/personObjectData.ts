@@ -1,5 +1,4 @@
-import List from '../src/cora/types/List';
-import { Person } from '../src/cora/types/Person';
+import { List, Person } from 'diva-cora-ts-api-wrapper';
 
 export const personWithDomain: Person = {
 	id: '2',

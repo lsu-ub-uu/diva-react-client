@@ -1,5 +1,5 @@
+import { Listable } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
-import Listable from '../cora/types/Listable';
 import List from '../styles/List';
 import Card from './Card';
 

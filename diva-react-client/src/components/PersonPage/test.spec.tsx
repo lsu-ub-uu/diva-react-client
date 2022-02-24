@@ -8,7 +8,7 @@ import {
 	personWithDomain,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
-import { RecordType } from '../../cora/types/Record';
+import { RecordType } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<

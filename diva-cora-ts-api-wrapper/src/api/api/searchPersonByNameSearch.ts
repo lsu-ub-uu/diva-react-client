@@ -7,7 +7,7 @@ import {
 import { personMatcher } from '../../converter/definitions/PersonDefinitions';
 import httpClient from '../http/HttpClient';
 import { IHttpClientRequestParameters } from '../http/IHttpClient';
-import List from '../../types/List';
+import { List } from '../../types/List';
 import { Person } from '../../types/Person';
 
 const searchEndpoint = 'record/searchResult/';

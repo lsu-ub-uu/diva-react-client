@@ -1,5 +1,5 @@
 import React from 'react';
-import { Organisation } from '../../cora/types/Organisation';
+import { Organisation } from 'diva-cora-ts-api-wrapper';
 
 const OrganisationView = function ({
 	organisation,

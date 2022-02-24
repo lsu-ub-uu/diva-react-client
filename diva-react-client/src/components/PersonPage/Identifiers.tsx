@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Person } from '../../cora/types/Person';
+import { Person } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from './ListWithLabel';
 
 const StyledDiv = styled.div`

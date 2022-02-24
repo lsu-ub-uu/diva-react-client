@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import { Listable, Person } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import Card from '../../src/components/Card';
-import Listable from '../../src/cora/types/Listable';
-import { Person } from '../../src/cora/types/Person';
 import { renderWithRouter } from '../../test-utils';
 import { createPersonObject } from '../../testData/personObjectData';
 

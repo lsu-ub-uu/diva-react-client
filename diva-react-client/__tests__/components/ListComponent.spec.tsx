@@ -3,8 +3,7 @@ import { render } from '@testing-library/react';
 import ListComponent from '../../src/components/ListComponent';
 
 import CardList from '../../src/components/CardList';
-import List from '../../src/cora/types/List';
-import Listable from '../../src/cora/types/Listable';
+import { List, Listable } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);

@@ -6,7 +6,7 @@ import {
 	threePersonObjects,
 } from '../../testData/personObjectData';
 import Card from '../../src/components/Card';
-import { Person } from '../../src/cora/types/Person';
+import { Person } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('../../src/components/Card', () => {
 	return jest.fn(() => null);

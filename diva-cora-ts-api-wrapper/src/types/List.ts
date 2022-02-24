@@ -1,6 +1,6 @@
 import Listable from './Listable';
 
-class List {
+export class List {
 	fromNumber: number;
 
 	toNumber: number;
@@ -21,5 +21,3 @@ class List {
 		this.totalNumber = totalNumber;
 	}
 }
-
-export default List;

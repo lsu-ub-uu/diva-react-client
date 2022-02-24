@@ -1,6 +1,5 @@
 import React from 'react';
-import { PersonDomainPart } from '../../cora/types/PersonDomainPart';
-import { RecordType } from '../../cora/types/Record';
+import { PersonDomainPart, RecordType } from 'diva-cora-ts-api-wrapper';
 import RecordFetcher from '../RecordFetcher';
 import PersonDomainPartView from './PersonDomainPartView';
 

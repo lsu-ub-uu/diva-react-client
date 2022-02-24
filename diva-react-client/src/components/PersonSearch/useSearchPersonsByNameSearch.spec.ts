@@ -6,8 +6,7 @@ import {
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
-import List from '../../cora/types/List';
-import { searchPersonsByNameSearch } from '../../cora/api/api';
+import { List, searchPersonsByNameSearch } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;

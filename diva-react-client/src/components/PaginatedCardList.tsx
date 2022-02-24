@@ -1,6 +1,6 @@
+import { List } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import styled from 'styled-components';
-import List from '../cora/types/List';
 import CardList from './CardList';
 import PaginationComponent from './PaginationComponent';
 

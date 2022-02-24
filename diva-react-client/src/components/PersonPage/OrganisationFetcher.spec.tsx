@@ -1,9 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import useApi from '../../hooks/useApi';
-import { RecordType } from '../../cora/types/Record';
+import { RecordType, Organisation } from 'diva-cora-ts-api-wrapper';
 import OrganisationFetcher from '../OrganisationFetcher';
-import { Organisation } from '../../cora/types/Organisation';
 import OrganisationView from './OrganisationView';
 
 const ComponentToTest = OrganisationFetcher;

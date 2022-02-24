@@ -1,5 +1,5 @@
+import { List } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
-import List from '../cora/types/List';
 import CardList from './CardList';
 
 function ListComponent({ list }: { list: List }) {

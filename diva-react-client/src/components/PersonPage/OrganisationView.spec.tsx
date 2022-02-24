@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { Organisation } from '../../cora/types/Organisation';
+import { Organisation } from 'diva-cora-ts-api-wrapper';
 import OrganisationView from './OrganisationView';
 
 const someObject: Organisation = {

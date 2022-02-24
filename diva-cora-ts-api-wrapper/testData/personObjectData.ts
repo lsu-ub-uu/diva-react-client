@@ -1,4 +1,4 @@
-import List from '../src/types/List';
+import { List } from '../src/types/List';
 import { Person } from '../src/types/Person';
 
 export const personWithDomain: Person = {
