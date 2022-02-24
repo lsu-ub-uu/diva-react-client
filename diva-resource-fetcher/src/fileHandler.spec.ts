@@ -1,11 +1,6 @@
 import fs from 'fs/promises';
 import saveStringToFile from './fileHandler';
 
-// jest.mock('fs/promises', () => ({
-// 	...jest.requireActual('fs'),
-// 	writeFile: jest.fn(),
-// }));
-
 jest.mock('fs/promises');
 
 const mockWriteFile = fs.writeFile as jest.MockedFunction<typeof fs.writeFile>;
