@@ -64,7 +64,7 @@
 		"coverage": "npm run coverage:dev /; npm run coverage:show",
 		"coverage:dev": "jest --coverage /;exit 0",
 		"coverage:deploy": "jest --coverage",
-		"coverage:show": "firefox ~/workspace/diva-react-client/coverage/lcov-report/index.html",
+		"coverage:show": "firefox ~/workspace/diva-react-client/diva-react-client/coverage/lcov-report/index.html",
 		"fetch-diva-resources": "npx divaResourceFetcher ./lists/"
 	},
 	"author": "Library Systems Unit - Uppsala University Library",
