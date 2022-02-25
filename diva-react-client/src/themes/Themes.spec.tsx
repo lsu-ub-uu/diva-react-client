@@ -1,4 +1,4 @@
-import Themes, { AvailableThemes } from '../../src/themes/Themes';
+import Themes, { AvailableThemes } from './Themes';
 
 describe('The Themes module', () => {
 	it('contains a light theme', () => {

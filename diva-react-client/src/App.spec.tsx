@@ -2,12 +2,12 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Outlet } from 'react-router';
-import App from '../src/App';
-import NoMatch from '../src/components/NoMatch';
-import PersonPage from '../src/components/PersonPage';
+import App from './App';
+import NoMatch from './components/NoMatch';
+import PersonPage from './components/PersonPage';
 import { renderWithRouter } from '../test-utils';
-import PersonRoot from '../src/components/PersonRoot';
-import PersonSearch from '../src/components/PersonSearch';
+import PersonRoot from './components/PersonRoot';
+import PersonSearch from './components/PersonSearch';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (
