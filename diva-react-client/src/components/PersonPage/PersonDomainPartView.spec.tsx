@@ -1,10 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
+import {
+	Organisation,
+	PersonDomainPart,
+	RecordType,
+} from 'diva-cora-ts-api-wrapper';
 import PersonDomainPartView from './PersonDomainPartView';
 import ListWithLabel from './ListWithLabel';
-import OrganisationFetcher from '../OrganisationFetcher';
 import getDomainCollection from '../../divaData/collections';
+import AffiliationDisplay from './AffiliationDisplay';
 
 jest.mock('../../divaData/collections');
 const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
@@ -17,10 +21,22 @@ jest.mock('./ListWithLabel', () => {
 	});
 });
 
-jest.mock('../OrganisationFetcher', () => {
+jest.mock('./AffiliationDisplay', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
+});
+
+let Child: (props: any) => JSX.Element;
+
+const mockedRecordFetcher = jest.fn();
+jest.mock('../RecordFetcher', () => {
+	return function RFetcher(props: any) {
+		mockedRecordFetcher(props);
+		const { children } = props;
+		Child = children;
+		return null;
+	};
 });
 
 const someBarePersonDomainPart: PersonDomainPart = {
@@ -141,7 +157,7 @@ describe('PersonDomainPartView', () => {
 	describe('Organisations', () => {
 		it('if there are no affiliations, should not call OrganisationFetcher', () => {
 			render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
-			expect(OrganisationFetcher).not.toHaveBeenCalled();
+			expect(mockedRecordFetcher).not.toHaveBeenCalled();
 		});
 
 		it('if there ARE affiliations, should call OrganisationFetcher for each organisation', () => {
@@ -150,7 +166,7 @@ describe('PersonDomainPartView', () => {
 					personDomainPart={somePersonDomainPartWithOrganisations}
 				/>
 			);
-			expect(OrganisationFetcher).toHaveBeenCalledTimes(3);
+			expect(mockedRecordFetcher).toHaveBeenCalledTimes(3);
 		});
 		it('if there ARE affiliations, should call OrganisationFetcher with each organisationId', () => {
 			render(
@@ -158,25 +174,95 @@ describe('PersonDomainPartView', () => {
 					personDomainPart={somePersonDomainPartWithOrganisations}
 				/>
 			);
-			expect(OrganisationFetcher).toHaveBeenCalledTimes(3);
-			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+			expect(mockedRecordFetcher).toHaveBeenCalledTimes(3);
+			expect(mockedRecordFetcher).toHaveBeenNthCalledWith(
 				1,
 				expect.objectContaining({
 					id: 'someOrganisationId',
-				}),
-				expect.any(Object)
+					recordType: RecordType.Organisation,
+					children: expect.any(Function),
+				})
 			);
-			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+			expect(mockedRecordFetcher).toHaveBeenNthCalledWith(
 				2,
 				expect.objectContaining({
 					id: 'someOrganisationId2',
-				}),
-				expect.any(Object)
+					recordType: RecordType.Organisation,
+				})
 			);
-			expect(OrganisationFetcher).toHaveBeenNthCalledWith(
+			expect(mockedRecordFetcher).toHaveBeenNthCalledWith(
 				3,
 				expect.objectContaining({
 					id: 'someOrganisationId3',
+					recordType: RecordType.Organisation,
+				})
+			);
+		});
+		it('should pass AffiliationDisplay as child to RecordFetcher', () => {
+			const somePersonDomainPartWithOneAffiliation: PersonDomainPart = {
+				id: 'someId',
+				recordType: 'personDomainPart',
+				affiliations: [{ id: 'someOrganisationId' }],
+				domain: 'someId',
+			};
+			render(
+				<PersonDomainPartView
+					personDomainPart={somePersonDomainPartWithOneAffiliation}
+				/>
+			);
+
+			const someOrganisation: Organisation = {
+				name: 'someOrganisationName',
+				id: 'someId',
+				recordType: 'organisation',
+				organisationType: 'toporganisation',
+				alternativeName: '',
+			};
+
+			render(<Child record={someOrganisation} />);
+
+			expect(AffiliationDisplay).toHaveBeenCalledWith(
+				expect.objectContaining({
+					affiliation: {
+						name: 'someOrganisationName',
+						fromYear: undefined,
+						untilYear: undefined,
+					},
+				}),
+				expect.any(Object)
+			);
+
+			const someOtherPersonDomainPartWithOneAffiliation: PersonDomainPart = {
+				id: 'someId',
+				recordType: 'personDomainPart',
+				affiliations: [
+					{ id: 'someOrganisationId', fromYear: '1999', untilYear: '2002' },
+				],
+				domain: 'someId',
+			};
+			render(
+				<PersonDomainPartView
+					personDomainPart={someOtherPersonDomainPartWithOneAffiliation}
+				/>
+			);
+
+			const someOtherOrganisation: Organisation = {
+				name: 'someOtherOrganisationName',
+				id: 'someId',
+				recordType: 'organisation',
+				organisationType: 'toporganisation',
+				alternativeName: '',
+			};
+
+			render(<Child record={someOtherOrganisation} />);
+
+			expect(AffiliationDisplay).toHaveBeenCalledWith(
+				expect.objectContaining({
+					affiliation: {
+						name: 'someOtherOrganisationName',
+						fromYear: '1999',
+						untilYear: '2002',
+					},
 				}),
 				expect.any(Object)
 			);

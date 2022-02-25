@@ -1,8 +1,13 @@
 import React from 'react';
-import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
+import {
+	Organisation,
+	PersonDomainPart,
+	RecordType,
+} from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/collections';
-import OrganisationFetcher from '../OrganisationFetcher';
 import ListWithLabel from './ListWithLabel';
+import RecordFetcher from '../RecordFetcher';
+import AffiliationDisplay from './AffiliationDisplay';
 
 const PersonDomainPartView = function ({
 	personDomainPart,
@@ -27,7 +32,21 @@ const PersonDomainPartView = function ({
 			{personDomainPart.affiliations &&
 				personDomainPart.affiliations.map((organisation) => {
 					return (
-						<OrganisationFetcher key={organisation.id} id={organisation.id} />
+						<RecordFetcher<Organisation>
+							recordType={RecordType.Organisation}
+							id={organisation.id}
+							key={organisation.id}
+						>
+							{(injectedProps) => (
+								<AffiliationDisplay
+									affiliation={{
+										name: injectedProps.record.name,
+										fromYear: organisation.fromYear,
+										untilYear: organisation.untilYear,
+									}}
+								/>
+							)}
+						</RecordFetcher>
 					);
 				})}
 		</>
