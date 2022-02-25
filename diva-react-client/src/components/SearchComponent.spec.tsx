@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SearchComponent from '../../src/components/SearchComponent';
+import SearchComponent from './SearchComponent';
 
 const onValueChange = jest.fn();
 const onSubmit = jest.fn();

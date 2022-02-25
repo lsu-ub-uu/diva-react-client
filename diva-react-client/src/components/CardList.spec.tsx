@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Person } from 'diva-cora-ts-api-wrapper';
-import CardList from '../../src/components/CardList';
+import CardList from './CardList';
 import {
 	createPersonObject,
 	threePersonObjects,
 } from '../../testData/personObjectData';
-import Card from '../../src/components/Card';
+import Card from './Card';
 
 jest.mock('../../src/components/Card', () => {
 	return jest.fn(() => null);

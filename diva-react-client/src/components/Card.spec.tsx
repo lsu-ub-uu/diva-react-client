@@ -3,7 +3,7 @@ import { Listable, Person } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import Card from '../../src/components/Card';
+import Card from './Card';
 import { renderWithRouter } from '../../test-utils';
 import { createPersonObject } from '../../testData/personObjectData';
 

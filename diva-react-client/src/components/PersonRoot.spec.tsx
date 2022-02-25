@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { Outlet } from 'react-router';
-import PersonRoot from '../../src/components/PersonRoot';
+import PersonRoot from './PersonRoot';
 
 jest.mock('react-router', () => ({
 	Outlet: jest.fn(() => null),

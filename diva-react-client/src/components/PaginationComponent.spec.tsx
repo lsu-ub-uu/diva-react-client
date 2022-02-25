@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import PaginationComponent from '../../src/components/PaginationComponent';
-import usePagination from '../../src/hooks/usePagination';
+import PaginationComponent from './PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 const onPaginationUpdate = jest.fn();
 

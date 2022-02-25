@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import PaginatedCardList from '../../src/components/PaginatedCardList';
+import PaginatedCardList from './PaginatedCardList';
 import {
 	createListWithPersons,
 	personWithDomain,
 	threePersonObjects,
 } from '../../testData/personObjectData';
-import PaginationComponent from '../../src/components/PaginationComponent';
-import CardList from '../../src/components/CardList';
+import PaginationComponent from './PaginationComponent';
+import CardList from './CardList';
 
 jest.mock('../../src/components/PaginationComponent', () => {
 	return jest.fn(() => {
