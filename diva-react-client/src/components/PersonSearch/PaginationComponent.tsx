@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import usePagination from '../hooks/usePagination';
-import Button from '../styles/Button';
+import usePagination from '../../hooks/usePagination';
+import Button from '../../styles/Button';
 
 const Parent = styled.div`
 	display: grid;

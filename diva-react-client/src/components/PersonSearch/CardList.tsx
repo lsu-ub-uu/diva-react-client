@@ -1,6 +1,6 @@
 import { Listable } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
-import List from '../styles/List';
+import List from '../../styles/List';
 import Card from './Card';
 
 type Props = {

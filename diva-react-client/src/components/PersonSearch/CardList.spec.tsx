@@ -5,10 +5,10 @@ import CardList from './CardList';
 import {
 	createPersonObject,
 	threePersonObjects,
-} from '../../testData/personObjectData';
+} from '../../../testData/personObjectData';
 import Card from './Card';
 
-jest.mock('../../src/components/Card', () => {
+jest.mock('./Card', () => {
 	return jest.fn(() => null);
 });
 

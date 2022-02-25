@@ -4,8 +4,8 @@ import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import Card from './Card';
-import { renderWithRouter } from '../../test-utils';
-import { createPersonObject } from '../../testData/personObjectData';
+import { renderWithRouter } from '../../../test-utils';
+import { createPersonObject } from '../../../testData/personObjectData';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),

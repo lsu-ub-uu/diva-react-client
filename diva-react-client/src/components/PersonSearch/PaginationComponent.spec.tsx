@@ -3,11 +3,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import PaginationComponent from './PaginationComponent';
-import usePagination from '../hooks/usePagination';
+import usePagination from '../../hooks/usePagination';
 
 const onPaginationUpdate = jest.fn();
 
-jest.mock('../../src/hooks/usePagination');
+jest.mock('../../hooks/usePagination');
 const mockUsePagination = usePagination as jest.MockedFunction<
 	typeof usePagination
 >;

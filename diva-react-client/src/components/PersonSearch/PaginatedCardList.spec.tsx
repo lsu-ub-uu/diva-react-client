@@ -5,17 +5,17 @@ import {
 	createListWithPersons,
 	personWithDomain,
 	threePersonObjects,
-} from '../../testData/personObjectData';
+} from '../../../testData/personObjectData';
 import PaginationComponent from './PaginationComponent';
 import CardList from './CardList';
 
-jest.mock('../../src/components/PaginationComponent', () => {
+jest.mock('./PaginationComponent', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
 });
 
-jest.mock('../../src/components/CardList', () => {
+jest.mock('./CardList', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
