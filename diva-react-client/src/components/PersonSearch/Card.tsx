@@ -15,11 +15,8 @@ const CardSection = styled.section`
 
 	padding: 1em;
 `;
-type Props = {
-	item: Listable;
-};
 
-const Card = function ({ item }: Props) {
+const Card = function ({ item }: { item: Listable }) {
 	return (
 		<CardSection>
 			<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
