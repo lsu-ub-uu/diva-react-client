@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom';
-import useApi from '../../src/hooks/useApi';
+import useApi from './useApi';
 
 const mockApiToCall = jest.fn();
 

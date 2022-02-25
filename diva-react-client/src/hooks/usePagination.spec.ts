@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
-import usePagination from '../../src/hooks/usePagination';
+import usePagination from './usePagination';
 
 const defaultOnPaginationUpdate = jest.fn();
 
