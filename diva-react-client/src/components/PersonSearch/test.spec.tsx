@@ -225,7 +225,7 @@ describe('The PersonSearch component', () => {
 				expect(mockedSetSearchTerm).toHaveBeenCalledWith('someNewValue');
 			});
 
-			it('if onSubmit is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the searchTerm, start and rows from usePersonSearchParams', () => {
+			it('if onSubmit is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the searchTerm, start=1 and rows from usePersonSearchParams', () => {
 				mockReturnFromUsePersonSearchParams('someFooSearchTerm', 2, 3);
 
 				renderWithRouter(<PersonSearch />);
@@ -237,7 +237,7 @@ describe('The PersonSearch component', () => {
 				expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(1);
 				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
 					'someFooSearchTerm',
-					2,
+					1,
 					3
 				);
 
@@ -252,7 +252,7 @@ describe('The PersonSearch component', () => {
 				expect(mockedTriggerSearchWithParams).toHaveBeenCalledTimes(2);
 				expect(mockedTriggerSearchWithParams).toHaveBeenLastCalledWith(
 					'someNewSearchTerm',
-					500,
+					1,
 					1234
 				);
 			});

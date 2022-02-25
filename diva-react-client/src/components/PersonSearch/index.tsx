@@ -26,7 +26,9 @@ const PersonSearch = function () {
 	};
 
 	const onSubmit = () => {
-		triggerSearchWithParams(searchTerm, start, rows);
+		const newStart = 1;
+		setStart(newStart);
+		triggerSearchWithParams(searchTerm, newStart, rows);
 	};
 
 	const onRowUpdate = (newRows: number) => {
