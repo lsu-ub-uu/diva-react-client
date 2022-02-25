@@ -38,7 +38,7 @@ const Main = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
-	row-gap: 1em;
+	row-gap: 1.5em;
 `;
 
 const PersonView = function ({ person }: { person: Person }) {
@@ -63,15 +63,15 @@ const PersonView = function ({ person }: { person: Person }) {
 						<p>{person.biographySwedish}</p>
 					</section>
 				)}
-				{person.otherAffiliation !== undefined && (
-					<AffiliationDisplay affiliation={person.otherAffiliation} />
-				)}
 				{person.personDomainParts !== undefined &&
 					person.personDomainParts.map((part) => {
 						return (
 							<PersonDomainPartWrapper key={part.recordId} id={part.recordId} />
 						);
 					})}
+				{person.otherAffiliation !== undefined && (
+					<AffiliationDisplay affiliation={person.otherAffiliation} />
+				)}
 			</Main>
 		</StyledPersonView>
 	);

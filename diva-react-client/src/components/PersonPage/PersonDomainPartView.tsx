@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import {
 	Organisation,
 	PersonDomainPart,
@@ -8,6 +9,10 @@ import getDomainCollection from '../../divaData/collections';
 import ListWithLabel from './ListWithLabel';
 import RecordFetcher from '../RecordFetcher';
 import AffiliationDisplay from './AffiliationDisplay';
+
+const StyledUl = styled.ul`
+	padding-left: 1em;
+`;
 
 const PersonDomainPartView = function ({
 	personDomainPart,
@@ -29,26 +34,30 @@ const PersonDomainPartView = function ({
 					label="Lokal identifikator"
 				/>
 			)}
-			{personDomainPart.affiliations &&
-				personDomainPart.affiliations.map((organisation) => {
-					return (
-						<RecordFetcher<Organisation>
-							recordType={RecordType.Organisation}
-							id={organisation.id}
-							key={organisation.id}
-						>
-							{(injectedProps) => (
-								<AffiliationDisplay
-									affiliation={{
-										name: injectedProps.record.name,
-										fromYear: organisation.fromYear,
-										untilYear: organisation.untilYear,
-									}}
-								/>
-							)}
-						</RecordFetcher>
-					);
-				})}
+			{personDomainPart.affiliations && (
+				<StyledUl>
+					{personDomainPart.affiliations.map((organisation) => {
+						return (
+							<li key={organisation.id}>
+								<RecordFetcher<Organisation>
+									recordType={RecordType.Organisation}
+									id={organisation.id}
+								>
+									{(injectedProps) => (
+										<AffiliationDisplay
+											affiliation={{
+												name: injectedProps.record.name,
+												fromYear: organisation.fromYear,
+												untilYear: organisation.untilYear,
+											}}
+										/>
+									)}
+								</RecordFetcher>
+							</li>
+						);
+					})}
+				</StyledUl>
+			)}
 		</>
 	);
 };
