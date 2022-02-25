@@ -7,17 +7,14 @@
 	"globals": {
 		"NodeJS": true
 	},
-	"extends": [
-		"airbnb",
-		"plugin:prettier/recommended",
-		"prettier/prettier"
-	],
+	"extends": ["airbnb", "plugin:prettier/recommended", "prettier/prettier"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 13,
 		"sourceType": "module"
 	},
 	"plugins": ["@typescript-eslint"],
+	"ignorePatterns": ["dist/"],
 	"rules": {
 		"no-use-before-define": "off",
 		"@typescript-eslint/no-use-before-define": ["off"],
