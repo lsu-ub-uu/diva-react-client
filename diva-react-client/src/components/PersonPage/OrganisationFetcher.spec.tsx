@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import useApi from '../../hooks/useApi';
 import { RecordType, Organisation } from 'diva-cora-ts-api-wrapper';
+import useApi from '../../hooks/useApi';
 import OrganisationFetcher from '../OrganisationFetcher';
 import OrganisationView from './OrganisationView';
 

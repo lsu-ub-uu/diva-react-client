@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
+import { RecordType } from 'diva-cora-ts-api-wrapper';
 import PersonPage from '.';
 import PersonView from './PersonView';
 import {
@@ -8,7 +9,6 @@ import {
 	personWithDomain,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
-import { RecordType } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<

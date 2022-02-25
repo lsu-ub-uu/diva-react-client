@@ -1,7 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Person } from 'diva-cora-ts-api-wrapper';
-import { RecordType } from 'diva-cora-ts-api-wrapper';
+import { Person, RecordType } from 'diva-cora-ts-api-wrapper';
 import RecordFetcher from '../RecordFetcher';
 import PersonView from './PersonView';
 

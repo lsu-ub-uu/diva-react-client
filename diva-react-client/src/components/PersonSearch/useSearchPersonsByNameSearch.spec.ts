@@ -1,12 +1,12 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks/dom';
+import { List, searchPersonsByNameSearch } from 'diva-cora-ts-api-wrapper';
 import {
 	createListWithPersons,
 	threePersonObjects,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
-import { List, searchPersonsByNameSearch } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;

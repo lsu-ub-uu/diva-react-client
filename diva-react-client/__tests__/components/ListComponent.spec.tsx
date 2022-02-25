@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { List, Listable } from 'diva-cora-ts-api-wrapper';
 import ListComponent from '../../src/components/ListComponent';
 
 import CardList from '../../src/components/CardList';
-import { List, Listable } from 'diva-cora-ts-api-wrapper';
 
 jest.mock('../../src/components/CardList', () => {
 	return jest.fn(() => null);

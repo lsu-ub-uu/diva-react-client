@@ -4,6 +4,7 @@ import { Person } from 'diva-cora-ts-api-wrapper';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
+import AffiliationDisplay from './AffiliationDisplay';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -41,23 +42,6 @@ const Main = styled.div`
 `;
 
 const PersonView = function ({ person }: { person: Person }) {
-	const possiblyGetOtherAffiliationText = () => {
-		if (person.otherAffiliation === undefined) {
-			return undefined;
-		}
-		const affiliation = person.otherAffiliation;
-
-		let otherAffiliationText = person.otherAffiliation.name;
-
-		if (affiliation.fromYear || affiliation.untilYear) {
-			otherAffiliationText += ` (${displayYear(
-				affiliation.fromYear
-			)} - ${displayYear(affiliation.untilYear)})`;
-		}
-
-		return otherAffiliationText;
-	};
-
 	return (
 		<StyledPersonView>
 			<Top>
@@ -79,10 +63,8 @@ const PersonView = function ({ person }: { person: Person }) {
 						<p>{person.biographySwedish}</p>
 					</section>
 				)}
-				{possiblyGetOtherAffiliationText() && (
-					<div data-testid="otherAffiliation">
-						{possiblyGetOtherAffiliationText()}
-					</div>
+				{person.otherAffiliation !== undefined && (
+					<AffiliationDisplay affiliation={person.otherAffiliation} />
 				)}
 				{person.personDomainParts !== undefined &&
 					person.personDomainParts.map((part) => {
@@ -100,10 +82,6 @@ const displayName = (person: Person) => {
 		return person.id;
 	}
 	return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
-};
-
-const displayYear = (year: string | undefined) => {
-	return year !== undefined ? year : '';
 };
 
 export default PersonView;

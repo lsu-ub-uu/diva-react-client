@@ -1,6 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { screen } from '@testing-library/react';
+import { List } from 'diva-cora-ts-api-wrapper';
 import PersonSearch from '.';
 import {
 	createListWithPersons,
@@ -12,7 +13,6 @@ import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from '../PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
-import {List} from 'diva-cora-ts-api-wrapper';
 
 jest.mock('./useSearchPersonsByNameSearch');
 const mockedTriggerSearchWithParams = jest.fn();

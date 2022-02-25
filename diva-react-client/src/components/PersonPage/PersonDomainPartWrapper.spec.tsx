@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
+import { RecordType, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonDomainPartView from './PersonDomainPartView';
 import useApi from '../../hooks/useApi';
-import { RecordType, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 
 jest.mock('../../hooks/useApi');

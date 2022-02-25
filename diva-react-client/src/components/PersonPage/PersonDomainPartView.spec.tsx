@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import PersonDomainPartView from './PersonDomainPartView';
 import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
+import PersonDomainPartView from './PersonDomainPartView';
 import ListWithLabel from './ListWithLabel';
 import OrganisationFetcher from '../OrganisationFetcher';
 import getDomainCollection from '../../divaData/collections';

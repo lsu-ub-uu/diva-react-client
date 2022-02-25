@@ -1,15 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { Person } from 'diva-cora-ts-api-wrapper';
 import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
 	personWithDomain,
 } from '../../../testData/personObjectData';
-import { Person } from 'diva-cora-ts-api-wrapper';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import PersonView from './PersonView';
+import AffiliationDisplay from './AffiliationDisplay';
 
 const ComponentToTest = PersonView;
 
@@ -26,6 +27,12 @@ jest.mock('./PersonalInfo', () => {
 });
 
 jest.mock('./PersonDomainPartWrapper', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./AffiliationDisplay', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -142,106 +149,28 @@ describe('PersonView', () => {
 	});
 
 	describe('Other affiliation', () => {
-		it('should not display affiliation if it is not set', () => {
+		it('should not call AffiliationDisplay if otherAffiliation is NOT set', () => {
 			render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
-			expect(screen.queryByTestId('otherAffiliation')).not.toBeInTheDocument();
+			expect(AffiliationDisplay).not.toHaveBeenCalled();
 		});
-		it('should display affiliation if it is set', () => {
+
+		it('should call AffiliationDisplay if otherAffiliation IS set', () => {
 			const person = createCompletePerson();
-			const { rerender } = render(<ComponentToTest person={person} />);
+			render(<ComponentToTest person={person} />);
+			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
+				expect.objectContaining({ affiliation: person.otherAffiliation }),
+				expect.any(Object)
+			);
 
-			expect(screen.getByText(/SomeOtherAffiliation/)).toBeInTheDocument();
-
-			const person2 = createMinimumPersonWithIdAndName();
-			person2.otherAffiliation = {
-				name: 'SomeDifferentAffiliation',
+			const otherPerson = createMinimumPersonWithIdAndName();
+			otherPerson.otherAffiliation = {
+				name: 'someOtherAffiliation',
 			};
-			rerender(<ComponentToTest person={person2} />);
-
-			expect(
-				screen.queryByText(/SomeOtherAffiliation/)
-			).not.toBeInTheDocument();
-
-			expect(screen.getByText(/SomeDifferentAffiliation/)).toBeInTheDocument();
-		});
-
-		it('should display affiliation years if they are set', () => {
-			const person = createCompletePerson();
-			const { rerender } = render(<ComponentToTest person={person} />);
-
-			expect(screen.getByText(/ \(2000 - 2001\)/)).toBeInTheDocument();
-
-			const person2 = createMinimumPersonWithIdAndName();
-
-			person2.otherAffiliation = {
-				name: 'SomeDifferentAffiliation',
-				fromYear: '3000',
-				untilYear: '4000',
-			};
-			rerender(<ComponentToTest person={person2} />);
-
-			expect(screen.queryByText(/ \(2000 - 2001\)/)).not.toBeInTheDocument();
-
-			expect(screen.getByText(/ \(3000 - 4000\)/)).toBeInTheDocument();
-		});
-
-		it('should not display affiliationYears if they are not set', () => {
-			const person = createMinimumPersonWithIdAndName();
-			person.otherAffiliation = {
-				name: 'SomeAffiliation',
-			};
-			const { rerender } = render(<ComponentToTest person={person} />);
-
-			expect(screen.queryByText(/ \( - \)/)).not.toBeInTheDocument();
-
-			const person2 = createMinimumPersonWithIdAndName();
-
-			person2.otherAffiliation = {
-				name: 'SomeDifferentAffiliation',
-			};
-			rerender(<ComponentToTest person={person2} />);
-
-			expect(screen.queryByText(/ \( - \)/)).not.toBeInTheDocument();
-		});
-
-		it('should display fromYear if it is set', () => {
-			const person = createMinimumPersonWithIdAndName();
-			person.otherAffiliation = {
-				name: 'SomeAffiliation',
-				fromYear: '1999',
-			};
-			const { rerender } = render(<ComponentToTest person={person} />);
-
-			expect(screen.getByText(/ \(1999 - \)/)).toBeInTheDocument();
-
-			const person2 = createMinimumPersonWithIdAndName();
-			person2.otherAffiliation = {
-				name: 'SomeAffiliation',
-				fromYear: '1234',
-			};
-			rerender(<ComponentToTest person={person2} />);
-
-			expect(screen.getByText(/ \(1234 - \)/)).toBeInTheDocument();
-		});
-
-		it('should display untilYear if it is set', () => {
-			const person = createMinimumPersonWithIdAndName();
-			person.otherAffiliation = {
-				name: 'SomeAffiliation',
-				untilYear: '1999',
-			};
-			const { rerender } = render(<ComponentToTest person={person} />);
-
-			expect(screen.getByText(/ \( - 1999\)/)).toBeInTheDocument();
-
-			const person2 = createMinimumPersonWithIdAndName();
-			person2.otherAffiliation = {
-				name: 'SomeAffiliation',
-				untilYear: '1234',
-			};
-			rerender(<ComponentToTest person={person2} />);
-
-			expect(screen.getByText(/ \( - 1234\)/)).toBeInTheDocument();
+			render(<ComponentToTest person={otherPerson} />);
+			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
+				expect.objectContaining({ affiliation: otherPerson.otherAffiliation }),
+				expect.any(Object)
+			);
 		});
 	});
 
