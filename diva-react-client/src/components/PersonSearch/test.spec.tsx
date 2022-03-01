@@ -11,7 +11,7 @@ import {
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
 import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
-import PaginatedCardList from '../PaginatedCardList';
+import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
 
 jest.mock('./useSearchPersonsByNameSearch');
@@ -30,7 +30,7 @@ let searchComponentReceivedOnSubmit: () => void;
 let searchComponentReceivedOnValueChange: (val: string) => void;
 let searchComponentReceivedOnRowUpdate: (val: number) => void;
 
-jest.mock('../PaginatedCardList');
+jest.mock('./PaginatedCardList');
 const mockPaginatedCardList = PaginatedCardList as jest.MockedFunction<
 	typeof PaginatedCardList
 >;

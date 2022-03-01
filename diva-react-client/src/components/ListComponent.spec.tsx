@@ -2,10 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { List, Listable } from 'diva-cora-ts-api-wrapper';
 import ListComponent from './ListComponent';
+import CardList from './PersonSearch/CardList';
 
-import CardList from './CardList';
-
-jest.mock('../../src/components/CardList', () => {
+jest.mock('./PersonSearch/CardList', () => {
 	return jest.fn(() => null);
 });
 

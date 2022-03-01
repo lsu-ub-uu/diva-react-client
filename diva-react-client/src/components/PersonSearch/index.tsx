@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import PaginatedCardList from '../PaginatedCardList';
 import SearchComponent from '../SearchComponent';
+import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
 import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
 
