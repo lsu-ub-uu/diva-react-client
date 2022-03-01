@@ -117,13 +117,31 @@ describe('The HttpClient', () => {
 					url: 'someUrl',
 				};
 
-				expect.assertions(1);
+				expect.assertions(2);
 				try {
 					await httpClient.get(parameters);
 				} catch (error: unknown) {
 					const castError: Error = <Error>error;
 					expect(castError.message).toStrictEqual(
-						'The request was made but no response was received.'
+						"The request was made to URL 'someUrl' but no response was received."
+					);
+				}
+
+				mockedAxios.get.mockRejectedValueOnce({
+					request: 'XMLHttpRequest',
+					message: 'Some general error message',
+				});
+
+				const parameters2: IHttpClientRequestParameters = {
+					url: 'someOtherUrl',
+				};
+
+				try {
+					await httpClient.get(parameters2);
+				} catch (error: unknown) {
+					const castError: Error = <Error>error;
+					expect(castError.message).toStrictEqual(
+						"The request was made to URL 'someOtherUrl' but no response was received."
 					);
 				}
 			});

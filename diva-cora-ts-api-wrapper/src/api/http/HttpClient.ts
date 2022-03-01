@@ -23,7 +23,9 @@ class HttpClient implements IHttpClient {
 							);
 						} else if (axiosError.request) {
 							reject(
-								new Error('The request was made but no response was received.')
+								new Error(
+									`The request was made to URL '${url}' but no response was received.`
+								)
 							);
 						} else {
 							reject(new Error(axiosError.message));
