@@ -5,18 +5,19 @@ import Card from './Card';
 
 type Props = {
 	list: Listable[];
+	fromNumber: number;
 };
 
 const CardList = React.memo((props: Props) => {
-	const { list } = props;
+	const { list, fromNumber } = props;
 	if (!list.length) {
 		return <p>Inga träffar matchade sökningen.</p>;
 	}
 	return (
 		<List>
-			{list.map((item) => (
+			{list.map((item, index) => (
 				<li key={item.id}>
-					<Card item={item} />
+					<Card item={item} listItemNumber={index + fromNumber} />
 				</li>
 			))}
 		</List>

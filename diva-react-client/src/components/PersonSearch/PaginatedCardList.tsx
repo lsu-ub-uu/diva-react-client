@@ -29,7 +29,7 @@ const PaginatedCardList = function ({
 				totalNumber={list.totalNumber}
 				onPaginationUpdate={onPaginationUpdate}
 			/>
-			<CardList list={list.data} />
+			<CardList list={list.data} fromNumber={list.fromNumber} />
 		</Parent>
 	);
 };

@@ -27,17 +27,17 @@ const somePerson: Person = createPersonObject(
 );
 
 describe('The Card component', () => {
-	it('should take a Listable as a prop', () => {
+	it('should take a Listable and a listItemNumber as a prop', () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} />
+				<Card item={someListable} listItemNumber={1} />
 			</MemoryRouter>
 		);
 	});
 	it("should render the Listable's id", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} />
+				<Card item={someListable} listItemNumber={1} />
 			</MemoryRouter>
 		);
 		expect(screen.getAllByText(/someId/i)).toHaveLength(2);
@@ -48,7 +48,7 @@ describe('The Card component', () => {
 			it('show $recordType: $recordId', () => {
 				render(
 					<MemoryRouter>
-						<Card item={someListable} />
+						<Card item={someListable} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				expect(screen.getByText(/someRecordType: someId/i)).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe('The Card component', () => {
 			it("should render the Listable's presentation as Link", () => {
 				render(
 					<MemoryRouter>
-						<Card item={someListable} />
+						<Card item={someListable} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				const links = screen.getAllByRole('link');
@@ -69,7 +69,7 @@ describe('The Card component', () => {
 			it('show familyName, givenName', () => {
 				render(
 					<MemoryRouter>
-						<Card item={somePerson} />
+						<Card item={somePerson} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				expect(
@@ -80,7 +80,7 @@ describe('The Card component', () => {
 			it("should render the Listable's presentation as Link", () => {
 				render(
 					<MemoryRouter>
-						<Card item={somePerson} />
+						<Card item={somePerson} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				const links = screen.getAllByRole('link');
@@ -95,7 +95,9 @@ describe('The Card component', () => {
 					id: 'someId',
 					recordType: 'person',
 				};
-				renderWithRouter(<Card item={somePersonWithoutName} />);
+				renderWithRouter(
+					<Card item={somePersonWithoutName} listItemNumber={1} />
+				);
 				expect(
 					screen.getByRole('link', { name: 'someId' })
 				).toBeInTheDocument();
@@ -104,7 +106,9 @@ describe('The Card component', () => {
 					id: 'someOtherId',
 					recordType: 'person',
 				};
-				renderWithRouter(<Card item={someOtherPersonWithoutName} />);
+				renderWithRouter(
+					<Card item={someOtherPersonWithoutName} listItemNumber={1} />
+				);
 				expect(
 					screen.getByRole('link', { name: 'someOtherId' })
 				).toBeInTheDocument();
@@ -115,7 +119,7 @@ describe('The Card component', () => {
 	it("should pass the /recordType/id (from the Listable) to the Link's 'to'", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} />
+				<Card item={someListable} listItemNumber={1} />
 			</MemoryRouter>
 		);
 

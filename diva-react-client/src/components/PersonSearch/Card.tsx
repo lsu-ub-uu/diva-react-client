@@ -14,15 +14,40 @@ const CardSection = styled.section`
 	}
 
 	padding: 1em;
+
+	display: grid;
+
+	grid-template-columns: max-content auto max-content;
+
+	grid-template-areas:
+		'fromNumber title id'
+		'. . orcid'
+		'domain domain domain';
+	row-gap: 1em;
 `;
 
-const Card = function ({ item }: { item: Listable }) {
+const Title = styled.div`
+	grid-area: title;
+`;
+
+const Id = styled.p`
+	grid-area: id;
+`;
+
+const Domain = styled.p`
+	grid-area: domain;
+`;
+
+const Card = function ({ item }: { item: Listable; listItemNumber: number }) {
 	return (
 		<CardSection>
-			<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
-				{getPresentation(item)}
-			</Link>
-			<p className="gray">{item.id}</p>
+			<Title>
+				<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
+					{getPresentation(item)}
+				</Link>
+			</Title>
+			<Id className="gray">{item.id}</Id>
+			<Domain>Foo</Domain>
 		</CardSection>
 	);
 };

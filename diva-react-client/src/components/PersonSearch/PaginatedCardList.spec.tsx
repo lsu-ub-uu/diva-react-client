@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { List } from 'diva-cora-ts-api-wrapper';
 import PaginatedCardList from './PaginatedCardList';
 import {
 	createListWithPersons,
@@ -99,6 +100,7 @@ describe('PaginatedCardList', () => {
 		expect(CardList).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				list: someList.data,
+				fromNumber: expect.any(Number),
 			}),
 			expect.any(Object)
 		);
@@ -116,6 +118,45 @@ describe('PaginatedCardList', () => {
 		expect(CardList).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				list: someOtherList.data,
+				fromNumber: expect.any(Number),
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('should pass fromNumber to CardList', () => {
+		const someList = new List(threePersonObjects, 123, 43, 44);
+		const { rerender } = render(
+			<PaginatedCardList
+				list={someList}
+				onPaginationUpdate={defaultOnPaginationUpdate}
+				rows={10}
+			/>
+		);
+
+		expect(CardList).toHaveBeenCalledTimes(1);
+		expect(CardList).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				list: expect.any(Object),
+				fromNumber: 123,
+			}),
+			expect.any(Object)
+		);
+
+		const someOtherList = new List([personWithDomain], 454, 43, 44);
+		rerender(
+			<PaginatedCardList
+				list={someOtherList}
+				onPaginationUpdate={defaultOnPaginationUpdate}
+				rows={10}
+			/>
+		);
+
+		expect(CardList).toHaveBeenCalledTimes(2);
+		expect(CardList).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				list: expect.any(Object),
+				fromNumber: 454,
 			}),
 			expect.any(Object)
 		);
