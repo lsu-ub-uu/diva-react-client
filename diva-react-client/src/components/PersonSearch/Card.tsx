@@ -68,7 +68,6 @@ const Card = function ({
 				</Link>
 			</Title>
 			<Id className="gray">{item.id}</Id>
-			<Domain>Foo</Domain>
 			{possiblyShowOrcid(item)}
 			{possiblyShowDomains(item)}
 		</CardSection>
@@ -102,21 +101,23 @@ const possiblyShowOrcid = (item: Listable) => {
 };
 
 const possiblyShowDomains = (item: Listable) => {
-	const person = item as Person;
-	if (person.domains !== undefined && person.domains.length > 0) {
-		getDomainCollection();
+	if (isPerson(item)) {
+		const person = item as Person;
+		if (person.domains !== undefined && person.domains.length > 0) {
+			const domainCollection = getDomainCollection();
+			const domainNames = person.domains.map((domain) => {
+				return domainCollection.get(domain) || domain;
+			});
+
+			return (
+				<Domain>
+					<ListWithLabel list={domainNames} label="" omitEmptyStrings />
+				</Domain>
+			);
+		}
 	}
-	// if (isPerson(item)) {
-	// 	const person = item as Person;
-	// 	if (person.orcids && person.orcids.length > 0) {
-	// 		return (
-	// 			<Orcid>
-	// 				<ListWithLabel list={person.orcids} label="" omitEmptyStrings />
-	// 			</Orcid>
-	// 		);
-	// 	}
-	// }
-	// return null;
+
+	return null;
 };
 
 const isPerson = (item: Listable) => {

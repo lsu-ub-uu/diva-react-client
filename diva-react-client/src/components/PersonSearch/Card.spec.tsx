@@ -242,21 +242,102 @@ describe('The Card component', () => {
 
 				expect(mockGetDomainCollection).not.toHaveBeenCalled();
 			});
-			// it('if orcids are undefined, should not call ListWithLabel', () => {
-			// 	const person = createPersonObject();
+			it('if it has at least one domain, should call ListWithLabel with a list of domain names from domainCollection', () => {
+				const person = createPersonObject();
+				person.domains = ['someDomain', 'someOtherDomain'];
 
-			// 	renderWithRouter(<Card item={person} listItemNumber={1} />);
+				const domainCollection = new Map();
+				domainCollection.set('someDomain', 'someDomainValue');
+				domainCollection.set('someOtherDomain', 'someOtherDomainValue');
 
-			// 	expect(ListWithLabel).not.toHaveBeenCalled();
-			// });
-			// it('if orcids are empty, should not call ListWithLabel', () => {
-			// 	const person = createPersonObject();
-			// 	person.orcids = [];
+				mockGetDomainCollection.mockReturnValueOnce(domainCollection);
 
-			// 	renderWithRouter(<Card item={person} listItemNumber={1} />);
+				const { rerender } = renderWithRouter(
+					<Card item={person} listItemNumber={1} />
+				);
 
-			// 	expect(ListWithLabel).not.toHaveBeenCalled();
-			// });
+				expect(ListWithLabel).toHaveBeenCalledTimes(1);
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					1,
+					expect.objectContaining({
+						label: '',
+						omitEmptyStrings: true,
+						list: ['someDomainValue', 'someOtherDomainValue'],
+					}),
+					expect.any(Object)
+				);
+
+				const person2 = createPersonObject();
+				person2.domains = ['someDomain2', 'someOtherDomain2'];
+
+				const domainCollection2 = new Map();
+				domainCollection2.set('someDomain2', 'someDomainValue2');
+				domainCollection2.set('someOtherDomain2', 'someOtherDomainValue2');
+
+				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
+				rerender(<Card item={person2} listItemNumber={1} />);
+
+				expect(ListWithLabel).toHaveBeenCalledTimes(2);
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					2,
+					expect.objectContaining({
+						label: '',
+						omitEmptyStrings: true,
+						list: ['someDomainValue2', 'someOtherDomainValue2'],
+					}),
+					expect.any(Object)
+				);
+			});
+			it('if domainCollection does not contain domain key, pass domain key to ListWithLabels', () => {
+				const person = createPersonObject();
+				person.domains = ['someDomain', 'someOtherDomain'];
+
+				const domainCollection = new Map();
+				domainCollection.set('someDomain', 'someDomainValue');
+
+				mockGetDomainCollection.mockReturnValueOnce(domainCollection);
+
+				const { rerender } = renderWithRouter(
+					<Card item={person} listItemNumber={1} />
+				);
+
+				expect(ListWithLabel).toHaveBeenCalledTimes(1);
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					1,
+					expect.objectContaining({
+						label: '',
+						omitEmptyStrings: true,
+						list: ['someDomainValue', 'someOtherDomain'],
+					}),
+					expect.any(Object)
+				);
+
+				const person2 = createPersonObject();
+				person2.domains = ['someDomain2', 'someOtherDomain2'];
+
+				const domainCollection2 = new Map();
+
+				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
+				rerender(<Card item={person2} listItemNumber={1} />);
+
+				expect(ListWithLabel).toHaveBeenCalledTimes(2);
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					2,
+					expect.objectContaining({
+						label: '',
+						omitEmptyStrings: true,
+						list: ['someDomain2', 'someOtherDomain2'],
+					}),
+					expect.any(Object)
+				);
+			});
+		});
+		describe('if recordType is not "person"', () => {
+			it('it should not call ListWithLabel', () => {
+				renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+
+				expect(ListWithLabel).not.toHaveBeenCalled();
+			});
 		});
 	});
 });
