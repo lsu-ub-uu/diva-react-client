@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Listable, Person, RecordType } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from '../PersonPage/ListWithLabel';
 import getDomainCollection from '../../divaData/collections';
+import { getDisplayName } from '../../../tools/NameTools';
 
 const CardSection = styled.section`
 	box-shadow: ${(props) => props.theme.boxShadow};
@@ -83,7 +84,7 @@ const getPresentation = (item: Listable) => {
 		if (person.authorisedName === undefined) {
 			return person.id;
 		}
-		return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
+		return getDisplayName(person.authorisedName);
 	}
 
 	return `${item.recordType}: ${item.id}`;

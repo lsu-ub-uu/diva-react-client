@@ -8,6 +8,7 @@ import { renderWithRouter } from '../../../test-utils';
 import { createPersonObject } from '../../../testData/personObjectData';
 import ListWithLabel from '../PersonPage/ListWithLabel';
 import getDomainCollection from '../../divaData/collections';
+import { getDisplayName } from '../../../tools/NameTools';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -26,6 +27,11 @@ const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
 	typeof getDomainCollection
 >;
 
+jest.mock('../../../tools/NameTools');
+const mockGetDisplayName = getDisplayName as jest.MockedFunction<
+	typeof getDisplayName
+>;
+
 const someListable: Listable = {
 	id: 'someId',
 	recordType: 'someRecordType',
@@ -39,6 +45,7 @@ const somePerson: Person = createPersonObject(
 
 beforeAll(() => {
 	mockGetDomainCollection.mockReturnValue(new Map());
+	mockGetDisplayName.mockReturnValue('someFamilyName, someGivenName');
 });
 
 describe('The Card component', () => {
@@ -81,28 +88,46 @@ describe('The Card component', () => {
 			});
 		});
 		describe('if the recordType is "person"', () => {
-			it('show familyName, givenName', () => {
+			it('call getDisplayName with authorisedName', () => {
 				render(
 					<MemoryRouter>
 						<Card item={somePerson} listItemNumber={1} />
 					</MemoryRouter>
 				);
-				expect(
-					screen.getByText(/someFamilyName, someLastName/i)
-				).toBeInTheDocument();
+
+				expect(mockGetDisplayName).toHaveBeenLastCalledWith(
+					somePerson.authorisedName
+				);
 			});
 
-			it("should render the Listable's presentation as Link", () => {
-				render(
-					<MemoryRouter>
-						<Card item={somePerson} listItemNumber={1} />
-					</MemoryRouter>
+			it('if person does not have authorisedName, DO NOT call getDisplayName', () => {
+				const somePersonWithoutName: Person = {
+					id: 'someId',
+					recordType: 'person',
+				};
+				renderWithRouter(
+					<Card item={somePersonWithoutName} listItemNumber={1} />
 				);
-				const links = screen.getAllByRole('link');
+
+				expect(mockGetDisplayName).not.toHaveBeenCalled();
+			});
+
+			it("should render the Listable's presentation as Link with content whatever getDisplayName returns", () => {
+				mockGetDisplayName.mockReturnValueOnce('Returned from getDisplayName');
+				const { rerender } = renderWithRouter(
+					<Card item={somePerson} listItemNumber={1} />
+				);
+				let links = screen.getAllByRole('link');
 				expect(links).toHaveLength(1);
 				expect(links[0].textContent).toStrictEqual(
-					'someFamilyName, someLastName'
+					'Returned from getDisplayName'
 				);
+
+				mockGetDisplayName.mockReturnValueOnce('Something else');
+				rerender(<Card item={somePerson} listItemNumber={1} />);
+				links = screen.getAllByRole('link');
+				expect(links).toHaveLength(1);
+				expect(links[0].textContent).toStrictEqual('Something else');
 			});
 
 			it('if the person does not have an authorised name, display id', () => {
