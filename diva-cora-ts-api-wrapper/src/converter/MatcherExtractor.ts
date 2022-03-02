@@ -10,7 +10,9 @@ const extractWithMatcher = (dataGroup: DataGroup, matcher: Matcher) => {
 		const extracted = extractAndReturnChildren(dataGroup, fieldMatcher);
 		const partOfAnObject = possiblySetReturnValue(
 			extracted,
-			fieldMatcher.propertyName
+			fieldMatcher.propertyName,
+			fieldMatcher.required,
+			fieldMatcher.multiple
 		);
 
 		if (

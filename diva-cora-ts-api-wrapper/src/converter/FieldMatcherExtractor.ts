@@ -81,6 +81,10 @@ const extracAtomicValues = (
 			nameInDatas
 		);
 
+		if (values.length === 0) {
+			return undefined;
+		}
+
 		return values;
 	}
 

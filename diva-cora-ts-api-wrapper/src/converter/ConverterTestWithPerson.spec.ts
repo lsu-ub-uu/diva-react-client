@@ -5,16 +5,34 @@ import { Person } from '../types/Person';
 
 describe('Full test of converter', () => {
 	it('Converts every field', () => {
-		const personObject: Person = convertToObject<Person>(
-			personDataGroup,
+		const completePersonObject: Person = convertToObject<Person>(
+			completePersonDataGroup,
 			personMatcher
 		);
 
-		expect(personObject).toStrictEqual(expectedPerson);
+		expect(completePersonObject).toStrictEqual(expectedCompletePerson);
+	});
+	it.only('Handles required fields correctly', () => {
+		const minimumPersonObject: Person = convertToObject<Person>(
+			minimumPersonDataGroup,
+			personMatcher
+		);
+		console.log(minimumPersonObject);
+
+		expect(minimumPersonObject).toStrictEqual(expectedMinimumPerson);
 	});
 });
 
-const expectedPerson: Person = {
+const expectedMinimumPerson: Person = {
+	id: 'authority-person:2',
+	recordType: 'person',
+	authorisedName: {
+		givenName: '',
+		familyName: 'someGivenName',
+	},
+};
+
+const expectedCompletePerson: Person = {
 	id: 'authority-person:1',
 	recordType: 'person',
 	domains: ['du', 'hig', 'ivl', 'ltu', 'miun', 'ths', 'umu', 'uu'],
@@ -86,7 +104,52 @@ const expectedPerson: Person = {
 	],
 };
 
-const personDataGroup: DataGroup = {
+const minimumPersonDataGroup: DataGroup = {
+	name: 'person',
+	children: [
+		{
+			name: 'recordInfo',
+			children: [
+				{
+					name: 'id',
+					value: 'authority-person:2',
+				},
+				{
+					name: 'type',
+					children: [
+						{
+							name: 'linkedRecordType',
+							value: 'recordType',
+						},
+						{
+							name: 'linkedRecordId',
+							value: 'person',
+						},
+					],
+				},
+				{
+					name: 'createdBy',
+					children: [
+						{
+							name: 'linkedRecordType',
+							value: 'user',
+						},
+						{
+							name: 'linkedRecordId',
+							value: 'SYSTEM',
+						},
+					],
+				},
+			],
+		},
+		{
+			name: 'authorisedName',
+			children: [{ name: 'familyName', value: 'someGivenName' }],
+		},
+	],
+};
+
+const completePersonDataGroup: DataGroup = {
 	name: 'person',
 	children: [
 		{

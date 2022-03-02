@@ -9,7 +9,8 @@
 	"scripts": {
 		"build": "parcel build",
 		"build:types": "tsc --emitDeclarationOnly",
-		"test": "jest --watch"
+		"test": "jest --watch",
+		"test:file": "jest --watch --testPathPattern"
 	},
 	"author": "",
 	"license": "ISC",

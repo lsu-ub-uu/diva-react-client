@@ -4,10 +4,12 @@ const NameMatcher: Matcher = [
 	{
 		nameInDataPath: 'familyName',
 		propertyName: 'familyName',
+		required: true,
 	},
 	{
 		nameInDataPath: 'givenName',
 		propertyName: 'givenName',
+		required: true,
 	},
 ];
 

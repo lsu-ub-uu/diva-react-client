@@ -113,7 +113,7 @@ beforeAll(() => {
 	});
 });
 
-describe('The ElementSetter', () => {
+describe('FieldMatcherExtractor', () => {
 	describe('DataAtomics', () => {
 		it('does call getNameInDatasFromPath', () => {
 			const getNameInDatasFromPathSpy = jest.spyOn(
@@ -208,7 +208,7 @@ describe('The ElementSetter', () => {
 				expect(returnedValue2).toStrictEqual('someOtherValue');
 			});
 
-			it('adds value returned by extractOneDataAtomicValueFollowingNameInDatas to objectToSet with OTHER matcher.react as key', () => {
+			it('returns whatever extractOneDataAtomicValueFollowingNameInDatas returns', () => {
 				const testObjectMatcher: FieldMatcher = {
 					propertyName: 'someOtherAtomicName',
 					nameInDataPath: 'someAtomicName',
@@ -216,12 +216,22 @@ describe('The ElementSetter', () => {
 				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
 					'someValue'
 				);
-				const returnedValue = des.extractAndReturnChildren(
+				let returnedValue = des.extractAndReturnChildren(
 					defaultDataAtomicDataGroup,
 					testObjectMatcher
 				);
 
 				expect(returnedValue).toStrictEqual('someValue');
+
+				mockExtractOneDataAtomicValueFollowingNameInDatas.mockReturnValueOnce(
+					undefined
+				);
+				returnedValue = des.extractAndReturnChildren(
+					defaultDataAtomicDataGroup,
+					testObjectMatcher
+				);
+
+				expect(returnedValue).toStrictEqual(undefined);
 			});
 		});
 
@@ -282,6 +292,18 @@ describe('The ElementSetter', () => {
 				);
 
 				expect(returnedValue).toStrictEqual(arrayToAdd);
+			});
+
+			it('if value returned by getAllDataAtomicValuesWithNameInData is empty, returns undefined', () => {
+				mockExtractAllDataAtomicValuesFollowingNameInDatas.mockReturnValueOnce(
+					[]
+				);
+				const returnedValue = des.extractAndReturnChildren(
+					defaultMultipleDataAtomicDataGroup,
+					defaulMultipleDataAtomicObjectMatcher
+				);
+
+				expect(returnedValue).toStrictEqual(undefined);
 			});
 		});
 	});

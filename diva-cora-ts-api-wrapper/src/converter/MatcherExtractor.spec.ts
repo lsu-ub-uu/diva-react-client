@@ -40,6 +40,40 @@ const defaultTestObjectMatchers: FieldMatcher[] = [
 	},
 ];
 
+const objectMatcherWithRequired: Matcher = [
+	{
+		propertyName: 'someRequiredAtomic',
+		nameInDataPath: 'someRequiredAtomicNameInData',
+		required: true,
+	},
+	{
+		propertyName: 'someNonRequiredAtomic',
+		nameInDataPath: 'someNonRequiredNameInData',
+	},
+	{
+		propertyName: 'someNonRequiredAtomic',
+		nameInDataPath: 'someNonRequiredNameInData',
+		required: false,
+	},
+];
+
+const objectMatcherWithMultiple: Matcher = [
+	{
+		propertyName: 'someMultipleAtomic',
+		nameInDataPath: 'someMultipleAtomicNameInData',
+		multiple: true,
+	},
+	{
+		propertyName: 'someNonMultipleAtomic',
+		nameInDataPath: 'someNonMultipleNameInData',
+	},
+	{
+		propertyName: 'someNonMultipleAtomic',
+		nameInDataPath: 'someNonMultipleNameInData',
+		multiple: false,
+	},
+];
+
 const someDataGroupWithTwoChildren: DataGroup = {
 	name: 'someDataGroupWithTwoChildren',
 	children: [
@@ -174,7 +208,9 @@ describe('The MatcherExtractor', () => {
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				1,
 				expect.any(String),
-				'someDefaultAtomicName'
+				'someDefaultAtomicName',
+				undefined,
+				undefined
 			);
 
 			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
@@ -182,13 +218,67 @@ describe('The MatcherExtractor', () => {
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				2,
 				expect.any(String),
-				'someAtomicName'
+				'someAtomicName',
+				undefined,
+				undefined
 			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				5,
 				expect.any(String),
-				'someAtomicName4'
+				'someAtomicName4',
+				undefined,
+				undefined
+			);
+		});
+
+		it("calls possibleSetReturnValue with each matcher's required", () => {
+			extractWithMatcher(defaultTestDataGroup, objectMatcherWithRequired);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				1,
+				expect.any(String),
+				expect.any(String),
+				true,
+				undefined
+			);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				2,
+				expect.any(String),
+				expect.any(String),
+				undefined,
+				undefined
+			);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				3,
+				expect.any(String),
+				expect.any(String),
+				false,
+				undefined
+			);
+		});
+
+		it("calls possibleSetReturnValue with each matcher's multiple", () => {
+			extractWithMatcher(defaultTestDataGroup, objectMatcherWithMultiple);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				1,
+				expect.any(String),
+				expect.any(String),
+				undefined,
+				true
+			);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				2,
+				expect.any(String),
+				expect.any(String),
+				undefined,
+				undefined
+			);
+			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
+				3,
+				expect.any(String),
+				expect.any(String),
+				undefined,
+				false
 			);
 		});
 
@@ -200,7 +290,9 @@ describe('The MatcherExtractor', () => {
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				1,
 				'someString',
-				expect.any(String)
+				expect.any(String),
+				undefined,
+				undefined
 			);
 
 			mockExtractAndReturnChildren.mockReturnValueOnce(undefined);
@@ -218,13 +310,17 @@ describe('The MatcherExtractor', () => {
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				2,
 				undefined,
-				expect.any(String)
+				expect.any(String),
+				undefined,
+				undefined
 			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				3,
 				['someString', 'someOtherString'],
-				expect.any(String)
+				expect.any(String),
+				undefined,
+				undefined
 			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
@@ -232,13 +328,17 @@ describe('The MatcherExtractor', () => {
 				{
 					someNiceKey: 'someNiceValue',
 				},
-				expect.any(String)
+				expect.any(String),
+				undefined,
+				undefined
 			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				5,
 				'',
-				expect.any(String)
+				expect.any(String),
+				undefined,
+				undefined
 			);
 		});
 

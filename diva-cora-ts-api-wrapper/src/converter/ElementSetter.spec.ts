@@ -6,11 +6,24 @@ describe('possiblySetReturnValue', () => {
 	});
 
 	it('if value is undefined and required===false, return empty object', () => {
-		const returned = des.possiblySetReturnValue(
+		let returned = des.possiblySetReturnValue(
 			undefined,
 			'fieldName',
 			false,
 			false
+		);
+
+		expect(returned).toBeUndefined();
+
+		returned = des.possiblySetReturnValue(undefined, 'fieldName');
+
+		expect(returned).toBeUndefined();
+
+		returned = des.possiblySetReturnValue(
+			undefined,
+			'fieldName',
+			undefined,
+			true
 		);
 
 		expect(returned).toBeUndefined();
