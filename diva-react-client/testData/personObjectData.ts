@@ -11,9 +11,9 @@ export const personWithDomain: Person = {
 };
 
 export const createPersonObject = (
-	id: string,
-	familyName: string,
-	givenName: string
+	id: string = 'someId',
+	familyName: string = 'someFamilyName',
+	givenName: string = 'someGivenName'
 ): Person => {
 	return {
 		id,

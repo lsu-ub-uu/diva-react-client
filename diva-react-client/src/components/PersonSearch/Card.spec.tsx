@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import Card from './Card';
 import { renderWithRouter } from '../../../test-utils';
 import { createPersonObject } from '../../../testData/personObjectData';
+import ListWithLabel from '../PersonPage/ListWithLabel';
+import getDomainCollection from '../../divaData/collections';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -14,6 +16,15 @@ jest.mock('react-router-dom', () => ({
 		return <a href={to}>{children}</a>;
 	}),
 }));
+
+jest.mock('../PersonPage/ListWithLabel', () => {
+	return jest.fn(() => null);
+});
+
+jest.mock('../../divaData/collections');
+const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
+	typeof getDomainCollection
+>;
 
 const someListable: Listable = {
 	id: 'someId',
@@ -25,6 +36,10 @@ const somePerson: Person = createPersonObject(
 	'someFamilyName',
 	'someLastName'
 );
+
+beforeAll(() => {
+	mockGetDomainCollection.mockReturnValue(new Map());
+});
 
 describe('The Card component', () => {
 	it('should take a Listable and a listItemNumber as a prop', () => {
@@ -116,7 +131,7 @@ describe('The Card component', () => {
 		});
 	});
 
-	it("should pass the /recordType/id (from the Listable) to the Link's 'to'", () => {
+	it("should pass the /recordType/id (from the Listable) to the Link's 'to'-attribute", () => {
 		render(
 			<MemoryRouter>
 				<Card item={someListable} listItemNumber={1} />
@@ -130,5 +145,118 @@ describe('The Card component', () => {
 			}),
 			expect.any(Object)
 		);
+	});
+
+	it('Should display the listItemNumber', () => {
+		renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+
+		expect(screen.getByText(/1/));
+
+		renderWithRouter(<Card item={someListable} listItemNumber={432} />);
+
+		expect(screen.getByText(/432/));
+	});
+
+	describe('ORCID', () => {
+		describe('if the recordType is "person"', () => {
+			it('if it has at least one ORCID, should call ListWithLabel with Orcids', () => {
+				const person = createPersonObject();
+				person.orcids = ['someOrcid'];
+
+				const { rerender } = renderWithRouter(
+					<Card item={person} listItemNumber={1} />
+				);
+
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					1,
+					expect.objectContaining({
+						list: person.orcids,
+						label: '',
+						omitEmptyStrings: true,
+					}),
+					expect.any(Object)
+				);
+
+				const otherPerson = createPersonObject();
+				otherPerson.orcids = ['someOrcid', 'someOtherOrcid'];
+
+				rerender(<Card item={otherPerson} listItemNumber={1} />);
+
+				expect(ListWithLabel).toHaveBeenNthCalledWith(
+					2,
+					expect.objectContaining({
+						list: otherPerson.orcids,
+						label: '',
+						omitEmptyStrings: true,
+					}),
+					expect.any(Object)
+				);
+			});
+			it('if orcids are undefined, should not call ListWithLabel', () => {
+				const person = createPersonObject();
+
+				renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+				expect(ListWithLabel).not.toHaveBeenCalled();
+			});
+			it('if orcids are empty, should not call ListWithLabel', () => {
+				const person = createPersonObject();
+				person.orcids = [];
+
+				renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+				expect(ListWithLabel).not.toHaveBeenCalled();
+			});
+		});
+		describe('if recordType is not "person"', () => {
+			it('it should not call ListWithLabel', () => {
+				renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+
+				expect(ListWithLabel).not.toHaveBeenCalled();
+			});
+		});
+	});
+
+	describe('Domains', () => {
+		describe('if the recordType is "person"', () => {
+			it('if it has at least one Domain, should call getDomainCollection', () => {
+				const person = createPersonObject();
+				person.domains = ['someDomain'];
+
+				renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+				expect(mockGetDomainCollection).toHaveBeenCalledTimes(1);
+			});
+			it('if domains are undefined, should NOT call getDomainCollection', () => {
+				const person = createPersonObject();
+
+				renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+				expect(mockGetDomainCollection).not.toHaveBeenCalled();
+			});
+			it('if domains are empty, should NOT call getDomainCollection', () => {
+				const person = createPersonObject();
+				person.domains = [];
+
+				renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+				expect(mockGetDomainCollection).not.toHaveBeenCalled();
+			});
+			// it('if orcids are undefined, should not call ListWithLabel', () => {
+			// 	const person = createPersonObject();
+
+			// 	renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+			// 	expect(ListWithLabel).not.toHaveBeenCalled();
+			// });
+			// it('if orcids are empty, should not call ListWithLabel', () => {
+			// 	const person = createPersonObject();
+			// 	person.orcids = [];
+
+			// 	renderWithRouter(<Card item={person} listItemNumber={1} />);
+
+			// 	expect(ListWithLabel).not.toHaveBeenCalled();
+			// });
+		});
 	});
 });

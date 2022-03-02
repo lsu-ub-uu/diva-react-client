@@ -12,7 +12,7 @@ const lightTheme: DefaultTheme = {
 	primary: '#75598e',
 	primaryAccent: '#9c77bd',
 	secondary: '#F7FAEF',
-	grey: '#928779',
+	grey: '#6A6B6F',
 	text: '#0A100D',
 	background: '#F7FAEF',
 	boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',

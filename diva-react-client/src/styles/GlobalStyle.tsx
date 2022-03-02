@@ -6,10 +6,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${(props) => props.theme.text};
     font-family:Arial,sans-serif;
   }
-  .gray{
-    color:#6A6B6F;
-  }
-
+  
   .headingLink {
     font-size:1.4em;
     font-weight:bold;
