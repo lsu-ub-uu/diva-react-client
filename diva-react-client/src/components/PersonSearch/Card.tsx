@@ -48,11 +48,11 @@ const Id = styled.p`
 	color: ${(props) => props.theme.grey};
 `;
 
-const Orcid = styled.p`
+const Orcid = styled.div`
 	grid-area: orcid;
 `;
 
-const Domain = styled.p`
+const Domain = styled.div`
 	grid-area: domain;
 `;
 
