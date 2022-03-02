@@ -7,10 +7,6 @@ export const possiblySetReturnValue = (
 	multiple?: boolean
 ): ConverterObject | undefined => {
 	const objectToReturn: ConverterObject = {};
-	if (fieldName === 'givenName') {
-		console.log('in possiblySetReturn');
-		console.log(required);
-	}
 
 	if (value !== undefined) {
 		objectToReturn[fieldName] = value;

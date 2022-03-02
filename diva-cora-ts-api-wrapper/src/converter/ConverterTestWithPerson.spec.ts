@@ -17,8 +17,6 @@ describe('Full test of converter', () => {
 			minimumPersonDataGroup,
 			personMatcher
 		);
-		console.log(minimumPersonObject);
-
 		expect(minimumPersonObject).toStrictEqual(expectedMinimumPerson);
 	});
 });
