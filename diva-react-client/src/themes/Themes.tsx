@@ -7,7 +7,15 @@ export enum AvailableThemes {
 	Dark = 'dark',
 }
 
+const staticValues = {
+	borderRadius: '3px',
+	fontSizeBig: '1.4em',
+	fontSizeSmall: '1em',
+	fontWeightBig: '700',
+};
+
 const lightTheme: DefaultTheme = {
+	...staticValues,
 	name: AvailableThemes.Light,
 	primary: '#75598e',
 	primaryAccent: '#9c77bd',
@@ -20,6 +28,7 @@ const lightTheme: DefaultTheme = {
 };
 
 const darkTheme: DefaultTheme = {
+	...staticValues,
 	name: AvailableThemes.Dark,
 	primary: '#0057a8',
 	primaryAccent: '#2676c2',

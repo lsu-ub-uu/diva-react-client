@@ -12,5 +12,9 @@ declare module 'styled-components' {
 		background: string;
 		boxShadow: string;
 		boxShadowAccent: string;
+		borderRadius: string;
+		fontSizeBig: string;
+		fontSizeSmall: string;
+		fontWeightBig: string;
 	}
 }

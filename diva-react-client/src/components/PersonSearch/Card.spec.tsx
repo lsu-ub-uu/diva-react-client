@@ -150,11 +150,11 @@ describe('The Card component', () => {
 	it('Should display the listItemNumber', () => {
 		renderWithRouter(<Card item={someListable} listItemNumber={1} />);
 
-		expect(screen.getByText(/1/));
+		expect(screen.getByText(/1./));
 
 		renderWithRouter(<Card item={someListable} listItemNumber={432} />);
 
-		expect(screen.getByText(/432/));
+		expect(screen.getByText(/432./));
 	});
 
 	describe('ORCID', () => {

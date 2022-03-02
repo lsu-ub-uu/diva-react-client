@@ -8,8 +8,8 @@ const GlobalStyle = createGlobalStyle`
   }
   
   .headingLink {
-    font-size:1.4em;
-    font-weight:bold;
+    font-size:${(props) => props.theme.fontSizeBig};
+    font-weight:${(props) => props.theme.fontWeightBig};
     text-decoration:none;
     color: ${(props) => props.theme.text};
   }

@@ -8,7 +8,7 @@ export const Button = styled.button`
 	font-size: 1em;
 	padding: 0.25em 1em;
 	border: 2px solid ${(props) => props.theme.primary};
-	border-radius: 3px;
+	border-radius: ${(props) => props.theme.borderRadius};
 	height: 40px;
 	transition: background-color 0.25s ease-out, color 0.25s ease-out;
 

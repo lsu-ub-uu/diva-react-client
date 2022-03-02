@@ -26,16 +26,19 @@ const CardSection = styled.section`
 		'. . orcid'
 		'domain domain domain';
 	row-gap: 1em;
-	column-gap: 0.5em;
+	column-gap: 0.4em;
 `;
 
 const ListItemNumber = styled.p`
 	grid-area: listItemNumber;
 	align-self: center;
+	font-size: ${(props) => props.theme.fontSizeBig};
+	color: ${(props) => props.theme.grey};
 `;
 
 const Title = styled.div`
 	grid-area: title;
+	align-self: end;
 `;
 
 const Id = styled.p`
@@ -61,7 +64,7 @@ const Card = function ({
 }) {
 	return (
 		<CardSection>
-			<ListItemNumber>{listItemNumber}</ListItemNumber>
+			<ListItemNumber>{listItemNumber}.</ListItemNumber>
 			<Title>
 				<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
 					{getPresentation(item)}
@@ -111,7 +114,7 @@ const possiblyShowDomains = (item: Listable) => {
 
 			return (
 				<Domain>
-					<ListWithLabel list={domainNames} label="" omitEmptyStrings />
+					<ListWithLabel list={domainNames} label="" omitEmptyStrings tag />
 				</Domain>
 			);
 		}

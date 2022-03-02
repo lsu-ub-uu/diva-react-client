@@ -90,4 +90,8 @@ describe('ListWithLabel...', () => {
 		expect(listItems[0]).toHaveTextContent('someElement');
 		expect(listItems[1]).toHaveTextContent('someOtherElement');
 	});
+
+	it('takes an optional parameter "tag"', () => {
+		render(<ListWithLabel list={defaultList} label="someLabel" tag />);
+	});
 });

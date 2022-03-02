@@ -7,17 +7,31 @@ const StyledUl = styled.ul`
 	flex-wrap: wrap;
 	column-gap: 1em;
 `;
+const Tag = styled.li`
+	background-color: ${(props) => props.theme.primary};
+	color: ${(props) => props.theme.secondary};
+	padding: 0.15em 0.3em;
+	font-size: 0.9em;
+	border-radius: ${(props) => props.theme.borderRadius};
+`;
+
+const PlainLi = styled.li``;
 
 const ListWithLabel = function ({
 	list,
 	label,
 	omitEmptyStrings,
+	tag,
 }: {
 	list: string[];
 	label: string;
 	// eslint-disable-next-line react/require-default-props
 	omitEmptyStrings?: boolean;
+	// eslint-disable-next-line react/require-default-props
+	tag?: boolean;
 }) {
+	const StyledLi = tag ? Tag : PlainLi;
+
 	let listToDisplay = list;
 	if (omitEmptyStrings) {
 		listToDisplay = list.filter((element) => {
@@ -31,7 +45,7 @@ const ListWithLabel = function ({
 			<StyledUl>
 				{listToDisplay.map((text, key) => (
 					// eslint-disable-next-line react/no-array-index-key
-					<li key={`${key}-${text}`}>{text}</li>
+					<StyledLi key={`${key}-${text}`}>{text}</StyledLi>
 				))}
 			</StyledUl>
 		</>
