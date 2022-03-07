@@ -6,6 +6,7 @@ import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
 import ModeSwitcher from './components/ModeSwitcher';
+import LoginButton from './components/LoginButton';
 import NoMatch from './components/NoMatch';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
@@ -56,6 +57,7 @@ const App = function () {
 
 					<Sidebar>
 						<ModeSwitcher darkMode={darkMode} handleClick={toggleDarkMode} />
+						<LoginButton />
 					</Sidebar>
 					<Main>
 						<Routes>
