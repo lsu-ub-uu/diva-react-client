@@ -5,30 +5,44 @@ const LoginButton = function () {
 	return <Button onClick={handleClick}>Login</Button>;
 };
 
-const url =
-	'https://www.diva-portal.org/Shibboleth.sso/Login/uu?target=https://www.diva-portal.org/diva-test/idplogin/login';
+const url = 'http://127.0.0.1:8080/webredirect.html';
 
-// const url = 'https://www.uu.se';
+// const url =
+// 	'https://www.diva-portal.org/Shibboleth.sso/Login/uu?target=https://www.diva-portal.org/diva-test/idplogin/login';
+
 let loginOrigin: string;
 let openedWindow: Window | null;
 
 const handleClick = () => {
 	window.addEventListener('message', receiveMessage, false);
 
-	openedWindow = window.open('popup.html', 'CoraHelperWindow');
+	openedWindow = window.open(url, 'CoraHelperWindow');
 };
 
 function receiveMessage(event: MessageEvent) {
-	console.log(event);
-	// if (messageIsFromWindowOpenedFromHere(event)) {
-	// 	handleMessagesFromOkSender(event.data);
-	// }
+	if (messageIsFromWindowOpenedFromHere(event)) {
+		console.log('iswindowopened');
+		handleMessagesFromOkSender(event.data);
+	}
+	handleMessagesFromOkSender(event.data);
 }
 
 function handleMessagesFromOkSender(data: any) {
 	// appTokenAuthInfoCallback(data);
-	console.log(data);
+	console.log('handleMessagesFromokSender');
+
+	const authInfo = data as AuthInfo;
+
+	console.log(authInfo.token);
 }
+
+type AuthInfo = {
+	actionLinks: Object;
+	idFromLogin: string;
+	token: string;
+	userId: string;
+	validForNoSeconds: string;
+};
 
 function messageIsFromWindowOpenedFromHere(event: MessageEvent) {
 	loginOrigin = getIdpLoginServerPartFromUrl(url);

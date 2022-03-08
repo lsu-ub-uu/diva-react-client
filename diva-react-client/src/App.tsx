@@ -13,6 +13,7 @@ import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
+import AuthContext, { LOGIN_STATUS } from './context/AuthContext';
 
 // const Navigation = function () {
 // 	return (
@@ -47,31 +48,35 @@ const App = function () {
 	}, [darkMode]);
 
 	return (
-		<ThemeProvider theme={activeTheme}>
-			<>
-				<GlobalStyle />
-				<Layout>
-					{/* <Header>
+		<AuthContext.Provider
+			value={{ status: LOGIN_STATUS.LOGGED_OUT, token: '' }}
+		>
+			<ThemeProvider theme={activeTheme}>
+				<>
+					<GlobalStyle />
+					<Layout>
+						{/* <Header>
 						<Navigation />
 					</Header> */}
 
-					<Sidebar>
-						<ModeSwitcher darkMode={darkMode} handleClick={toggleDarkMode} />
-						<LoginButton />
-					</Sidebar>
-					<Main>
-						<Routes>
-							<Route index element={<PersonSearch />} />
-							<Route path="person" element={<PersonRoot />}>
+						<Sidebar>
+							<ModeSwitcher darkMode={darkMode} handleClick={toggleDarkMode} />
+							<LoginButton />
+						</Sidebar>
+						<Main>
+							<Routes>
 								<Route index element={<PersonSearch />} />
-								<Route path=":personId" element={<PersonPage />} />
-							</Route>
-							<Route path="*" element={<NoMatch />} />
-						</Routes>
-					</Main>
-				</Layout>
-			</>
-		</ThemeProvider>
+								<Route path="person" element={<PersonRoot />}>
+									<Route index element={<PersonSearch />} />
+									<Route path=":personId" element={<PersonPage />} />
+								</Route>
+								<Route path="*" element={<NoMatch />} />
+							</Routes>
+						</Main>
+					</Layout>
+				</>
+			</ThemeProvider>
+		</AuthContext.Provider>
 	);
 };
 
