@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContextOld';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
@@ -43,6 +43,8 @@ const PersonSearch = function () {
 	};
 
 	const { value } = useAuth();
+
+	console.log(value);
 
 	return (
 		<Parent>

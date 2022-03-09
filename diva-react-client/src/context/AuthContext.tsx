@@ -1,25 +1,17 @@
 import React from 'react';
-
-type Auth = {
-	status: LOGIN_STATUS;
-	token: string;
-};
+import { Auth, ContextType } from './types';
 
 enum LOGIN_STATUS {
 	LOGGED_IN = 'logged_in',
 	LOGGED_OUT = 'logged_out',
 }
-type ContextType = {
-	auth: Auth;
-	setAuth: React.Dispatch<React.SetStateAction<Auth>>;
-};
-
-const AuthContext = React.createContext<ContextType | null>(null);
 
 const AuthProvider = function ({ children }: { children: JSX.Element }) {
 	const [auth, setAuth] = React.useState<Auth>({
 		status: LOGIN_STATUS.LOGGED_OUT,
 		token: '',
+		idFromLogin: '',
+		deleteUrl: '',
 	});
 
 	const value = React.useMemo((): ContextType => {
@@ -29,17 +21,26 @@ const AuthProvider = function ({ children }: { children: JSX.Element }) {
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-const useAuth = (): {
-	value: Auth;
-	onChange: (value: Auth) => void;
-} => {
-	const { auth, setAuth } = React.useContext(AuthContext) as ContextType;
+const AuthContext = React.createContext<ContextType>({
+	auth: {
+		deleteUrl: '',
+		idFromLogin: '',
+		status: LOGIN_STATUS.LOGGED_OUT,
+		token: '',
+	},
+	setAuth: () => {
+		throw new Error('useAuth can only be used within a child of AuthProvider.');
+	},
+});
 
-	const handleAuth = (value: Auth) => {
-		setAuth(value);
+const useAuth = () => {
+	const { auth, setAuth } = React.useContext(AuthContext);
+	return {
+		auth,
+		onAuthChange: (newAuth: Auth) => {
+			setAuth(newAuth);
+		},
 	};
-
-	return { value: auth, onChange: handleAuth };
 };
 
 export { AuthProvider, useAuth, LOGIN_STATUS };

@@ -1,27 +1,62 @@
 import React from 'react';
-import { useAuth, LOGIN_STATUS } from '../context/AuthContext';
+import { useAuth, LOGIN_STATUS, Auth, AuthInfo } from '../context/AuthContext';
 import Button from '../styles/Button';
 
-let onChange: (value: any) => void;
+let onChange: (value: Auth) => void;
+let value: Auth;
 
 const LoginButton = function () {
-	({ onChange } = useAuth());
+	({ value, onChange } = useAuth());
 
-	return <Button onClick={handleClick}>Login</Button>;
+	return (
+		<Button onClick={handleClick}>
+			{value.status === LOGIN_STATUS.LOGGED_OUT ? 'Login' : 'Logout'}
+		</Button>
+	);
 };
 
 const url = 'http://127.0.0.1:8080/webredirect.html';
-
-// const url =
-// 	'https://www.diva-portal.org/Shibboleth.sso/Login/uu?target=https://www.diva-portal.org/diva-test/idplogin/login';
 
 let loginOrigin: string;
 let openedWindow: Window | null;
 
 const handleClick = () => {
-	window.addEventListener('message', receiveMessage, false);
+	if (value.status === LOGIN_STATUS.LOGGED_OUT) {
+		window.addEventListener('message', receiveMessage, false);
 
-	openedWindow = window.open(url, 'CoraHelperWindow');
+		openedWindow = window.open(url, 'DivaHelperWindow');
+	} else {
+		logout();
+	}
+};
+
+const logout = async () => {
+	try {
+		const result = await fetch(value.deleteUrl, {
+			credentials: 'include',
+			headers: {
+				authToken: value.token,
+			},
+			body: value.token,
+			method: 'DELETE',
+		});
+		if (result.status === 200) {
+			onChange({
+				status: LOGIN_STATUS.LOGGED_OUT,
+				token: '',
+				deleteUrl: '',
+				idFromLogin: '',
+			});
+		}
+	} catch (error) {
+		console.log('does not work locally');
+		onChange({
+			status: LOGIN_STATUS.LOGGED_OUT,
+			token: '',
+			deleteUrl: '',
+			idFromLogin: '',
+		});
+	}
 };
 
 function receiveMessage(event: MessageEvent) {
@@ -37,18 +72,12 @@ function handleMessagesFromOkSender(data: any) {
 	onChange({
 		status: LOGIN_STATUS.LOGGED_IN,
 		token: authInfo.token,
+		idFromLogin: authInfo.idFromLogin,
+		deleteUrl: authInfo.actionLinks.delete.url,
 	});
 
 	console.log(authInfo.token);
 }
-
-type AuthInfo = {
-	actionLinks: Object;
-	idFromLogin: string;
-	token: string;
-	userId: string;
-	validForNoSeconds: string;
-};
 
 function messageIsFromWindowOpenedFromHere(event: MessageEvent) {
 	loginOrigin = getIdpLoginServerPartFromUrl(url);

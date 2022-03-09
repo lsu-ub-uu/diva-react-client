@@ -13,7 +13,7 @@ import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContextOld';
 
 // const Navigation = function () {
 // 	return (
