@@ -1,7 +1,12 @@
 import React from 'react';
+import { useAuth, LOGIN_STATUS } from '../context/AuthContext';
 import Button from '../styles/Button';
 
+let onChange: (value: any) => void;
+
 const LoginButton = function () {
+	({ onChange } = useAuth());
+
 	return <Button onClick={handleClick}>Login</Button>;
 };
 
@@ -21,17 +26,18 @@ const handleClick = () => {
 
 function receiveMessage(event: MessageEvent) {
 	if (messageIsFromWindowOpenedFromHere(event)) {
-		console.log('iswindowopened');
 		handleMessagesFromOkSender(event.data);
 	}
 	handleMessagesFromOkSender(event.data);
 }
 
 function handleMessagesFromOkSender(data: any) {
-	// appTokenAuthInfoCallback(data);
-	console.log('handleMessagesFromokSender');
-
 	const authInfo = data as AuthInfo;
+
+	onChange({
+		status: LOGIN_STATUS.LOGGED_IN,
+		token: authInfo.token,
+	});
 
 	console.log(authInfo.token);
 }

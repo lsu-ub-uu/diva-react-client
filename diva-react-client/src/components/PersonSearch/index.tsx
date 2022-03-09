@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAuth } from '../../context/AuthContext';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
@@ -41,9 +42,13 @@ const PersonSearch = function () {
 		triggerSearchWithParams(searchTerm, newStart, rows);
 	};
 
+	const { value } = useAuth();
+
 	return (
 		<Parent>
 			<h1>Personsök</h1>
+			{value.status}
+			{value.token}
 			<SearchComponent
 				rows={rows}
 				rowOptions={DEFAULT_ROW_OPTIONS}

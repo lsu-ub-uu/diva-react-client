@@ -13,7 +13,7 @@ import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
-import AuthContext, { LOGIN_STATUS } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 
 // const Navigation = function () {
 // 	return (
@@ -48,9 +48,7 @@ const App = function () {
 	}, [darkMode]);
 
 	return (
-		<AuthContext.Provider
-			value={{ status: LOGIN_STATUS.LOGGED_OUT, token: '' }}
-		>
+		<AuthProvider>
 			<ThemeProvider theme={activeTheme}>
 				<>
 					<GlobalStyle />
@@ -76,7 +74,7 @@ const App = function () {
 					</Layout>
 				</>
 			</ThemeProvider>
-		</AuthContext.Provider>
+		</AuthProvider>
 	);
 };
 
