@@ -6,14 +6,14 @@ import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
 import ModeSwitcher from './components/ModeSwitcher';
-import LoginButton from './components/LoginButton';
 import NoMatch from './components/NoMatch';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
-import { AuthProvider } from './context/AuthContextOld';
+import { AuthProvider } from './context/AuthContext';
+import LoginButton from './components/LoginButton/LoginButton';
 
 // const Navigation = function () {
 // 	return (

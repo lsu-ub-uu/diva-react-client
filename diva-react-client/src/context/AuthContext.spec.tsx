@@ -1,27 +1,34 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks/dom';
+import userEvent from '@testing-library/user-event';
+import { renderHook } from '@testing-library/react-hooks/dom';
 import { AuthProvider, useAuth, LOGIN_STATUS } from './AuthContext';
 import { Auth } from './types';
 
-const ChildComponent = function () {
-	const { onAuthChange } = useAuth();
+const anotherAuth: Auth = {
+	status: LOGIN_STATUS.LOGGED_IN,
+	token: 'someNewToken',
+	idFromLogin: 'someIdFromlogin',
+	deleteUrl: 'someDeleteurl',
+};
 
-	const anotherAuth: Auth = {
-		status: LOGIN_STATUS.LOGGED_IN,
-		token: 'someToken',
-		idFromLogin: 'someIdFromlogin',
-		deleteUrl: 'someDeleteurl',
-	};
+const ChildComponent = function () {
+	const { auth, onAuthChange } = useAuth();
 
 	const handleClick = () => {
 		onAuthChange(anotherAuth);
 	};
 
 	return (
-		<button type="button" onClick={handleClick}>
-			Click
-		</button>
+		<>
+			<p data-testid="token">{auth.token}</p>
+			<p data-testid="status">{auth.status}</p>
+			<p data-testid="idFromLogin">{auth.idFromLogin}</p>
+			<p data-testid="deleteUrl">{auth.deleteUrl}</p>
+			<button type="button" onClick={handleClick}>
+				Click
+			</button>
+		</>
 	);
 };
 
@@ -48,27 +55,28 @@ describe('AuthContext', () => {
 		});
 
 		it('useAuth', () => {
-			const { result } = renderHook(() => useAuth());
-
-			expect(result.current.auth).toStrictEqual({
-				status: LOGIN_STATUS.LOGGED_OUT,
-				token: '',
-				idFromLogin: '',
-				deleteUrl: '',
-			});
-
 			render(
 				<AuthProvider>
 					<ChildComponent />
 				</AuthProvider>
 			);
 
-			expect(result.current.auth).toStrictEqual({
-				status: LOGIN_STATUS.LOGGED_IN,
-				token: 'someToken',
-				idFromLogin: 'someIdFromlogin',
-				deleteUrl: 'someDeleteurl',
-			});
+			const tokenHolder = screen.getByTestId('token');
+			const statusHolder = screen.getByTestId('status');
+			const idFromLoginHolder = screen.getByTestId('idFromLogin');
+			const deleteUrlHolder = screen.getByTestId('deleteUrl');
+
+			expect(tokenHolder).toHaveTextContent('');
+			expect(statusHolder).toHaveTextContent(LOGIN_STATUS.LOGGED_OUT);
+			expect(idFromLoginHolder).toHaveTextContent('');
+			expect(deleteUrlHolder).toHaveTextContent('');
+
+			userEvent.click(screen.getByRole('button'));
+
+			expect(tokenHolder).toHaveTextContent(anotherAuth.token);
+			expect(statusHolder).toHaveTextContent(anotherAuth.status);
+			expect(idFromLoginHolder).toHaveTextContent(anotherAuth.idFromLogin);
+			expect(deleteUrlHolder).toHaveTextContent(anotherAuth.deleteUrl);
 		});
 	});
 
