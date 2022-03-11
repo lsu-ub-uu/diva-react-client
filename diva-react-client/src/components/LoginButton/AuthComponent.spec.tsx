@@ -3,11 +3,16 @@ import { render } from '@testing-library/react';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import AuthComponent from './AuthComponent';
 import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 
 jest.mock('../../context/AuthContext');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
 jest.mock('./LoginButton', () => {
+	return jest.fn(() => null);
+});
+
+jest.mock('./LogoutButton', () => {
 	return jest.fn(() => null);
 });
 
@@ -49,6 +54,25 @@ describe('AuthComponent.spec', () => {
 
 		expect(LoginButton).not.toHaveBeenCalled();
 	});
-	it.todo('if logged out according to useAuth, do NOT render LogoutButton');
-	it.todo('if logged in according to useAuth, render LogoutButton (WIP!)');
+
+	it('if logged out according to useAuth, do NOT render LogoutButton', () => {
+		render(<AuthComponent />);
+
+		expect(LogoutButton).not.toHaveBeenCalled();
+	});
+	it('if logged in according to useAuth, render LogoutButton', () => {
+		mockUseAuth.mockReturnValueOnce({
+			auth: {
+				deleteUrl: '',
+				idFromLogin: '',
+				status: LOGIN_STATUS.LOGGED_IN,
+				token: '',
+			},
+			onAuthChange: jest.fn(),
+		});
+
+		render(<AuthComponent />);
+
+		expect(LogoutButton).toHaveBeenCalled();
+	});
 });
