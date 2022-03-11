@@ -7,7 +7,7 @@ import PersonPage from './components/PersonPage';
 import { renderWithRouter } from '../test-utils';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
-import LoginButton from './components/LoginButton/LoginButton';
+import AuthComponent from './components/LoginButton/AuthComponent';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (
@@ -32,7 +32,7 @@ jest.mock('../src/components/NoMatch', () => {
 	return jest.fn(() => null);
 });
 
-jest.mock('./components/LoginButton/LoginButton', () => {
+jest.mock('./components/LoginButton/AuthComponent', () => {
 	return jest.fn(() => null);
 });
 
@@ -86,7 +86,7 @@ describe('The App component', () => {
 		it('renders LoginButton', () => {
 			renderWithRouter(<App />);
 
-			expect(LoginButton).toHaveBeenCalledTimes(1);
+			expect(AuthComponent).toHaveBeenCalledTimes(1);
 		});
 	});
 });

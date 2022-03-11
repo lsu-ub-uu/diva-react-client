@@ -12,7 +12,7 @@ import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
 import { AuthProvider } from './context/AuthContext';
-import LoginButton from './components/LoginButton/LoginButton';
+import AuthComponent from './components/LoginButton/AuthComponent';
 
 // const Navigation = function () {
 // 	return (
@@ -43,7 +43,7 @@ const App = function () {
 					</Header> */}
 
 						<Sidebar>
-							<LoginButton />
+							<AuthComponent />
 						</Sidebar>
 						<Main>
 							<Routes>
