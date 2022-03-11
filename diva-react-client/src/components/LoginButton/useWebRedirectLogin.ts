@@ -1,38 +1,29 @@
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import { Auth, AuthInfo } from '../../context/types';
 import getIdpLoginServerPartFromUrl from './helpers';
+import { window } from './window';
 
-type InterestingWindow = {
-	addEventListener: (
-		message: string,
-		callBack: (event: MessageEvent) => void,
-		someBool: boolean
-	) => void;
-	open: (url: string, name: string) => Window | null;
-};
-
-let internalUrl: string;
-let myWindow: InterestingWindow;
+let urlToIdpLogin: string;
+let openedWindow: Window | null;
 let onAuthChange: (newAuth: Auth) => void;
 
-const useWebRedirectLogin = (url: string, window: InterestingWindow) => {
-	internalUrl = url;
-	myWindow = window;
+const useWebRedirectLogin = (url: string) => {
+	urlToIdpLogin = url;
 	({ onAuthChange } = useAuth());
 
 	return { startLoginProcess };
 };
 
 const startLoginProcess = () => {
-	myWindow.addEventListener('message', receiveMessage, false);
+	window.addEventListener('message', receiveMessage, false);
 
-	myWindow.open(internalUrl, 'DivaHelperWindow');
+	openedWindow = window.open(urlToIdpLogin, 'DivaHelperWindow');
 };
 
 export const receiveMessage = (event: MessageEvent) => {
-	const loginOrigin = getIdpLoginServerPartFromUrl(internalUrl);
+	const loginOrigin = getIdpLoginServerPartFromUrl(urlToIdpLogin);
 
-	if (loginOrigin === event.origin) {
+	if (loginOrigin === event.origin && openedWindow === event.source) {
 		const authInfo = event.data as AuthInfo;
 
 		onAuthChange({

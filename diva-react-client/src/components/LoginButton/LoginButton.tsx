@@ -7,7 +7,7 @@ const url = 'http://127.0.0.1:8080/webredirect.html';
 
 const LoginButton = function () {
 	const { auth } = useAuth();
-	const { startLoginProcess } = useWebRedirectLogin(url, window);
+	const { startLoginProcess } = useWebRedirectLogin(url);
 
 	console.log(auth);
 

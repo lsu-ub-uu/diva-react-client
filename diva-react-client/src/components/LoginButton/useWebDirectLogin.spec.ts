@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks/dom';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import getIdpLoginServerPartFromUrl from './helpers';
 import useWebRedirectLogin, { receiveMessage } from './useWebRedirectLogin';
+import { window } from './window';
 
 jest.mock('./helpers');
 const mockGetIdpLoginServerPartFromUrl =
@@ -9,20 +10,19 @@ const mockGetIdpLoginServerPartFromUrl =
 		typeof getIdpLoginServerPartFromUrl
 	>;
 
+jest.mock('./window', () => ({
+	window: {
+		addEventListener: jest.fn(),
+		open: jest.fn(() => {
+			return returnedWindow;
+		}),
+	},
+}));
+
 jest.mock('../../context/AuthContext');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
-const myWindow = {
-	...window,
-	addEventListener: jest.fn(),
-	open: jest.fn(),
-};
-
-const returnedWindow = {
-	...window,
-	addEventListener: jest.fn(),
-	open: jest.fn(),
-};
+let returnedWindow = window as jest.Mocked<typeof window>;
 
 const mockOnAuthChange = jest.fn();
 
@@ -37,38 +37,32 @@ beforeAll(() => {
 		onAuthChange: mockOnAuthChange,
 	});
 
-	myWindow.open.mockReturnValue(returnedWindow);
-
 	mockGetIdpLoginServerPartFromUrl.mockReturnValue('https://someUrl/login');
 });
 
 describe('useWebDirectLogin.spec', () => {
 	it('takes url and window', () => {
-		renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+		renderHook(() => useWebRedirectLogin('someUrl'));
 	});
 
 	it('calls useAuth', () => {
-		renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+		renderHook(() => useWebRedirectLogin('someUrl'));
 
 		expect(mockUseAuth).toHaveBeenCalledTimes(1);
 	});
 
 	it('returns function startLoginProcess', () => {
-		const { result } = renderHook(() =>
-			useWebRedirectLogin('someUrl', myWindow)
-		);
+		const { result } = renderHook(() => useWebRedirectLogin('someUrl'));
 
 		expect(result.current.startLoginProcess).toBeDefined();
 	});
 
 	it('calling startLoginProcess calls window.addEventListener', () => {
-		const { result } = renderHook(() =>
-			useWebRedirectLogin('someUrl', myWindow)
-		);
+		const { result } = renderHook(() => useWebRedirectLogin('someUrl'));
 
 		result.current.startLoginProcess();
 
-		expect(myWindow.addEventListener).toHaveBeenCalledWith(
+		expect(window.addEventListener).toHaveBeenCalledWith(
 			'message',
 			receiveMessage,
 			false
@@ -76,21 +70,19 @@ describe('useWebDirectLogin.spec', () => {
 	});
 
 	it('calling startLoginProcess calls window.open', () => {
-		const { result } = renderHook(() =>
-			useWebRedirectLogin('someUrl', myWindow)
-		);
+		const { result } = renderHook(() => useWebRedirectLogin('someUrl'));
 
 		result.current.startLoginProcess();
 
-		expect(myWindow.open).toHaveBeenCalledWith('someUrl', 'DivaHelperWindow');
+		expect(window.open).toHaveBeenCalledWith('someUrl', 'DivaHelperWindow');
 
 		const { result: result2 } = renderHook(() =>
-			useWebRedirectLogin('someOtherUrl', myWindow)
+			useWebRedirectLogin('someOtherUrl')
 		);
 
 		result2.current.startLoginProcess();
 
-		expect(myWindow.open).toHaveBeenCalledWith(
+		expect(window.open).toHaveBeenCalledWith(
 			'someOtherUrl',
 			'DivaHelperWindow'
 		);
@@ -105,16 +97,17 @@ describe('useWebDirectLogin.spec', () => {
 	const defaultEvent: MessageEvent = new MessageEvent('someType', {
 		origin: 'https://someUrl/login',
 		data: defaultAuthinfo,
+		source: returnedWindow,
 	});
 
 	describe('receiveMessage', () => {
 		it('takes a MessageEvent', () => {
-			renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+			renderHook(() => useWebRedirectLogin('someUrl'));
 			receiveMessage(defaultEvent);
 		});
 
 		it('calls onAuthUpdate with data', () => {
-			renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+			renderHook(() => useWebRedirectLogin('someUrl'));
 			receiveMessage(defaultEvent);
 
 			expect(mockOnAuthChange).toHaveBeenCalledWith({
@@ -126,12 +119,12 @@ describe('useWebDirectLogin.spec', () => {
 		});
 
 		it('calls getIdpLoginServerPartFromUrl with url', () => {
-			renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+			renderHook(() => useWebRedirectLogin('someUrl'));
 			receiveMessage(defaultEvent);
 
 			expect(mockGetIdpLoginServerPartFromUrl).toHaveBeenCalledWith('someUrl');
 
-			renderHook(() => useWebRedirectLogin('someOtherUrl', myWindow));
+			renderHook(() => useWebRedirectLogin('someOtherUrl'));
 			receiveMessage(defaultEvent);
 
 			expect(mockGetIdpLoginServerPartFromUrl).toHaveBeenCalledWith(
@@ -143,9 +136,22 @@ describe('useWebDirectLogin.spec', () => {
 			const event: MessageEvent = new MessageEvent('someType', {
 				origin: 'https://someSuspiciousUrl/login',
 				data: defaultAuthinfo,
+				source: returnedWindow,
 			});
 
-			renderHook(() => useWebRedirectLogin('someUrl', myWindow));
+			renderHook(() => useWebRedirectLogin('someUrl'));
+			receiveMessage(event);
+
+			expect(mockOnAuthChange).not.toHaveBeenCalled();
+		});
+
+		it('does not call onAuthUpdate if event.source does not equal the previously opened window', () => {
+			const event: MessageEvent = new MessageEvent('someType', {
+				origin: 'https://someUrl/login',
+				data: defaultAuthinfo,
+			});
+
+			renderHook(() => useWebRedirectLogin('someUrl'));
 			receiveMessage(event);
 
 			expect(mockOnAuthChange).not.toHaveBeenCalled();

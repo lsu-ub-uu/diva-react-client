@@ -8,7 +8,7 @@ import PersonPage from './components/PersonPage';
 import { renderWithRouter } from '../test-utils';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
-import LoginButton from './components/LoginButton';
+import LoginButton from './components/LoginButton/LoginButton';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (
@@ -46,7 +46,7 @@ jest.mock('../src/components/ModeSwitcher', () => {
 	};
 });
 
-jest.mock('../src/components/LoginButton', () => {
+jest.mock('./components/LoginButton/LoginButton', () => {
 	return jest.fn(() => null);
 });
 

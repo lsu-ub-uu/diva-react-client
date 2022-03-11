@@ -29,8 +29,7 @@ describe('LoginButton', () => {
 			render(<LoginButton />);
 
 			expect(mockUseWebRedirectLogin).toHaveBeenCalledWith(
-				'http://127.0.0.1:8080/webredirect.html',
-				window
+				'http://127.0.0.1:8080/webredirect.html'
 			);
 		});
 
