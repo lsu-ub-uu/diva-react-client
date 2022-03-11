@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { DefaultTheme, ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 // import Header from './components/Layout/Header';
 import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
-import ModeSwitcher from './components/ModeSwitcher';
 import NoMatch from './components/NoMatch';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
@@ -33,23 +32,9 @@ import LoginButton from './components/LoginButton/LoginButton';
 // };
 
 const App = function () {
-	const [activeTheme, setActiveTheme] = useState<DefaultTheme>(
-		Themes.lightTheme
-	);
-	const [darkMode, setDarkMode] = useState<boolean>(false);
-
-	const toggleDarkMode = React.useCallback(() => {
-		if (darkMode) {
-			setActiveTheme(Themes.lightTheme);
-		} else {
-			setActiveTheme(Themes.darkTheme);
-		}
-		setDarkMode(!darkMode);
-	}, [darkMode]);
-
 	return (
 		<AuthProvider>
-			<ThemeProvider theme={activeTheme}>
+			<ThemeProvider theme={Themes.lightTheme}>
 				<>
 					<GlobalStyle />
 					<Layout>
@@ -58,7 +43,6 @@ const App = function () {
 					</Header> */}
 
 						<Sidebar>
-							<ModeSwitcher darkMode={darkMode} handleClick={toggleDarkMode} />
 							<LoginButton />
 						</Sidebar>
 						<Main>
