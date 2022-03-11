@@ -3,7 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../styles/Button';
 import useWebRedirectLogin from './useWebRedirectLogin';
 
-const url = 'http://127.0.0.1:8080/webredirect.html';
+const url =
+	'https://www.diva-portal.org/Shibboleth.sso/Login/uu?target=https://www.diva-portal.org/diva-test/idplogin/login';
 
 const LoginButton = function () {
 	const { auth } = useAuth();
