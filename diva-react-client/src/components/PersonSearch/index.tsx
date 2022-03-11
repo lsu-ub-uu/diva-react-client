@@ -49,8 +49,6 @@ const PersonSearch = function () {
 	return (
 		<Parent>
 			<h1>Personsök</h1>
-			{auth.status}
-			{auth.token}
 			<SearchComponent
 				rows={rows}
 				rowOptions={DEFAULT_ROW_OPTIONS}
