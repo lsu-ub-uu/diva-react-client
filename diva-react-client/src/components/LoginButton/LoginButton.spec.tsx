@@ -29,7 +29,7 @@ describe('LoginButton', () => {
 			render(<LoginButton />);
 
 			expect(mockUseWebRedirectLogin).toHaveBeenCalledWith(
-				'http://127.0.0.1:8080/webredirect.html'
+				'https://www.diva-portal.org/Shibboleth.sso/Login/uu?target=https://www.diva-portal.org/diva-test/idplogin/login'
 			);
 		});
 
