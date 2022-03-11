@@ -1,8 +1,8 @@
 import React from 'react';
+import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import LogoutButton from './LogoutButton';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('../../context/AuthContext');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
