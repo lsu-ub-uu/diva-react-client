@@ -1,15 +1,37 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useAuth, LOGIN_STATUS } from '../../context/AuthContext';
 
 const useLogout = () => {
-	const { auth } = useAuth();
+	const { auth, onAuthChange } = useAuth();
 
 	return {
-		logout: () => {
-			if (auth.status === LOGIN_STATUS.LOGGED_OUT) {
-				throw new Error('Cannot log out if already logged out.');
-			}
-			axios.delete(auth.deleteUrl, { headers: { authToken: auth.token } });
+		logout: async () => {
+			return new Promise<void>((resolve, reject) => {
+				if (auth.status === LOGIN_STATUS.LOGGED_OUT) {
+					reject(new Error('Cannot log out if already logged out.'));
+				}
+
+				axios
+					.delete(auth.deleteUrl, {
+						headers: { authToken: auth.token },
+						data: auth.token,
+					})
+					.then((response: AxiosResponse) => {
+						if (response.status === 200) {
+							onAuthChange({
+								deleteUrl: '',
+								idFromLogin: '',
+								token: '',
+								status: LOGIN_STATUS.LOGGED_OUT,
+							});
+							resolve();
+						}
+						reject(new Error(response.statusText));
+					})
+					.catch((error) => {
+						reject(error);
+					});
+			});
 		},
 	};
 };

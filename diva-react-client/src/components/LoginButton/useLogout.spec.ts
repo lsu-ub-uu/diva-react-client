@@ -16,9 +16,11 @@ const someOtherAuth = {
 	token: 'someOtherToken',
 };
 
+const mockOnAuthChange = jest.fn();
+
 beforeAll(() => {
 	mockedAxios.delete.mockResolvedValue({
-		data: { someField: 'someDefaultData' },
+		status: 200,
 	});
 
 	mockUseAuth.mockReturnValue({
@@ -28,7 +30,7 @@ beforeAll(() => {
 			status: LOGIN_STATUS.LOGGED_IN,
 			token: 'someToken',
 		},
-		onAuthChange: jest.fn(),
+		onAuthChange: mockOnAuthChange,
 	});
 });
 
@@ -43,7 +45,7 @@ describe('useLogout', () => {
 
 		expect(result.current.logout).toBeDefined();
 	});
-	it('if auth.status is Logged_out and logout() is called, throw error', () => {
+	it('if auth.status is Logged_out and logout() is called, throw error', async () => {
 		mockUseAuth.mockReturnValueOnce({
 			auth: {
 				deleteUrl: '',
@@ -51,7 +53,7 @@ describe('useLogout', () => {
 				status: LOGIN_STATUS.LOGGED_OUT,
 				token: '',
 			},
-			onAuthChange: jest.fn(),
+			onAuthChange: mockOnAuthChange,
 		});
 
 		const { result } = renderHook(() => useLogout());
@@ -59,7 +61,7 @@ describe('useLogout', () => {
 		expect.assertions(1);
 
 		try {
-			result.current.logout();
+			await result.current.logout();
 		} catch (error) {
 			expect(error).toStrictEqual(
 				new Error('Cannot log out if already logged out.')
@@ -81,7 +83,7 @@ describe('useLogout', () => {
 
 			mockUseAuth.mockReturnValueOnce({
 				auth: someOtherAuth,
-				onAuthChange: jest.fn(),
+				onAuthChange: mockOnAuthChange,
 			});
 
 			rerender();
@@ -104,12 +106,13 @@ describe('useLogout', () => {
 					headers: {
 						authToken: 'someToken',
 					},
+					data: expect.any(String),
 				})
 			);
 
 			mockUseAuth.mockReturnValueOnce({
 				auth: someOtherAuth,
-				onAuthChange: jest.fn(),
+				onAuthChange: mockOnAuthChange,
 			});
 
 			rerender();
@@ -122,15 +125,96 @@ describe('useLogout', () => {
 					headers: {
 						authToken: 'someOtherToken',
 					},
+					data: expect.any(String),
 				})
 			);
 		});
-		it.todo('call axios.delete with body = auth.token');
+		it('call axios.delete with body = auth.token', () => {
+			const { result, rerender } = renderHook(() => useLogout());
+
+			result.current.logout();
+
+			expect(axios.delete).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.objectContaining({
+					headers: expect.any(Object),
+					data: 'someToken',
+				})
+			);
+
+			mockUseAuth.mockReturnValueOnce({
+				auth: someOtherAuth,
+				onAuthChange: mockOnAuthChange,
+			});
+
+			rerender();
+
+			result.current.logout();
+
+			expect(axios.delete).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.objectContaining({
+					headers: expect.any(Object),
+					data: 'someOtherToken',
+				})
+			);
+		});
 	});
-	describe('handle result from axios.delete', () => {
-		it.todo(
-			'if axios.delete resolves, call onAuthChange with LOGIN_STATUS.Logged_out and empty strings otherwise'
-		);
-		it.todo('if axios.delete rejects, throw error');
+	describe('handle response from axios.delete', () => {
+		it('if axios.delete resolves with 200, call onAuthChange with LOGIN_STATUS.Logged_out and empty strings otherwise', async () => {
+			const { result } = renderHook(() => useLogout());
+
+			await result.current.logout();
+
+			expect(mockOnAuthChange).toHaveBeenCalledWith({
+				deleteUrl: '',
+				idFromLogin: '',
+				token: '',
+				status: LOGIN_STATUS.LOGGED_OUT,
+			});
+		});
+
+		it('if axios.delete resolves, but not with 200, throw error with statusMessage from axios', async () => {
+			const { result } = renderHook(() => useLogout());
+
+			expect.assertions(2);
+
+			const expectedError = new Error('Some statusText from axios.');
+			mockedAxios.delete.mockResolvedValueOnce({
+				status: 201,
+				statusText: 'Some statusText from axios.',
+			});
+
+			try {
+				await result.current.logout();
+			} catch (error) {
+				expect(error).toStrictEqual(expectedError);
+			}
+
+			const expectedOtherError = new Error('Some other statusText from axios.');
+			mockedAxios.delete.mockResolvedValueOnce({
+				status: 418,
+				statusText: 'Some other statusText from axios.',
+			});
+
+			try {
+				await result.current.logout();
+			} catch (error) {
+				expect(error).toStrictEqual(expectedOtherError);
+			}
+		});
+		it('if axios.delete rejects, reject with error', async () => {
+			const { result } = renderHook(() => useLogout());
+
+			expect.assertions(1);
+			const expectedError = new Error('Some error from axios.');
+			mockedAxios.delete.mockRejectedValueOnce(expectedError);
+
+			try {
+				await result.current.logout();
+			} catch (error) {
+				expect(error).toStrictEqual(expectedError);
+			}
+		});
 	});
 });
