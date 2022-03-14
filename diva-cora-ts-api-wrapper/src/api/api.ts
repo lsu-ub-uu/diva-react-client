@@ -6,7 +6,8 @@ import { RecordType } from '../types/Record';
 
 export function getRecordById<T>(
 	recordType: RecordType,
-	id: string
+	id: string,
+	authToken?: string
 ): Promise<T> {
 	return new Promise((resolve, reject) => {
 		if (id === '') {
@@ -19,6 +20,7 @@ export function getRecordById<T>(
 			const urlForRecord = `${process.env.BASE_URL}record/${recordType}/${id}`;
 			const parameters: IHttpClientRequestParameters = {
 				url: urlForRecord,
+				authToken,
 			};
 			httpClient
 				.get<RecordWrapper>(parameters)

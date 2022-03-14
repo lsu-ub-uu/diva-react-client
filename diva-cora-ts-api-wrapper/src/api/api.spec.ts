@@ -41,8 +41,9 @@ describe('Api', () => {
 
 	describe('getRecordById', () => {
 		describe('parameters', () => {
-			it('should take a RecordType and an ID', () => {
+			it('should take a RecordType, an ID and optionally an authToken', () => {
 				getRecordById(RecordType.Person, 'someId');
+				getRecordById(RecordType.Person, 'someId', 'someAuthToken');
 			});
 
 			it('should reject with error if empty id given and not call httpClient', async () => {
@@ -100,6 +101,34 @@ describe('Api', () => {
 			expect(mockHttpClientGet).toHaveBeenCalledWith(
 				expect.objectContaining({
 					url: expectedUrl,
+				})
+			);
+		});
+
+		it('should correctly call httpClient with authToken', async () => {
+			expect.assertions(4);
+
+			await getRecordById(RecordType.PersonDomainPart, 'someId', 'someToken');
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expect.any(String),
+					authToken: 'someToken',
+				})
+			);
+
+			await getRecordById(
+				RecordType.PersonDomainPart,
+				'someId',
+				'someOtherToken'
+			);
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(2);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expect.any(String),
+					authToken: 'someOtherToken',
 				})
 			);
 		});
