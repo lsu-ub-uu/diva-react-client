@@ -2,20 +2,16 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import LogoutButton from './LogoutButton';
-import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
+import useLogout from './useLogout';
 
-jest.mock('../../context/AuthContext');
-const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+jest.mock('./useLogout');
+const mockUseLogout = useLogout as jest.MockedFunction<typeof useLogout>;
+
+const mockLogout = jest.fn();
 
 beforeAll(() => {
-	mockUseAuth.mockReturnValue({
-		auth: {
-			deleteUrl: 'someDeleteUrl',
-			idFromLogin: 'someId',
-			status: LOGIN_STATUS.LOGGED_IN,
-			token: 'someToken',
-		},
-		onAuthChange: jest.fn(),
+	mockUseLogout.mockReturnValue({
+		logout: mockLogout,
 	});
 });
 
@@ -26,16 +22,18 @@ describe('LogoutButton.spec', () => {
 		expect(screen.getByRole('button', { name: 'Logout' }));
 	});
 
-	it('calls useAuth', () => {
+	it('calls useLogout', () => {
 		render(<LogoutButton />);
 
-		expect(mockUseAuth).toHaveBeenCalled();
+		expect(mockUseLogout).toHaveBeenCalled();
 	});
 
-	it('if button is clicked, call fetch with auth.deleteUrl', () => {
+	it('if button is clicked, call useLogout.logout', () => {
 		render(<LogoutButton />);
 
 		clickLogoutButton();
+
+		expect(mockLogout).toHaveBeenCalledTimes(1);
 	});
 });
 

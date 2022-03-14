@@ -1,10 +1,19 @@
 import React from 'react';
 import Button from '../../styles/Button';
-import { useAuth } from '../../context/AuthContext';
+import useLogout from './useLogout';
 
 const LogoutButton = function () {
-	useAuth();
-	return <Button type="button">Logout</Button>;
+	const { logout } = useLogout();
+	return (
+		<Button
+			type="button"
+			onClick={() => {
+				logout();
+			}}
+		>
+			Logout
+		</Button>
+	);
 };
 
 export default LogoutButton;
