@@ -15,6 +15,7 @@ describe('The HttpClient', () => {
 		it('should exist and take IHttpClientRequestParameters', () => {
 			const parameters: IHttpClientRequestParameters = {
 				url: 'someUrl',
+				authToken: 'someAuthToken',
 			};
 			httpClient.get(parameters);
 		});
@@ -29,7 +30,7 @@ describe('The HttpClient', () => {
 			await httpClient.get(parameters);
 
 			expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-			expect(mockedAxios.get).toHaveBeenCalledWith(parameters.url);
+			expect(mockedAxios.get).toHaveBeenCalledWith(parameters.url, {});
 
 			const parameters2: IHttpClientRequestParameters = {
 				url: 'someOtherUrl',
@@ -37,7 +38,34 @@ describe('The HttpClient', () => {
 			httpClient.get(parameters2);
 
 			expect(mockedAxios.get).toHaveBeenCalledTimes(2);
-			expect(mockedAxios.get).toHaveBeenCalledWith(parameters2.url);
+			expect(mockedAxios.get).toHaveBeenCalledWith(parameters2.url, {});
+		});
+
+		it('should call axios.get with authToken if authToken set', async () => {
+			const parameters: IHttpClientRequestParameters = {
+				url: 'someUrl',
+				authToken: 'someAuthToken',
+			};
+
+			expect.assertions(4);
+
+			await httpClient.get(parameters);
+
+			expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+			expect(mockedAxios.get).toHaveBeenCalledWith(parameters.url, {
+				headers: { authToken: 'someAuthToken' },
+			});
+
+			const parameters2: IHttpClientRequestParameters = {
+				url: 'someOtherUrl',
+				authToken: 'someOtherToken',
+			};
+			httpClient.get(parameters2);
+
+			expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+			expect(mockedAxios.get).toHaveBeenCalledWith(parameters2.url, {
+				headers: { authToken: 'someOtherToken' },
+			});
 		});
 
 		it('should reject with error if url is empty', async () => {

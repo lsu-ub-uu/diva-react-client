@@ -4,12 +4,18 @@ import { IHttpClient, IHttpClientRequestParameters } from './IHttpClient';
 class HttpClient implements IHttpClient {
 	get<T>(parameters: IHttpClientRequestParameters): Promise<T> {
 		return new Promise<T>((resolve, reject) => {
-			const { url } = parameters;
+			const { url, authToken } = parameters;
 			if (url === '') {
 				reject(new Error('No URL given.'));
 			} else {
+				let axiosRequestConfig = {};
+				if (authToken !== undefined) {
+					axiosRequestConfig = {
+						headers: { authToken },
+					};
+				}
 				axios
-					.get(url)
+					.get(url, axiosRequestConfig)
 					.then((response: any) => {
 						resolve(response.data as T);
 					})

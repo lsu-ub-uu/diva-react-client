@@ -4,4 +4,5 @@ export interface IHttpClient {
 
 export interface IHttpClientRequestParameters {
 	url: string;
+	authToken?: string;
 }
