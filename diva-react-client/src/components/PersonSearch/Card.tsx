@@ -72,8 +72,8 @@ const Card = function ({
 				</Link>
 			</Title>
 			<Id className="gray">{item.id}</Id>
-			{possiblyShowOrcid(item)}
-			{possiblyShowDomains(item)}
+			<Orcid>{possiblyShowOrcid(item)}</Orcid>
+			<Domain>{possiblyShowDomains(item)}</Domain>
 		</CardSection>
 	);
 };
