@@ -1,15 +1,29 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom';
+import { LOGIN_STATUS, useAuth } from '../context/AuthContext';
 import useApi from './useApi';
 
 const mockApiToCall = jest.fn();
 
-beforeAll(() => {
+jest.mock('../context/AuthContext');
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+
+beforeEach(() => {
 	mockApiToCall.mockImplementation(() => {
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				resolve('someResolve');
 			}, 100);
 		});
+	});
+
+	mockUseAuth.mockReturnValue({
+		auth: {
+			deleteUrl: 'someDeleteUrl',
+			idFromLogin: 'someId',
+			status: LOGIN_STATUS.LOGGED_IN,
+			token: 'someToken',
+		},
+		onAuthChange: jest.fn(),
 	});
 });
 
@@ -31,8 +45,60 @@ describe('The useApi hook', () => {
 		});
 	});
 
-	it('should call apiToCall with params', () => {
+	it('should call useAuth', () => {
 		renderHook(
+			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			{
+				initialProps: {
+					apiToCall: mockApiToCall,
+					initialApiParams: { paramOne: 'one', paramTwo: 2 },
+				},
+			}
+		);
+		expect(mockUseAuth).toHaveBeenCalled();
+	});
+
+	it('should call apiToCall with params and authToken if it is set', () => {
+		const { rerender } = renderHook(
+			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			{
+				initialProps: {
+					apiToCall: mockApiToCall,
+					initialApiParams: { paramOne: 'one', paramTwo: 2 },
+				},
+			}
+		);
+
+		expect(mockApiToCall).toHaveBeenCalledTimes(1);
+		expect(mockApiToCall).toHaveBeenLastCalledWith('one', 2, 'someToken');
+
+		mockUseAuth.mockReturnValue({
+			auth: {
+				deleteUrl: 'someDeleteUrl',
+				idFromLogin: 'someId',
+				status: LOGIN_STATUS.LOGGED_IN,
+				token: 'someOtherToken',
+			},
+			onAuthChange: jest.fn(),
+		});
+
+		rerender();
+
+		expect(mockApiToCall).toHaveBeenLastCalledWith('one', 2, 'someOtherToken');
+	});
+
+	it('should call apiToCall with params but not with authToken if it is an empty string', async () => {
+		mockUseAuth.mockReturnValue({
+			auth: {
+				deleteUrl: '',
+				idFromLogin: '',
+				status: LOGIN_STATUS.LOGGED_OUT,
+				token: '',
+			},
+			onAuthChange: jest.fn(),
+		});
+
+		const { result } = renderHook(
 			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
@@ -44,6 +110,12 @@ describe('The useApi hook', () => {
 
 		expect(mockApiToCall).toHaveBeenCalledTimes(1);
 		expect(mockApiToCall).toHaveBeenLastCalledWith('one', 2);
+
+		act(() => {
+			result.current.setApiParams({ paramOne: 'three', paramTwo: 4 });
+		});
+
+		await expect(mockApiToCall).toHaveBeenLastCalledWith('three', 4);
 	});
 
 	it('should not call apiToCall if params are empty', () => {
@@ -79,7 +151,12 @@ describe('The useApi hook', () => {
 
 		await waitFor(() => {
 			expect(mockApiToCall).toHaveBeenCalledTimes(2);
-			expect(mockApiToCall).toHaveBeenNthCalledWith(2, 'newOne', 42);
+			expect(mockApiToCall).toHaveBeenNthCalledWith(
+				2,
+				'newOne',
+				42,
+				expect.any(String)
+			);
 		});
 	});
 
