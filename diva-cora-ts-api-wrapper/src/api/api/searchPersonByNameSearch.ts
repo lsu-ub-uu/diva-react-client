@@ -15,8 +15,9 @@ const nameSearch = `publicPersonSearch?searchData=`;
 
 function searchPersonsByNameSearch(
 	searchTerm: string,
-	start?: number,
-	rows?: number
+	start: number,
+	rows: number,
+	authToken?: string
 ): Promise<List> {
 	return new Promise((resolve, reject) => {
 		if (searchTerm === '') {
@@ -32,6 +33,7 @@ function searchPersonsByNameSearch(
 
 			const parameters: IHttpClientRequestParameters = {
 				url: urlForPersonSearch,
+				authToken,
 			};
 
 			httpClient
