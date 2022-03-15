@@ -1,5 +1,6 @@
 import { List } from '../src/types/List';
 import { Person } from '../src/types/Person';
+import { Record } from '../src/types/Record';
 
 export const personWithDomain: Person = {
 	id: '2',
@@ -94,8 +95,8 @@ export const createMinimumPersonWithIdAndName = (
 	return createPersonObject(id, familyName, givenName);
 };
 
-export const createListWithPersons = (persons: Person[]) => {
-	const toNumber = persons.length;
-	return new List(persons, 1, toNumber, toNumber * 2);
+export const createListWithRecords = (records: Record[]) => {
+	const toNumber = records.length;
+	return new List(records, 1, toNumber, toNumber * 2);
 };
 export const completePerson: Person = createCompletePerson();

@@ -2,6 +2,7 @@ import 'whatwg-fetch';
 import {
 	searchPersonsByNameSearch as searchPersonsByNameSearchExport,
 	getRecordById,
+	getRecords,
 } from './api';
 import searchPersonsByNameSearch from './api/searchPersonByNameSearch';
 
@@ -12,9 +13,23 @@ import {
 	getDataListContainingFourPersons,
 } from '../../testData/searchResults';
 import convertToObjectWithRecordType from '../converter/RecordTypeConverter';
-import { createCompletePerson } from '../../testData/personObjectData';
+import {
+	createCompletePerson,
+	createListWithRecords,
+} from '../../testData/personObjectData';
 import { PersonDomainPart } from '../types/PersonDomainPart';
 import { RecordType } from '../types/Record';
+import extractListFromDataList from './api/DataListHandler';
+import {
+	dataListWithThreeRecords,
+	dataListWithTwoRecords,
+} from '../../testData/dataLists';
+
+jest.mock('./api/DataListHandler');
+const mockExtractListFromDataList =
+	extractListFromDataList as jest.MockedFunction<
+		typeof extractListFromDataList
+	>;
 
 jest.mock('../converter/RecordTypeConverter');
 const mockConvertToObjectWithRecordType =
@@ -27,9 +42,26 @@ const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
 
+const twoRecordsArray = [
+	{
+		id: 'someId1',
+		recordType: 'loginWebRedirect1',
+		url: 'someUrl1',
+	},
+	{
+		id: 'someId2',
+		recordType: 'loginWebRedirect2',
+		url: 'someUrl2',
+	},
+];
+
+const listWithTwoRecords = createListWithRecords(twoRecordsArray);
+
 beforeAll(() => {
 	mockHttpClientGet.mockResolvedValue(onePerson);
 	process.env.BASE_URL = 'baseUrl/';
+
+	mockExtractListFromDataList.mockReturnValue(listWithTwoRecords);
 });
 
 describe('Api', () => {
@@ -227,6 +259,125 @@ describe('Api', () => {
 			);
 
 			expect(returned).toStrictEqual(expectedPersonDomainPart);
+		});
+	});
+
+	describe('getRecords', () => {
+		it('takes recordType and optional authToken', () => {
+			getRecords(RecordType.LoginUnit);
+			getRecords(RecordType.LoginUnit, 'someAuthToken');
+		});
+
+		it('should correctly call httpClient with recordType', async () => {
+			let expectedUrl = 'baseUrl/record/loginUnit/';
+
+			expect.assertions(4);
+
+			await getRecords(RecordType.LoginUnit);
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expectedUrl,
+				})
+			);
+
+			expectedUrl = 'baseUrl/record/loginWebRedirect/';
+
+			await getRecords(RecordType.LoginWebRedirect);
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(2);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expectedUrl,
+				})
+			);
+		});
+
+		it('should correctly call httpClient with authToken', async () => {
+			expect.assertions(4);
+
+			await getRecords(RecordType.PersonDomainPart, 'someToken');
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expect.any(String),
+					authToken: 'someToken',
+				})
+			);
+
+			await getRecords(RecordType.PersonDomainPart, 'someOtherToken');
+
+			expect(mockHttpClientGet).toHaveBeenCalledTimes(2);
+			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					url: expect.any(String),
+					authToken: 'someOtherToken',
+				})
+			);
+		});
+
+		describe('if get resolves', () => {
+			it('calls extractListFromDataList with whatever get returns', async () => {
+				mockHttpClientGet.mockResolvedValueOnce(dataListWithTwoRecords);
+				await getRecords(RecordType.PersonDomainPart);
+
+				expect(mockExtractListFromDataList).toHaveBeenLastCalledWith(
+					dataListWithTwoRecords,
+					expect.any(String)
+				);
+
+				mockHttpClientGet.mockResolvedValueOnce(dataListWithThreeRecords);
+				await getRecords(RecordType.PersonDomainPart);
+
+				expect(mockExtractListFromDataList).toHaveBeenLastCalledWith(
+					dataListWithThreeRecords,
+					expect.any(String)
+				);
+			});
+			it('calls extractListFromDataList with given RecordType', async () => {
+				mockHttpClientGet.mockResolvedValueOnce(dataListWithTwoRecords);
+				await getRecords(RecordType.PersonDomainPart);
+
+				expect(mockExtractListFromDataList).toHaveBeenLastCalledWith(
+					expect.any(Object),
+					RecordType.PersonDomainPart
+				);
+
+				mockHttpClientGet.mockResolvedValueOnce(dataListWithTwoRecords);
+				await getRecords(RecordType.LoginUnit);
+
+				expect(mockExtractListFromDataList).toHaveBeenLastCalledWith(
+					expect.any(Object),
+					RecordType.LoginUnit
+				);
+			});
+			it('resolves with whatever extractListFromDataList returns', async () => {
+				expect.assertions(2);
+				let list = await getRecords(RecordType.PersonDomainPart);
+
+				expect(list).toStrictEqual(listWithTwoRecords);
+
+				const emptyList = createListWithRecords([]);
+				mockExtractListFromDataList.mockReturnValueOnce(emptyList);
+
+				list = await getRecords(RecordType.PersonDomainPart);
+				expect(list).toStrictEqual(emptyList);
+			});
+		});
+
+		describe('if get rejects', () => {
+			it('reject with the same error', async () => {
+				const expectedError = new Error('someErrorFromGet');
+				mockHttpClientGet.mockRejectedValueOnce(expectedError);
+
+				try {
+					await getRecords(RecordType.PersonDomainPart);
+				} catch (error) {
+					expect(error).toStrictEqual(expectedError);
+				}
+			});
 		});
 	});
 });
