@@ -10,4 +10,6 @@ export enum RecordType {
 	MetadataItemCollection = 'metadataItemCollection',
 	GenericCollectionItem = 'genericCollectionItem',
 	CoraText = 'coraText',
+	LoginUnit = 'loginUnit',
+	LoginWebRedirect = 'loginWebRedirect',
 }

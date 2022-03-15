@@ -32,7 +32,6 @@ export const coraTextMatcher: Matcher = [
 	{
 		propertyName: 'alternativeText',
 		nameInDataPath: 'textPart',
-		required: true,
 		nextMatcher: textMatcher,
 		attributesToMatch: {
 			type: 'alternative',
