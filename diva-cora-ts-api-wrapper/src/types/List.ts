@@ -1,4 +1,4 @@
-import Listable from './Listable';
+import { Record } from '../../dist/types';
 
 export class List {
 	fromNumber: number;
@@ -7,10 +7,10 @@ export class List {
 
 	totalNumber: number;
 
-	data: Listable[];
+	data: Record[];
 
 	constructor(
-		data: Listable[],
+		data: Record[],
 		fromNumber: number,
 		toNumber: number,
 		totalNumber: number
@@ -21,3 +21,5 @@ export class List {
 		this.totalNumber = totalNumber;
 	}
 }
+
+export default List;

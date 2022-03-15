@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Listable, Person } from 'diva-cora-ts-api-wrapper';
+import { Person, Record } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -32,7 +32,7 @@ const mockGetDisplayName = getDisplayName as jest.MockedFunction<
 	typeof getDisplayName
 >;
 
-const someListable: Listable = {
+const someRecord: Record = {
 	id: 'someId',
 	recordType: 'someRecordType',
 };
@@ -52,14 +52,14 @@ describe('The Card component', () => {
 	it('should take a Listable and a listItemNumber as a prop', () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} listItemNumber={1} />
+				<Card item={someRecord} listItemNumber={1} />
 			</MemoryRouter>
 		);
 	});
 	it("should render the Listable's id", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} listItemNumber={1} />
+				<Card item={someRecord} listItemNumber={1} />
 			</MemoryRouter>
 		);
 		expect(screen.getAllByText(/someId/i)).toHaveLength(2);
@@ -70,7 +70,7 @@ describe('The Card component', () => {
 			it('show $recordType: $recordId', () => {
 				render(
 					<MemoryRouter>
-						<Card item={someListable} listItemNumber={1} />
+						<Card item={someRecord} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				expect(screen.getByText(/someRecordType: someId/i)).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('The Card component', () => {
 			it("should render the Listable's presentation as Link", () => {
 				render(
 					<MemoryRouter>
-						<Card item={someListable} listItemNumber={1} />
+						<Card item={someRecord} listItemNumber={1} />
 					</MemoryRouter>
 				);
 				const links = screen.getAllByRole('link');
@@ -159,7 +159,7 @@ describe('The Card component', () => {
 	it("should pass the /recordType/id (from the Listable) to the Link's 'to'-attribute", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someListable} listItemNumber={1} />
+				<Card item={someRecord} listItemNumber={1} />
 			</MemoryRouter>
 		);
 
@@ -173,11 +173,11 @@ describe('The Card component', () => {
 	});
 
 	it('Should display the listItemNumber', () => {
-		renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+		renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
 
 		expect(screen.getByText(/1./));
 
-		renderWithRouter(<Card item={someListable} listItemNumber={432} />);
+		renderWithRouter(<Card item={someRecord} listItemNumber={432} />);
 
 		expect(screen.getByText(/432./));
 	});
@@ -235,7 +235,7 @@ describe('The Card component', () => {
 		});
 		describe('if recordType is not "person"', () => {
 			it('it should not call ListWithLabel', () => {
-				renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+				renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});
@@ -359,7 +359,7 @@ describe('The Card component', () => {
 		});
 		describe('if recordType is not "person"', () => {
 			it('it should not call ListWithLabel', () => {
-				renderWithRouter(<Card item={someListable} listItemNumber={1} />);
+				renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});

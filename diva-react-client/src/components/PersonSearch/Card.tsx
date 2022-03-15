@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Listable, Person, RecordType } from 'diva-cora-ts-api-wrapper';
+import { Person, Record, RecordType } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from '../PersonPage/ListWithLabel';
 import getDomainCollection from '../../divaData/collections';
 import { getDisplayName } from '../../../tools/NameTools';
@@ -61,7 +61,7 @@ const Card = function ({
 	item,
 	listItemNumber,
 }: {
-	item: Listable;
+	item: Record;
 	listItemNumber: number;
 }) {
 	return (
@@ -79,7 +79,7 @@ const Card = function ({
 	);
 };
 
-const getPresentation = (item: Listable) => {
+const getPresentation = (item: Record) => {
 	if (isPerson(item)) {
 		const person: Person = item as Person;
 		if (person.authorisedName === undefined) {
@@ -91,7 +91,7 @@ const getPresentation = (item: Listable) => {
 	return `${item.recordType}: ${item.id}`;
 };
 
-const possiblyShowOrcid = (item: Listable) => {
+const possiblyShowOrcid = (item: Record) => {
 	if (isPerson(item)) {
 		const person = item as Person;
 		if (person.orcids && person.orcids.length > 0) {
@@ -105,7 +105,7 @@ const possiblyShowOrcid = (item: Listable) => {
 	return null;
 };
 
-const possiblyShowDomains = (item: Listable) => {
+const possiblyShowDomains = (item: Record) => {
 	if (isPerson(item)) {
 		const person = item as Person;
 		if (person.domains !== undefined && person.domains.length > 0) {
@@ -125,7 +125,7 @@ const possiblyShowDomains = (item: Listable) => {
 	return null;
 };
 
-const isPerson = (item: Listable) => {
+const isPerson = (item: Record) => {
 	return item.recordType === RecordType.Person;
 };
 

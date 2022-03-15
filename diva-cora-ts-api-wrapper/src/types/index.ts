@@ -2,7 +2,6 @@ export * from './Collection';
 export * from './CollectionItem';
 export * from './CoraText';
 export * from './List';
-export * from './Listable';
 export * from './Organisation';
 export * from './Person';
 export * from './PersonDomainPart';
