@@ -20,13 +20,13 @@ const CardSection = styled.section`
 
 	display: grid;
 
-	grid-template-columns: max-content auto max-content;
+	grid-template-columns: min-content auto max-content;
 
 	grid-template-areas:
 		'listItemNumber title id'
 		'. . orcid'
 		'domain domain domain';
-	row-gap: 1em;
+	row-gap: 0.4em;
 	column-gap: 0.4em;
 `;
 
@@ -50,6 +50,7 @@ const Id = styled.p`
 
 const Orcid = styled.div`
 	grid-area: orcid;
+	justify-self: right;
 `;
 
 const Domain = styled.div`
@@ -72,8 +73,8 @@ const Card = function ({
 				</Link>
 			</Title>
 			<Id className="gray">{item.id}</Id>
-			<Orcid>{possiblyShowOrcid(item)}</Orcid>
-			<Domain>{possiblyShowDomains(item)}</Domain>
+			{possiblyShowOrcid(item)}
+			{possiblyShowDomains(item)}
 		</CardSection>
 	);
 };
