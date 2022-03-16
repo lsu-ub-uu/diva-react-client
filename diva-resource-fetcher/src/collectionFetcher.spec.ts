@@ -60,7 +60,6 @@ const genericCollectionItems: GenericCollectionItem[] = [
 const coraTexts: CoraText[] = [
 	{
 		id: 'someId1',
-		name: 'someName1',
 		defaultText: {
 			text: 'someText1',
 		},
@@ -68,7 +67,6 @@ const coraTexts: CoraText[] = [
 	},
 	{
 		id: 'someId2',
-		name: 'someName2',
 		defaultText: {
 			text: 'someText2',
 		},
