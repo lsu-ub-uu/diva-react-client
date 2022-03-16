@@ -7,21 +7,21 @@ const listWithThreeLoginUnits: List = {
 	data: [
 		{
 			loginInfo: {
-				loginType: 'webRedirectLogin',
+				loginType: 'loginWebRedirect',
 				loginName: 'someLoginName1',
 				loginDescriptionName: 'someLoginDescription1',
 			},
 		},
 		{
 			loginInfo: {
-				loginType: 'webRedirectLogin',
+				loginType: 'someOtherLoginType',
 				loginName: 'someLoginName2',
 				loginDescriptionName: 'someLoginDescription2',
 			},
 		},
 		{
 			loginInfo: {
-				loginType: 'webRedirectLogin',
+				loginType: 'loginWebRedirect',
 				loginName: 'someLoginName3',
 				loginDescriptionName: 'someLoginDescription3',
 			},
