@@ -14,12 +14,10 @@ const fetchLoginUnits = async (): Promise<LoginUnitObject[]> => {
 	return new Promise((resolve, reject) => {
 		getRecords(RecordType.LoginUnit)
 			.then((list: List) => {
-				const listOfWebRedirectLogins = list.data.filter((item) => {
-					return item.loginInfo.loginType === RecordType.LoginWebRedirect;
-				});
+				const webRedirectLogins = getAllWebRedirectLogins(list);
 
-				const promises = listOfWebRedirectLogins.map((loginUnit) =>
-					fetchUrlAndDisplayText(loginUnit)
+				const promises = webRedirectLogins.map((loginUnit) =>
+					fetchWebRedirectDataAndCreateLoginUnitObject(loginUnit)
 				);
 
 				Promise.all(promises).then((loginUnitObjects) => {
@@ -32,7 +30,13 @@ const fetchLoginUnits = async (): Promise<LoginUnitObject[]> => {
 	});
 };
 
-const fetchUrlAndDisplayText = async (
+function getAllWebRedirectLogins(list: List) {
+	return list.data.filter((item) => {
+		return item.loginInfo.loginType === RecordType.LoginWebRedirect;
+	});
+}
+
+const fetchWebRedirectDataAndCreateLoginUnitObject = async (
 	loginUnit: LoginUnit
 ): Promise<LoginUnitObject> => {
 	return new Promise((resolve, reject) => {
@@ -50,15 +54,10 @@ const fetchUrlAndDisplayText = async (
 			.then((result) => {
 				const [loginWebRedirect, coraText] = result;
 
-				const loginUnitObject: LoginUnitObject = {
-					type: LoginType.LoginWebRedirect,
-					url: loginWebRedirect.url,
-					displayTextSv: coraText.defaultText.text,
-					displayTextEn:
-						coraText.alternativeText !== undefined
-							? coraText.alternativeText.text
-							: '',
-				};
+				const loginUnitObject: LoginUnitObject = createLoginUnitObject(
+					loginWebRedirect,
+					coraText
+				);
 
 				resolve(loginUnitObject);
 			})
@@ -67,5 +66,20 @@ const fetchUrlAndDisplayText = async (
 			});
 	});
 };
+
+function createLoginUnitObject(
+	loginWebRedirect: LoginWebRedirect,
+	coraText: CoraText
+): LoginUnitObject {
+	return {
+		type: LoginType.LoginWebRedirect,
+		url: loginWebRedirect.url,
+		displayTextSv: coraText.defaultText.text,
+		displayTextEn:
+			coraText.alternativeText !== undefined
+				? coraText.alternativeText.text
+				: '',
+	};
+}
 
 export default fetchLoginUnits;
