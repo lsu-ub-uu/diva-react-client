@@ -1,4 +1,4 @@
-import { LoginType, LoginUnitObject } from '../src/divaData/types';
+import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 
 const loginUnits: LoginUnitObject[] = [];
 
