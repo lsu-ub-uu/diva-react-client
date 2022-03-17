@@ -6,3 +6,5 @@ export * from './Organisation';
 export * from './Person';
 export * from './PersonDomainPart';
 export * from './Record';
+export * from './LoginUnit';
+export * from './LoginWebRedirect';

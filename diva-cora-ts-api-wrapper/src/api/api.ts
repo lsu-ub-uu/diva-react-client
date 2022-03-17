@@ -4,6 +4,7 @@ import { IHttpClientRequestParameters } from './http/IHttpClient';
 import convertToObjectWithRecordType from '../converter/RecordTypeConverter';
 import { RecordType } from '../types/Record';
 import extractListFromDataList from './api/DataListHandler';
+import { List } from '../types/List';
 
 export function getRecordById<T>(
 	recordType: RecordType,
@@ -39,7 +40,10 @@ export function getRecordById<T>(
 	});
 }
 
-export function getRecords(recordType: RecordType, authToken?: string) {
+export function getRecords(
+	recordType: RecordType,
+	authToken?: string
+): Promise<List> {
 	return new Promise((resolve, reject) => {
 		const urlForRecord = `${process.env.BASE_URL}record/${recordType}/`;
 
