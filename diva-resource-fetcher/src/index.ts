@@ -1,4 +1,5 @@
-import fetchCollectionsWithBaseDir from './fetchCollections';
+import fetchCollectionsWithBaseDir from './collections/fetchCollections';
+import fetchLoginUnitsWithBaseDir from './loginUnits';
 
 console.log('Running DiVA Resource Fetcher');
 
@@ -12,9 +13,25 @@ if (process.argv.length < 3) {
 const basePath = process.argv[2];
 console.log(`Received basePath: '${basePath}'`);
 
-fetchCollectionsWithBaseDir(basePath)
-	.then((res) => {
-		console.log(res);
+const collectionPromise = fetchCollectionsWithBaseDir(basePath);
+// .then((res) => {
+// 	console.log(res);
+// })
+// .catch((error) => {
+// 	console.error(error);
+// });
+
+const loginUnitsPromise = fetchLoginUnitsWithBaseDir(basePath);
+// .then((res) => {
+// 	console.log(res);
+// })
+// .catch((error) => {
+// 	console.error(error);
+// });
+
+Promise.all([collectionPromise, loginUnitsPromise])
+	.then((values) => {
+		console.log(values);
 		process.exit(0);
 	})
 	.catch((error) => {

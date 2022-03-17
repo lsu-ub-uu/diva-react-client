@@ -1,6 +1,6 @@
 import fetchCollection from './collectionFetcher';
-import saveStringToFile from './fileHandler';
-import { serializeMap } from './mapHandler';
+import saveStringToFile from '../fileHandler';
+import { serializeMap } from '../mapHandler';
 
 const fetchAndSaveCollection = async (
 	collectionId: string,

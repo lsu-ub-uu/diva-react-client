@@ -7,7 +7,7 @@ import {
 	CoraText,
 	LoginWebRedirect,
 } from 'diva-cora-ts-api-wrapper';
-import listWithThreeLoginUnits from '../testData/loginUnitsTestData';
+import listWithThreeLoginUnits from '../../testData/loginUnitsTestData';
 import fetchLoginUnits from './loginUnitFetcher';
 
 jest.mock('diva-cora-ts-api-wrapper', () => ({

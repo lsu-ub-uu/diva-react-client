@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import fetchCollection from './collectionFetcher';
-import { serializeMap } from './mapHandler';
+import { serializeMap } from '../mapHandler';
 
 beforeAll(() => {
 	jest.setTimeout(10000);

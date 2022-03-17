@@ -10,7 +10,8 @@
 	},
 	"scripts": {
 		"test": "jest --watch",
-		"build": "parcel build"
+		"build": "parcel build",
+		"test:file": "jest --watch --testPathPattern"
 	},
 	"author": "",
 	"license": "ISC",
