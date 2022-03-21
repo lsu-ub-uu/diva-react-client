@@ -1,0 +1,65 @@
+import React from 'react';
+import styled from 'styled-components';
+import {
+	Organisation,
+	PersonDomainPart,
+	RecordType,
+} from 'diva-cora-ts-api-wrapper';
+import getDomainCollection from '../../divaData/collections';
+import ListWithLabel from './ListWithLabel';
+import RecordFetcher from '../RecordFetcher';
+import AffiliationDisplay from './AffiliationDisplay';
+
+const StyledUl = styled.ul`
+	padding-left: 1em;
+`;
+
+const PersonDomainPartView = function ({
+	personDomainPart,
+}: {
+	personDomainPart: PersonDomainPart;
+}) {
+	const domainCollection = getDomainCollection();
+
+	const title =
+		domainCollection.get(personDomainPart.domain) ||
+		`DomänId: ${personDomainPart.domain}`;
+
+	return (
+		<>
+			<h2>{title}</h2>
+			{personDomainPart.identifiers && (
+				<ListWithLabel
+					list={personDomainPart.identifiers}
+					label="Lokal identifikator"
+				/>
+			)}
+			{personDomainPart.affiliations && (
+				<StyledUl>
+					{personDomainPart.affiliations.map((organisation) => {
+						return (
+							<li key={organisation.id}>
+								<RecordFetcher<Organisation>
+									recordType={RecordType.Organisation}
+									id={organisation.id}
+								>
+									{(injectedProps) => (
+										<AffiliationDisplay
+											affiliation={{
+												name: injectedProps.record.name,
+												fromYear: organisation.fromYear,
+												untilYear: organisation.untilYear,
+											}}
+										/>
+									)}
+								</RecordFetcher>
+							</li>
+						);
+					})}
+				</StyledUl>
+			)}
+		</>
+	);
+};
+
+export default PersonDomainPartView;
