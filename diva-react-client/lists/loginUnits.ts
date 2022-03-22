@@ -1,5 +1,12 @@
-import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 
-const loginUnits: LoginUnitObject[] = [];
+const loginUnits: LoginUnitObject[] = [
+	{
+		url: 'http://example.com',
+		displayTextSv: 'Exempelinloggning',
+		displayTextEn: 'Login example',
+		type: LoginType.LoginWebRedirect,
+	},
+];
 
 export default loginUnits;
