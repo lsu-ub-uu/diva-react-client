@@ -89,9 +89,16 @@ describe('fetchAndSaveLoginUnits', () => {
 
 		await fetchAndSaveLoginUnits('somePathToFile');
 
-		const expectedString = `import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+		const loginUnitString = JSON.stringify(loginUnits);
 
-const loginUnits: LoginUnitObject[] = ${JSON.stringify(loginUnits)};
+		const stringWithPreservedTypes = loginUnitString.replace(
+			/{"type":"loginWebRedirect",/g,
+			'{type:LoginType.LoginWebRedirect,'
+		);
+
+		const expectedString = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
+
+const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
 
 export default loginUnits;`;
 
@@ -113,9 +120,16 @@ export default loginUnits;`;
 
 		await fetchAndSaveLoginUnits('somePathToFile');
 
-		const expectedString2 = `import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+		const loginUnitString2 = JSON.stringify(loginUnits2);
 
-const loginUnits: LoginUnitObject[] = ${JSON.stringify(loginUnits2)};
+		const stringWithPreservedTypes2 = loginUnitString2.replace(
+			/{"type":"loginWebRedirect",/g,
+			'{type:LoginType.LoginWebRedirect,'
+		);
+
+		const expectedString2 = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
+
+const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes2};
 
 export default loginUnits;`;
 

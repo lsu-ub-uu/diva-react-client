@@ -10,9 +10,16 @@ const fetchAndSaveLoginUnits = async (pathToFile: string): Promise<string> => {
 		}
 		fetchLoginUnits()
 			.then((loginUnits) => {
-				const stringToWrite = `import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+				const loginUnitString = JSON.stringify(loginUnits);
 
-const loginUnits: LoginUnitObject[] = ${JSON.stringify(loginUnits)};
+				const stringWithPreservedTypes = loginUnitString.replace(
+					/{"type":"loginWebRedirect",/g,
+					'{type:LoginType.LoginWebRedirect,'
+				);
+
+				const stringToWrite = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
+
+const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
 
 export default loginUnits;`;
 
