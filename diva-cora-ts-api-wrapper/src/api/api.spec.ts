@@ -1,10 +1,10 @@
 import 'whatwg-fetch';
 import {
-	searchPersonsByNameSearch as searchPersonsByNameSearchExport,
+	searchPersonsByGeneralSearch as searchPersonsByGeneralSearchExport,
 	getRecordById,
 	getRecords,
 } from './api';
-import searchPersonsByNameSearch from './api/searchPersonByNameSearch';
+import searchPersonsByGeneralSearch from './api/searchPersonByGeneralSearch';
 
 import httpClient from './http/HttpClient';
 import { Person } from '../types/Person';
@@ -65,9 +65,9 @@ beforeAll(() => {
 });
 
 describe('Api', () => {
-	it('should re-export searchPersonsByNameSearch', () => {
-		expect(searchPersonsByNameSearch).toStrictEqual(
-			searchPersonsByNameSearchExport
+	it('should re-export searchPersonsByGeneralSearch', () => {
+		expect(searchPersonsByGeneralSearch).toStrictEqual(
+			searchPersonsByGeneralSearchExport
 		);
 	});
 

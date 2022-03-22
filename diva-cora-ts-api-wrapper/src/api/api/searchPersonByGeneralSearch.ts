@@ -11,9 +11,9 @@ import { List } from '../../types/List';
 import { Person } from '../../types/Person';
 
 const searchEndpoint = 'record/searchResult/';
-const nameSearch = `publicPersonSearch?searchData=`;
+const generalSearch = `publicPersonSearch?searchData=`;
 
-function searchPersonsByNameSearch(
+function searchPersonsByGeneralSearch(
 	searchTerm: string,
 	start: number,
 	rows: number,
@@ -22,7 +22,7 @@ function searchPersonsByNameSearch(
 	return new Promise((resolve, reject) => {
 		if (searchTerm === '') {
 			reject(
-				new Error('No searchTerm was passed to searchPersonsByNameSearch')
+				new Error('No searchTerm was passed to searchPersonsByGeneralSearch')
 			);
 		} else {
 			const urlForPersonSearch = composeUrlForPersonSearch(
@@ -59,7 +59,7 @@ function composeUrlForPersonSearch(
 	return (
 		process.env.BASE_URL +
 		searchEndpoint +
-		nameSearch +
+		generalSearch +
 		JSON.stringify(searchData)
 	);
 }
@@ -79,7 +79,7 @@ const composeReturnData = (
 						name: 'includePart',
 						children: [
 							{
-								name: 'personNameSearchTerm',
+								name: 'personGeneralSearchTerm',
 								value: searchTerm,
 							},
 						],
@@ -125,4 +125,4 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 	return list;
 }
 
-export default searchPersonsByNameSearch;
+export default searchPersonsByGeneralSearch;

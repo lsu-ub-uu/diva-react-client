@@ -64,4 +64,4 @@ export function getRecords(
 	});
 }
 
-export { default as searchPersonsByNameSearch } from './api/searchPersonByNameSearch';
+export { default as searchPersonsByGeneralSearch } from './api/searchPersonByGeneralSearch';
