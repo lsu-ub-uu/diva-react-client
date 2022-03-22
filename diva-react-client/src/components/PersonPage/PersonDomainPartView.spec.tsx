@@ -3,12 +3,12 @@ import React from 'react';
 import { Organisation, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonDomainPartView from './PersonDomainPartView';
 import ListWithLabel from './ListWithLabel';
-import getDomainCollection from '../../divaData/collections';
+import getDomainCollection from '../../divaData/resources';
 import AffiliationDisplay from './AffiliationDisplay';
 import useApi from '../../hooks/useApi';
 import createOrganisationWithNameAndId from '../../../testData/organisationObjectData';
 
-jest.mock('../../divaData/collections');
+jest.mock('../../divaData/resources');
 const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
 	typeof getDomainCollection
 >;

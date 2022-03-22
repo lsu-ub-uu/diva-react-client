@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Person, Record, RecordType } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from '../PersonPage/ListWithLabel';
-import getDomainCollection from '../../divaData/collections';
+import getDomainCollection from '../../divaData/resources';
 import { getDisplayName } from '../../../tools/NameTools';
 
 const CardSection = styled.section`

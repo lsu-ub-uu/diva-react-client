@@ -5,7 +5,7 @@ import {
 	PersonDomainPart,
 	RecordType,
 } from 'diva-cora-ts-api-wrapper';
-import getDomainCollection from '../../divaData/collections';
+import getDomainCollection from '../../divaData/resources';
 import ListWithLabel from './ListWithLabel';
 import RecordFetcher from '../RecordFetcher';
 import AffiliationDisplay from './AffiliationDisplay';

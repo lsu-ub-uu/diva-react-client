@@ -7,7 +7,7 @@ import Card from './Card';
 import { renderWithRouter } from '../../../test-utils';
 import { createPersonObject } from '../../../testData/personObjectData';
 import ListWithLabel from '../PersonPage/ListWithLabel';
-import getDomainCollection from '../../divaData/collections';
+import getDomainCollection from '../../divaData/resources';
 import { getDisplayName } from '../../../tools/NameTools';
 
 jest.mock('react-router-dom', () => ({
@@ -22,7 +22,7 @@ jest.mock('../PersonPage/ListWithLabel', () => {
 	return jest.fn(() => null);
 });
 
-jest.mock('../../divaData/collections');
+jest.mock('../../divaData/resources');
 const mockGetDomainCollection = getDomainCollection as jest.MockedFunction<
 	typeof getDomainCollection
 >;

@@ -1,6 +1,6 @@
 import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 
-const loginUnits: LoginUnitObject[] = [
+export const loginUnits: LoginUnitObject[] = [
 	{
 		url: 'http://example.com',
 		displayTextSv: 'Exempelinloggning',
@@ -9,4 +9,4 @@ const loginUnits: LoginUnitObject[] = [
 	},
 ];
 
-export default loginUnits;
+export default { loginUnits };
