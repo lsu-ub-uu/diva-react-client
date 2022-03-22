@@ -19,7 +19,7 @@ const fetchAndSaveLoginUnits = async (pathToFile: string): Promise<string> => {
 
 				const stringToWrite = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
 
-const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
+export const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
 
 export default loginUnits;`;
 

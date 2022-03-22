@@ -98,7 +98,7 @@ describe('fetchAndSaveLoginUnits', () => {
 
 		const expectedString = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
 
-const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
+export const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes};
 
 export default loginUnits;`;
 
@@ -129,7 +129,7 @@ export default loginUnits;`;
 
 		const expectedString2 = `import { LoginUnitObject, LoginType } from 'diva-cora-ts-api-wrapper';
 
-const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes2};
+export const loginUnits: LoginUnitObject[] = ${stringWithPreservedTypes2};
 
 export default loginUnits;`;
 
