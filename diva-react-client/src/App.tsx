@@ -12,7 +12,7 @@ import PersonPage from './components/PersonPage';
 import GlobalStyle from './styles/GlobalStyle';
 import Themes from './themes/Themes';
 import { AuthProvider } from './context/AuthContext';
-import AuthComponent from './components/LoginButton/AuthComponent';
+import AuthComponent from './components/Login/AuthComponent';
 
 // const Navigation = function () {
 // 	return (

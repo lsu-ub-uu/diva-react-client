@@ -7,7 +7,7 @@ import PersonPage from './components/PersonPage';
 import { renderWithRouter } from '../test-utils';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
-import AuthComponent from './components/LoginButton/AuthComponent';
+import AuthComponent from './components/Login/AuthComponent';
 
 jest.mock('../src/components/PersonSearch', () => {
 	return jest.fn(() => (
@@ -32,7 +32,7 @@ jest.mock('../src/components/NoMatch', () => {
 	return jest.fn(() => null);
 });
 
-jest.mock('./components/LoginButton/AuthComponent', () => {
+jest.mock('./components/Login/AuthComponent', () => {
 	return jest.fn(() => null);
 });
 
