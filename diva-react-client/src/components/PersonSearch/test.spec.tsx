@@ -8,18 +8,17 @@ import {
 	personWithDomain,
 	threePersonObjects,
 } from '../../../testData/personObjectData';
-import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
+import useSearchPersons from './useSearchPersons';
 import { renderWithRouter } from '../../../test-utils';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
 
-jest.mock('./useSearchPersonsByNameSearch');
+jest.mock('./useSearchPersons');
 const mockedTriggerSearchWithParams = jest.fn();
-const mockUseSearchPersonsByNameSearch =
-	useSearchPersonsByNameSearch as jest.MockedFunction<
-		typeof useSearchPersonsByNameSearch
-	>;
+const mockUseSearchPersons = useSearchPersons as jest.MockedFunction<
+	typeof useSearchPersons
+>;
 const defaultListToReturn = createListWithPersons(threePersonObjects);
 
 jest.mock('../SearchComponent');
@@ -44,7 +43,7 @@ const mockedSetStart = jest.fn();
 const mockedSetRows = jest.fn();
 
 beforeAll(() => {
-	mockUseSearchPersonsByNameSearch.mockReturnValue({
+	mockUseSearchPersons.mockReturnValue({
 		isLoading: false,
 		result: {
 			hasData: true,
@@ -99,13 +98,13 @@ describe('The PersonSearch component', () => {
 		});
 	});
 
-	describe('Uses useSearchPersonsByNameSearch', () => {
-		it('should call useSearchPersonsByNameSearch, with searchTerm/start/rows from usePersonSearchParams', () => {
+	describe('Uses useSearchPersons', () => {
+		it('should call useSearchPersons, with searchTerm/start/rows from usePersonSearchParams', () => {
 			mockReturnFromUsePersonSearchParams('someCoolTerm', 1, 10);
 			renderWithRouter(<PersonSearch />);
 
-			expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(1);
-			expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+			expect(mockUseSearchPersons).toHaveBeenCalledTimes(1);
+			expect(mockUseSearchPersons).toHaveBeenLastCalledWith(
 				'someCoolTerm',
 				1,
 				10
@@ -115,8 +114,8 @@ describe('The PersonSearch component', () => {
 
 			renderWithRouter(<PersonSearch />);
 
-			expect(mockUseSearchPersonsByNameSearch).toHaveBeenCalledTimes(2);
-			expect(mockUseSearchPersonsByNameSearch).toHaveBeenLastCalledWith(
+			expect(mockUseSearchPersons).toHaveBeenCalledTimes(2);
+			expect(mockUseSearchPersons).toHaveBeenLastCalledWith(
 				'someSearchTerm',
 				30,
 				100
@@ -177,7 +176,7 @@ describe('The PersonSearch component', () => {
 				expect(mockedSetRows).toHaveBeenLastCalledWith(434345);
 			});
 
-			it('if onRowUpdate is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the new rows', () => {
+			it('if onRowUpdate is called, useSearchPersonses triggerSearchWithParams is called with the new rows', () => {
 				mockReturnFromUsePersonSearchParams('awesomeTerm', 1, 10);
 				renderWithRouter(<PersonSearch />);
 
@@ -225,7 +224,7 @@ describe('The PersonSearch component', () => {
 				expect(mockedSetSearchTerm).toHaveBeenCalledWith('someNewValue');
 			});
 
-			it('if onSubmit is called, useSearchPersonsByNameSearches triggerSearchWithParams is called with the searchTerm, start=1 and rows from usePersonSearchParams', () => {
+			it('if onSubmit is called, useSearchPersonses triggerSearchWithParams is called with the searchTerm, start=1 and rows from usePersonSearchParams', () => {
 				mockReturnFromUsePersonSearchParams('someFooSearchTerm', 2, 3);
 
 				renderWithRouter(<PersonSearch />);
@@ -260,8 +259,8 @@ describe('The PersonSearch component', () => {
 	});
 
 	describe('Uses PaginatedCardList', () => {
-		it('does not call PaginatedCardList, if useSearchPersonsByNameSearch does not return data', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+		it('does not call PaginatedCardList, if useSearchPersons does not return data', () => {
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: false,
@@ -275,8 +274,8 @@ describe('The PersonSearch component', () => {
 			expect(mockPaginatedCardList).not.toHaveBeenCalled();
 		});
 
-		it('does call PaginatedCardList with list, rows and onPaginationUpdate if useSearchPersonsByNameSearch does return data', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+		it('does call PaginatedCardList with list, rows and onPaginationUpdate if useSearchPersons does return data', () => {
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: true,
@@ -302,7 +301,7 @@ describe('The PersonSearch component', () => {
 			mockReturnFromUsePersonSearchParams('someFooSearch', 434, 5445);
 
 			const someOtherList = createListWithPersons([personWithDomain]);
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: true,
@@ -324,7 +323,7 @@ describe('The PersonSearch component', () => {
 			);
 		});
 
-		it('onPaginationUpdate passed to PaginatedCardList calls useSearchPersonsByNameSearches triggerSearchWithParams with start from onPaginationUpdate an rows from usePersonSearchParams', () => {
+		it('onPaginationUpdate passed to PaginatedCardList calls useSearchPersonses triggerSearchWithParams with start from onPaginationUpdate an rows from usePersonSearchParams', () => {
 			mockReturnFromUsePersonSearchParams('someSearch', 1, 40);
 			renderWithRouter(<PersonSearch />);
 
@@ -383,8 +382,8 @@ describe('The PersonSearch component', () => {
 	});
 
 	describe('It has a loading state', () => {
-		it('while useSearchPersonsByNameSearch is loading, an explanatory text is shown', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+		it('while useSearchPersons is loading, an explanatory text is shown', () => {
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: true,
 				result: {
 					hasData: false,
@@ -399,8 +398,8 @@ describe('The PersonSearch component', () => {
 			expect(screen.queryByText(/Laddar.../i)).toBeInTheDocument();
 		});
 
-		it('if useSearchPersonsByNameSearch is not loading, the text is not shown', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+		it('if useSearchPersons is not loading, the text is not shown', () => {
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: false,
@@ -416,16 +415,14 @@ describe('The PersonSearch component', () => {
 		});
 	});
 
-	describe('It displays an error if there is an error returned by useSearchPersonsByNameSearch', () => {
-		it('It displays an error if there is an error returned by useSearchPersonsByNameSearch', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+	describe('It displays an error if there is an error returned by useSearchPersons', () => {
+		it('It displays an error if there is an error returned by useSearchPersons', () => {
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: false,
 					isError: true,
-					error: new Error(
-						'Some Error message returned by useSearchPersonsByNameSearch'
-					),
+					error: new Error('Some Error message returned by useSearchPersons'),
 				},
 				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});
@@ -434,17 +431,17 @@ describe('The PersonSearch component', () => {
 
 			expect(
 				screen.queryByText(
-					'Ett fel har inträffat: "Some Error message returned by useSearchPersonsByNameSearch"'
+					'Ett fel har inträffat: "Some Error message returned by useSearchPersons"'
 				)
 			).toBeInTheDocument();
 
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: false,
 					isError: true,
 					error: new Error(
-						'Some other Error message returned by useSearchPersonsByNameSearch'
+						'Some other Error message returned by useSearchPersons'
 					),
 				},
 				triggerSearchWithParams: mockedTriggerSearchWithParams,
@@ -453,13 +450,13 @@ describe('The PersonSearch component', () => {
 			rerender(<PersonSearch />);
 			expect(
 				screen.queryByText(
-					'Ett fel har inträffat: "Some other Error message returned by useSearchPersonsByNameSearch"'
+					'Ett fel har inträffat: "Some other Error message returned by useSearchPersons"'
 				)
 			).toBeInTheDocument();
 		});
 
 		it('does not display an error if there is no error', () => {
-			mockUseSearchPersonsByNameSearch.mockReturnValueOnce({
+			mockUseSearchPersons.mockReturnValueOnce({
 				isLoading: false,
 				result: {
 					hasData: false,

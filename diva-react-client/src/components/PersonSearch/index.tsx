@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import SearchComponent from '../SearchComponent';
 import PaginatedCardList from './PaginatedCardList';
 import usePersonSearchParams from './usePersonSearchParams';
-import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
+import useSearchPersons from './useSearchPersons';
 
 const Parent = styled.div`
 	display: grid;
@@ -19,8 +19,11 @@ const PersonSearch = function () {
 	const { searchTerm, start, rows, setSearchTerm, setStart, setRows } =
 		usePersonSearchParams();
 
-	const { isLoading, result, triggerSearchWithParams } =
-		useSearchPersonsByNameSearch(searchTerm, start, rows);
+	const { isLoading, result, triggerSearchWithParams } = useSearchPersons(
+		searchTerm,
+		start,
+		rows
+	);
 
 	const handleValueChange = (newValue: string) => {
 		setSearchTerm(newValue);

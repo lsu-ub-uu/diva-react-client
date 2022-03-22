@@ -1,14 +1,14 @@
+import { searchPersonsByGeneralSearch } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
-import { searchPersonsByNameSearch } from 'diva-cora-ts-api-wrapper';
 import useApi from '../../hooks/useApi';
 
-const useSearchPersonsByNameSearch = (
+const useSearchPersons = (
 	initialSearchTerm: string,
 	initialStart: number,
 	initialRows: number
 ) => {
 	const { isLoading, result, setApiParams } = useApi(
-		searchPersonsByNameSearch,
+		searchPersonsByGeneralSearch,
 		{}
 	);
 
@@ -41,4 +41,4 @@ const useSearchPersonsByNameSearch = (
 	};
 };
 
-export default useSearchPersonsByNameSearch;
+export default useSearchPersons;

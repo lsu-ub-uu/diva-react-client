@@ -1,12 +1,12 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { List, searchPersonsByNameSearch } from 'diva-cora-ts-api-wrapper';
+import { List, searchPersonsByGeneralSearch } from 'diva-cora-ts-api-wrapper';
 import {
 	createListWithPersons,
 	threePersonObjects,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
-import useSearchPersonsByNameSearch from './useSearchPersonsByNameSearch';
+import useSearchPersonsByGeneralSearch from './useSearchPersons';
 
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;
@@ -38,31 +38,31 @@ beforeAll(() => {
 	mockUseApi.mockReturnValue(defaultReturnFromMockUseApi);
 });
 
-describe('the useSearchPersonsByNameSearch hook', () => {
+describe('the useSearchPersonsByGeneralSearch hook', () => {
 	it('takes searchTerm as well as start and rows as argument', () => {
-		renderHook(() => useSearchPersonsByNameSearch('', 1, 10));
+		renderHook(() => useSearchPersonsByGeneralSearch('', 1, 10));
 	});
 
 	describe('uses useApi', () => {
-		it('calls useApi with searchPersonByNameSearch and empty params, does NOT call setApiParams on first render if empty searchTerm', () => {
-			renderHook(() => useSearchPersonsByNameSearch('', 1, 10));
+		it('calls useApi with searchPersonByGeneralSearch and empty params, does NOT call setApiParams on first render if empty searchTerm', () => {
+			renderHook(() => useSearchPersonsByGeneralSearch('', 1, 10));
 
 			expect(mockUseApi).toHaveBeenLastCalledWith(
-				searchPersonsByNameSearch,
+				searchPersonsByGeneralSearch,
 				{}
 			);
 
 			expect(mockSetApiParams).not.toHaveBeenCalled();
 		});
 
-		it('calls useApi with searchPersonByNameSearch and empty params, does NOT call setApiParams on subsequent renders, even if searchTerm given', () => {
+		it('calls useApi with searchPersonByGeneralSearch and empty params, does NOT call setApiParams on subsequent renders, even if searchTerm given', () => {
 			const { rerender } = renderHook(
-				({ searchTerm }) => useSearchPersonsByNameSearch(searchTerm, 1, 10),
+				({ searchTerm }) => useSearchPersonsByGeneralSearch(searchTerm, 1, 10),
 				{ initialProps: { searchTerm: '' } }
 			);
 
 			expect(mockUseApi).toHaveBeenLastCalledWith(
-				searchPersonsByNameSearch,
+				searchPersonsByGeneralSearch,
 				{}
 			);
 
@@ -72,15 +72,15 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 			expect(mockSetApiParams).not.toHaveBeenCalled();
 		});
 
-		it('calls useApi with searchPersonByNameSearch and empty params, DOES call setApiParams on first render if given searchTerm', () => {
+		it('calls useApi with searchPersonByGeneralSearch and empty params, DOES call setApiParams on first render if given searchTerm', () => {
 			const { rerender } = renderHook(
 				({ start }) =>
-					useSearchPersonsByNameSearch('someSearchTerm', start, 10),
+					useSearchPersonsByGeneralSearch('someSearchTerm', start, 10),
 				{ initialProps: { start: 1 } }
 			);
 
 			expect(mockUseApi).toHaveBeenLastCalledWith(
-				searchPersonsByNameSearch,
+				searchPersonsByGeneralSearch,
 				{}
 			);
 
@@ -100,7 +100,7 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 			defaultReturnFromMockUseApi.isLoading = false;
 
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			expect(result.current.isLoading).toBe(false);
@@ -109,7 +109,7 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 			mockUseApi.mockReturnValueOnce(defaultReturnFromMockUseApi);
 
 			const { result: result2 } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
@@ -119,7 +119,7 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 
 		it('passes on result from useApi', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			expect(result.current.result).toStrictEqual(
@@ -135,7 +135,7 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 			mockUseApi.mockReturnValueOnce(defaultReturnFromMockUseApi);
 
 			const { result: result2 } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			expect(mockSetApiParams).toHaveBeenCalledTimes(2);
@@ -149,14 +149,14 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 	describe('triggerSearchWithParams', () => {
 		it('returns a function triggerSearchWithParams', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 			expect(result.current.triggerSearchWithParams).toBeDefined();
 		});
 
 		it('triggerSearchWithParams takes searchTerm, start, rows and calls setApiParams if searchTerm is set', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			result.current.triggerSearchWithParams('someOtherSearchTerm', 11, 20);
@@ -178,7 +178,7 @@ describe('the useSearchPersonsByNameSearch hook', () => {
 
 		it('triggerSearchWithParams takes searchTerm, start, rows and does NOT call setApiParams if searchTerm is NOT set', () => {
 			const { result } = renderHook(() =>
-				useSearchPersonsByNameSearch('someSearchTerm', 1, 10)
+				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
 			expect(mockSetApiParams).toHaveBeenCalledTimes(1);
