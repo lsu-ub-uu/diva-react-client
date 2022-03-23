@@ -1,20 +1,27 @@
 import { LoginType } from 'diva-cora-ts-api-wrapper';
-import getDomainCollection, { getLoginUnits } from './resources';
-
-// jest.mock('../../lists/loginUnits');
+import getDomainCollection, {
+	getLoginUnits,
+	getSortedLoginUnits,
+} from './resources';
 
 jest.mock('../../lists/loginUnits', () => ({
 	loginUnits: [
 		{
 			url: 'someUrl',
-			displayTextEn: 'someDisplayTextEn',
-			displayTextSv: 'someDisplayTextSv',
+			displayTextEn: 'Bb an english text',
+			displayTextSv: 'Bb en svensk text',
+			type: LoginType.LoginWebRedirect,
+		},
+		{
+			url: 'someUrl',
+			displayTextEn: 'Aa an english text',
+			displayTextSv: 'Cc en svensk text',
 			type: LoginType.LoginWebRedirect,
 		},
 		{
 			url: 'someUrl2',
-			displayTextEn: 'someDisplayTextEn2',
-			displayTextSv: 'someDisplayTextSv2',
+			displayTextEn: 'Zz an english text',
+			displayTextSv: 'Aa en svensk text',
 			type: LoginType.LoginWebRedirect,
 		},
 	],
@@ -46,17 +53,48 @@ describe('collections', () => {
 			expect(loginUnitArray).toStrictEqual([
 				{
 					url: 'someUrl',
-					displayTextEn: 'someDisplayTextEn',
-					displayTextSv: 'someDisplayTextSv',
+					displayTextEn: 'Bb an english text',
+					displayTextSv: 'Bb en svensk text',
+					type: LoginType.LoginWebRedirect,
+				},
+				{
+					url: 'someUrl',
+					displayTextEn: 'Aa an english text',
+					displayTextSv: 'Cc en svensk text',
 					type: LoginType.LoginWebRedirect,
 				},
 				{
 					url: 'someUrl2',
-					displayTextEn: 'someDisplayTextEn2',
-					displayTextSv: 'someDisplayTextSv2',
+					displayTextEn: 'Zz an english text',
+					displayTextSv: 'Aa en svensk text',
 					type: LoginType.LoginWebRedirect,
 				},
 			]);
 		});
+	});
+
+	describe('getSortedLoginUnits', () => {
+		const sortedLoginunits = getSortedLoginUnits();
+
+		expect(sortedLoginunits).toStrictEqual([
+			{
+				url: 'someUrl2',
+				displayTextEn: 'Zz an english text',
+				displayTextSv: 'Aa en svensk text',
+				type: LoginType.LoginWebRedirect,
+			},
+			{
+				url: 'someUrl',
+				displayTextEn: 'Bb an english text',
+				displayTextSv: 'Bb en svensk text',
+				type: LoginType.LoginWebRedirect,
+			},
+			{
+				url: 'someUrl',
+				displayTextEn: 'Aa an english text',
+				displayTextSv: 'Cc en svensk text',
+				type: LoginType.LoginWebRedirect,
+			},
+		]);
 	});
 });

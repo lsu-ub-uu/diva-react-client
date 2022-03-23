@@ -10,4 +10,11 @@ export const getLoginUnits = (): LoginUnitObject[] => {
 	return loginUnits;
 };
 
+export const getSortedLoginUnits = (): LoginUnitObject[] => {
+	const loginUnitsToSort = Array.from(loginUnits);
+	return loginUnitsToSort.sort((a, b) => {
+		return a.displayTextSv.localeCompare(b.displayTextSv);
+	});
+};
+
 export default getDomainCollection;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import { Grommet } from 'grommet';
 // import Header from './components/Layout/Header';
 import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
@@ -33,32 +34,34 @@ import AuthComponent from './components/Login/AuthComponent';
 
 const App = function () {
 	return (
-		<AuthProvider>
-			<ThemeProvider theme={Themes.lightTheme}>
-				<>
-					<GlobalStyle />
-					<Layout>
-						{/* <Header>
+		<Grommet plain>
+			<AuthProvider>
+				<ThemeProvider theme={Themes.lightTheme}>
+					<>
+						<GlobalStyle />
+						<Layout>
+							{/* <Header>
 						<Navigation />
 					</Header> */}
 
-						<Sidebar>
-							<AuthComponent />
-						</Sidebar>
-						<Main>
-							<Routes>
-								<Route index element={<PersonSearch />} />
-								<Route path="person" element={<PersonRoot />}>
+							<Sidebar>
+								<AuthComponent />
+							</Sidebar>
+							<Main>
+								<Routes>
 									<Route index element={<PersonSearch />} />
-									<Route path=":personId" element={<PersonPage />} />
-								</Route>
-								<Route path="*" element={<NoMatch />} />
-							</Routes>
-						</Main>
-					</Layout>
-				</>
-			</ThemeProvider>
-		</AuthProvider>
+									<Route path="person" element={<PersonRoot />}>
+										<Route index element={<PersonSearch />} />
+										<Route path=":personId" element={<PersonPage />} />
+									</Route>
+									<Route path="*" element={<NoMatch />} />
+								</Routes>
+							</Main>
+						</Layout>
+					</>
+				</ThemeProvider>
+			</AuthProvider>
+		</Grommet>
 	);
 };
 
