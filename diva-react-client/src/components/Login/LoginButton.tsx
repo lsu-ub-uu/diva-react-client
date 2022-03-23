@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { getLoginUnits } from '../../divaData/resources';
 import Button from '../../styles/Button';
 import useWebRedirectLogin from './useWebRedirectLogin';
 
@@ -11,6 +12,7 @@ const LoginButton = function () {
 	const { startLoginProcess } = useWebRedirectLogin(url);
 
 	console.log(auth);
+	console.log(getLoginUnits());
 
 	return (
 		<Button
