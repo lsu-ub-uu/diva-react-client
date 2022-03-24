@@ -1,22 +1,59 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Select } from 'grommet';
 import { LoginType } from 'diva-cora-ts-api-wrapper';
 import LoginSelector from './LoginSelector';
-import useWebRedirectLogin from './useWebRedirectLogin';
 import { getSortedLoginUnits } from '../../divaData/resources';
+import useWebRedirectLogin from './useWebRedirectLogin';
+import { filterLoginUnits } from './helpers';
 
 jest.mock('./useWebRedirectLogin');
 const mockUseWebRedirectLogin = useWebRedirectLogin as jest.MockedFunction<
 	typeof useWebRedirectLogin
 >;
-
 const mockStartLoginProcess = jest.fn();
 
-jest.mock('../../divaData/resources');
+let searchTerm = 'someText';
+jest.mock('grommet', () => ({
+	...jest.requireActual('grommet'),
+	Select: jest.fn((props: any) => {
+		const { onChange, onSearch } = props;
+		return (
+			<>
+				<button
+					type="button"
+					onClick={() => {
+						onChange({
+							option: {
+								url: 'some nice url',
+							},
+						});
+					}}
+				>
+					onChange
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						onSearch(searchTerm);
+					}}
+				>
+					onSearch
+				</button>
+			</>
+		);
+	}),
+}));
 
+jest.mock('../../divaData/resources');
 const mockGetSortedLoginUnits = getSortedLoginUnits as jest.MockedFunction<
 	typeof getSortedLoginUnits
+>;
+
+jest.mock('./helpers');
+const mockFilterLoginUnits = filterLoginUnits as jest.MockedFunction<
+	typeof filterLoginUnits
 >;
 
 const defaultOptions = [
@@ -40,29 +77,77 @@ const defaultOptions = [
 	},
 ];
 beforeAll(() => {
+	mockGetSortedLoginUnits.mockReturnValue(defaultOptions);
+
 	mockUseWebRedirectLogin.mockReturnValue({
 		startLoginProcess: mockStartLoginProcess,
 	});
-
-	mockGetSortedLoginUnits.mockReturnValue(defaultOptions);
 });
 
 describe('LoginSelector', () => {
-	it('calls useWebRedirectLogin', () => {
-		render(<LoginSelector />);
-		expect(mockUseWebRedirectLogin).toHaveBeenCalled();
-	});
+	describe('Select component', () => {
+		it('Calls Grommets select component with props', () => {
+			render(<LoginSelector />);
 
-	it('calls getSortedLoginUnits', () => {
-		render(<LoginSelector />);
-		expect(mockGetSortedLoginUnits).toHaveBeenCalled();
-	});
+			expect(Select).toHaveBeenCalledTimes(1);
+			expect(Select).toHaveBeenCalledWith(
+				expect.objectContaining({
+					options: defaultOptions,
+					size: 'medium',
+					placeholder: 'Login',
+					value: undefined,
+					labelKey: 'displayTextSv',
+					valueKey: { key: 'displayTextSv' },
+					onChange: expect.any(Function),
+					onSearch: expect.any(Function),
+				}),
+				expect.any(Object)
+			);
+		});
 
-	it.skip('if one option is selected, startLoginProcess is called', () => {
-		render(<LoginSelector />);
+		it('calls useWebRedirectLogin', () => {
+			render(<LoginSelector />);
+			expect(mockUseWebRedirectLogin).toHaveBeenCalled();
+		});
 
-		userEvent.click(screen.getByRole('button', { name: 'Login' }));
+		it('calls getSortedLoginUnits', () => {
+			render(<LoginSelector />);
+			expect(mockGetSortedLoginUnits).toHaveBeenCalled();
+		});
 
-		expect(screen.getByRole('heading'));
+		it('Calls startLoginProcess with url on change', () => {
+			render(<LoginSelector />);
+
+			userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+
+			expect(mockStartLoginProcess).toHaveBeenCalledWith('some nice url');
+		});
+
+		it('onSearch calls filterLoginUnits with options and searchText', () => {
+			render(<LoginSelector />);
+
+			userEvent.click(screen.getByRole('button', { name: 'onSearch' }));
+
+			expect(mockFilterLoginUnits).toHaveBeenCalledWith(
+				defaultOptions,
+				'someText'
+			);
+
+			searchTerm = 'someOtherText';
+			userEvent.click(screen.getByRole('button', { name: 'onSearch' }));
+
+			expect(mockFilterLoginUnits).toHaveBeenCalledWith(
+				defaultOptions,
+				'someOtherText'
+			);
+		});
+
+		it('onSearch calls setOptions and in such a way rerenders Select', () => {
+			render(<LoginSelector />);
+
+			userEvent.click(screen.getByRole('button', { name: 'onSearch' }));
+
+			expect(Select).toHaveBeenCalledTimes(2);
+		});
 	});
 });
