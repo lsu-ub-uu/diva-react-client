@@ -1,4 +1,8 @@
-import getIdpLoginServerPartFromUrl, { escapeSearchString } from './helpers';
+import { LoginType } from 'diva-cora-ts-api-wrapper';
+import getIdpLoginServerPartFromUrl, {
+	escapeSearchString,
+	filterLoginUnits,
+} from './helpers';
 
 describe('helpers', () => {
 	describe('getIdpLoginServerPartFromUrl', () => {
@@ -57,6 +61,84 @@ describe('helpers', () => {
 			expect(escapeSearchString('[ \\ ^ $ . | ? * + ( )')).toStrictEqual(
 				'\\[ \\\\ \\^ \\$ \\. \\| \\? \\* \\+ \\( \\)'
 			);
+		});
+	});
+
+	const loginUnits = [
+		{
+			url: 'someUrl1',
+			displayTextEn: 'displayTextEn',
+			displayTextSv: 'Uppsala Universitet',
+			type: LoginType.LoginWebRedirect,
+		},
+		{
+			url: 'someUrl2',
+			displayTextEn: 'displayTextEn2',
+			displayTextSv: 'Annan Universitet',
+			type: LoginType.LoginWebRedirect,
+		},
+		{
+			url: 'someUrl3',
+			displayTextEn: 'displayTextEn3',
+			displayTextSv: 'Uppsala Annat',
+			type: LoginType.LoginWebRedirect,
+		},
+		{
+			url: 'someUrl4',
+			displayTextEn: 'displayTextEn4',
+			displayTextSv: 'Uppla?nds nånting',
+			type: LoginType.LoginWebRedirect,
+		},
+	];
+
+	describe('filterLoginUnits', () => {
+		it('takes array of LoginUnitObjects and searchString', () => {
+			filterLoginUnits(loginUnits, 'someString');
+		});
+
+		it('filters loginUnits with searchString', () => {
+			expect(filterLoginUnits(loginUnits, 'Upp')).toStrictEqual([
+				{
+					url: 'someUrl1',
+					displayTextEn: 'displayTextEn',
+					displayTextSv: 'Uppsala Universitet',
+					type: LoginType.LoginWebRedirect,
+				},
+				{
+					url: 'someUrl3',
+					displayTextEn: 'displayTextEn3',
+					displayTextSv: 'Uppsala Annat',
+					type: LoginType.LoginWebRedirect,
+				},
+				{
+					url: 'someUrl4',
+					displayTextEn: 'displayTextEn4',
+					displayTextSv: 'Uppla?nds nånting',
+					type: LoginType.LoginWebRedirect,
+				},
+			]);
+			expect(filterLoginUnits(loginUnits, '?')).toStrictEqual([
+				{
+					url: 'someUrl4',
+					displayTextEn: 'displayTextEn4',
+					displayTextSv: 'Uppla?nds nånting',
+					type: LoginType.LoginWebRedirect,
+				},
+			]);
+			expect(filterLoginUnits(loginUnits, 'Anna')).toStrictEqual([
+				{
+					url: 'someUrl2',
+					displayTextEn: 'displayTextEn2',
+					displayTextSv: 'Annan Universitet',
+					type: LoginType.LoginWebRedirect,
+				},
+				{
+					url: 'someUrl3',
+					displayTextEn: 'displayTextEn3',
+					displayTextSv: 'Uppsala Annat',
+					type: LoginType.LoginWebRedirect,
+				},
+			]);
 		});
 	});
 });

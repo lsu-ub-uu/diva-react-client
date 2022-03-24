@@ -1,3 +1,5 @@
+import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+
 const getIdpLoginServerPartFromUrl = (urlToWebRedirectLogin: string) => {
 	if (process.env.FAKE_IDPLOGINSERVERPART) {
 		return process.env.FAKE_IDPLOGINSERVERPART;
@@ -11,6 +13,15 @@ const getIdpLoginServerPartFromUrl = (urlToWebRedirectLogin: string) => {
 
 export const escapeSearchString = (text: string) => {
 	return text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
+export const filterLoginUnits = (
+	units: LoginUnitObject[],
+	searchTerm: string
+) => {
+	const escapedSearchTerm = escapeSearchString(searchTerm);
+	const exp = new RegExp(escapedSearchTerm, 'i');
+	return units.filter((o) => exp.test(o.displayTextSv));
 };
 
 export default getIdpLoginServerPartFromUrl;
