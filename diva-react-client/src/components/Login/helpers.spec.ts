@@ -1,4 +1,4 @@
-import getIdpLoginServerPartFromUrl from './helpers';
+import getIdpLoginServerPartFromUrl, { escapeSearchString } from './helpers';
 
 describe('helpers', () => {
 	describe('getIdpLoginServerPartFromUrl', () => {
@@ -34,6 +34,29 @@ describe('helpers', () => {
 					'https://somethingsomething?target=https://foobar/asdf/idplogin/login'
 				)
 			).toStrictEqual('someOtherFakeLoginServerPart');
+		});
+	});
+
+	describe('escapeSearchString', () => {
+		it('takes a string', () => {
+			escapeSearchString('someString');
+		});
+
+		it('returns a string with escaped special characters: [ \\ ^ $ . | ? * + ( )', () => {
+			expect(escapeSearchString('[')).toStrictEqual('\\[');
+			expect(escapeSearchString('\\')).toStrictEqual('\\\\');
+			expect(escapeSearchString('^')).toStrictEqual('\\^');
+			expect(escapeSearchString('$')).toStrictEqual('\\$');
+			expect(escapeSearchString('.')).toStrictEqual('\\.');
+			expect(escapeSearchString('|')).toStrictEqual('\\|');
+			expect(escapeSearchString('?')).toStrictEqual('\\?');
+			expect(escapeSearchString('*')).toStrictEqual('\\*');
+			expect(escapeSearchString('+')).toStrictEqual('\\+');
+			expect(escapeSearchString('(')).toStrictEqual('\\(');
+			expect(escapeSearchString(')')).toStrictEqual('\\)');
+			expect(escapeSearchString('[ \\ ^ $ . | ? * + ( )')).toStrictEqual(
+				'\\[ \\\\ \\^ \\$ \\. \\| \\? \\* \\+ \\( \\)'
+			);
 		});
 	});
 });

@@ -12,7 +12,7 @@ const LoginSelector = function () {
 		option: LoginUnitObject;
 	};
 	const handleChange = (event: EventType) => {
-		// startLoginProcess(event.option.url);
+		startLoginProcess(event.option.url);
 	};
 	return (
 		<Select
@@ -32,7 +32,8 @@ const LoginSelector = function () {
 				// handles escaping special characters. Without escaping special
 				// characters, errors will appear in the console
 				const exp = new RegExp(escapedText, 'i');
-				// setOptions(defaultOptions.filter((o) => exp.test(o.displayTextSv)));
+				defaultOptions.filter((o) => exp.test(o.displayTextSv));
+				// setOptions();
 			}}
 		/>
 	);

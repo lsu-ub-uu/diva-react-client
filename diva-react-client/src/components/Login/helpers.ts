@@ -9,4 +9,8 @@ const getIdpLoginServerPartFromUrl = (urlToWebRedirectLogin: string) => {
 	return targetPart.substring(0, targetPart.indexOf('/', lengthOfHttps));
 };
 
+export const escapeSearchString = (text: string) => {
+	return text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
 export default getIdpLoginServerPartFromUrl;

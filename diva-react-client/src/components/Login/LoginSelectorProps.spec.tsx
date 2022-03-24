@@ -1,15 +1,37 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Select } from 'grommet';
 import { LoginType } from 'diva-cora-ts-api-wrapper';
 import LoginSelector from './LoginSelector';
 import { getSortedLoginUnits } from '../../divaData/resources';
+import useWebRedirectLogin from './useWebRedirectLogin';
+
+jest.mock('./useWebRedirectLogin');
+const mockUseWebRedirectLogin = useWebRedirectLogin as jest.MockedFunction<
+	typeof useWebRedirectLogin
+>;
+
+const mockStartLoginProcess = jest.fn();
 
 jest.mock('grommet', () => ({
 	...jest.requireActual('grommet'),
 	Select: jest.fn((props: any) => {
-		const { size } = props;
-		return <div>{size}</div>;
+		const { onChange } = props;
+		return (
+			<button
+				type="button"
+				onClick={() => {
+					onChange({
+						option: {
+							url: 'some nice url',
+						},
+					});
+				}}
+			>
+				Click
+			</button>
+		);
 	}),
 }));
 
@@ -41,6 +63,10 @@ const defaultOptions = [
 ];
 beforeAll(() => {
 	mockGetSortedLoginUnits.mockReturnValue(defaultOptions);
+
+	mockUseWebRedirectLogin.mockReturnValue({
+		startLoginProcess: mockStartLoginProcess,
+	});
 });
 
 describe('LoginSelector', () => {
@@ -62,6 +88,14 @@ describe('LoginSelector', () => {
 				}),
 				expect.any(Object)
 			);
+		});
+
+		it('Calls startLoginProcess with url on change', () => {
+			render(<LoginSelector />);
+
+			userEvent.click(screen.getByRole('button'));
+
+			expect(mockStartLoginProcess).toHaveBeenCalledWith('some nice url');
 		});
 	});
 });
