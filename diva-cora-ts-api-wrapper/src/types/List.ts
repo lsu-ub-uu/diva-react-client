@@ -1,4 +1,4 @@
-import { Record } from '../../dist/types';
+import { Record } from './Record';
 
 export class List {
 	fromNumber: number;
