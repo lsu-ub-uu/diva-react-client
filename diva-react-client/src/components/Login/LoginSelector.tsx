@@ -23,7 +23,7 @@ const LoginSelector = function () {
 		<Select
 			options={options}
 			size="medium"
-			placeholder="Login"
+			placeholder="Välj organisation"
 			value={undefined}
 			labelKey="displayTextSv"
 			valueKey={{ key: 'displayTextSv' }}
