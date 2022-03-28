@@ -9,18 +9,16 @@ const LoginSelector = function () {
 	const { startLoginProcess } = useWebRedirectLogin();
 	const allOptions = getSortedLoginUnits();
 	const [options, setOptions] = useState(allOptions);
-	type EventType = {
-		option: LoginUnitObject;
+
+	const handleChange = ({ option }: { option: LoginUnitObject }) => {
+		startLoginProcess(option.url);
 	};
-	const handleChange = (event: EventType) => {
-		startLoginProcess(event.option.url);
+
+	const handleSearch = (text: string) => {
+		const filteredOptions = filterLoginUnits(allOptions, text);
+		setOptions(filteredOptions);
 	};
-	function handleSearch(): ((search: string) => void) | undefined {
-		return (text) => {
-			const filteredOptions = filterLoginUnits(allOptions, text);
-			setOptions(filteredOptions);
-		};
-	}
+
 	return (
 		<Select
 			options={options}
@@ -30,7 +28,7 @@ const LoginSelector = function () {
 			labelKey="displayTextSv"
 			valueKey={{ key: 'displayTextSv' }}
 			onChange={handleChange}
-			onSearch={handleSearch()}
+			onSearch={handleSearch}
 		/>
 	);
 };
