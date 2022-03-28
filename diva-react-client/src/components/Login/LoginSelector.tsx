@@ -10,8 +10,8 @@ const LoginSelector = function () {
 	const allOptions = getSortedLoginUnits();
 	const [options, setOptions] = useState(allOptions);
 
-	const handleChange = ({ option }: { option: LoginUnitObject }) => {
-		startLoginProcess(option.url);
+	const handleChange = ({ value }: { value: LoginUnitObject }) => {
+		startLoginProcess(value.url);
 	};
 
 	const handleSearch = (text: string) => {
