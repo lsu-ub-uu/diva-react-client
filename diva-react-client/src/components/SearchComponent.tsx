@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
-import { Button as GrommetButton, Select } from 'grommet';
-
-// import Select from '../styles/Select';
+import { Button as GrommetButton, Grid, Select } from 'grommet';
 
 const SearchInput = styled.input`
 	width: 100%;
@@ -24,14 +22,6 @@ const StyledForm = styled.form`
 	justify-items: left;
 	column-gap: 1em;
 	row-gap: 0.5em;
-`;
-
-const StyledLabel = styled.label`
-	display: grid;
-	grid-template-columns: 30% auto;
-	grid-template-rows: 1fr;
-	align-items: center;
-	column-gap: 0.5em;
 `;
 
 function getRowsOrDefaultValue(providedRows: number) {
@@ -100,14 +90,12 @@ const SearchComponent = function ({
 				value={value}
 				onChange={handleChange}
 			/>
-			<GrommetButton
-				type="submit"
-				id="searchButton"
-				primary
-				label="Sök"
-				// color="primary"
-			/>
-			<StyledLabel id="rows-label" htmlFor="rows-input">
+			<GrommetButton type="submit" id="searchButton" primary label="Sök" />
+			<Grid
+				columns={['6.3em', 'max-content']}
+				gap={{ column: 'small' }}
+				align="center"
+			>
 				<Select
 					id="rows-input"
 					aria-labelledby="rows-label"
@@ -115,8 +103,8 @@ const SearchComponent = function ({
 					onChange={handleRowChange}
 					options={options}
 				/>
-				<div>Träffar per sida</div>
-			</StyledLabel>
+				<span id="rows-label">Träffar per sida</span>
+			</Grid>
 		</StyledForm>
 	);
 };
