@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
-import { Button as GrommetButton } from 'grommet';
+import { Button as GrommetButton, Select } from 'grommet';
 
-import Select from '../styles/Select';
+// import Select from '../styles/Select';
 
 const SearchInput = styled.input`
 	width: 100%;
@@ -28,7 +28,7 @@ const StyledForm = styled.form`
 
 const StyledLabel = styled.label`
 	display: grid;
-	grid-template-columns: auto auto;
+	grid-template-columns: 30% auto;
 	grid-template-rows: 1fr;
 	align-items: center;
 	column-gap: 0.5em;
@@ -82,6 +82,14 @@ const SearchComponent = function ({
 		setOpinionatedRows(newRows);
 		onRowUpdate(newRows);
 	};
+
+	const options = rowOptions.map((option) => {
+		return option.toString();
+	});
+
+	if (!rowOptions.includes(opinionatedRows)) {
+		options.push(opinionatedRows.toString());
+	}
 	return (
 		<StyledForm onSubmit={handleSubmit}>
 			<SearchInput
@@ -103,22 +111,10 @@ const SearchComponent = function ({
 				<Select
 					id="rows-input"
 					aria-labelledby="rows-label"
-					value={opinionatedRows}
+					value={opinionatedRows.toString()}
 					onChange={handleRowChange}
-				>
-					{rowOptions.map((option) => {
-						return (
-							<option key={option} value={option.toString()}>
-								{option.toString()}
-							</option>
-						);
-					})}
-					{!rowOptions.includes(opinionatedRows) && (
-						<option key={opinionatedRows} value={opinionatedRows.toString()}>
-							{opinionatedRows.toString()}
-						</option>
-					)}
-				</Select>
+					options={options}
+				/>
 				<div>Träffar per sida</div>
 			</StyledLabel>
 		</StyledForm>
