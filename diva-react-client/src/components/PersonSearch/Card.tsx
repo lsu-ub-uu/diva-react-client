@@ -1,3 +1,12 @@
+import {
+	Box,
+	Card as GrommetCard,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Grid,
+	Tag,
+} from 'grommet';
 import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -65,17 +74,28 @@ const Card = function ({
 	listItemNumber: number;
 }) {
 	return (
-		<CardSection>
-			<ListItemNumber>{listItemNumber}.</ListItemNumber>
-			<Title>
-				<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
-					{getPresentation(item)}
-				</Link>
-			</Title>
-			<Id className="gray">{item.id}</Id>
-			{possiblyShowOrcid(item)}
-			{possiblyShowDomains(item)}
-		</CardSection>
+		<GrommetCard>
+			<CardHeader pad="medium" justify="start" gap="xsmall">
+				<Grid
+					gap="0.4em"
+					columns={['min-content', 'auto', 'max-content']}
+					rows={['xxsmall']}
+					areas={[
+						{ name: 'listItemNumber', start: [0, 0], end: [0, 0] },
+						{ name: 'title', start: [1, 0], end: [1, 0] },
+						{ name: 'id', start: [2, 0], end: [2, 0] },
+					]}
+				>
+					<Box>{listItemNumber}.</Box>
+					<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
+						{getPresentation(item)}
+					</Link>
+					<div style={{ justifySelf: 'right', gridArea: 'id' }}>{item.id}</div>
+				</Grid>
+			</CardHeader>
+			<CardBody pad="medium">{possiblyShowOrcid(item)}</CardBody>
+			<CardFooter pad="medium">{possiblyShowDomains(item)}</CardFooter>
+		</GrommetCard>
 	);
 };
 
@@ -115,9 +135,11 @@ const possiblyShowDomains = (item: Record) => {
 			});
 
 			return (
-				<Domain>
-					<ListWithLabel list={domainNames} label="" omitEmptyStrings tag />
-				</Domain>
+				<Box direction="row" wrap gap="0.5em">
+					{domainNames.map((name) => {
+						return <Tag value={name} key={name} size="small" />;
+					})}
+				</Box>
 			);
 		}
 	}

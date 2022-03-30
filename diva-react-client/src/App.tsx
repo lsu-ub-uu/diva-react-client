@@ -1,8 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-// import { ThemeProvider } from 'styled-components';
-import { Grommet } from 'grommet';
-// import Header from './components/Layout/Header';
+import { Grommet, ThemeType } from 'grommet';
 import Layout from './components/Layout/Layout';
 import Main from './components/Layout/Main';
 import Sidebar from './components/Layout/Sidebar';
@@ -10,17 +8,35 @@ import NoMatch from './components/NoMatch';
 import PersonRoot from './components/PersonRoot';
 import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
-// import GlobalStyle from './styles/GlobalStyle';
-// import Themes from './themes/Themes';
 import { AuthProvider } from './context/AuthContext';
 import AuthComponent from './components/Login/AuthComponent';
 
-const theme = {
+const theme: ThemeType = {
 	global: {
 		font: {
 			family:
 				'-apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue',
 		},
+		colors: {
+			brand: '#3183c8',
+			'accent-1': '#3183c8',
+			'accent-2': '#3183c8',
+			'accent-3': '#3183c8',
+			'accent-4': '#3183c8',
+		},
+		focus: {
+			border: {
+				color: '#a8eeeb',
+			},
+		},
+	},
+	button: {
+		border: {
+			radius: 'none',
+		},
+	},
+	tag: {
+		round: 'none',
 	},
 };
 
