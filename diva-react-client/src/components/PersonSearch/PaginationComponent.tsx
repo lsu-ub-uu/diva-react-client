@@ -1,7 +1,7 @@
+import { Button } from 'grommet';
 import React from 'react';
 import styled from 'styled-components';
 import usePagination from '../../hooks/usePagination';
-import Button from '../../styles/Button';
 
 const Parent = styled.div`
 	display: grid;
@@ -37,21 +37,16 @@ const PaginationComponent = function ({
 
 	return (
 		<Parent>
-			<Button onClick={goToFirstPage} disabled={isFirstPage}>
-				|&lt;
-			</Button>
-			<Button onClick={goToPreviousPage} disabled={isFirstPage}>
-				&lt;
-			</Button>
+			<Button onClick={goToFirstPage} disabled={isFirstPage} label="|&lt;" />
+
+			<Button onClick={goToPreviousPage} disabled={isFirstPage} label="&lt;" />
+
 			<div>
 				{start}-{toNumber} av {totalNumber}
 			</div>
-			<Button onClick={goToNextPage} disabled={isLastPage}>
-				&gt;
-			</Button>
-			<Button onClick={goToLastPage} disabled={isLastPage}>
-				&gt;|
-			</Button>
+			<Button onClick={goToNextPage} disabled={isLastPage} label="&gt;" />
+
+			<Button onClick={goToLastPage} disabled={isLastPage} label="&gt;|" />
 		</Parent>
 	);
 };

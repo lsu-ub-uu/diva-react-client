@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Select } from 'grommet';
-import { LoginType } from 'diva-cora-ts-api-wrapper';
+import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 import LoginSelector from './LoginSelector';
 import { getSortedLoginUnits } from '../../divaData/resources';
 import useWebRedirectLogin from './useWebRedirectLogin';
@@ -15,6 +15,12 @@ const mockUseWebRedirectLogin = useWebRedirectLogin as jest.MockedFunction<
 const mockStartLoginProcess = jest.fn();
 
 let searchTerm = 'someText';
+let loginUnitToReturn: LoginUnitObject = {
+	displayTextEn: 'displayTextEn',
+	displayTextSv: 'displayTextSv',
+	type: LoginType.LoginWebRedirect,
+	url: 'url',
+};
 jest.mock('grommet', () => ({
 	...jest.requireActual('grommet'),
 	Select: jest.fn((props: any) => {
@@ -25,9 +31,7 @@ jest.mock('grommet', () => ({
 					type="button"
 					onClick={() => {
 						onChange({
-							option: {
-								url: 'some nice url',
-							},
+							value: loginUnitToReturn,
 						});
 					}}
 				>
@@ -94,7 +98,7 @@ describe('LoginSelector', () => {
 				expect.objectContaining({
 					options: defaultOptions,
 					size: 'medium',
-					placeholder: 'Login',
+					placeholder: 'Välj organisation',
 					value: undefined,
 					labelKey: 'displayTextSv',
 					valueKey: { key: 'displayTextSv' },
@@ -113,14 +117,6 @@ describe('LoginSelector', () => {
 		it('calls getSortedLoginUnits', () => {
 			render(<LoginSelector />);
 			expect(mockGetSortedLoginUnits).toHaveBeenCalled();
-		});
-
-		it('Calls startLoginProcess with url on change', () => {
-			render(<LoginSelector />);
-
-			userEvent.click(screen.getByRole('button', { name: 'onChange' }));
-
-			expect(mockStartLoginProcess).toHaveBeenCalledWith('some nice url');
 		});
 
 		it('onSearch calls filterLoginUnits with options and searchText', () => {
@@ -150,4 +146,62 @@ describe('LoginSelector', () => {
 			expect(Select).toHaveBeenCalledTimes(2);
 		});
 	});
+
+	describe('Button component', () => {
+		it('renders a disabled button', () => {
+			render(<LoginSelector />);
+
+			const loginButton = screen.getByRole('button', {
+				name: 'Logga in på organisation',
+			});
+
+			expect(loginButton).toBeInTheDocument();
+
+			expect(loginButton).toBeDisabled();
+		});
+
+		it('if user has selected an option, button should not be disabled', () => {
+			render(<LoginSelector />);
+			simulateUserChoosingOption();
+
+			const loginButton = screen.getByRole('button', {
+				name: 'Logga in på organisation',
+			});
+			expect(loginButton).not.toBeDisabled();
+		});
+
+		it("if login button is clicked, call startLoginProcess with value's url", () => {
+			render(<LoginSelector />);
+
+			simulateUserChoosingOption();
+
+			userEvent.click(
+				screen.getByRole('button', {
+					name: 'Logga in på organisation',
+				})
+			);
+
+			expect(mockStartLoginProcess).toHaveBeenCalledWith('url');
+
+			loginUnitToReturn = {
+				displayTextEn: 'displayTextEn',
+				displayTextSv: 'displayTextSv',
+				type: LoginType.LoginWebRedirect,
+				url: 'some other Url',
+			};
+			simulateUserChoosingOption();
+
+			userEvent.click(
+				screen.getByRole('button', {
+					name: 'Logga in på organisation',
+				})
+			);
+
+			expect(mockStartLoginProcess).toHaveBeenCalledWith('some other Url');
+		});
+	});
 });
+
+const simulateUserChoosingOption = () => {
+	userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+};

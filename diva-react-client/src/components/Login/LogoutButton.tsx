@@ -1,5 +1,5 @@
+import { Button } from 'grommet';
 import React from 'react';
-import Button from '../../styles/Button';
 import useLogout from './useLogout';
 
 const LogoutButton = function () {
@@ -10,9 +10,8 @@ const LogoutButton = function () {
 			onClick={() => {
 				logout();
 			}}
-		>
-			Logout
-		</Button>
+			label="Logout"
+		/>
 	);
 };
 

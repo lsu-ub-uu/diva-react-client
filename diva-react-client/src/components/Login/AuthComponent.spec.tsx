@@ -3,16 +3,15 @@ import { render } from '@testing-library/react';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import AuthComponent from './AuthComponent';
 import LogoutButton from './LogoutButton';
-import LoginSelector from './LoginSelector';
+import LoginButton from './LoginButton';
 
 jest.mock('../../context/AuthContext');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
-jest.mock('./LoginSelector', () => {
+jest.mock('./LogoutButton', () => {
 	return jest.fn(() => null);
 });
-
-jest.mock('./LogoutButton', () => {
+jest.mock('./LoginButton', () => {
 	return jest.fn(() => null);
 });
 
@@ -37,7 +36,7 @@ describe('AuthComponent.spec', () => {
 	it('if logged out according to useAuth, render LoginButton', () => {
 		render(<AuthComponent />);
 
-		expect(LoginSelector).toHaveBeenCalledTimes(1);
+		expect(LoginButton).toHaveBeenCalledTimes(1);
 	});
 	it('if logged in according to useAuth, do NOT render LoginButton', () => {
 		mockUseAuth.mockReturnValueOnce({
@@ -52,7 +51,7 @@ describe('AuthComponent.spec', () => {
 
 		render(<AuthComponent />);
 
-		expect(LoginSelector).not.toHaveBeenCalled();
+		expect(LoginButton).not.toHaveBeenCalled();
 	});
 
 	it('if logged out according to useAuth, do NOT render LogoutButton', () => {

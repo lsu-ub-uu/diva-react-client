@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import { Button as GrommetButton } from 'grommet';
 
-import Button from '../styles/Button';
 import Select from '../styles/Select';
 
 const SearchInput = styled.input`
@@ -98,7 +97,7 @@ const SearchComponent = function ({
 				id="searchButton"
 				primary
 				label="Sök"
-				color="primary"
+				// color="primary"
 			/>
 			<StyledLabel id="rows-label" htmlFor="rows-input">
 				<Select
