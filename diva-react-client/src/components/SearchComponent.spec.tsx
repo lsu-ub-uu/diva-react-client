@@ -1,11 +1,37 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { Select } from 'grommet';
 import userEvent from '@testing-library/user-event';
 import SearchComponent from './SearchComponent';
 
 const onValueChange = jest.fn();
 const onSubmit = jest.fn();
 const onRowUpdate = jest.fn();
+
+let newRows = '25';
+
+jest.mock('grommet', () => ({
+	...jest.requireActual('grommet'),
+	Select: jest.fn((props: any) => {
+		const { onChange } = props;
+		return (
+			<button
+				type="button"
+				onClick={() => {
+					onChange({
+						target: { value: newRows },
+					});
+				}}
+			>
+				onChange
+			</button>
+		);
+	}),
+}));
+
+beforeEach(() => {
+	newRows = '25';
+});
 
 describe('The SearchComponent', () => {
 	it('Takes value:string, rows:number and handlers onValueChange, onSubmit as props', () => {
@@ -174,11 +200,12 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(screen.getByRole('combobox')).toEqual(
-					screen.getByLabelText('Träffar per sida')
+				expect(screen.getByText('Träffar per sida')).toHaveAttribute(
+					'id',
+					'rows-label'
 				);
 			});
-			it('should render the options passed into rowOptions', () => {
+			it('should call Select with parameters', () => {
 				let rowOptions = [10, 25, 50, 100];
 
 				const { rerender } = render(
@@ -191,18 +218,23 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				rowOptions.forEach((option) => {
-					const optionElement = screen.getByRole('option', {
-						name: option.toString(),
-					});
-					expect(optionElement).toHaveAttribute('value', option.toString());
-				});
+
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '10',
+						onChange: expect.any(Function),
+						options: rowOptions.map((option) => option.toString()),
+					}),
+					expect.any(Object)
+				);
 
 				rowOptions = [20, 40, 60, 9999999];
 				rerender(
 					<SearchComponent
 						value="someSearchTerm"
-						rows={10}
+						rows={20}
 						rowOptions={rowOptions}
 						onValueChange={onValueChange}
 						onRowUpdate={onRowUpdate}
@@ -210,36 +242,16 @@ describe('The SearchComponent', () => {
 					/>
 				);
 
-				rowOptions.forEach((option) => {
-					const optionElement = screen.getByRole('option', {
-						name: option.toString(),
-					});
-					expect(optionElement).toHaveAttribute('value', option.toString());
-				});
-			});
-			it('should pre-select the rows-value that has been provided', () => {
-				const { rerender } = render(
-					<SearchComponent
-						value="someSearchTerm"
-						rows={10}
-						rowOptions={[10, 25, 50, 100]}
-						onValueChange={onValueChange}
-						onRowUpdate={onRowUpdate}
-						onSubmit={onSubmit}
-					/>
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '20',
+						onChange: expect.any(Function),
+						options: rowOptions.map((option) => option.toString()),
+					}),
+					expect.any(Object)
 				);
-				expect(screen.getByRole('combobox')).toHaveValue('10');
-				rerender(
-					<SearchComponent
-						value="someSearchTerm"
-						rows={25}
-						rowOptions={[10, 25, 50, 100]}
-						onValueChange={onValueChange}
-						onRowUpdate={onRowUpdate}
-						onSubmit={onSubmit}
-					/>
-				);
-				expect(screen.getByRole('combobox')).toHaveValue('25');
 			});
 			it('should add a custom rows-value if not one of the defaults and if rows>1', () => {
 				const { rerender } = render(
@@ -252,12 +264,16 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(
-					screen.getByRole('option', {
-						name: '1',
-						selected: true,
-					})
-				).toBeInTheDocument();
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '1',
+						onChange: expect.any(Function),
+						options: [10, 25, 50, 100, 1].map((option) => option.toString()),
+					}),
+					expect.any(Object)
+				);
 				rerender(
 					<SearchComponent
 						value="someSearchTerm"
@@ -268,43 +284,16 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(
-					screen.queryByRole('option', {
-						name: '1',
-					})
-				).not.toBeInTheDocument();
-				expect(
-					screen.getByRole('option', {
-						name: '999',
-						selected: true,
-					})
-				).toBeInTheDocument();
-			});
-
-			it('a custom row value should also be selected', () => {
-				const { rerender } = render(
-					<SearchComponent
-						value="someSearchTerm"
-						rows={99}
-						rowOptions={[10, 25, 50, 100]}
-						onValueChange={onValueChange}
-						onRowUpdate={onRowUpdate}
-						onSubmit={onSubmit}
-					/>
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '999',
+						onChange: expect.any(Function),
+						options: [10, 25, 50, 100, 999].map((option) => option.toString()),
+					}),
+					expect.any(Object)
 				);
-				expect(screen.getByRole('combobox')).toHaveValue('99');
-
-				rerender(
-					<SearchComponent
-						value="someSearchTerm"
-						rows={20}
-						rowOptions={[10, 25, 50, 100]}
-						onValueChange={onValueChange}
-						onRowUpdate={onRowUpdate}
-						onSubmit={onSubmit}
-					/>
-				);
-				expect(screen.getByRole('combobox')).toHaveValue('20');
 			});
 			it('should set rows=50 if provided with rows<1, 50 should also be selected', () => {
 				const { rerender } = render(
@@ -317,17 +306,16 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(
-					screen.queryByRole('option', {
-						name: '0',
-					})
-				).not.toBeInTheDocument();
-				expect(
-					screen.getByRole('option', {
-						name: '50',
-					})
-				).toBeInTheDocument();
-				expect(screen.getByRole('combobox')).toHaveValue('50');
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '50',
+						onChange: expect.any(Function),
+						options: [10, 25, 50, 100].map((option) => option.toString()),
+					}),
+					expect.any(Object)
+				);
 				rerender(
 					<SearchComponent
 						value="someSearchTerm"
@@ -338,17 +326,16 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(
-					screen.queryByRole('option', {
-						name: '-1',
-					})
-				).not.toBeInTheDocument();
-				expect(
-					screen.getByRole('option', {
-						name: '50',
-					})
-				).toBeInTheDocument();
-				expect(screen.getByRole('combobox')).toHaveValue('50');
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '50',
+						onChange: expect.any(Function),
+						options: [10, 25, 50, 100].map((option) => option.toString()),
+					}),
+					expect.any(Object)
+				);
 			});
 		});
 		describe('interaction', () => {
@@ -363,12 +350,19 @@ describe('The SearchComponent', () => {
 						onSubmit={onSubmit}
 					/>
 				);
-				expect(screen.getByRole('combobox')).toHaveValue('10');
-				userEvent.selectOptions(
-					screen.getByRole('combobox'),
-					screen.getByRole('option', { name: '25' })
+
+				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+
+				expect(Select).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						id: 'rows-input',
+						'aria-labelledby': 'rows-label',
+						value: '25',
+						onChange: expect.any(Function),
+						options: [10, 25, 50, 100].map((option) => option.toString()),
+					}),
+					expect.any(Object)
 				);
-				expect(screen.getByRole('combobox')).toHaveValue('25');
 			});
 			it('if user selects other option, onRowUpdate should be called with new row value', () => {
 				const { rerender } = render(
@@ -382,10 +376,9 @@ describe('The SearchComponent', () => {
 					/>
 				);
 				expect(onRowUpdate).not.toHaveBeenCalled();
-				userEvent.selectOptions(
-					screen.getByRole('combobox'),
-					screen.getByRole('option', { name: '25' })
-				);
+
+				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+
 				expect(onRowUpdate).toHaveBeenCalled();
 				expect(onRowUpdate).toHaveBeenCalledWith(25);
 				rerender(
@@ -399,10 +392,10 @@ describe('The SearchComponent', () => {
 					/>
 				);
 				expect(onRowUpdate).toHaveBeenCalledTimes(1);
-				userEvent.selectOptions(
-					screen.getByRole('combobox'),
-					screen.getByRole('option', { name: '100' })
-				);
+
+				newRows = '100';
+				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+
 				expect(onRowUpdate).toHaveBeenCalledTimes(2);
 				expect(onRowUpdate).toHaveBeenCalledWith(100);
 			});

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { Tag } from 'grommet';
 import { Person, Record } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
@@ -9,6 +10,13 @@ import { createPersonObject } from '../../../testData/personObjectData';
 import ListWithLabel from '../PersonPage/ListWithLabel';
 import getDomainCollection from '../../divaData/resources';
 import { getDisplayName } from '../../../tools/NameTools';
+
+jest.mock('grommet', () => ({
+	...jest.requireActual('grommet'),
+	Tag: jest.fn(() => {
+		return null;
+	}),
+}));
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -267,7 +275,7 @@ describe('The Card component', () => {
 
 				expect(mockGetDomainCollection).not.toHaveBeenCalled();
 			});
-			it('if it has at least one domain, should call ListWithLabel with a list of domain names from domainCollection', () => {
+			it('if it has at least one domainName, should call Tag for each domain Name', () => {
 				const person = createPersonObject();
 				person.domains = ['someDomain', 'someOtherDomain'];
 
@@ -281,13 +289,19 @@ describe('The Card component', () => {
 					<Card item={person} listItemNumber={1} />
 				);
 
-				expect(ListWithLabel).toHaveBeenCalledTimes(1);
-				expect(ListWithLabel).toHaveBeenNthCalledWith(
+				expect(Tag).toHaveBeenNthCalledWith(
 					1,
 					expect.objectContaining({
-						label: '',
-						omitEmptyStrings: true,
-						list: ['someDomainValue', 'someOtherDomainValue'],
+						value: 'someDomainValue',
+						size: 'small',
+					}),
+					expect.any(Object)
+				);
+				expect(Tag).toHaveBeenNthCalledWith(
+					2,
+					expect.objectContaining({
+						value: 'someOtherDomainValue',
+						size: 'small',
 					}),
 					expect.any(Object)
 				);
@@ -302,18 +316,24 @@ describe('The Card component', () => {
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
 				rerender(<Card item={person2} listItemNumber={1} />);
 
-				expect(ListWithLabel).toHaveBeenCalledTimes(2);
-				expect(ListWithLabel).toHaveBeenNthCalledWith(
-					2,
+				expect(Tag).toHaveBeenNthCalledWith(
+					3,
 					expect.objectContaining({
-						label: '',
-						omitEmptyStrings: true,
-						list: ['someDomainValue2', 'someOtherDomainValue2'],
+						value: 'someDomainValue2',
+						size: 'small',
+					}),
+					expect.any(Object)
+				);
+				expect(Tag).toHaveBeenNthCalledWith(
+					4,
+					expect.objectContaining({
+						value: 'someOtherDomainValue2',
+						size: 'small',
 					}),
 					expect.any(Object)
 				);
 			});
-			it('if domainCollection does not contain domain key, pass domain key to ListWithLabels', () => {
+			it('if domainCollection does not contain domain key, call Tag with domain key', () => {
 				const person = createPersonObject();
 				person.domains = ['someDomain', 'someOtherDomain'];
 
@@ -326,13 +346,19 @@ describe('The Card component', () => {
 					<Card item={person} listItemNumber={1} />
 				);
 
-				expect(ListWithLabel).toHaveBeenCalledTimes(1);
-				expect(ListWithLabel).toHaveBeenNthCalledWith(
+				expect(Tag).toHaveBeenNthCalledWith(
 					1,
 					expect.objectContaining({
-						label: '',
-						omitEmptyStrings: true,
-						list: ['someDomainValue', 'someOtherDomain'],
+						value: 'someDomainValue',
+						size: 'small',
+					}),
+					expect.any(Object)
+				);
+				expect(Tag).toHaveBeenNthCalledWith(
+					2,
+					expect.objectContaining({
+						value: 'someOtherDomain',
+						size: 'small',
 					}),
 					expect.any(Object)
 				);
@@ -345,13 +371,19 @@ describe('The Card component', () => {
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
 				rerender(<Card item={person2} listItemNumber={1} />);
 
-				expect(ListWithLabel).toHaveBeenCalledTimes(2);
-				expect(ListWithLabel).toHaveBeenNthCalledWith(
-					2,
+				expect(Tag).toHaveBeenNthCalledWith(
+					3,
 					expect.objectContaining({
-						label: '',
-						omitEmptyStrings: true,
-						list: ['someDomain2', 'someOtherDomain2'],
+						value: 'someDomain2',
+						size: 'small',
+					}),
+					expect.any(Object)
+				);
+				expect(Tag).toHaveBeenNthCalledWith(
+					4,
+					expect.objectContaining({
+						value: 'someOtherDomain2',
+						size: 'small',
 					}),
 					expect.any(Object)
 				);

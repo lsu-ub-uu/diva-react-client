@@ -6,6 +6,7 @@ const StyledUl = styled.ul`
 	flex-direction: row;
 	flex-wrap: wrap;
 	column-gap: 1em;
+	list-style: none;
 `;
 const Tag = styled.li`
 	background-color: ${(props) => props.theme.primary};
