@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
-import styled, { DefaultTheme } from 'styled-components';
-import { Button as GrommetButton, Grid, Select } from 'grommet';
-
-const SearchInput = styled.input`
-	width: 100%;
-	font-size: 1em;
-	height: 40px;
-	padding: 0 10px;
-	border: 0;
-	border-radius: 3px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset;
-	background-color: ${(props: { theme: DefaultTheme }) =>
-		props.theme.secondary};
-`;
+import styled from 'styled-components';
+import { Button as GrommetButton, Grid, Select, TextInput } from 'grommet';
+import { Search } from 'grommet-icons';
 
 const StyledForm = styled.form`
 	display: grid;
@@ -82,13 +71,14 @@ const SearchComponent = function ({
 	}
 	return (
 		<StyledForm onSubmit={handleSubmit}>
-			<SearchInput
+			<TextInput
 				type="search"
-				aria-labelledby="searchButton"
-				minLength={1}
-				maxLength={100}
+				icon={<Search />}
+				reverse
+				placeholder="Sök med namn, ORCID eller id"
 				value={value}
 				onChange={handleChange}
+				aria-labelledby="searchButton"
 			/>
 			<GrommetButton type="submit" id="searchButton" primary label="Sök" />
 			<Grid

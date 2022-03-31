@@ -1,4 +1,5 @@
 import { Box, Button } from 'grommet';
+import { Logout } from 'grommet-icons';
 import React from 'react';
 import useLogout from './useLogout';
 
@@ -7,12 +8,14 @@ const LogoutButton = function () {
 	return (
 		<Box align="center" pad="small">
 			<Button
+				icon={<Logout />}
 				primary
 				type="button"
 				onClick={() => {
 					logout();
 				}}
-				label="Logout"
+				label="Logga ut"
+				reverse
 			/>
 		</Box>
 	);

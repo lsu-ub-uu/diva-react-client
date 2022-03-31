@@ -9,6 +9,8 @@ const mockUseLogout = useLogout as jest.MockedFunction<typeof useLogout>;
 
 const mockLogout = jest.fn();
 
+const logoutButtonText = 'Logga ut Logout';
+
 beforeAll(() => {
 	mockUseLogout.mockReturnValue({
 		logout: mockLogout,
@@ -19,7 +21,7 @@ describe('LogoutButton.spec', () => {
 	it('It renders button "Logout"', () => {
 		render(<LogoutButton />);
 
-		expect(screen.getByRole('button', { name: 'Logout' }));
+		expect(screen.getByRole('button', { name: logoutButtonText }));
 	});
 
 	it('calls useLogout', () => {
@@ -38,6 +40,6 @@ describe('LogoutButton.spec', () => {
 });
 
 const clickLogoutButton = () => {
-	const logoutButton = screen.getByRole('button', { name: 'Logout' });
+	const logoutButton = screen.getByRole('button', { name: logoutButtonText });
 	userEvent.click(logoutButton);
 };

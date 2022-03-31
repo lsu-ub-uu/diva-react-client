@@ -31,19 +31,22 @@ jest.mock('grommet', () => ({
 	}),
 }));
 
+const basicParameters = {
+	icon: expect.any(Object),
+	reverse: true,
+	label: 'Logga in',
+	open: false,
+	onOpen: expect.any(Function),
+	onClose: expect.any(Function),
+	dropContent: expect.any(Object),
+	dropProps: { align: { top: 'bottom' } },
+};
+
 describe('LoginButton.spec', () => {
 	it('renders DropButton with parameters', () => {
 		render(<LoginButton />);
 		expect(DropButton).toHaveBeenCalledWith(
-			expect.objectContaining({
-				primary: true,
-				label: 'Login',
-				open: false,
-				onOpen: expect.any(Function),
-				onClose: expect.any(Function),
-				dropContent: expect.any(Object),
-				dropProps: { align: { top: 'bottom' } },
-			}),
+			expect.objectContaining(basicParameters),
 			expect.any(Object)
 		);
 	});
@@ -55,13 +58,8 @@ describe('LoginButton.spec', () => {
 
 		expect(DropButton).toHaveBeenLastCalledWith(
 			expect.objectContaining({
-				primary: true,
-				label: 'Login',
+				...basicParameters,
 				open: true,
-				onOpen: expect.any(Function),
-				onClose: expect.any(Function),
-				dropContent: expect.any(Object),
-				dropProps: { align: { top: 'bottom' } },
 			}),
 			expect.any(Object)
 		);
@@ -75,13 +73,8 @@ describe('LoginButton.spec', () => {
 		expect(DropButton).toHaveBeenCalledTimes(3);
 		expect(DropButton).toHaveBeenLastCalledWith(
 			expect.objectContaining({
-				primary: true,
-				label: 'Login',
+				...basicParameters,
 				open: false,
-				onOpen: expect.any(Function),
-				onClose: expect.any(Function),
-				dropContent: expect.any(Object),
-				dropProps: { align: { top: 'bottom' } },
 			}),
 			expect.any(Object)
 		);

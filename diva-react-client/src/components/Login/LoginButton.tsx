@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropButton, Box } from 'grommet';
+import { Login } from 'grommet-icons';
 import LoginSelector from './LoginSelector';
 
 const LoginButton = function () {
@@ -15,8 +16,9 @@ const LoginButton = function () {
 	return (
 		<Box align="center" pad="small">
 			<DropButton
-				primary
-				label="Login"
+				icon={<Login />}
+				reverse
+				label="Logga in"
 				open={open}
 				onOpen={onOpen}
 				onClose={onClose}
