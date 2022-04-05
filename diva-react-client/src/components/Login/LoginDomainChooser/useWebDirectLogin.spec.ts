@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
-import getIdpLoginServerPartFromUrl from './helpers';
+import { LOGIN_STATUS, useAuth } from '../../../context/AuthContext';
 import useWebRedirectLogin, { receiveMessage } from './useWebRedirectLogin';
 import { window } from './window';
+import getIdpLoginServerPartFromUrl from './helpers';
 
 jest.mock('./helpers');
 const mockGetIdpLoginServerPartFromUrl =
@@ -19,7 +19,7 @@ jest.mock('./window', () => ({
 	},
 }));
 
-jest.mock('../../context/AuthContext');
+jest.mock('../../../context/AuthContext');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
 let returnedWindow = window as jest.Mocked<typeof window>;

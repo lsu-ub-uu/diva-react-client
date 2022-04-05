@@ -1,11 +1,12 @@
-import { LoginUnitObject } from 'diva-cora-ts-api-wrapper';
+import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 import { Box, Button, Grid, Select } from 'grommet';
 import React, { useState } from 'react';
-import { getSortedLoginUnits } from '../../divaData/resources';
+import { getSortedLoginUnits } from '../../../divaData/resources';
 import { filterLoginUnits } from './helpers';
+import LDAPLogin from './LDAPLogin';
 import useWebRedirectLogin from './useWebRedirectLogin';
 
-const LoginSelector = function () {
+const LoginDomainChooser = function () {
 	const { startLoginProcess } = useWebRedirectLogin();
 	const allOptions = getSortedLoginUnits();
 	const [options, setOptions] = useState(allOptions);
@@ -18,6 +19,26 @@ const LoginSelector = function () {
 	const handleSearch = (text: string) => {
 		const filteredOptions = filterLoginUnits(allOptions, text);
 		setOptions(filteredOptions);
+	};
+
+	const possiblyDisplayLDAPLogin = () => {
+		if (value !== undefined && value.type === LoginType.LoginLDAP) {
+			return <LDAPLogin />;
+		}
+		return (
+			<Box direction="row">
+				<Button
+					label="Logga in på organisation"
+					primary
+					disabled={!value}
+					onClick={() => {
+						if (value) {
+							startLoginProcess(value.url);
+						}
+					}}
+				/>
+			</Box>
+		);
 	};
 
 	return (
@@ -33,19 +54,10 @@ const LoginSelector = function () {
 					onChange={handleChange}
 					onSearch={handleSearch}
 				/>
-				<Button
-					label="Logga in på organisation"
-					primary
-					disabled={!value}
-					onClick={() => {
-						if (value) {
-							startLoginProcess(value.url);
-						}
-					}}
-				/>
+				{possiblyDisplayLDAPLogin()}
 			</Grid>
 		</Box>
 	);
 };
 
-export default LoginSelector;
+export default LoginDomainChooser;

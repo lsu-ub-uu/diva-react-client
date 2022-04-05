@@ -1,5 +1,5 @@
-import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
-import { Auth, AuthInfo } from '../../context/types';
+import { LOGIN_STATUS, useAuth } from '../../../context/AuthContext';
+import { Auth, AuthInfo } from '../../../context/types';
 import getIdpLoginServerPartFromUrl from './helpers';
 import { window } from './window';
 

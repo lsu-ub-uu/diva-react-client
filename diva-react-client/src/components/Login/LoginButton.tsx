@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropButton, Box } from 'grommet';
 import { Login } from 'grommet-icons';
-import LoginSelector from './LoginSelector';
+import LoginDomainChooser from './LoginDomainChooser';
 
 const LoginButton = function () {
 	const [open, setOpen] = React.useState<boolean>(false);
@@ -22,7 +22,7 @@ const LoginButton = function () {
 				open={open}
 				onOpen={onOpen}
 				onClose={onClose}
-				dropContent={<LoginSelector />}
+				dropContent={<LoginDomainChooser />}
 				dropProps={{ align: { top: 'bottom' } }}
 			/>
 		</Box>

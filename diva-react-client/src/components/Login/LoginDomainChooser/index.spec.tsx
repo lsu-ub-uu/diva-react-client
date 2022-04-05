@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Select } from 'grommet';
 import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
-import LoginSelector from './LoginSelector';
-import { getSortedLoginUnits } from '../../divaData/resources';
+import LoginDomainChooser from '.';
+import { getSortedLoginUnits } from '../../../divaData/resources';
 import useWebRedirectLogin from './useWebRedirectLogin';
 import { filterLoginUnits } from './helpers';
 
@@ -50,7 +50,7 @@ jest.mock('grommet', () => ({
 	}),
 }));
 
-jest.mock('../../divaData/resources');
+jest.mock('../../../divaData/resources');
 const mockGetSortedLoginUnits = getSortedLoginUnits as jest.MockedFunction<
 	typeof getSortedLoginUnits
 >;
@@ -91,7 +91,7 @@ beforeAll(() => {
 describe('LoginSelector', () => {
 	describe('Select component', () => {
 		it('Calls Grommets select component with props', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 
 			expect(Select).toHaveBeenCalledTimes(1);
 			expect(Select).toHaveBeenCalledWith(
@@ -110,17 +110,17 @@ describe('LoginSelector', () => {
 		});
 
 		it('calls useWebRedirectLogin', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 			expect(mockUseWebRedirectLogin).toHaveBeenCalled();
 		});
 
 		it('calls getSortedLoginUnits', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 			expect(mockGetSortedLoginUnits).toHaveBeenCalled();
 		});
 
 		it('onSearch calls filterLoginUnits with options and searchText', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 
 			userEvent.click(screen.getByRole('button', { name: 'onSearch' }));
 
@@ -139,7 +139,7 @@ describe('LoginSelector', () => {
 		});
 
 		it('onSearch calls setOptions and in such a way rerenders Select', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 
 			userEvent.click(screen.getByRole('button', { name: 'onSearch' }));
 
@@ -149,7 +149,7 @@ describe('LoginSelector', () => {
 
 	describe('Button component', () => {
 		it('renders a disabled button', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 
 			const loginButton = screen.getByRole('button', {
 				name: 'Logga in på organisation',
@@ -161,7 +161,7 @@ describe('LoginSelector', () => {
 		});
 
 		it('if user has selected an option, button should not be disabled', () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 			simulateUserChoosingOption();
 
 			const loginButton = screen.getByRole('button', {
@@ -171,7 +171,7 @@ describe('LoginSelector', () => {
 		});
 
 		it("if login button is clicked, call startLoginProcess with value's url", () => {
-			render(<LoginSelector />);
+			render(<LoginDomainChooser />);
 
 			simulateUserChoosingOption();
 
