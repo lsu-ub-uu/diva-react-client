@@ -7,6 +7,12 @@ export const loginUnits: LoginUnitObject[] = [
 		displayTextEn: 'Login example',
 		type: LoginType.LoginWebRedirect,
 	},
+	{
+		url: '',
+		displayTextSv: 'LDAP Inloggning',
+		displayTextEn: 'LDAP Login',
+		type: LoginType.LoginLDAP,
+	},
 ];
 
 export default { loginUnits };
