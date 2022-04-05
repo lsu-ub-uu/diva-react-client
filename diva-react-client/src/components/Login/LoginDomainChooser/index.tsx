@@ -1,13 +1,12 @@
 import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
-import { Box, Button, Grid, Select } from 'grommet';
+import { Box, Grid, Select } from 'grommet';
 import React, { useState } from 'react';
 import { getSortedLoginUnits } from '../../../divaData/resources';
 import { filterLoginUnits } from './helpers';
 import LDAPLogin from './LDAPLogin';
-import useWebRedirectLogin from './useWebRedirectLogin';
+import WebRedirectLogin from './WebRedirectLogin';
 
 const LoginDomainChooser = function () {
-	const { startLoginProcess } = useWebRedirectLogin();
 	const allOptions = getSortedLoginUnits();
 	const [options, setOptions] = useState(allOptions);
 	const [value, setValue] = useState<LoginUnitObject | undefined>(undefined);
@@ -25,20 +24,7 @@ const LoginDomainChooser = function () {
 		if (value !== undefined && value.type === LoginType.LoginLDAP) {
 			return <LDAPLogin />;
 		}
-		return (
-			<Box direction="row">
-				<Button
-					label="Logga in på organisation"
-					primary
-					disabled={!value}
-					onClick={() => {
-						if (value) {
-							startLoginProcess(value.url);
-						}
-					}}
-				/>
-			</Box>
-		);
+		return <WebRedirectLogin value={value} />;
 	};
 
 	return (

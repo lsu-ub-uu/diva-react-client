@@ -42,5 +42,21 @@ describe('LDAPLogin', () => {
 			userEvent.type(screen.getByPlaceholderText('Lösenord'), 'somePassword');
 			expect(submitButton).toBeEnabled();
 		});
+
+		it('if button is clicked, do something', () => {
+			render(<LDAPLogin />);
+			const submitButton = screen.getByRole('button', {
+				name: 'Logga in på organisation',
+			});
+
+			userEvent.type(
+				screen.getByPlaceholderText('Användarnamn'),
+				'someUserName'
+			);
+
+			userEvent.type(screen.getByPlaceholderText('Lösenord'), 'somePassword');
+
+			userEvent.click(submitButton);
+		});
 	});
 });

@@ -5,14 +5,17 @@ import { Select } from 'grommet';
 import { LoginType, LoginUnitObject } from 'diva-cora-ts-api-wrapper';
 import LoginDomainChooser from '.';
 import { getSortedLoginUnits } from '../../../divaData/resources';
-import useWebRedirectLogin from './useWebRedirectLogin';
 import { filterLoginUnits } from './helpers';
+import WebRedirectLogin from './WebRedirectLogin';
+import LDAPLogin from './LDAPLogin';
 
-jest.mock('./useWebRedirectLogin');
-const mockUseWebRedirectLogin = useWebRedirectLogin as jest.MockedFunction<
-	typeof useWebRedirectLogin
->;
-const mockStartLoginProcess = jest.fn();
+jest.mock('./WebRedirectLogin', () => {
+	return jest.fn(() => null);
+});
+
+jest.mock('./LDAPLogin', () => {
+	return jest.fn(() => null);
+});
 
 let searchTerm = 'someText';
 let loginUnitToReturn: LoginUnitObject = {
@@ -82,13 +85,9 @@ const defaultOptions = [
 ];
 beforeAll(() => {
 	mockGetSortedLoginUnits.mockReturnValue(defaultOptions);
-
-	mockUseWebRedirectLogin.mockReturnValue({
-		startLoginProcess: mockStartLoginProcess,
-	});
 });
 
-describe('LoginSelector', () => {
+describe('LoginDomainChooser', () => {
 	describe('Select component', () => {
 		it('Calls Grommets select component with props', () => {
 			render(<LoginDomainChooser />);
@@ -107,11 +106,6 @@ describe('LoginSelector', () => {
 				}),
 				expect.any(Object)
 			);
-		});
-
-		it('calls useWebRedirectLogin', () => {
-			render(<LoginDomainChooser />);
-			expect(mockUseWebRedirectLogin).toHaveBeenCalled();
 		});
 
 		it('calls getSortedLoginUnits', () => {
@@ -147,57 +141,46 @@ describe('LoginSelector', () => {
 		});
 	});
 
-	describe('Button component', () => {
-		it('renders a disabled button', () => {
+	describe('Button area', () => {
+		it('Before user has chosen, display WebRedirectLogin with value', () => {
 			render(<LoginDomainChooser />);
 
-			const loginButton = screen.getByRole('button', {
-				name: 'Logga in på organisation',
-			});
-
-			expect(loginButton).toBeInTheDocument();
-
-			expect(loginButton).toBeDisabled();
+			expect(WebRedirectLogin).toHaveBeenCalledWith(
+				expect.objectContaining({
+					value: undefined,
+				}),
+				expect.any(Object)
+			);
 		});
-
-		it('if user has selected an option, button should not be disabled', () => {
-			render(<LoginDomainChooser />);
-			simulateUserChoosingOption();
-
-			const loginButton = screen.getByRole('button', {
-				name: 'Logga in på organisation',
-			});
-			expect(loginButton).not.toBeDisabled();
-		});
-
-		it("if login button is clicked, call startLoginProcess with value's url", () => {
+		it('If user has chosen WebRedirectLogin, display WebRedirectLogin, NOT LDAPLogin', () => {
 			render(<LoginDomainChooser />);
 
 			simulateUserChoosingOption();
 
-			userEvent.click(
-				screen.getByRole('button', {
-					name: 'Logga in på organisation',
-				})
+			expect(WebRedirectLogin).toHaveBeenCalledWith(
+				expect.objectContaining({
+					value: loginUnitToReturn,
+				}),
+				expect.any(Object)
 			);
 
-			expect(mockStartLoginProcess).toHaveBeenCalledWith('url');
+			expect(LDAPLogin).not.toHaveBeenCalled();
+		});
+		it('If user has chosen LDAP login, display LDAPLogin, NOT WebRedirectLogin', () => {
+			render(<LoginDomainChooser />);
+			expect(WebRedirectLogin).toHaveBeenCalledTimes(1);
 
 			loginUnitToReturn = {
 				displayTextEn: 'displayTextEn',
 				displayTextSv: 'displayTextSv',
-				type: LoginType.LoginWebRedirect,
-				url: 'some other Url',
+				type: LoginType.LoginLDAP,
+				url: 'url',
 			};
+
 			simulateUserChoosingOption();
 
-			userEvent.click(
-				screen.getByRole('button', {
-					name: 'Logga in på organisation',
-				})
-			);
-
-			expect(mockStartLoginProcess).toHaveBeenCalledWith('some other Url');
+			expect(LDAPLogin).toHaveBeenCalledTimes(1);
+			expect(WebRedirectLogin).toHaveBeenCalledTimes(1);
 		});
 	});
 });

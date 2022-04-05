@@ -26,7 +26,6 @@ const LDAPLogin = function () {
 		<Form
 			value={value}
 			onChange={(nextValue) => setValue(nextValue)}
-			onReset={() => setValue({ username: '', password: '' })}
 			onSubmit={onSubmit}
 		>
 			<FormField name="username" htmlFor="username">
