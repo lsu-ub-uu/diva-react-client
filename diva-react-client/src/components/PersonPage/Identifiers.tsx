@@ -7,14 +7,17 @@ const possiblyOutputListWithLabel = (
 	label: string
 ) => {
 	if (list !== undefined && list.length > 0) {
-		// return <ListWithLabel list={list} label={label} omitEmptyStrings />;
-		return list.map((item) => {
-			return (
-				<NameValuePair name={label} key={item}>
-					<Text>{item}</Text>
-				</NameValuePair>
-			);
-		});
+		return list
+			.filter((item) => {
+				return item !== '';
+			})
+			.map((item) => {
+				return (
+					<NameValuePair name={label} key={item}>
+						<Text>{item}</Text>
+					</NameValuePair>
+				);
+			});
 	}
 	return undefined;
 };

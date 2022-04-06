@@ -1,13 +1,12 @@
-import { render } from '@testing-library/react';
 import React from 'react';
+import { screen } from '@testing-library/react';
 import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
-	createPersonObject,
 	personWithDomain,
 } from '../../../testData/personObjectData';
-import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
+import { renderWithGrommet } from '../../../test-utils';
 
 jest.mock('./ListWithLabel', () => {
 	return jest.fn(() => {
@@ -17,93 +16,84 @@ jest.mock('./ListWithLabel', () => {
 
 describe('identifiers', () => {
 	it('should take a person', () => {
-		render(<Identifiers person={createMinimumPersonWithIdAndName()} />);
+		renderWithGrommet(
+			<Identifiers person={createMinimumPersonWithIdAndName()} />
+		);
 	});
 
-	it('should call ListWithLabel with id', () => {
-		const { rerender } = render(<Identifiers person={personWithDomain} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(1);
-		expect(ListWithLabel).toHaveBeenCalledWith(
-			expect.objectContaining({
-				label: 'pID',
-				list: [personWithDomain.id],
-			}),
-			expect.any(Object)
+	it('should render "pID" and id', () => {
+		const { rerender } = renderWithGrommet(
+			<Identifiers person={personWithDomain} />
 		);
+		expect(screen.getByText('pID')).toBeInTheDocument();
+		expect(screen.getByText(personWithDomain.id)).toBeInTheDocument();
+
 		const otherPerson = createMinimumPersonWithIdAndName('someId');
 		rerender(<Identifiers person={otherPerson} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(2);
-		expect(ListWithLabel).toHaveBeenCalledWith(
-			expect.objectContaining({
-				label: 'pID',
-				list: [otherPerson.id],
-			}),
-			expect.any(Object)
-		);
+		expect(screen.getByText('pID')).toBeInTheDocument();
+		expect(screen.getByText(otherPerson.id)).toBeInTheDocument();
 	});
-	it('should call ListWithLabel with ORCID, omitEmptyStrings and orcids if they exist on person', () => {
+	it('For each non-empty ORCID, should display "ORCID" and the orcid', () => {
 		const person = createCompletePerson();
 		person.viafIDs = [];
 		person.librisIDs = [];
-		render(<Identifiers person={person} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(2);
-		expect(ListWithLabel).toHaveBeenNthCalledWith(
-			2,
-			expect.objectContaining({
-				label: 'ORCID',
-				list: person.orcids,
-				omitEmptyStrings: true,
-			}),
-			expect.any(Object)
-		);
+		const { rerender } = renderWithGrommet(<Identifiers person={person} />);
+
+		expect(screen.getAllByText('ORCID')).toHaveLength(2);
+		person.orcids?.forEach((id) => {
+			expect(screen.getByText(id)).toBeInTheDocument();
+		});
+
+		const personWithoutOrcids = createMinimumPersonWithIdAndName();
+		rerender(<Identifiers person={personWithoutOrcids} />);
+		expect(screen.queryAllByText('ORCID')).toHaveLength(0);
+
+		const personWithOneEmptyOrcid = createMinimumPersonWithIdAndName();
+		personWithOneEmptyOrcid.orcids = ['someOrcid', ''];
+		rerender(<Identifiers person={personWithOneEmptyOrcid} />);
+		expect(screen.queryAllByText('ORCID')).toHaveLength(1);
+		expect(screen.getByText('someOrcid')).toBeInTheDocument();
 	});
-	it('should call ListWithLabel with VIAF and viafIds if they exist on person', () => {
+	it('For each non-empty VIAF, should display "VIAF" and the viaf-id', () => {
 		const person = createCompletePerson();
 		person.orcids = [];
 		person.librisIDs = [];
-		render(<Identifiers person={person} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(2);
-		expect(ListWithLabel).toHaveBeenNthCalledWith(
-			2,
-			expect.objectContaining({
-				label: 'VIAF',
-				list: person.viafIDs,
-				omitEmptyStrings: true,
-			}),
-			expect.any(Object)
-		);
+		const { rerender } = renderWithGrommet(<Identifiers person={person} />);
+
+		expect(screen.getAllByText('VIAF')).toHaveLength(2);
+		person.viafIDs?.forEach((id) => {
+			expect(screen.getByText(id)).toBeInTheDocument();
+		});
+
+		const personWithoutViafs = createMinimumPersonWithIdAndName();
+		rerender(<Identifiers person={personWithoutViafs} />);
+		expect(screen.queryAllByText('VIAF')).toHaveLength(0);
+
+		const personWithOneEmptyViaf = createMinimumPersonWithIdAndName();
+		personWithOneEmptyViaf.viafIDs = ['someViaf', ''];
+		rerender(<Identifiers person={personWithOneEmptyViaf} />);
+		expect(screen.queryAllByText('VIAF')).toHaveLength(1);
+		expect(screen.getByText('someViaf')).toBeInTheDocument();
 	});
 	it('should call ListWithLabel with Libris-id and librisIDs if they exist on person', () => {
 		const person = createCompletePerson();
 		person.orcids = [];
 		person.viafIDs = [];
-		render(<Identifiers person={person} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(2);
-		expect(ListWithLabel).toHaveBeenNthCalledWith(
-			2,
-			expect.objectContaining({
-				label: 'Libris-id',
-				list: person.librisIDs,
-				omitEmptyStrings: true,
-			}),
-			expect.any(Object)
-		);
-	});
-	it('should not call ListWithLabel if person has no ORCIDs, VIAFs or Libris ids', () => {
-		render(<Identifiers person={personWithDomain} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(1);
+		const { rerender } = renderWithGrommet(<Identifiers person={person} />);
 
-		const personWithEmptyIdentifiers = createPersonObject(
-			'someId',
-			'someName',
-			'someFirstName'
-		);
+		expect(screen.getAllByText('Libris-id')).toHaveLength(2);
+		person.librisIDs?.forEach((id) => {
+			expect(screen.getByText(id)).toBeInTheDocument();
+		});
 
-		personWithEmptyIdentifiers.orcids = [];
-		personWithEmptyIdentifiers.viafIDs = [];
-		personWithEmptyIdentifiers.librisIDs = [];
+		const personWithoutViafs = createMinimumPersonWithIdAndName();
+		rerender(<Identifiers person={personWithoutViafs} />);
+		expect(screen.queryAllByText('Libris-id')).toHaveLength(0);
 
-		render(<Identifiers person={personWithEmptyIdentifiers} />);
-		expect(ListWithLabel).toHaveBeenCalledTimes(2);
+		const personWithOneEmptyViaf = createMinimumPersonWithIdAndName();
+		personWithOneEmptyViaf.librisIDs = ['someLibris', ''];
+		rerender(<Identifiers person={personWithOneEmptyViaf} />);
+		expect(screen.queryAllByText('Libris-id')).toHaveLength(1);
+		expect(screen.getByText('someLibris')).toBeInTheDocument();
 	});
 });
