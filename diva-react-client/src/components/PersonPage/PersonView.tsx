@@ -8,7 +8,7 @@ import AffiliationDisplay from './AffiliationDisplay';
 
 const StyledPersonView = styled.div`
 	display: grid;
-	grid-template-columns: '1fr 1fr 1fr 1f 1fr';
+	grid-template-columns: 1fr 1fr 1fr 1f 1fr;
 	grid-template-rows: auto;
 	grid-template-areas:
 		'top top top top top'

@@ -38,6 +38,12 @@ const theme: ThemeType = {
 	tag: {
 		round: 'none',
 	},
+	nameValueList: {
+		gap: {
+			column: 'small',
+			row: 'small',
+		},
+	},
 };
 
 // const Navigation = function () {

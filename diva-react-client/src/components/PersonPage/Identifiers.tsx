@@ -1,34 +1,36 @@
 import React from 'react';
-import styled from 'styled-components';
+import { NameValueList, NameValuePair, Text } from 'grommet';
 import { Person } from 'diva-cora-ts-api-wrapper';
-import ListWithLabel from './ListWithLabel';
-
-const StyledDiv = styled.div`
-	display: grid;
-	grid-template-columns: max-content auto;
-	column-gap: 0.5em;
-`;
 
 const possiblyOutputListWithLabel = (
 	list: string[] | undefined,
 	label: string
 ) => {
 	if (list !== undefined && list.length > 0) {
-		return <ListWithLabel list={list} label={label} omitEmptyStrings />;
+		// return <ListWithLabel list={list} label={label} omitEmptyStrings />;
+		return list.map((item) => {
+			return (
+				<NameValuePair name={label} key={item}>
+					<Text>{item}</Text>
+				</NameValuePair>
+			);
+		});
 	}
 	return undefined;
 };
 
 const Identifiers = function ({ person }: { person: Person }) {
 	return (
-		<StyledDiv>
-			<ListWithLabel list={[person.id]} label="pID" />
+		<NameValueList nameProps={{ width: 'xsmall' }}>
+			<NameValuePair name="pID">
+				<Text>{person.id}</Text>
+			</NameValuePair>
 			{possiblyOutputListWithLabel(person.orcids, 'ORCID')}
 
 			{possiblyOutputListWithLabel(person.viafIDs, 'VIAF')}
 
 			{possiblyOutputListWithLabel(person.librisIDs, 'Libris-id')}
-		</StyledDiv>
+		</NameValueList>
 	);
 };
 
