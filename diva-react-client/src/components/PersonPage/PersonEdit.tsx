@@ -64,17 +64,24 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			AlternativeNameGroup = person.alternativeNames.map(
 				(alternativeName, index) => {
 					return (
-						<Box key={index} direction="row" justify="between" align="center">
-							<FormField
-								label="Efternamn"
-								name={`alternativeNames[${index}].familyName`}
-								required
-							/>
-							<FormField
-								label="Förnamn"
-								name={`alternativeNames[${index}].givenName`}
-							/>
-							<Box>
+						<Box>
+							<Box
+								key={index}
+								direction="row-responsive"
+								justify="between"
+								align="center"
+							>
+								<FormField
+									label="Efternamn"
+									name={`alternativeNames[${index}].familyName`}
+									required
+								/>
+								<FormField
+									label="Förnamn"
+									name={`alternativeNames[${index}].givenName`}
+								/>
+							</Box>
+							<Box align="end" justify="center">
 								<Button
 									icon={<Trash />}
 									label="Ta bort"
