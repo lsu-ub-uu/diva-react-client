@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Button, Form, FormField, Grid } from 'grommet';
-import { Add, Trash } from 'grommet-icons';
+import { Add, FormSearch, Trash } from 'grommet-icons';
 import { Name, Person } from 'diva-cora-ts-api-wrapper';
 import PersonView from './PersonView';
+import useForm from './useForm';
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	const originalPersonWithEmptyDefaults = {
@@ -11,13 +12,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		viafIDs: [],
 		...originalPerson,
 	};
-	const [person, setPerson] = useState<Person>(originalPersonWithEmptyDefaults);
+	// const [inputs, setInputs] = useState<Person>(originalPersonWithEmptyDefaults);
+
+	const {
+		inputs: person,
+		handleChange,
+		setInputs,
+	} = useForm<Person>(originalPersonWithEmptyDefaults);
 
 	console.log(person);
 
 	const removeAlternativeName = (index: number) => {
 		if (person.alternativeNames && person.alternativeNames.length > 0) {
-			setPerson({
+			setInputs({
 				...person,
 				alternativeNames: person.alternativeNames.filter(
 					(v, _idx) => _idx !== index
@@ -32,7 +39,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		}
 
 		newAlternativeNames.push({ givenName: '', familyName: '' });
-		setPerson({
+		setInputs({
 			...person,
 			alternativeNames: newAlternativeNames,
 		});
@@ -40,7 +47,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 
 	const removeVIAF = (index: number) => {
 		if (person.viafIDs && person.viafIDs.length > 0) {
-			setPerson({
+			setInputs({
 				...person,
 				viafIDs: person.viafIDs.filter((v, _idx) => _idx !== index),
 			});
@@ -52,7 +59,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			newVIAFs.push(...person.viafIDs);
 		}
 		newVIAFs.push('');
-		setPerson({
+		setInputs({
 			...person,
 			viafIDs: newVIAFs,
 		});
@@ -74,11 +81,16 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								<FormField
 									label="Efternamn"
 									name={`alternativeNames[${index}].familyName`}
+									value={alternativeName.familyName}
+									onChange={handleChange}
 									required
 								/>
 								<FormField
 									label="Förnamn"
 									name={`alternativeNames[${index}].givenName`}
+									value={alternativeName.givenName}
+									onChange={handleChange}
+									required
 								/>
 							</Box>
 							<Box align="end" justify="center">
@@ -101,10 +113,16 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	let VIAFGroup = null;
 	const updateORCIDGroup = () => {
 		if (person.viafIDs !== undefined) {
-			VIAFGroup = person.viafIDs.map((alternativeName, index) => {
+			VIAFGroup = person.viafIDs.map((viaf, index) => {
 				return (
 					<Box key={index} direction="row" justify="between" align="center">
-						<FormField label="VIAF" name={`viafIDs[${index}]`} required />
+						<FormField
+							label="VIAF"
+							name={`viafIDs[${index}]`}
+							required
+							value={viaf}
+							onChange={handleChange}
+						/>
 						<Box>
 							<Button
 								icon={<Trash />}
@@ -125,40 +143,27 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	// 	// updateAlternativeNameGroup();
 	// }, [person.alternativeNames]);
 
-	const handleFormChange = (newFormState: Person) => {
-		console.log(newFormState);
-		setPerson(newFormState);
-	};
+	// const handleFormChange = (newFormState: Person) => {
+	// 	console.log(newFormState);
+	// 	setInputs(newFormState);
+	// };
 
 	return (
 		<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
-			<Form value={person} onChange={handleFormChange}>
+			<Form>
 				<Box direction="row" justify="between" align="center">
 					<FormField
 						label="Efternamn"
+						name="authorisedName.familyName"
 						value={person.authorisedName?.familyName}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							const authorisedName = {
-								givenName: '',
-								...person.authorisedName,
-								familyName: event.target.value,
-							};
-
-							setPerson({ ...person, authorisedName });
-						}}
+						onChange={handleChange}
+						icon={<FormSearch />}
 					/>
 					<FormField
 						label="Förnamn"
+						name="authorisedName.givenName"
 						value={person.authorisedName?.givenName}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							const authorisedName = {
-								familyName: '',
-								...person.authorisedName,
-								givenName: event.target.value,
-							};
-
-							setPerson({ ...person, authorisedName });
-						}}
+						onChange={handleChange}
 					/>
 				</Box>
 				{AlternativeNameGroup}
@@ -190,6 +195,68 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			<PersonView person={person} />
 		</Grid>
 	);
+	// return (
+	// 	<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
+	// 		<Form>
+	// 			<Box direction="row" justify="between" align="center">
+	// 				<FormField
+	// 					label="Efternamn"
+	// 					name="authorisedName.familyName"
+	// 					value={person.authorisedName?.familyName}
+	// 					// onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+	// 					// 	const authorisedName = {
+	// 					// 		givenName: '',
+	// 					// 		...person.authorisedName,
+	// 					// 		familyName: event.target.value,
+	// 					// 	};
+
+	// 					// 	setPerson({ ...person, authorisedName });
+	// 					// }}
+	// 					onChange={handleChange}
+	// 				/>
+	// 				{/* <FormField
+	// 					label="Förnamn"
+	// 					value={person.authorisedName?.givenName}
+	// 					onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+	// 						const authorisedName = {
+	// 							familyName: '',
+	// 							...person.authorisedName,
+	// 							givenName: event.target.value,
+	// 						};
+
+	// 						setInputs({ ...person, authorisedName });
+	// 					}}
+	// 				/> */}
+	// 			</Box>
+	// 			{/* {AlternativeNameGroup}
+	// 			<Button
+	// 				icon={<Add />}
+	// 				label="Lägg till alternativt namn"
+	// 				plain
+	// 				hoverIndicator
+	// 				onClick={addAlternativeName}
+	// 			/>
+	// 			<FormField
+	// 				name="academicTitle"
+	// 				htmlFor="text-input-id"
+	// 				label="Akademisk titel"
+	// 			/>
+	// 			<Box direction="row" justify="between" align="center">
+	// 				<FormField label="Födelseår" name="yearOfBirth" />
+	// 				<FormField label="Dödsår" name="yearOfDeath" />
+	// 			</Box>
+	// 			{VIAFGroup}
+	// 			<Button
+	// 				icon={<Add />}
+	// 				label="Lägg till VIAF"
+	// 				plain
+	// 				hoverIndicator
+	// 				onClick={addVIAF}
+	// 			/> */}
+	// 		</Form>
+	// 		<PersonView person={person} />
+	// 	</Grid>
+	// );
 };
 
 export default PersonEdit;
