@@ -19,7 +19,7 @@ const useForm = <T>(initial: T) => {
 			const childPropertyPart = name.substring(name.indexOf(']') + 1);
 			console.log(childPropertyPart);
 
-			const originalParent = inputs[parentPropertyName];
+			const originalParent = (inputs as any)[parentPropertyName];
 
 			if (childPropertyPart !== '') {
 				// parentPropertyName is an object
@@ -49,7 +49,7 @@ const useForm = <T>(initial: T) => {
 
 			// const {parts[0]} = inputs;
 
-			const originalObject = inputs[parts[0]];
+			const originalObject = (inputs as any)[parts[0]];
 
 			const alteredObject = {
 				...originalObject,
