@@ -5,6 +5,7 @@ import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import AffiliationDisplay from './AffiliationDisplay';
+import BackButton from '../BackButton';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -73,6 +74,7 @@ const PersonView = function ({ person }: { person: Person }) {
 					<AffiliationDisplay affiliation={person.otherAffiliation} />
 				)}
 			</Main>
+			<BackButton />
 		</StyledPersonView>
 	);
 };
