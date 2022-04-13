@@ -11,6 +11,7 @@ import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import PersonView from './PersonView';
 import AffiliationDisplay from './AffiliationDisplay';
+import { renderWithRouter } from '../../../test-utils';
 
 const ComponentToTest = PersonView;
 
@@ -40,7 +41,9 @@ jest.mock('./AffiliationDisplay', () => {
 
 describe('PersonView', () => {
 	it('should render person name', () => {
-		const { rerender } = render(<ComponentToTest person={personWithDomain} />);
+		const { rerender } = renderWithRouter(
+			<ComponentToTest person={personWithDomain} />
+		);
 		expect(screen.getByText(/Enequist, Gerd/i)).toBeInTheDocument();
 
 		rerender(
@@ -62,7 +65,7 @@ describe('PersonView', () => {
 			id: 'someId',
 			recordType: 'person',
 		};
-		const { rerender } = render(
+		const { rerender } = renderWithRouter(
 			<ComponentToTest person={somePersonWithoutName} />
 		);
 
@@ -82,7 +85,9 @@ describe('PersonView', () => {
 		it('should render title if not empty', () => {
 			const person = createMinimumPersonWithIdAndName();
 			person.academicTitle = 'someTitle';
-			const { rerender } = render(<ComponentToTest person={person} />);
+			const { rerender } = renderWithRouter(
+				<ComponentToTest person={person} />
+			);
 
 			expect(screen.getByText(/someTitle/i)).toBeInTheDocument();
 
@@ -96,21 +101,21 @@ describe('PersonView', () => {
 		it('should NOT render title if empty', () => {
 			const person = createMinimumPersonWithIdAndName();
 			person.academicTitle = '';
-			render(<ComponentToTest person={person} />);
+			renderWithRouter(<ComponentToTest person={person} />);
 
 			expect(screen.queryByTestId('personTitle')).not.toBeInTheDocument();
 		});
 
 		it('should NOT render title if undefined', () => {
 			const person = createMinimumPersonWithIdAndName();
-			render(<ComponentToTest person={person} />);
+			renderWithRouter(<ComponentToTest person={person} />);
 
 			expect(screen.queryByTestId('personTitle')).not.toBeInTheDocument();
 		});
 	});
 
 	it('should call Identifiers with person', () => {
-		render(<ComponentToTest person={personWithDomain} />);
+		renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
 		expect(Identifiers).toHaveBeenCalledTimes(1);
 		expect(Identifiers).toHaveBeenCalledWith(
@@ -123,7 +128,9 @@ describe('PersonView', () => {
 
 	describe('biography', () => {
 		it('if no biographySwedish, should not show biography', () => {
-			render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
+			renderWithRouter(
+				<ComponentToTest person={createMinimumPersonWithIdAndName()} />
+			);
 
 			expect(
 				screen.queryByRole('heading', { name: 'Biografi' })
@@ -131,7 +138,7 @@ describe('PersonView', () => {
 		});
 
 		it('if biographySwedish, shows label "Biografi"', () => {
-			render(<ComponentToTest person={createCompletePerson()} />);
+			renderWithRouter(<ComponentToTest person={createCompletePerson()} />);
 
 			expect(
 				screen.queryByRole('heading', { name: 'Biografi' })
@@ -140,7 +147,7 @@ describe('PersonView', () => {
 
 		it('if biographySwedish, displays swedish biography', () => {
 			const completePerson = createCompletePerson();
-			render(<ComponentToTest person={completePerson} />);
+			renderWithRouter(<ComponentToTest person={completePerson} />);
 
 			const biographySwedish = completePerson.biographySwedish as string;
 
@@ -150,13 +157,15 @@ describe('PersonView', () => {
 
 	describe('Other affiliation', () => {
 		it('should not call AffiliationDisplay if otherAffiliation is NOT set', () => {
-			render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
+			renderWithRouter(
+				<ComponentToTest person={createMinimumPersonWithIdAndName()} />
+			);
 			expect(AffiliationDisplay).not.toHaveBeenCalled();
 		});
 
 		it('should call AffiliationDisplay if otherAffiliation IS set', () => {
 			const person = createCompletePerson();
-			render(<ComponentToTest person={person} />);
+			renderWithRouter(<ComponentToTest person={person} />);
 			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
 				expect.objectContaining({ affiliation: person.otherAffiliation }),
 				expect.any(Object)
@@ -166,7 +175,7 @@ describe('PersonView', () => {
 			otherPerson.otherAffiliation = {
 				name: 'someOtherAffiliation',
 			};
-			render(<ComponentToTest person={otherPerson} />);
+			renderWithRouter(<ComponentToTest person={otherPerson} />);
 			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
 				expect.objectContaining({ affiliation: otherPerson.otherAffiliation }),
 				expect.any(Object)
@@ -175,7 +184,7 @@ describe('PersonView', () => {
 	});
 
 	it('should call PersonalInfo with person', () => {
-		render(<ComponentToTest person={personWithDomain} />);
+		renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
 		expect(PersonalInfo).toHaveBeenCalledTimes(1);
 		expect(PersonalInfo).toHaveBeenCalledWith(
@@ -188,21 +197,21 @@ describe('PersonView', () => {
 
 	describe('PersonDomainParts', () => {
 		it('should not render PersonDomainPartWrapper if there are no personDomainParts', () => {
-			render(<ComponentToTest person={personWithDomain} />);
+			renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
 			expect(PersonDomainPartWrapper).not.toHaveBeenCalled();
 		});
 
 		it('should render PersonDomainPartWrapper for each of the personDomainParts', () => {
 			const person = createCompletePerson();
-			render(<ComponentToTest person={person} />);
+			renderWithRouter(<ComponentToTest person={person} />);
 
 			expect(PersonDomainPartWrapper).toHaveBeenCalledTimes(3);
 		});
 
 		it('should render PersonDomainPartWrapper with each of the personDomainParts', () => {
 			const person = createCompletePerson();
-			render(<ComponentToTest person={person} />);
+			renderWithRouter(<ComponentToTest person={person} />);
 
 			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
 				1,
