@@ -43,6 +43,9 @@ const PersonalInfo = function ({ person }: { person: Person }) {
 				<NameValuePair name="Dödsår">
 					<Text>{person.yearOfDeath}</Text>
 				</NameValuePair>
+				<NameValuePair name="E-Post">
+					<Text>{person.emailAddress}</Text>
+				</NameValuePair>
 			</NameValueList>
 		</Parent>
 	);

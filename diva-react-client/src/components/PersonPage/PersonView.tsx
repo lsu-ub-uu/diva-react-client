@@ -42,7 +42,13 @@ const Main = styled.div`
 	row-gap: 1.5em;
 `;
 
-const PersonView = function ({ person }: { person: Person }) {
+const PersonView = function ({
+	person,
+	showAll = false,
+}: {
+	person: Person;
+	showAll?: boolean;
+}) {
 	return (
 		<StyledPersonView>
 			<Top>
@@ -62,6 +68,12 @@ const PersonView = function ({ person }: { person: Person }) {
 					<section>
 						<h2>Biografi</h2>
 						<p>{person.biographySwedish}</p>
+					</section>
+				)}
+				{showAll && person.biographyEnglish && (
+					<section>
+						<h2>Biography</h2>
+						<p>{person.biographyEnglish}</p>
 					</section>
 				)}
 				{person.personDomainParts !== undefined &&
