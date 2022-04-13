@@ -61,6 +61,11 @@ const useForm = <T>(initial: T) => {
 				...inputs,
 				[parts[0]]: alteredObject,
 			});
+		} else {
+			setInputs({
+				...inputs,
+				[name]: e.target.value,
+			});
 		}
 		// console.log(inputs);
 	};

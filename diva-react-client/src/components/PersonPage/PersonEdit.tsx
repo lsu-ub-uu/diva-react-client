@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Form, FormField, Grid } from 'grommet';
-import { Add, FormSearch, Trash } from 'grommet-icons';
+import { Add, Trash } from 'grommet-icons';
 import { Name, Person } from 'diva-cora-ts-api-wrapper';
 import PersonView from './PersonView';
 import useForm from './useForm';
@@ -157,7 +157,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						name="authorisedName.familyName"
 						value={person.authorisedName?.familyName}
 						onChange={handleChange}
-						icon={<FormSearch />}
 					/>
 					<FormField
 						label="Förnamn"
@@ -176,12 +175,38 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				/>
 				<FormField
 					name="academicTitle"
+					value={person.academicTitle}
+					onChange={handleChange}
 					htmlFor="text-input-id"
 					label="Akademisk titel"
 				/>
 				<Box direction="row" justify="between" align="center">
-					<FormField label="Födelseår" name="yearOfBirth" />
-					<FormField label="Dödsår" name="yearOfDeath" />
+					<FormField
+						label="Födelseår"
+						name="yearOfBirth"
+						value={person.yearOfBirth}
+						onChange={handleChange}
+						validate={(value: string) => {
+							const regex = /^[0-9]{4}$/;
+							if (value === '' || regex.test(value)) {
+								return '';
+							}
+							return `Födelseår måste vara i format YYYY.`;
+						}}
+					/>
+					<FormField
+						label="Dödsår"
+						name="yearOfDeath"
+						value={person.yearOfDeath}
+						onChange={handleChange}
+						validate={(value: string) => {
+							const regex = /^[0-9]{4}$/;
+							if (value === '' || regex.test(value)) {
+								return '';
+							}
+							return `Dödsår måste vara i format YYYY.`;
+						}}
+					/>
 				</Box>
 				{VIAFGroup}
 				<Button
@@ -191,6 +216,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					hoverIndicator
 					onClick={addVIAF}
 				/>
+				<Box align="end">
+					<Button type="submit" label="Spara" />
+				</Box>
 			</Form>
 			<PersonView person={person} />
 		</Grid>

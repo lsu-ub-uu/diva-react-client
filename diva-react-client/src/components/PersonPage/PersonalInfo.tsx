@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NameValueList, NameValuePair, Text } from 'grommet';
 import { Person, Name } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from './ListWithLabel';
 import ExternalLink from '../ExternalLink';
@@ -35,6 +36,14 @@ const PersonalInfo = function ({ person }: { person: Person }) {
 					})}
 				</ul>
 			)}
+			<NameValueList nameProps={{ width: 'xsmall' }}>
+				<NameValuePair name="Födelseår">
+					<Text>{person.yearOfBirth}</Text>
+				</NameValuePair>
+				<NameValuePair name="Dödsår">
+					<Text>{person.yearOfDeath}</Text>
+				</NameValuePair>
+			</NameValueList>
 		</Parent>
 	);
 };
