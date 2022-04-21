@@ -8,6 +8,7 @@ import PersonDomainPartEdit from './PersonDomainPartEdit';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
+	console.log(originalPerson);
 	const originalPersonWithEmptyDefaults = {
 		yearOfBirth: '',
 		yearOfDeath: '',

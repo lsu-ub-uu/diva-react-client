@@ -1,3 +1,4 @@
+import { PersonDomainPart } from './PersonDomainPart';
 import { Record } from './Record';
 
 export type Name = {
@@ -48,4 +49,6 @@ export interface Person extends Record {
 	personDomainParts?: {
 		recordId: string;
 	}[];
+
+	connectedDomains?: PersonDomainPart[];
 }
