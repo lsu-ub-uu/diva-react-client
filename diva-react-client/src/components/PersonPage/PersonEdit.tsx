@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Button, Form, FormField, Grid, Text, TextArea } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
-import { ExternalUrl, Name, Person } from 'diva-cora-ts-api-wrapper';
+import {
+	ExternalUrl,
+	Name,
+	Organisation,
+	Person,
+	RecordType,
+} from 'diva-cora-ts-api-wrapper';
 import PersonView from './PersonView';
 import useForm from './useForm';
 import PersonDomainPartEdit from './PersonDomainPartEdit';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
+import RecordFetcher from '../RecordFetcher';
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	console.log(originalPerson);
@@ -284,6 +291,59 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						hoverIndicator
 						onClick={addExternalLink}
 					/>
+
+					{person.connectedDomains &&
+						person.connectedDomains.length > 0 &&
+						person.connectedDomains.map((personDomainPart) => {
+							return (
+								<Box>
+									<Text>{personDomainPart.domain}</Text>
+									{personDomainPart.affiliations?.map((affiliation) => {
+										const { organisation } = affiliation;
+										return (
+											<Box direction="row" justify="between" align="center">
+												<Text>{organisation?.name}</Text>
+												<FormField
+													label="Från"
+													value={affiliation.fromYear}
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) => {
+														if (
+															person.connectedDomains &&
+															person.connectedDomains.length > 0
+														) {
+															person.connectedDomains.find(
+																(personDomainPart) => {}
+															);
+															// TODO!!!  FORTSÄTT HÄR!!!
+															const newViafs = person.viafIDs;
+															newViafs[index] = event.target.value;
+															setPerson({ ...person, viafIDs: newViafs });
+														}
+													}}
+												/>
+												<FormField
+													name={`${affiliation.id}-until`}
+													label="Till"
+													value={affiliation.untilYear}
+													// onChange={(
+													// 	event: React.ChangeEvent<HTMLInputElement>
+													// ) => {
+													// 	// if (person.viafIDs && person.viafIDs.length > 0) {
+													// 	// 	const newViafs = person.viafIDs;
+													// 	// 	newViafs[index] = event.target.value;
+													// 	// 	setPerson({ ...person, viafIDs: newViafs });
+													// 	// }
+													// }}
+												/>
+											</Box>
+										);
+									})}
+								</Box>
+							);
+						})}
+
 					<Box direction="row" justify="between" margin={{ top: 'medium' }}>
 						<Button type="submit" label="Submit" primary />
 					</Box>
