@@ -46,9 +46,9 @@ export interface Person extends Record {
 
 	biographySwedish?: string;
 
-	personDomainParts?: {
+	personDomainParts: {
 		recordId: string;
 	}[];
 
-	connectedDomains?: PersonDomainPart[];
+	connectedDomains: PersonDomainPart[];
 }

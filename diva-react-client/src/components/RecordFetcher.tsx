@@ -1,4 +1,9 @@
-import { getRecordById, RecordType } from 'diva-cora-ts-api-wrapper';
+import {
+	getPersonById,
+	getRecordById,
+	Person,
+	RecordType,
+} from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import useApi from '../hooks/useApi';
 
@@ -15,7 +20,14 @@ const RecordFetcher = function <T>({
 	id: string;
 	children(props: InjectedRecordProp<T>): JSX.Element;
 }) {
-	const { isLoading, result } = useApi<T>(getRecordById, { recordType, id });
+	let res: any;
+	console.log(recordType, id);
+	if (recordType === RecordType.Person) {
+		res = useApi<Person>(getPersonById, { recordType, id });
+	} else {
+		res = useApi<T>(getRecordById, { recordType, id });
+	}
+	const { isLoading, result } = res;
 
 	return (
 		<section>

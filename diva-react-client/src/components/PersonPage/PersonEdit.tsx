@@ -5,7 +5,9 @@ import {
 	ExternalUrl,
 	Name,
 	Organisation,
+	OtherAffiliation,
 	Person,
+	PersonDomainPart,
 	RecordType,
 } from 'diva-cora-ts-api-wrapper';
 import PersonView from './PersonView';
@@ -14,17 +16,155 @@ import PersonDomainPartEdit from './PersonDomainPartEdit';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import RecordFetcher from '../RecordFetcher';
 
+export interface FormPerson {
+	domains: string[];
+
+	authorisedName: Name;
+
+	academicTitle: string;
+
+	yearOfBirth: string;
+
+	yearOfDeath: string;
+
+	emailAddress: string;
+
+	alternativeNames: Name[];
+
+	externalURLs: ExternalUrl[];
+
+	otherAffiliation: OtherAffiliation;
+
+	orcids: string[];
+
+	viafIDs: string[];
+
+	librisIDs: string[];
+
+	biographyEnglish: string;
+
+	biographySwedish: string;
+
+	personDomainParts: string[];
+}
+
+const returnStringIfUndefined = (field: string | undefined) => {
+	return field || '';
+};
+
+const returnEmptyArrayIfUndefined = function <T>(field: T[] | undefined) {
+	return field || [];
+};
+
+const convertToFormPerson = (person: Person): FormPerson => {
+	const personDomainParts: string[] = [];
+	if (person.personDomainParts) {
+		person.personDomainParts.forEach((pdp) => {
+			personDomainParts.push(pdp.recordId);
+		});
+	}
+	return {
+		domains: returnEmptyArrayIfUndefined<string>(person.domains),
+		academicTitle: returnStringIfUndefined(person.academicTitle),
+		alternativeNames: returnEmptyArrayIfUndefined<Name>(
+			person.alternativeNames
+		),
+		authorisedName: person.authorisedName
+			? person.authorisedName
+			: { familyName: '', givenName: '' },
+		biographyEnglish: returnStringIfUndefined(person.biographyEnglish),
+		biographySwedish: returnStringIfUndefined(person.biographySwedish),
+		emailAddress: returnStringIfUndefined(person.emailAddress),
+		externalURLs: returnEmptyArrayIfUndefined<ExternalUrl>(person.externalURLs),
+		librisIDs: returnEmptyArrayIfUndefined<string>(person.librisIDs),
+		orcids: returnEmptyArrayIfUndefined<string>(person.orcids),
+		viafIDs: returnEmptyArrayIfUndefined<string>(person.viafIDs),
+		otherAffiliation: person.otherAffiliation
+			? person.otherAffiliation
+			: { name: '', fromYear: '', untilYear: '' },
+		personDomainParts,
+		yearOfBirth: returnStringIfUndefined(person.yearOfBirth),
+		yearOfDeath: returnStringIfUndefined(person.yearOfDeath),
+	};
+};
+
+type FormAffiliation = {
+	id: string;
+	fromYear: string;
+	untilYear: string;
+};
+
+interface FormPersonDomainPart {
+	id: string;
+	identifiers: string[];
+	domain: string;
+	affiliations: { [key: string]: FormAffiliation };
+}
+
+const convertToFormPersonDomainPart = (
+	personDomainPart: PersonDomainPart
+): FormPersonDomainPart => {
+	const affiliations: { [key: string]: FormAffiliation } = {};
+
+	personDomainPart.affiliations.forEach((affiliation) => {
+		affiliations[affiliation.id] = {
+			fromYear: '',
+			untilYear: '',
+			...affiliation,
+		};
+	});
+
+	return {
+		id: personDomainPart.id,
+		domain: personDomainPart.domain,
+		affiliations,
+		identifiers: personDomainPart.identifiers || [],
+	};
+};
+
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	console.log(originalPerson);
-	const originalPersonWithEmptyDefaults = {
-		yearOfBirth: '',
-		yearOfDeath: '',
-		viafIDs: [],
-		...originalPerson,
-	};
-	const [person, setPerson] = useState<Person>(originalPersonWithEmptyDefaults);
+	// const originalFormPersonWithEmptyDefaults: FormPerson = {
+	// 	yearOfBirth: '',
+	// 	yearOfDeath: '',
+	// 	viafIDs: [],
+	// 	domains: [],
+	// 	...originalPerson,
+	// };
+	const originalFormPersonWithEmptyDefaults: FormPerson =
+		convertToFormPerson(originalPerson);
 
-	const handleFormChange = (newFormState: Person) => {
+	const initialPersonDomainParts: {
+		[key: string]: FormPersonDomainPart;
+	} = {};
+
+	originalPerson.connectedDomains.forEach((domain) => {
+		initialPersonDomainParts[domain.id] = convertToFormPersonDomainPart(domain);
+	});
+
+	const [personDomainParts, setPersonDomainParts] = useState(
+		initialPersonDomainParts
+	);
+
+	// const initialAffiliations: any = {};
+	// originalPerson.connectedDomains.forEach((domain) => {
+	// 	domain.affiliations.forEach((affiliation) => {
+	// 		if (affiliation.organisation) {
+	// 			initialAffiliations[affiliation.id] = affiliation;
+	// 		}
+	// 	});
+	// });
+
+	// const [affiliations, setAffiliations] = useState(initialAffiliations);
+
+	console.log(initialPersonDomainParts);
+	// console.log(affiliations);
+
+	const [person, setPerson] = useState<FormPerson>(
+		originalFormPersonWithEmptyDefaults
+	);
+
+	const handleFormChange = (newFormState: FormPerson) => {
 		console.log({ newFormState });
 		if (newFormState) {
 			setPerson(newFormState);
@@ -93,7 +233,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					<Box>
 						<Button
 							icon={<Trash />}
-							label="Ta bort"
+							label=""
 							plain
 							hoverIndicator
 							onClick={() => removeAlternativeName(index)}
@@ -292,54 +432,66 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						onClick={addExternalLink}
 					/>
 
-					{person.connectedDomains &&
-						person.connectedDomains.length > 0 &&
-						person.connectedDomains.map((personDomainPart) => {
+					{person.personDomainParts &&
+						person.personDomainParts.length > 0 &&
+						person.personDomainParts.map((pdpId) => {
+							const personDomainPart = personDomainParts[pdpId];
 							return (
 								<Box>
 									<Text>{personDomainPart.domain}</Text>
-									{personDomainPart.affiliations?.map((affiliation) => {
-										const { organisation } = affiliation;
-										return (
-											<Box direction="row" justify="between" align="center">
-												<Text>{organisation?.name}</Text>
-												<FormField
-													label="Från"
-													value={affiliation.fromYear}
-													onChange={(
-														event: React.ChangeEvent<HTMLInputElement>
-													) => {
-														if (
-															person.connectedDomains &&
-															person.connectedDomains.length > 0
-														) {
-															person.connectedDomains.find(
-																(personDomainPart) => {}
-															);
-															// TODO!!!  FORTSÄTT HÄR!!!
-															const newViafs = person.viafIDs;
-															newViafs[index] = event.target.value;
-															setPerson({ ...person, viafIDs: newViafs });
-														}
-													}}
-												/>
-												<FormField
-													name={`${affiliation.id}-until`}
-													label="Till"
-													value={affiliation.untilYear}
-													// onChange={(
-													// 	event: React.ChangeEvent<HTMLInputElement>
-													// ) => {
-													// 	// if (person.viafIDs && person.viafIDs.length > 0) {
-													// 	// 	const newViafs = person.viafIDs;
-													// 	// 	newViafs[index] = event.target.value;
-													// 	// 	setPerson({ ...person, viafIDs: newViafs });
-													// 	// }
-													// }}
-												/>
-											</Box>
-										);
-									})}
+									{Object.values(personDomainPart.affiliations).map(
+										(affiliation) => {
+											// const affiliation = affiliations[affiliation.id];
+											return (
+												<Box direction="row" justify="between" align="center">
+													{/* <Text>{affiliation.name}</Text> */}
+													<FormField
+														label="Från"
+														value={affiliation.fromYear}
+														onChange={(
+															event: React.ChangeEvent<HTMLInputElement>
+														) => {
+															setPersonDomainParts({
+																...personDomainParts,
+																[personDomainPart.id]: {
+																	...personDomainPart,
+																	affiliations: {
+																		...personDomainPart.affiliations,
+																		[affiliation.id]: {
+																			...affiliation,
+																			fromYear: event.target.value,
+																		},
+																	},
+																},
+															});
+														}}
+													/>
+													<FormField
+														name={`${affiliation.id}-until`}
+														label="Till"
+														value={affiliation.untilYear}
+														onChange={(
+															event: React.ChangeEvent<HTMLInputElement>
+														) => {
+															setPersonDomainParts({
+																...personDomainParts,
+																[personDomainPart.id]: {
+																	...personDomainPart,
+																	affiliations: {
+																		...personDomainPart.affiliations,
+																		[affiliation.id]: {
+																			...affiliation,
+																			untilYear: event.target.value,
+																		},
+																	},
+																},
+															});
+														}}
+													/>
+												</Box>
+											);
+										}
+									)}
 								</Box>
 							);
 						})}
@@ -350,8 +502,11 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				</Form>
 			</Box>
 			<Box>
+				{/* <pre>{JSON.stringify(affiliations, null, 2)}</pre> */}
+				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre>
 				<pre>{JSON.stringify(person, null, 2)}</pre>
 			</Box>
+			{/* <PersonView person={person} /> */}
 		</Grid>
 	);
 };

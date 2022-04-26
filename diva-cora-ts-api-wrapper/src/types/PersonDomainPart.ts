@@ -11,5 +11,5 @@ export type Affiliation = {
 export interface PersonDomainPart extends Record {
 	identifiers?: string[];
 	domain: string;
-	affiliations?: Affiliation[];
+	affiliations: Affiliation[];
 }

@@ -41,6 +41,7 @@ const personDomainPartMatcher: Matcher = [
 		propertyName: 'affiliations',
 		nameInDataPath: 'affiliation',
 		multiple: true,
+		required: true,
 		nextMatcher: AffiliationMatcher,
 	},
 ];

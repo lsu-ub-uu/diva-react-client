@@ -245,6 +245,7 @@ describe('Api', () => {
 				id: 'someId',
 				recordType: 'personDomainPart',
 				domain: 'someDomain',
+				affiliations: [],
 			};
 
 			mockConvertToObjectWithRecordType.mockReturnValueOnce(

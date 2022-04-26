@@ -28,6 +28,8 @@ const expectedMinimumPerson: Person = {
 		givenName: '',
 		familyName: 'someGivenName',
 	},
+	personDomainParts: [],
+	connectedDomains: [],
 };
 
 const expectedCompletePerson: Person = {
@@ -100,6 +102,7 @@ const expectedCompletePerson: Person = {
 			recordId: 'authority-person:1:uu',
 		},
 	],
+	connectedDomains: [],
 };
 
 const minimumPersonDataGroup: DataGroup = {

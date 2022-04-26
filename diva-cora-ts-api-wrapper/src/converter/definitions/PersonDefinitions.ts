@@ -123,6 +123,7 @@ export const personMatcher: Matcher = [
 		propertyName: 'personDomainParts',
 		nameInDataPath: 'personDomainPart',
 		multiple: true,
+		required: true,
 		nextMatcher: [
 			{
 				propertyName: 'recordId',
