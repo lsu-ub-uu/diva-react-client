@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Box, Button, Form, FormField, Grid, Text, TextArea } from 'grommet';
+import {
+	Box,
+	Button,
+	Card,
+	CardHeader,
+	Heading,
+	Form,
+	FormField,
+	Grid,
+	Text,
+} from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
 	ExternalUrl,
@@ -199,38 +209,42 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	if (person.alternativeNames !== undefined) {
 		AlternativeNameGroup = person.alternativeNames.map(
 			(alternativeName, index) => (
-				<Box
+				<Card
 					key={index}
-					direction="row"
-					justify="between"
-					align="center"
-					border={{ size: 'small' }}
+					margin={{ top: 'small', bottom: 'small' }}
+					pad="small"
 				>
-					<Text>Alternativ namn</Text>
-					<FormField
-						label="Efternamn"
-						name={`alternativeNames[${index}].familyName`}
-						required
-						// validate={[
-						// 	{ regexp: /^[0-9]*$/ },
-						// 	(number) => {
-						// 		if (number && number.length > 10) return 'Only 10 numbers';
-						// 		return undefined;
-						// 	},
-						// ]}
-					/>
-					<FormField
-						label="Förnamn"
-						name={`alternativeNames[${index}].givenName`}
-						// validate={[
-						// 	{ regexp: /^[0-9]*$/ },
-						// 	(ext) => {
-						// 		if (ext && ext.length > 3) return 'Only 3 numbers';
-						// 		return undefined;
-						// 	},
-						// ]}
-					/>
-					<Box>
+					<CardHeader pad="small">
+						<Heading margin="none" level="6">
+							Alternativt namn
+						</Heading>
+					</CardHeader>
+
+					<Box direction="row" justify="between">
+						<FormField
+							label="Efternamn"
+							name={`alternativeNames[${index}].familyName`}
+							required
+							// validate={[
+							// 	{ regexp: /^[0-9]*$/ },
+							// 	(number) => {
+							// 		if (number && number.length > 10) return 'Only 10 numbers';
+							// 		return undefined;
+							// 	},
+							// ]}
+						/>
+						<FormField
+							label="Förnamn"
+							name={`alternativeNames[${index}].givenName`}
+							// validate={[
+							// 	{ regexp: /^[0-9]*$/ },
+							// 	(ext) => {
+							// 		if (ext && ext.length > 3) return 'Only 3 numbers';
+							// 		return undefined;
+							// 	},
+							// ]}
+						/>
+
 						<Button
 							icon={<Trash />}
 							label=""
@@ -239,7 +253,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							onClick={() => removeAlternativeName(index)}
 						/>
 					</Box>
-				</Box>
+				</Card>
 			)
 		);
 	}
@@ -270,13 +284,17 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		if (person.externalURLs !== undefined) {
 			ExternalLinkGroup = person.externalURLs.map((externalURL, index) => {
 				return (
-					<Box>
-						<Box
-							key={index}
-							direction="row-responsive"
-							justify="between"
-							align="center"
-						>
+					<Card
+						key={index}
+						margin={{ top: 'small', bottom: 'small' }}
+						pad="small"
+					>
+						<CardHeader pad="small">
+							<Heading margin="none" level="6">
+								Extern url
+							</Heading>
+						</CardHeader>
+						<Box direction="row" justify="between">
 							<FormField
 								label="Länktext"
 								name={`externalURLs[${index}].linkTitle`}
@@ -295,17 +313,14 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									return `Ange en giltig URL.`;
 								}}
 							/>
-						</Box>
-						<Box align="end" justify="center">
 							<Button
 								icon={<Trash />}
-								label="Ta bort"
 								plain
 								hoverIndicator
 								onClick={() => removeExternalLink(index)}
 							/>
 						</Box>
-					</Box>
+					</Card>
 				);
 			});
 		}
@@ -364,20 +379,29 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					{AlternativeNameGroup}
 					<Button
 						icon={<Add />}
-						label="Lägg till alternativ namne"
+						label="Lägg till alternativt namn"
 						plain
 						hoverIndicator
 						onClick={addAlternativeName}
 					/>
-					<FormField name="academicTitle" label="Akademisk titel" />
-					<Box direction="row" justify="between" align="center">
-						<FormField label="Födelseår" name="yearOfBirth" />
-						<FormField label="Dödsår" name="yearOfDeath" />
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						<FormField name="academicTitle" label="Akademisk titel" />
+						<Box direction="row" justify="between" align="center">
+							<FormField label="Födelseår" name="yearOfBirth" />
+							<FormField label="Dödsår" name="yearOfDeath" />
+						</Box>
 					</Box>
+
 					{person.viafIDs &&
 						person.viafIDs.map((viaf, index) => {
 							return (
-								<Box direction="row" justify="between" align="center">
+								<Card
+									direction="row"
+									justify="between"
+									align="center"
+									margin={{ top: 'small', bottom: 'small' }}
+									pad="small"
+								>
 									<FormField
 										name="viaf"
 										label="VIAF"
@@ -393,7 +417,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									/>
 									<Button
 										icon={<Trash />}
-										label="Ta bort"
 										plain
 										hoverIndicator
 										onClick={() => {
@@ -406,38 +429,44 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											}
 										}}
 									/>
-								</Box>
+								</Card>
 							);
 						})}
-					<Button
-						icon={<Add />}
-						label="Lägg till VIAF"
-						plain
-						hoverIndicator
-						onClick={() => {
-							const newArray: string[] = [];
-							if (person.viafIDs && person.viafIDs.length > 0) {
-								newArray.push(...person.viafIDs);
-							}
-							newArray.push('');
-							setPerson({ ...person, viafIDs: newArray });
-						}}
-					/>
+
+					<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
+						<Button
+							icon={<Add />}
+							label="Lägg till VIAF"
+							plain
+							hoverIndicator
+							onClick={() => {
+								const newArray: string[] = [];
+								if (person.viafIDs && person.viafIDs.length > 0) {
+									newArray.push(...person.viafIDs);
+								}
+								newArray.push('');
+								setPerson({ ...person, viafIDs: newArray });
+							}}
+						/>
+					</Box>
 					{ExternalLinkGroup}
-					<Button
-						icon={<Add />}
-						label="Lägg till external URL"
-						plain
-						hoverIndicator
-						onClick={addExternalLink}
-					/>
+
+					<Box direction="row" justify="start" margin={{ bottom: 'large' }}>
+						<Button
+							icon={<Add />}
+							label="Lägg till extern URL"
+							plain
+							hoverIndicator
+							onClick={addExternalLink}
+						/>
+					</Box>
 
 					{person.personDomainParts &&
 						person.personDomainParts.length > 0 &&
 						person.personDomainParts.map((pdpId) => {
 							const personDomainPart = personDomainParts[pdpId];
 							return (
-								<Box>
+								<Box margin={{ top: 'medium' }}>
 									<Text>{personDomainPart.domain}</Text>
 									{Object.values(personDomainPart.affiliations).map(
 										(affiliation) => {
@@ -497,7 +526,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						})}
 
 					<Box direction="row" justify="between" margin={{ top: 'medium' }}>
-						<Button type="submit" label="Submit" primary />
+						<Button type="submit" label="Skicka" primary />
 					</Box>
 				</Form>
 			</Box>
