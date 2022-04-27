@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
 	Box,
 	Button,
@@ -144,16 +144,75 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
-	const initialPersonDomainParts: {
+	type FormPersonDomainPartObject = {
 		[key: string]: FormPersonDomainPart;
-	} = {};
+	};
+
+	const initialPersonDomainParts: FormPersonDomainPartObject = {};
 
 	originalPerson.connectedDomains.forEach((domain) => {
 		initialPersonDomainParts[domain.id] = convertToFormPersonDomainPart(domain);
 	});
 
-	const [personDomainParts, setPersonDomainParts] = useState(
-		initialPersonDomainParts
+	const initialPersonDomainPartsArr = originalPerson.connectedDomains.map(
+		(domain) => {
+			return convertToFormPersonDomainPart(domain);
+		}
+	);
+
+	// const [personDomainParts, setPersonDomainParts] = useState(
+	// 	initialPersonDomainParts
+	// );
+
+	enum PersonDomainPartActionType {
+		SET_AFFILIATION_FIELD = 'set_affiliation_field',
+	}
+
+	type PersonDomainpartAction = {
+		type: PersonDomainPartActionType.SET_AFFILIATION_FIELD;
+		payload: {
+			personDomainPartId: string;
+			affiliationId: string;
+			field: string;
+			value: string;
+		};
+	};
+
+	const personDomainPartReducer = (
+		state: FormPersonDomainPart[],
+		action: PersonDomainpartAction
+	): FormPersonDomainPart[] => {
+		const {
+			type,
+			payload: { personDomainPartId, affiliationId, field, value },
+		} = action;
+		switch (type) {
+			case PersonDomainPartActionType.SET_AFFILIATION_FIELD:
+				return state.map((pdp) => {
+					if (pdp.id === personDomainPartId) {
+						return {
+							...pdp,
+							affiliations: {
+								...pdp.affiliations,
+								[affiliationId]: {
+									...pdp.affiliations[affiliationId],
+									[field]: value,
+								},
+							},
+						};
+					}
+					return pdp;
+				});
+
+			default: {
+				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
+			}
+		}
+	};
+
+	const [personDomainParts, dispatchPersonDomainParts] = useReducer(
+		personDomainPartReducer,
+		initialPersonDomainPartsArr
 	);
 
 	// const initialAffiliations: any = {};
@@ -170,15 +229,81 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	console.log(initialPersonDomainParts);
 	// console.log(affiliations);
 
-	const [person, setPerson] = useState<FormPerson>(
+	const [person2, setPerson] = useState<FormPerson>(
+		originalFormPersonWithEmptyDefaults
+	);
+
+	enum PersonActionType {
+		UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
+		UPDATE_ARRAY_STRING_FIELD = 'UPDATE_ARRAY_STRING_FIELD',
+		ADD_ARRAY_STRING_FIELD = 'ADD_ARRAY_STRING_FIELD',
+	}
+
+	type PersonAction =
+		| {
+				type: PersonActionType.UPDATE_STRING_FIELD;
+				payload: {
+					field: string;
+					value: string;
+				};
+		  }
+		| {
+				type: PersonActionType.UPDATE_ARRAY_STRING_FIELD;
+				payload: {
+					field: string;
+					value: string;
+					index: number;
+				};
+		  }
+		| {
+				type: PersonActionType.ADD_ARRAY_STRING_FIELD;
+				payload: {
+					field: string;
+				};
+		  };
+
+	const personReducer = (
+		state: FormPerson,
+		action: PersonAction
+	): FormPerson => {
+		console.log('action', action);
+		const { type, payload } = action;
+		switch (type) {
+			case PersonActionType.UPDATE_STRING_FIELD:
+				return { ...state, [payload.field]: payload.value };
+			case PersonActionType.UPDATE_ARRAY_STRING_FIELD:
+				return {
+					...state,
+					[payload.field]: state[payload.field].map(
+						(item: string, i: number) => {
+							if (payload.index === i) {
+								return payload.value;
+							}
+							return item;
+						}
+					),
+				};
+			case PersonActionType.ADD_ARRAY_STRING_FIELD:
+				return {
+					...state,
+					[payload.field]: state[payload.field].concat(''),
+				};
+			default: {
+				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
+			}
+		}
+	};
+
+	const [person, dispatchPerson] = useReducer(
+		personReducer,
 		originalFormPersonWithEmptyDefaults
 	);
 
 	const handleFormChange = (newFormState: FormPerson) => {
-		console.log({ newFormState });
-		if (newFormState) {
-			setPerson(newFormState);
-		}
+		// console.log({ newFormState });
+		// if (newFormState) {
+		// 	setPerson(newFormState);
+		// }
 	};
 
 	const addAlternativeName = () => {
@@ -225,24 +350,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							label="Efternamn"
 							name={`alternativeNames[${index}].familyName`}
 							required
-							// validate={[
-							// 	{ regexp: /^[0-9]*$/ },
-							// 	(number) => {
-							// 		if (number && number.length > 10) return 'Only 10 numbers';
-							// 		return undefined;
-							// 	},
-							// ]}
 						/>
 						<FormField
 							label="Förnamn"
 							name={`alternativeNames[${index}].givenName`}
-							// validate={[
-							// 	{ regexp: /^[0-9]*$/ },
-							// 	(ext) => {
-							// 		if (ext && ext.length > 3) return 'Only 3 numbers';
-							// 		return undefined;
-							// 	},
-							// ]}
 						/>
 
 						<Button
@@ -331,7 +442,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
 			<Box pad="medium" width="large">
 				<Form
-					value={person}
+					// value={person}
 					validate="blur"
 					// onReset={() => {
 					// 	setValues({
@@ -385,53 +496,70 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						onClick={addAlternativeName}
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						<FormField name="academicTitle" label="Akademisk titel" />
+						<FormField
+							name="academicTitle"
+							label="Akademisk titel"
+							value={person.academicTitle}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_STRING_FIELD,
+									payload: {
+										field: 'academicTitle',
+										value: event.target.value,
+									},
+								});
+							}}
+						/>
 						<Box direction="row" justify="between" align="center">
 							<FormField label="Födelseår" name="yearOfBirth" />
 							<FormField label="Dödsår" name="yearOfDeath" />
 						</Box>
 					</Box>
 
-					{person.viafIDs &&
-						person.viafIDs.map((viaf, index) => {
-							return (
-								<Card
-									direction="row"
-									justify="between"
-									align="center"
-									margin={{ top: 'small', bottom: 'small' }}
-									pad="small"
-								>
-									<FormField
-										name="viaf"
-										label="VIAF"
-										value={viaf}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											if (person.viafIDs && person.viafIDs.length > 0) {
-												const newViafs = person.viafIDs;
-												newViafs[index] = event.target.value;
+					{person.viafIDs.map((viaf, index) => {
+						return (
+							<Card
+								direction="row"
+								justify="between"
+								align="center"
+								margin={{ top: 'small', bottom: 'small' }}
+								pad="small"
+							>
+								<FormField
+									name="viaf"
+									label="VIAF"
+									value={viaf}
+									onChange={React.useCallback(
+										(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
+												payload: {
+													field: 'viafIDs',
+													index,
+													value: event.target.value,
+												},
+											});
+										},
+										[index]
+									)}
+								/>
+								<Button
+									icon={<Trash />}
+									plain
+									hoverIndicator
+									onClick={() => {
+										if (person.viafIDs && person.viafIDs.length > 0) {
+											const newArray = person.viafIDs;
 
-												setPerson({ ...person, viafIDs: newViafs });
-											}
-										}}
-									/>
-									<Button
-										icon={<Trash />}
-										plain
-										hoverIndicator
-										onClick={() => {
-											if (person.viafIDs && person.viafIDs.length > 0) {
-												const newArray = person.viafIDs;
+											newArray.splice(index, 1);
 
-												newArray.splice(index, 1);
-
-												setPerson({ ...person, viafIDs: newArray });
-											}
-										}}
-									/>
-								</Card>
-							);
-						})}
+											setPerson({ ...person, viafIDs: newArray });
+										}
+									}}
+								/>
+							</Card>
+						);
+					})}
 
 					<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
 						<Button
@@ -440,12 +568,18 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							plain
 							hoverIndicator
 							onClick={() => {
-								const newArray: string[] = [];
-								if (person.viafIDs && person.viafIDs.length > 0) {
-									newArray.push(...person.viafIDs);
-								}
-								newArray.push('');
-								setPerson({ ...person, viafIDs: newArray });
+								dispatchPerson({
+									type: PersonActionType.ADD_ARRAY_STRING_FIELD,
+									payload: {
+										field: 'viafIDs',
+									},
+								});
+								// const newArray: string[] = [];
+								// if (person.viafIDs && person.viafIDs.length > 0) {
+								// 	newArray.push(...person.viafIDs);
+								// }
+								// newArray.push('');
+								// setPerson({ ...person, viafIDs: newArray });
 							}}
 						/>
 					</Box>
@@ -464,7 +598,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					{person.personDomainParts &&
 						person.personDomainParts.length > 0 &&
 						person.personDomainParts.map((pdpId) => {
-							const personDomainPart = personDomainParts[pdpId];
+							const personDomainPart = personDomainParts.find(
+								(pdp) => pdp.id === pdpId
+							);
 							return (
 								<Box margin={{ top: 'medium' }}>
 									<Text>{personDomainPart.domain}</Text>
@@ -476,23 +612,31 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 													{/* <Text>{affiliation.name}</Text> */}
 													<FormField
 														label="Från"
+														name={`${affiliation.id}-from`}
 														value={affiliation.fromYear}
 														onChange={(
 															event: React.ChangeEvent<HTMLInputElement>
 														) => {
-															setPersonDomainParts({
-																...personDomainParts,
-																[personDomainPart.id]: {
-																	...personDomainPart,
-																	affiliations: {
-																		...personDomainPart.affiliations,
-																		[affiliation.id]: {
-																			...affiliation,
-																			fromYear: event.target.value,
-																		},
-																	},
+															dispatchPersonDomainParts({
+																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+																payload: {
+																	personDomainPartId: personDomainPart.id,
+																	affiliationId: affiliation.id,
+																	field: 'fromYear',
+																	value: event.target.value,
 																},
 															});
+														}}
+														validate={(value: string) => {
+															const regex = /^[0-9]{4}$/;
+															if (
+																value === undefined ||
+																value === '' ||
+																regex.test(value)
+															) {
+																return undefined;
+															}
+															return `Ange ett giltigt år.`;
 														}}
 													/>
 													<FormField
@@ -502,17 +646,13 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 														onChange={(
 															event: React.ChangeEvent<HTMLInputElement>
 														) => {
-															setPersonDomainParts({
-																...personDomainParts,
-																[personDomainPart.id]: {
-																	...personDomainPart,
-																	affiliations: {
-																		...personDomainPart.affiliations,
-																		[affiliation.id]: {
-																			...affiliation,
-																			untilYear: event.target.value,
-																		},
-																	},
+															dispatchPersonDomainParts({
+																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+																payload: {
+																	personDomainPartId: personDomainPart.id,
+																	affiliationId: affiliation.id,
+																	field: 'untilYear',
+																	value: event.target.value,
 																},
 															});
 														}}
