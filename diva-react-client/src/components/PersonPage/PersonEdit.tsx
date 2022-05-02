@@ -127,6 +127,35 @@ const convertToFormPersonDomainPart = (
 	};
 };
 
+/**
+ *
+ *
+ * Vi behöver:
+ * - Personen
+ * - personDomainParts för de domäner som nuvarande användaren har rättighet till
+ * - organisationsnamnen som är kopplade till ovannämnda personDomainParts
+ *
+ * Vi har:
+ * - Vi får in HELA personen, inklusive persondomainparts och organisationer
+ * - en basal uppsättning formulärfält som vi kan använda
+ * - transformering från person till FormPerson
+ *
+ *
+ * Vi behöver göra:
+ * - lägga till samtliga fält
+ * - undersöka om bara vissa fält får visas
+ * - lägga till validering till berörda fält
+ * -
+ * - transformera från FormPerson till Person
+ * - transformera från Person till CoraData
+ * - skicka update
+ * - testa på något sätt
+ *
+ *
+ * @param param0
+ * @returns
+ */
+
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
@@ -339,6 +368,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		}
 	};
 
+	const updateStringField = React.useCallback(
+		(field: string, value: string) => {
+			dispatchPerson({
+				type: PersonActionType.UPDATE_STRING_FIELD,
+				payload: {
+					field,
+					value,
+				},
+			});
+		},
+		[]
+	);
+
 	const [person, dispatchPerson] = useReducer(
 		personReducer,
 		originalFormPersonWithEmptyDefaults
@@ -461,23 +503,25 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						}}
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						<FormField
-							name="academicTitle"
+						<StringFormField
 							label="Akademisk titel"
+							field="academicTitle"
 							value={person.academicTitle}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_STRING_FIELD,
-									payload: {
-										field: 'academicTitle',
-										value: event.target.value,
-									},
-								});
-							}}
+							onChange={updateStringField}
 						/>
 						<Box direction="row" justify="between" align="center">
-							<FormField label="Födelseår" name="yearOfBirth" />
-							<FormField label="Dödsår" name="yearOfDeath" />
+							<StringFormField
+								label="Födelseår"
+								field="yearOfBirth"
+								value={person.yearOfBirth}
+								onChange={updateStringField}
+							/>
+							<StringFormField
+								label="Dödsår"
+								field="yearOfDeath"
+								value={person.yearOfDeath}
+								onChange={updateStringField}
+							/>
 						</Box>
 					</Box>
 
@@ -717,6 +761,29 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			</Box>
 			{/* <PersonView person={person} /> */}
 		</Grid>
+	);
+};
+
+const StringFormField = function ({
+	label,
+	value,
+	field,
+	onChange,
+}: {
+	label: string;
+	value: string;
+	field: string;
+	onChange: (field: string, value: string) => void;
+}) {
+	return (
+		<FormField
+			name={field}
+			label={label}
+			value={value}
+			onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+				onChange(field, event.target.value);
+			}}
+		/>
 	);
 };
 
