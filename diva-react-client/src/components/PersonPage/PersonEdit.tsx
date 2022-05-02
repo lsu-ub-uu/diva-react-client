@@ -116,13 +116,15 @@ const convertToFormPersonDomainPart = (
 ): FormPersonDomainPart => {
 	const affiliations: { [key: string]: FormAffiliation } = {};
 
-	personDomainPart.affiliations.forEach((affiliation) => {
-		affiliations[affiliation.id] = {
-			fromYear: '',
-			untilYear: '',
-			...affiliation,
-		};
-	});
+	if (personDomainPart.affiliations) {
+		personDomainPart.affiliations.forEach((affiliation) => {
+			affiliations[affiliation.id] = {
+				fromYear: '',
+				untilYear: '',
+				...affiliation,
+			};
+		});
+	}
 
 	return {
 		id: personDomainPart.id,
@@ -150,16 +152,22 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 
 	const initialPersonDomainParts: FormPersonDomainPartObject = {};
 
-	originalPerson.connectedDomains.forEach((domain) => {
-		initialPersonDomainParts[domain.id] = convertToFormPersonDomainPart(domain);
-	});
+	if (originalPerson.connectedDomains) {
+		originalPerson.connectedDomains.forEach((domain) => {
+			initialPersonDomainParts[domain.id] =
+				convertToFormPersonDomainPart(domain);
+		});
+	}
 
-	const initialPersonDomainPartsArr = originalPerson.connectedDomains.map(
-		(domain) => {
-			return convertToFormPersonDomainPart(domain);
-		}
-	);
+	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
 
+	if (originalPerson.connectedDomains) {
+		initialPersonDomainPartsArr = originalPerson.connectedDomains.map(
+			(domain) => {
+				return convertToFormPersonDomainPart(domain);
+			}
+		);
+	}
 	// const [personDomainParts, setPersonDomainParts] = useState(
 	// 	initialPersonDomainParts
 	// );
@@ -237,6 +245,8 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
 		UPDATE_ARRAY_STRING_FIELD = 'UPDATE_ARRAY_STRING_FIELD',
 		ADD_ARRAY_STRING_FIELD = 'ADD_ARRAY_STRING_FIELD',
+		UPDATE_ALTERNATIVE_NAME_FIELD = 'UPDATE_ALTERNATIVE_NAME_FIELD',
+		DELETE_ARRAY_WITH_INDEX = 'DELETE_ARRAY_WITH_INDEX',
 	}
 
 	type PersonAction =
@@ -248,7 +258,15 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				};
 		  }
 		| {
-				type: PersonActionType.UPDATE_ARRAY_STRING_FIELD;
+				type: PersonActionType.ADD_ARRAY_STRING_FIELD;
+				payload: {
+					field: string;
+				};
+		  }
+		| {
+				type:
+					| PersonActionType.UPDATE_ARRAY_STRING_FIELD
+					| PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD;
 				payload: {
 					field: string;
 					value: string;
@@ -256,9 +274,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				};
 		  }
 		| {
-				type: PersonActionType.ADD_ARRAY_STRING_FIELD;
+				type: PersonActionType.DELETE_ARRAY_WITH_INDEX;
 				payload: {
 					field: string;
+					index: number;
 				};
 		  };
 
@@ -288,6 +307,32 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					...state,
 					[payload.field]: state[payload.field].concat(''),
 				};
+			case PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD:
+				return {
+					...state,
+					alternativeNames: state.alternativeNames.map(
+						(item: Name, i: number) => {
+							if (payload.index === i) {
+								return {
+									...item,
+									[payload.field]: payload.value,
+								};
+							}
+							return item;
+						}
+					),
+				};
+			case PersonActionType.DELETE_ARRAY_WITH_INDEX:
+				return {
+					...state,
+					[payload.field]: state[payload.field].filter(
+						(item: any, i: number) => {
+							if (i !== payload.index) {
+								return item;
+							}
+						}
+					),
+				};
 			default: {
 				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
 			}
@@ -298,13 +343,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		personReducer,
 		originalFormPersonWithEmptyDefaults
 	);
-
-	const handleFormChange = (newFormState: FormPerson) => {
-		// console.log({ newFormState });
-		// if (newFormState) {
-		// 	setPerson(newFormState);
-		// }
-	};
 
 	const addAlternativeName = () => {
 		const newAlternativeName: Name = { familyName: '', givenName: '' };
@@ -335,6 +373,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		AlternativeNameGroup = person.alternativeNames.map(
 			(alternativeName, index) => (
 				<Card
+					// eslint-disable-next-line react/no-array-index-key
 					key={index}
 					margin={{ top: 'small', bottom: 'small' }}
 					pad="small"
@@ -348,12 +387,34 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					<Box direction="row" justify="between">
 						<FormField
 							label="Efternamn"
-							name={`alternativeNames[${index}].familyName`}
+							name={alternativeName.familyName}
+							value={alternativeName.familyName}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD,
+									payload: {
+										field: 'familyName',
+										value: event.target.value,
+										index,
+									},
+								});
+							}}
 							required
 						/>
 						<FormField
 							label="Förnamn"
-							name={`alternativeNames[${index}].givenName`}
+							name={alternativeName.givenName}
+							value={alternativeName.givenName}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD,
+									payload: {
+										field: 'givenName',
+										value: event.target.value,
+										index,
+									},
+								});
+							}}
 						/>
 
 						<Button
@@ -396,6 +457,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			ExternalLinkGroup = person.externalURLs.map((externalURL, index) => {
 				return (
 					<Card
+						// eslint-disable-next-line react/no-array-index-key
 						key={index}
 						margin={{ top: 'small', bottom: 'small' }}
 						pad="small"
@@ -417,7 +479,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								required
 								validate={(value: string) => {
 									const regex =
-										/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+										/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 									if (value === '' || regex.test(value)) {
 										return '';
 									}
@@ -450,7 +512,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					// 		phones: [{ number: '', ext: '' }],
 					// 	});
 					// }}
-					onChange={handleFormChange}
+					// onChange={handleFormChange}
 					onValidate={(validationResults) => {
 						console.log('validationResults = ', validationResults);
 					}}
@@ -465,7 +527,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							value={person.authorisedName?.familyName}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								const authorisedName = {
-									givenName: '',
 									...person.authorisedName,
 									familyName: event.target.value,
 								};
@@ -478,7 +539,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							value={person.authorisedName?.givenName}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								const authorisedName = {
-									familyName: '',
 									...person.authorisedName,
 									givenName: event.target.value,
 								};
@@ -526,22 +586,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								pad="small"
 							>
 								<FormField
-									name="viaf"
+									name={`viaf-${index}`}
 									label="VIAF"
 									value={viaf}
-									onChange={React.useCallback(
-										(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
-												payload: {
-													field: 'viafIDs',
-													index,
-													value: event.target.value,
-												},
-											});
-										},
-										[index]
-									)}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+										dispatchPerson({
+											type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
+											payload: {
+												field: 'viafIDs',
+												index,
+												value: event.target.value,
+											},
+										});
+									}}
 								/>
 								<Button
 									icon={<Trash />}
@@ -601,6 +658,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							const personDomainPart = personDomainParts.find(
 								(pdp) => pdp.id === pdpId
 							);
+							if (!personDomainPart) {
+								return null;
+							}
 							return (
 								<Box margin={{ top: 'medium' }}>
 									<Text>{personDomainPart.domain}</Text>
