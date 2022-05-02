@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 import {
 	Box,
 	Button,
@@ -14,17 +14,10 @@ import { Add, Trash } from 'grommet-icons';
 import {
 	ExternalUrl,
 	Name,
-	Organisation,
 	OtherAffiliation,
 	Person,
 	PersonDomainPart,
-	RecordType,
 } from 'diva-cora-ts-api-wrapper';
-import PersonView from './PersonView';
-import useForm from './useForm';
-import PersonDomainPartEdit from './PersonDomainPartEdit';
-import PersonDomainPartWrapper from './PersonDomainPartWrapper';
-import RecordFetcher from '../RecordFetcher';
 
 export interface FormPerson {
 	domains: string[];
@@ -135,14 +128,6 @@ const convertToFormPersonDomainPart = (
 };
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
-	console.log(originalPerson);
-	// const originalFormPersonWithEmptyDefaults: FormPerson = {
-	// 	yearOfBirth: '',
-	// 	yearOfDeath: '',
-	// 	viafIDs: [],
-	// 	domains: [],
-	// 	...originalPerson,
-	// };
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
@@ -168,9 +153,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			}
 		);
 	}
-	// const [personDomainParts, setPersonDomainParts] = useState(
-	// 	initialPersonDomainParts
-	// );
 
 	enum PersonDomainPartActionType {
 		SET_AFFILIATION_FIELD = 'set_affiliation_field',
@@ -223,30 +205,14 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		initialPersonDomainPartsArr
 	);
 
-	// const initialAffiliations: any = {};
-	// originalPerson.connectedDomains.forEach((domain) => {
-	// 	domain.affiliations.forEach((affiliation) => {
-	// 		if (affiliation.organisation) {
-	// 			initialAffiliations[affiliation.id] = affiliation;
-	// 		}
-	// 	});
-	// });
-
-	// const [affiliations, setAffiliations] = useState(initialAffiliations);
-
-	console.log(initialPersonDomainParts);
-	// console.log(affiliations);
-
-	const [person2, setPerson] = useState<FormPerson>(
-		originalFormPersonWithEmptyDefaults
-	);
-
 	enum PersonActionType {
 		UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
 		UPDATE_ARRAY_STRING_FIELD = 'UPDATE_ARRAY_STRING_FIELD',
 		ADD_ARRAY_STRING_FIELD = 'ADD_ARRAY_STRING_FIELD',
-		UPDATE_ALTERNATIVE_NAME_FIELD = 'UPDATE_ALTERNATIVE_NAME_FIELD',
 		DELETE_ARRAY_WITH_INDEX = 'DELETE_ARRAY_WITH_INDEX',
+		UPDATE_ARRAY_OBJECT_FIELD = 'UPDATE_ARRAY_OBJECT_FIELD',
+		ADD_ARRAY_OBJECT = 'ADD_ARRAY_OBJECT',
+		UPDATE_OBJECT = 'UPDATE_OBJECT',
 	}
 
 	type PersonAction =
@@ -264,11 +230,33 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				};
 		  }
 		| {
-				type:
-					| PersonActionType.UPDATE_ARRAY_STRING_FIELD
-					| PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD;
+				type: PersonActionType.UPDATE_ARRAY_STRING_FIELD;
 				payload: {
 					field: string;
+					value: string;
+					index: number;
+				};
+		  }
+		| {
+				type: PersonActionType.UPDATE_OBJECT;
+				payload: {
+					field: string;
+					childField: string;
+					value: string;
+				};
+		  }
+		| {
+				type: PersonActionType.ADD_ARRAY_OBJECT;
+				payload: {
+					field: string;
+					emptyObject: Name | ExternalUrl;
+				};
+		  }
+		| {
+				type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD;
+				payload: {
+					field: string;
+					childField: string;
 					value: string;
 					index: number;
 				};
@@ -285,7 +273,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		state: FormPerson,
 		action: PersonAction
 	): FormPerson => {
-		console.log('action', action);
 		const { type, payload } = action;
 		switch (type) {
 			case PersonActionType.UPDATE_STRING_FIELD:
@@ -307,15 +294,15 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					...state,
 					[payload.field]: state[payload.field].concat(''),
 				};
-			case PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD:
+			case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD:
 				return {
 					...state,
-					alternativeNames: state.alternativeNames.map(
-						(item: Name, i: number) => {
+					[payload.field]: state[payload.field].map(
+						(item: Name | ExternalUrl, i: number) => {
 							if (payload.index === i) {
 								return {
 									...item,
-									[payload.field]: payload.value,
+									[payload.childField]: payload.value,
 								};
 							}
 							return item;
@@ -333,6 +320,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						}
 					),
 				};
+			case PersonActionType.ADD_ARRAY_OBJECT:
+				return {
+					...state,
+					[payload.field]: state[payload.field].concat(payload.emptyObject),
+				};
+			case PersonActionType.UPDATE_OBJECT:
+				return {
+					...state,
+					[payload.field]: {
+						...state[payload.field],
+						[payload.childField]: payload.value,
+					},
+				};
 			default: {
 				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
 			}
@@ -344,216 +344,121 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		originalFormPersonWithEmptyDefaults
 	);
 
-	const addAlternativeName = () => {
-		const newAlternativeName: Name = { familyName: '', givenName: '' };
-		const newAlternativeNames: Name[] = [];
-		if (person.alternativeNames && person.alternativeNames.length > 0) {
-			newAlternativeNames.push(...person.alternativeNames);
-		}
-		newAlternativeNames.push(newAlternativeName);
-		setPerson({
-			...person,
-			alternativeNames: newAlternativeNames,
-		});
-	};
-
-	const removeAlternativeName = (index: number) => {
-		if (person.alternativeNames && person.alternativeNames.length > 0) {
-			setPerson({
-				...person,
-				alternativeNames: person.alternativeNames.filter(
-					(v, _idx) => _idx !== index
-				),
-			});
-		}
-	};
-
-	let AlternativeNameGroup = null;
-	if (person.alternativeNames !== undefined) {
-		AlternativeNameGroup = person.alternativeNames.map(
-			(alternativeName, index) => (
-				<Card
-					// eslint-disable-next-line react/no-array-index-key
-					key={index}
-					margin={{ top: 'small', bottom: 'small' }}
-					pad="small"
-				>
-					<CardHeader pad="small">
-						<Heading margin="none" level="6">
-							Alternativt namn
-						</Heading>
-					</CardHeader>
-
-					<Box direction="row" justify="between">
-						<FormField
-							label="Efternamn"
-							name={alternativeName.familyName}
-							value={alternativeName.familyName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD,
-									payload: {
-										field: 'familyName',
-										value: event.target.value,
-										index,
-									},
-								});
-							}}
-							required
-						/>
-						<FormField
-							label="Förnamn"
-							name={alternativeName.givenName}
-							value={alternativeName.givenName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_ALTERNATIVE_NAME_FIELD,
-									payload: {
-										field: 'givenName',
-										value: event.target.value,
-										index,
-									},
-								});
-							}}
-						/>
-
-						<Button
-							icon={<Trash />}
-							label=""
-							plain
-							hoverIndicator
-							onClick={() => removeAlternativeName(index)}
-						/>
-					</Box>
-				</Card>
-			)
-		);
-	}
-
-	const removeExternalLink = (index: number) => {
-		if (person.externalURLs && person.externalURLs.length > 0) {
-			setPerson({
-				...person,
-				externalURLs: person.externalURLs.filter((v, _idx) => _idx !== index),
-			});
-		}
-	};
-	const addExternalLink = () => {
-		const newArray: ExternalUrl[] = [];
-		if (person.externalURLs && person.externalURLs.length > 0) {
-			newArray.push(...person.externalURLs);
-		}
-
-		newArray.push({ linkTitle: '', URL: '' });
-		setPerson({
-			...person,
-			externalURLs: newArray,
-		});
-	};
-
-	let ExternalLinkGroup = null;
-	const updateExternalLinkGroup = () => {
-		if (person.externalURLs !== undefined) {
-			ExternalLinkGroup = person.externalURLs.map((externalURL, index) => {
-				return (
-					<Card
-						// eslint-disable-next-line react/no-array-index-key
-						key={index}
-						margin={{ top: 'small', bottom: 'small' }}
-						pad="small"
-					>
-						<CardHeader pad="small">
-							<Heading margin="none" level="6">
-								Extern url
-							</Heading>
-						</CardHeader>
-						<Box direction="row" justify="between">
-							<FormField
-								label="Länktext"
-								name={`externalURLs[${index}].linkTitle`}
-								required
-							/>
-							<FormField
-								label="URL"
-								name={`externalURLs[${index}].URL`}
-								required
-								validate={(value: string) => {
-									const regex =
-										/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
-									if (value === '' || regex.test(value)) {
-										return '';
-									}
-									return `Ange en giltig URL.`;
-								}}
-							/>
-							<Button
-								icon={<Trash />}
-								plain
-								hoverIndicator
-								onClick={() => removeExternalLink(index)}
-							/>
-						</Box>
-					</Card>
-				);
-			});
-		}
-	};
-	updateExternalLinkGroup();
-
 	return (
 		<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
 			<Box pad="medium" width="large">
-				<Form
-					// value={person}
-					validate="blur"
-					// onReset={() => {
-					// 	setValues({
-					// 		name: '',
-					// 		phones: [{ number: '', ext: '' }],
-					// 	});
-					// }}
-					// onChange={handleFormChange}
-					onValidate={(validationResults) => {
-						console.log('validationResults = ', validationResults);
-					}}
-					onSubmit={(event) => {
-						console.log('Submit', event.value, event.touched);
-					}}
-				>
+				<Form validate="blur">
 					<Box direction="row" justify="between" align="center">
 						<FormField
 							label="Efternamn"
 							required
-							value={person.authorisedName?.familyName}
+							value={person.authorisedName.familyName}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								const authorisedName = {
-									...person.authorisedName,
-									familyName: event.target.value,
-								};
-
-								setPerson({ ...person, authorisedName });
+								dispatchPerson({
+									type: PersonActionType.UPDATE_OBJECT,
+									payload: {
+										field: 'authorisedName',
+										childField: 'familyName',
+										value: event.target.value,
+									},
+								});
 							}}
 						/>
 						<FormField
 							label="Förnamn"
-							value={person.authorisedName?.givenName}
+							value={person.authorisedName.givenName}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								const authorisedName = {
-									...person.authorisedName,
-									givenName: event.target.value,
-								};
-
-								setPerson({ ...person, authorisedName });
+								dispatchPerson({
+									type: PersonActionType.UPDATE_OBJECT,
+									payload: {
+										field: 'authorisedName',
+										childField: 'givenName',
+										value: event.target.value,
+									},
+								});
 							}}
 						/>
 					</Box>
-					{AlternativeNameGroup}
+					{person.alternativeNames.map((alternativeName, index) => (
+						<Card
+							// eslint-disable-next-line react/no-array-index-key
+							key={index}
+							margin={{ top: 'small', bottom: 'small' }}
+							pad="small"
+						>
+							<CardHeader pad="small">
+								<Heading margin="none" level="6">
+									Alternativt namn
+								</Heading>
+							</CardHeader>
+
+							<Box direction="row" justify="between">
+								<FormField
+									label="Efternamn"
+									name={alternativeName.familyName}
+									value={alternativeName.familyName}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+										dispatchPerson({
+											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+											payload: {
+												field: 'alternativeNames',
+												childField: 'familyName',
+												value: event.target.value,
+												index,
+											},
+										});
+									}}
+									required
+								/>
+								<FormField
+									label="Förnamn"
+									name={alternativeName.givenName}
+									value={alternativeName.givenName}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+										dispatchPerson({
+											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+											payload: {
+												field: 'alternativeNames',
+												childField: 'givenName',
+												value: event.target.value,
+												index,
+											},
+										});
+									}}
+								/>
+
+								<Button
+									icon={<Trash />}
+									label=""
+									plain
+									hoverIndicator
+									onClick={() => {
+										dispatchPerson({
+											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+											payload: {
+												field: 'alternativeNames',
+												index,
+											},
+										});
+									}}
+								/>
+							</Box>
+						</Card>
+					))}
 					<Button
 						icon={<Add />}
 						label="Lägg till alternativt namn"
 						plain
 						hoverIndicator
-						onClick={addAlternativeName}
+						onClick={() => {
+							dispatchPerson({
+								type: PersonActionType.ADD_ARRAY_OBJECT,
+								payload: {
+									field: 'alternativeNames',
+									emptyObject: { familyName: '', givenName: '' },
+								},
+							});
+						}}
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<FormField
@@ -605,13 +510,13 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									plain
 									hoverIndicator
 									onClick={() => {
-										if (person.viafIDs && person.viafIDs.length > 0) {
-											const newArray = person.viafIDs;
-
-											newArray.splice(index, 1);
-
-											setPerson({ ...person, viafIDs: newArray });
-										}
+										dispatchPerson({
+											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+											payload: {
+												field: 'viafIDs',
+												index,
+											},
+										});
 									}}
 								/>
 							</Card>
@@ -631,16 +536,83 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 										field: 'viafIDs',
 									},
 								});
-								// const newArray: string[] = [];
-								// if (person.viafIDs && person.viafIDs.length > 0) {
-								// 	newArray.push(...person.viafIDs);
-								// }
-								// newArray.push('');
-								// setPerson({ ...person, viafIDs: newArray });
 							}}
 						/>
 					</Box>
-					{ExternalLinkGroup}
+					{person.externalURLs.map((externalURL, index) => {
+						return (
+							<Card
+								// eslint-disable-next-line react/no-array-index-key
+								key={index}
+								margin={{ top: 'small', bottom: 'small' }}
+								pad="small"
+							>
+								<CardHeader pad="small">
+									<Heading margin="none" level="6">
+										Extern url
+									</Heading>
+								</CardHeader>
+								<Box direction="row" justify="between">
+									<FormField
+										label="Länktext"
+										name={`externalURLs[${index}].linkTitle`}
+										value={externalURL.linkTitle}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+												payload: {
+													field: 'externalURLs',
+													childField: 'linkTitle',
+													value: event.target.value,
+													index,
+												},
+											});
+										}}
+										required
+									/>
+									<FormField
+										label="URL"
+										name={`externalURLs[${index}].URL`}
+										value={externalURL.URL}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+												payload: {
+													field: 'externalURLs',
+													childField: 'URL',
+													value: event.target.value,
+													index,
+												},
+											});
+										}}
+										required
+										validate={(value: string) => {
+											const regex =
+												/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
+											if (value === '' || regex.test(value)) {
+												return '';
+											}
+											return `Ange en giltig URL.`;
+										}}
+									/>
+									<Button
+										icon={<Trash />}
+										plain
+										hoverIndicator
+										onClick={() => {
+											dispatchPerson({
+												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+												payload: {
+													field: 'externalURLs',
+													index,
+												},
+											});
+										}}
+									/>
+								</Box>
+							</Card>
+						);
+					})}
 
 					<Box direction="row" justify="start" margin={{ bottom: 'large' }}>
 						<Button
@@ -648,7 +620,15 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							label="Lägg till extern URL"
 							plain
 							hoverIndicator
-							onClick={addExternalLink}
+							onClick={() => {
+								dispatchPerson({
+									type: PersonActionType.ADD_ARRAY_OBJECT,
+									payload: {
+										field: 'externalURLs',
+										emptyObject: { linkTitle: '', URL: '' },
+									},
+								});
+							}}
 						/>
 					</Box>
 
