@@ -150,7 +150,20 @@ const convertToFormPersonDomainPart = (
  * - transformera från Person till CoraData
  * - skicka update
  * - testa på något sätt
+ * - lägg till högersida
  *
+ * Till specialistmötet
+ * - lägga till samtliga (för alla synliga) fält
+ * - lägg till validering
+ * - lägg till högersida (den ska hänga med när det ändras på vänster sida)
+ * -- scrollbar för båda för att kunna scrolla oberoende
+ * - icke inloggad
+ * - transformera från FormPerson till Person
+ * - Lägg till rubriker ifrån U&Ms förslag
+ * - edit-knapp
+ *
+ * Bonus:
+ * - inloggad läge
  *
  * @param param0
  * @returns
