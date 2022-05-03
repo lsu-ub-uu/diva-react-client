@@ -21,8 +21,11 @@ import {
 	PersonDomainPart,
 } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/resources';
+import PersonViewEdit from './PersonViewEdit';
 
 export interface FormPerson {
+	id: string;
+
 	domains: string[];
 
 	authorisedName: Name;
@@ -70,6 +73,7 @@ const convertToFormPerson = (person: Person): FormPerson => {
 		});
 	}
 	return {
+		id: person.id,
 		domains: returnEmptyArrayIfUndefined<string>(person.domains),
 		academicTitle: returnStringIfUndefined(person.academicTitle),
 		alternativeNames: returnEmptyArrayIfUndefined<Name>(
@@ -100,7 +104,7 @@ type FormAffiliation = {
 	untilYear: string;
 };
 
-interface FormPersonDomainPart {
+export interface FormPersonDomainPart {
 	id: string;
 	identifiers: string[];
 	domain: string;
@@ -159,8 +163,8 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  * - organisationssök efter domain för att kunna lägga till nya organisationer
  *
  * Till specialistmötet
- * - lägga till samtliga (för alla synliga) fält
- * - lägg till validering
+ * - lägga till samtliga (för alla synliga) fält X
+ * - lägg till validering X
  * - lägg till högersida (den ska hänga med när det ändras på vänster sida)
  * -- scrollbar för båda för att kunna scrolla oberoende
  * - icke inloggad
@@ -961,14 +965,27 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						})}
 
 					<Box direction="row" justify="between" margin={{ top: 'medium' }}>
-						<Button type="submit" label="Skicka" primary />
+						<Button
+							type="submit"
+							label="Skicka"
+							primary
+							onClick={() => {
+								alert('BOOM!');
+							}}
+						/>
 					</Box>
 				</Form>
 			</Box>
 			<Box>
 				{/* <pre>{JSON.stringify(affiliations, null, 2)}</pre> */}
 
-				<h2>Person</h2>
+				<PersonViewEdit
+					person={person}
+					organisations={initialOrganisations}
+					personDomainParts={personDomainParts}
+				/>
+
+				{/* <h2>Person</h2>
 				<pre>{JSON.stringify(person, null, 2)}</pre>
 				<h2>Organisations</h2>
 				<pre>
@@ -979,7 +996,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					)}
 				</pre>
 				<h2>PersonDomainParts</h2>
-				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre>
+				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre> */}
 			</Box>
 			{/* <PersonView person={person} /> */}
 		</Grid>

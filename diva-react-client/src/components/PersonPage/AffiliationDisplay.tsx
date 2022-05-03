@@ -4,7 +4,7 @@ import { Affiliation } from 'diva-cora-ts-api-wrapper';
 const AffiliationDisplay = function ({
 	affiliation,
 }: {
-	affiliation: Affiliation;
+	affiliation: { name: string; untilYear: string; fromYear: string };
 }) {
 	const getAffiliationText = () => {
 		let affiliationName = affiliation.name;
