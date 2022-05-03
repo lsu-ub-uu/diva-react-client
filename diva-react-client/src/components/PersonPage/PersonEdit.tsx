@@ -208,12 +208,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		});
 	}
 
-	console.log(
-		'initialorganisations',
-		initialOrganisations.size,
-		initialOrganisations
-	);
-
 	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
 
 	if (originalPerson.connectedDomains) {
@@ -583,12 +577,20 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								field="yearOfBirth"
 								value={person.yearOfBirth}
 								onChange={updateStringField}
+								validate={validateWithRegex(
+									/^[0-9]{4}$/,
+									'Ange ett giltigt år.'
+								)}
 							/>
 							<StringFormField
 								label="Dödsår"
 								field="yearOfDeath"
 								value={person.yearOfDeath}
 								onChange={updateStringField}
+								validate={validateWithRegex(
+									/^[0-9]{4}$/,
+									'Ange ett giltigt år.'
+								)}
 							/>
 						</Box>
 					</Box>
@@ -617,6 +619,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 												},
 											});
 										}}
+										validate={validateWithRegex(
+											/(^[0-9]{2,10}$)|(^https:\/\/libris\.kb\.se\/[0-9A-Za-z.#]{2,50}$)/,
+											`Ange ett giltigt Libris-ID`
+										)}
 									/>
 									<Button
 										icon={<Trash />}
@@ -677,6 +683,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 												},
 											});
 										}}
+										validate={validateWithRegex(
+											/^[1-9]\d(\d{0,7}|\d{17,20})$/,
+											`Ange ett giltigt VIAF-ID`
+										)}
 									/>
 									<Button
 										icon={<Trash />}
@@ -727,6 +737,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 										name={`orcid-${index}`}
 										label="ORCID"
 										value={orcid}
+										validate={validateWithRegex(
+											/^(\d{4})-(\d{4})-(\d{4})-(\d{3}[0-9X])$/,
+											`Ange ett giltigt ORCID`
+										)}
 										disabled
 									/>
 								</Card>
@@ -786,14 +800,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 												});
 											}}
 											required
-											validate={(value: string) => {
-												const regex =
-													/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
-												if (value === '' || regex.test(value)) {
-													return '';
-												}
-												return `Ange en giltig URL.`;
-											}}
+											validate={validateWithRegex(
+												/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+												`Ange en giltig URL.`
+											)}
 										/>
 										<Button
 											icon={<Trash />}
@@ -901,22 +911,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 																	},
 																});
 															}}
-															validate={(value: string) => {
-																const regex = /^[0-9]{4}$/;
-																if (
-																	value === undefined ||
-																	value === '' ||
-																	regex.test(value)
-																) {
-																	return undefined;
-																}
-																return `Ange ett giltigt år.`;
-															}}
+															validate={validateWithRegex(
+																/^[0-9]{4}$/,
+																'Ange ett giltigt år.'
+															)}
 														/>
 														<FormField
 															name={`${affiliation.id}-until`}
 															label="Till"
 															value={affiliation.untilYear}
+															validate={validateWithRegex(
+																/^[0-9]{4}$/,
+																'Ange ett giltigt år.'
+															)}
 															onChange={(
 																event: React.ChangeEvent<HTMLInputElement>
 															) => {
@@ -986,11 +993,14 @@ const StringFormField = function ({
 	value,
 	field,
 	onChange,
+	validate = undefined,
 }: {
 	label: string;
 	value: string;
 	field: string;
 	onChange: (field: string, value: string) => void;
+	// eslint-disable-next-line react/require-default-props
+	validate?: (value: string) => string | undefined;
 }) {
 	return (
 		<FormField
@@ -1000,8 +1010,17 @@ const StringFormField = function ({
 			onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 				onChange(field, event.target.value);
 			}}
+			validate={validate}
 		/>
 	);
 };
+
+const validateWithRegex =
+	(regex: RegExp, invalidMessage: string) => (value: string) => {
+		if (value === undefined || value === '' || regex.test(value)) {
+			return undefined;
+		}
+		return invalidMessage;
+	};
 
 export default PersonEdit;
