@@ -9,15 +9,18 @@ import {
 	FormField,
 	Grid,
 	Text,
+	TextArea,
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
 	ExternalUrl,
 	Name,
+	Organisation,
 	OtherAffiliation,
 	Person,
 	PersonDomainPart,
 } from 'diva-cora-ts-api-wrapper';
+import getDomainCollection from '../../divaData/resources';
 
 export interface FormPerson {
 	domains: string[];
@@ -101,20 +104,21 @@ interface FormPersonDomainPart {
 	id: string;
 	identifiers: string[];
 	domain: string;
-	affiliations: { [key: string]: FormAffiliation };
+	affiliations: FormAffiliation[];
 }
 
 const convertToFormPersonDomainPart = (
 	personDomainPart: PersonDomainPart
 ): FormPersonDomainPart => {
-	const affiliations: { [key: string]: FormAffiliation } = {};
+	let affiliations: FormAffiliation[] = [];
 
 	if (personDomainPart.affiliations) {
-		personDomainPart.affiliations.forEach((affiliation) => {
-			affiliations[affiliation.id] = {
+		affiliations = personDomainPart.affiliations.map((affiliation) => {
+			return {
 				fromYear: '',
 				untilYear: '',
 				...affiliation,
+				organisation: undefined,
 			};
 		});
 	}
@@ -151,6 +155,7 @@ const convertToFormPersonDomainPart = (
  * - skicka update
  * - testa på något sätt
  * - lägg till högersida
+ * - organisationssök efter domain för att kunna lägga till nya organisationer
  *
  * Till specialistmötet
  * - lägga till samtliga (för alla synliga) fält
@@ -173,18 +178,41 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
-	type FormPersonDomainPartObject = {
-		[key: string]: FormPersonDomainPart;
-	};
+	// type FormPersonDomainPartObject = {
+	// 	[key: string]: FormPersonDomainPart;
+	// };
 
-	const initialPersonDomainParts: FormPersonDomainPartObject = {};
+	// const initialPersonDomainParts: FormPersonDomainPart[] = [];
+
+	// if (originalPerson.connectedDomains) {
+	// 	originalPerson.connectedDomains.forEach((domain) => {
+	// 		initialPersonDomainParts.push()
+	// 			convertToFormPersonDomainPart(domain);
+	// 	});
+	// }
+
+	const initialOrganisations: Map<string, string> = new Map();
 
 	if (originalPerson.connectedDomains) {
 		originalPerson.connectedDomains.forEach((domain) => {
-			initialPersonDomainParts[domain.id] =
-				convertToFormPersonDomainPart(domain);
+			if (domain.affiliations) {
+				domain.affiliations.forEach((affiliation) => {
+					if (affiliation.organisation) {
+						initialOrganisations.set(
+							affiliation.organisation.id,
+							affiliation.organisation.name
+						);
+					}
+				});
+			}
 		});
 	}
+
+	console.log(
+		'initialorganisations',
+		initialOrganisations.size,
+		initialOrganisations
+	);
 
 	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
 
@@ -198,42 +226,69 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 
 	enum PersonDomainPartActionType {
 		SET_AFFILIATION_FIELD = 'set_affiliation_field',
+		DELETE_AFFILIATION = 'DELETE_AFFILIATION',
 	}
 
-	type PersonDomainpartAction = {
-		type: PersonDomainPartActionType.SET_AFFILIATION_FIELD;
-		payload: {
-			personDomainPartId: string;
-			affiliationId: string;
-			field: string;
-			value: string;
-		};
-	};
+	type PersonDomainpartAction =
+		| {
+				type: PersonDomainPartActionType.SET_AFFILIATION_FIELD;
+				payload: {
+					personDomainPartId: string;
+					affiliationId: string;
+					field: string;
+					value: string;
+				};
+		  }
+		| {
+				type: PersonDomainPartActionType.DELETE_AFFILIATION;
+				payload: {
+					personDomainPartId: string;
+					affiliationId: string;
+				};
+		  };
 
 	const personDomainPartReducer = (
 		state: FormPersonDomainPart[],
 		action: PersonDomainpartAction
 	): FormPersonDomainPart[] => {
-		const {
-			type,
-			payload: { personDomainPartId, affiliationId, field, value },
-		} = action;
+		const { type } = action;
+		const { personDomainPartId, affiliationId } = action.payload;
 		switch (type) {
 			case PersonDomainPartActionType.SET_AFFILIATION_FIELD:
-				return state.map((pdp) => {
-					if (pdp.id === personDomainPartId) {
+				// eslint-disable-next-line no-case-declarations
+				const {
+					payload: { field, value },
+				} = action;
+				return state.map((personDomainPart) => {
+					if (personDomainPart.id === personDomainPartId) {
 						return {
-							...pdp,
-							affiliations: {
-								...pdp.affiliations,
-								[affiliationId]: {
-									...pdp.affiliations[affiliationId],
-									[field]: value,
-								},
-							},
+							...personDomainPart,
+							affiliations: personDomainPart.affiliations.map((affiliation) => {
+								if (affiliation.id === affiliationId) {
+									return {
+										...affiliation,
+										[field]: value,
+									};
+								}
+								return affiliation;
+							}),
 						};
 					}
-					return pdp;
+					return personDomainPart;
+				});
+			case PersonDomainPartActionType.DELETE_AFFILIATION:
+				return state.map((personDomainpart) => {
+					if (personDomainpart.id === personDomainPartId) {
+						return {
+							...personDomainpart,
+							affiliations: personDomainpart.affiliations.filter(
+								(item: any) => {
+									return item.id !== affiliationId;
+								}
+							),
+						};
+					}
+					return personDomainpart;
 				});
 
 			default: {
@@ -538,118 +593,29 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						</Box>
 					</Box>
 
-					{person.viafIDs.map((viaf, index) => {
-						return (
-							<Card
-								direction="row"
-								justify="between"
-								align="center"
-								margin={{ top: 'small', bottom: 'small' }}
-								pad="small"
-							>
-								<FormField
-									name={`viaf-${index}`}
-									label="VIAF"
-									value={viaf}
-									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-										dispatchPerson({
-											type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
-											payload: {
-												field: 'viafIDs',
-												index,
-												value: event.target.value,
-											},
-										});
-									}}
-								/>
-								<Button
-									icon={<Trash />}
-									plain
-									hoverIndicator
-									onClick={() => {
-										dispatchPerson({
-											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-											payload: {
-												field: 'viafIDs',
-												index,
-											},
-										});
-									}}
-								/>
-							</Card>
-						);
-					})}
-
-					<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
-						<Button
-							icon={<Add />}
-							label="Lägg till VIAF"
-							plain
-							hoverIndicator
-							onClick={() => {
-								dispatchPerson({
-									type: PersonActionType.ADD_ARRAY_STRING_FIELD,
-									payload: {
-										field: 'viafIDs',
-									},
-								});
-							}}
-						/>
-					</Box>
-					{person.externalURLs.map((externalURL, index) => {
-						return (
-							<Card
-								// eslint-disable-next-line react/no-array-index-key
-								key={index}
-								margin={{ top: 'small', bottom: 'small' }}
-								pad="small"
-							>
-								<CardHeader pad="small">
-									<Heading margin="none" level="6">
-										Extern url
-									</Heading>
-								</CardHeader>
-								<Box direction="row" justify="between">
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						{person.librisIDs.map((librisId, index) => {
+							return (
+								<Card
+									direction="row"
+									justify="between"
+									align="center"
+									margin={{ top: 'small', bottom: 'small' }}
+									pad="small"
+								>
 									<FormField
-										label="Länktext"
-										name={`externalURLs[${index}].linkTitle`}
-										value={externalURL.linkTitle}
+										name={`libris-${index}`}
+										label="Libris ID"
+										value={librisId}
 										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
 												payload: {
-													field: 'externalURLs',
-													childField: 'linkTitle',
-													value: event.target.value,
+													field: 'librisIDs',
 													index,
+													value: event.target.value,
 												},
 											});
-										}}
-										required
-									/>
-									<FormField
-										label="URL"
-										name={`externalURLs[${index}].URL`}
-										value={externalURL.URL}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-												payload: {
-													field: 'externalURLs',
-													childField: 'URL',
-													value: event.target.value,
-													index,
-												},
-											});
-										}}
-										required
-										validate={(value: string) => {
-											const regex =
-												/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
-											if (value === '' || regex.test(value)) {
-												return '';
-											}
-											return `Ange en giltig URL.`;
 										}}
 									/>
 									<Button
@@ -660,32 +626,223 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											dispatchPerson({
 												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
 												payload: {
-													field: 'externalURLs',
+													field: 'librisIDs',
 													index,
 												},
 											});
 										}}
 									/>
-								</Box>
-							</Card>
-						);
-					})}
+								</Card>
+							);
+						})}
+						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
+							<Button
+								icon={<Add />}
+								label="Lägg till Libris ID"
+								plain
+								hoverIndicator
+								onClick={() => {
+									dispatchPerson({
+										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
+										payload: {
+											field: 'librisIDs',
+										},
+									});
+								}}
+							/>
+						</Box>
+					</Box>
 
-					<Box direction="row" justify="start" margin={{ bottom: 'large' }}>
-						<Button
-							icon={<Add />}
-							label="Lägg till extern URL"
-							plain
-							hoverIndicator
-							onClick={() => {
-								dispatchPerson({
-									type: PersonActionType.ADD_ARRAY_OBJECT,
-									payload: {
-										field: 'externalURLs',
-										emptyObject: { linkTitle: '', URL: '' },
-									},
-								});
-							}}
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						{person.viafIDs.map((viaf, index) => {
+							return (
+								<Card
+									direction="row"
+									justify="between"
+									align="center"
+									margin={{ top: 'small', bottom: 'small' }}
+									pad="small"
+								>
+									<FormField
+										name={`viaf-${index}`}
+										label="VIAF"
+										value={viaf}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
+												payload: {
+													field: 'viafIDs',
+													index,
+													value: event.target.value,
+												},
+											});
+										}}
+									/>
+									<Button
+										icon={<Trash />}
+										plain
+										hoverIndicator
+										onClick={() => {
+											dispatchPerson({
+												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+												payload: {
+													field: 'viafIDs',
+													index,
+												},
+											});
+										}}
+									/>
+								</Card>
+							);
+						})}
+						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
+							<Button
+								icon={<Add />}
+								label="Lägg till VIAF"
+								plain
+								hoverIndicator
+								onClick={() => {
+									dispatchPerson({
+										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
+										payload: {
+											field: 'viafIDs',
+										},
+									});
+								}}
+							/>
+						</Box>
+					</Box>
+
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						{person.orcids.map((orcid, index) => {
+							return (
+								<Card
+									direction="row"
+									justify="between"
+									align="center"
+									margin={{ top: 'small', bottom: 'small' }}
+									pad="small"
+								>
+									<FormField
+										name={`orcid-${index}`}
+										label="ORCID"
+										value={orcid}
+										disabled
+									/>
+								</Card>
+							);
+						})}
+					</Box>
+
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						{person.externalURLs.map((externalURL, index) => {
+							return (
+								<Card
+									// eslint-disable-next-line react/no-array-index-key
+									key={index}
+									margin={{ top: 'small', bottom: 'small' }}
+									pad="small"
+								>
+									<CardHeader pad="small">
+										<Heading margin="none" level="6">
+											Extern url
+										</Heading>
+									</CardHeader>
+									<Box direction="row" justify="between">
+										<FormField
+											label="Länktext"
+											name={`externalURLs[${index}].linkTitle`}
+											value={externalURL.linkTitle}
+											onChange={(
+												event: React.ChangeEvent<HTMLInputElement>
+											) => {
+												dispatchPerson({
+													type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+													payload: {
+														field: 'externalURLs',
+														childField: 'linkTitle',
+														value: event.target.value,
+														index,
+													},
+												});
+											}}
+											required
+										/>
+										<FormField
+											label="URL"
+											name={`externalURLs[${index}].URL`}
+											value={externalURL.URL}
+											onChange={(
+												event: React.ChangeEvent<HTMLInputElement>
+											) => {
+												dispatchPerson({
+													type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+													payload: {
+														field: 'externalURLs',
+														childField: 'URL',
+														value: event.target.value,
+														index,
+													},
+												});
+											}}
+											required
+											validate={(value: string) => {
+												const regex =
+													/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
+												if (value === '' || regex.test(value)) {
+													return '';
+												}
+												return `Ange en giltig URL.`;
+											}}
+										/>
+										<Button
+											icon={<Trash />}
+											plain
+											hoverIndicator
+											onClick={() => {
+												dispatchPerson({
+													type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+													payload: {
+														field: 'externalURLs',
+														index,
+													},
+												});
+											}}
+										/>
+									</Box>
+								</Card>
+							);
+						})}
+
+						<Box direction="row" justify="start" margin={{ top: 'small' }}>
+							<Button
+								icon={<Add />}
+								label="Lägg till extern URL"
+								plain
+								hoverIndicator
+								onClick={() => {
+									dispatchPerson({
+										type: PersonActionType.ADD_ARRAY_OBJECT,
+										payload: {
+											field: 'externalURLs',
+											emptyObject: { linkTitle: '', URL: '' },
+										},
+									});
+								}}
+							/>
+						</Box>
+					</Box>
+
+					<Box margin={{ top: 'large', bottom: 'large' }}>
+						<FormField
+							label="Biografi"
+							value={person.biographySwedish}
+							component={TextArea}
+						/>
+						<FormField
+							label="Biography"
+							value={person.biographyEnglish}
+							component={TextArea}
 						/>
 					</Box>
 
@@ -698,63 +855,99 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							if (!personDomainPart) {
 								return null;
 							}
+							const title =
+								getDomainCollection().get(personDomainPart.domain) ||
+								`DomänId: ${personDomainPart.domain}`;
 							return (
-								<Box margin={{ top: 'medium' }}>
-									<Text>{personDomainPart.domain}</Text>
+								<Box margin={{ top: 'large', bottom: 'large' }}>
+									<Heading margin="none" level="5">
+										{title}
+									</Heading>
+									{/* <Text>{personDomainPart.domain}</Text> */}
 									{Object.values(personDomainPart.affiliations).map(
 										(affiliation) => {
+											const organisationName =
+												initialOrganisations.get(affiliation.id) ||
+												affiliation.id;
 											// const affiliation = affiliations[affiliation.id];
 											return (
-												<Box direction="row" justify="between" align="center">
+												<Card
+													// eslint-disable-next-line react/no-array-index-key
+													key={affiliation.id}
+													margin={{ top: 'small', bottom: 'small' }}
+													pad="small"
+												>
+													<CardHeader pad="small">
+														<Heading margin="none" level="6">
+															{organisationName}
+														</Heading>
+													</CardHeader>
 													{/* <Text>{affiliation.name}</Text> */}
-													<FormField
-														label="Från"
-														name={`${affiliation.id}-from`}
-														value={affiliation.fromYear}
-														onChange={(
-															event: React.ChangeEvent<HTMLInputElement>
-														) => {
-															dispatchPersonDomainParts({
-																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
-																payload: {
-																	personDomainPartId: personDomainPart.id,
-																	affiliationId: affiliation.id,
-																	field: 'fromYear',
-																	value: event.target.value,
-																},
-															});
-														}}
-														validate={(value: string) => {
-															const regex = /^[0-9]{4}$/;
-															if (
-																value === undefined ||
-																value === '' ||
-																regex.test(value)
-															) {
-																return undefined;
-															}
-															return `Ange ett giltigt år.`;
-														}}
-													/>
-													<FormField
-														name={`${affiliation.id}-until`}
-														label="Till"
-														value={affiliation.untilYear}
-														onChange={(
-															event: React.ChangeEvent<HTMLInputElement>
-														) => {
-															dispatchPersonDomainParts({
-																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
-																payload: {
-																	personDomainPartId: personDomainPart.id,
-																	affiliationId: affiliation.id,
-																	field: 'untilYear',
-																	value: event.target.value,
-																},
-															});
-														}}
-													/>
-												</Box>
+													<Box direction="row" justify="between">
+														<FormField
+															label="Från"
+															name={`${affiliation.id}-from`}
+															value={affiliation.fromYear}
+															onChange={(
+																event: React.ChangeEvent<HTMLInputElement>
+															) => {
+																dispatchPersonDomainParts({
+																	type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+																	payload: {
+																		personDomainPartId: personDomainPart.id,
+																		affiliationId: affiliation.id,
+																		field: 'fromYear',
+																		value: event.target.value,
+																	},
+																});
+															}}
+															validate={(value: string) => {
+																const regex = /^[0-9]{4}$/;
+																if (
+																	value === undefined ||
+																	value === '' ||
+																	regex.test(value)
+																) {
+																	return undefined;
+																}
+																return `Ange ett giltigt år.`;
+															}}
+														/>
+														<FormField
+															name={`${affiliation.id}-until`}
+															label="Till"
+															value={affiliation.untilYear}
+															onChange={(
+																event: React.ChangeEvent<HTMLInputElement>
+															) => {
+																dispatchPersonDomainParts({
+																	type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+																	payload: {
+																		personDomainPartId: personDomainPart.id,
+																		affiliationId: affiliation.id,
+																		field: 'untilYear',
+																		value: event.target.value,
+																	},
+																});
+															}}
+														/>
+														<Button
+															icon={<Trash />}
+															label=""
+															plain
+															hoverIndicator
+															onClick={() => {
+																dispatchPersonDomainParts({
+																	type: PersonDomainPartActionType.DELETE_AFFILIATION,
+																	payload: {
+																		personDomainPartId: personDomainPart.id,
+																		affiliationId: affiliation.id,
+																	},
+																});
+															}}
+														/>
+													</Box>
+												</Card>
 											);
 										}
 									)}
@@ -769,8 +962,19 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			</Box>
 			<Box>
 				{/* <pre>{JSON.stringify(affiliations, null, 2)}</pre> */}
-				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre>
+
+				<h2>Person</h2>
 				<pre>{JSON.stringify(person, null, 2)}</pre>
+				<h2>Organisations</h2>
+				<pre>
+					{JSON.stringify(
+						Object.fromEntries(initialOrganisations.entries()),
+						null,
+						2
+					)}
+				</pre>
+				<h2>PersonDomainParts</h2>
+				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre>
 			</Box>
 			{/* <PersonView person={person} /> */}
 		</Grid>
