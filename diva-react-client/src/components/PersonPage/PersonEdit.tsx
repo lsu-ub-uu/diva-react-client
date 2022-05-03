@@ -131,6 +131,7 @@ const convertToFormPersonDomainPart = (
 	};
 };
 
+const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
  *
  *
@@ -451,7 +452,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	return (
 		<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
 			<Box pad="medium" width="large">
-				<Form validate="blur">
+				<Form
+					validate="blur"
+					messages={{ required: 'Fältet får inte vara tomt' }}
+				>
 					<Box direction="row" justify="between" align="center">
 						<FormField
 							label="Efternamn"
@@ -577,20 +581,14 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								field="yearOfBirth"
 								value={person.yearOfBirth}
 								onChange={updateStringField}
-								validate={validateWithRegex(
-									/^[0-9]{4}$/,
-									'Ange ett giltigt år.'
-								)}
+								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
 							/>
 							<StringFormField
 								label="Dödsår"
 								field="yearOfDeath"
 								value={person.yearOfDeath}
 								onChange={updateStringField}
-								validate={validateWithRegex(
-									/^[0-9]{4}$/,
-									'Ange ett giltigt år.'
-								)}
+								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
 							/>
 						</Box>
 					</Box>
@@ -913,7 +911,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 															}}
 															validate={validateWithRegex(
 																/^[0-9]{4}$/,
-																'Ange ett giltigt år.'
+																INVALID_YEAR_MESSAGE
 															)}
 														/>
 														<FormField
@@ -922,7 +920,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 															value={affiliation.untilYear}
 															validate={validateWithRegex(
 																/^[0-9]{4}$/,
-																'Ange ett giltigt år.'
+																INVALID_YEAR_MESSAGE
 															)}
 															onChange={(
 																event: React.ChangeEvent<HTMLInputElement>
