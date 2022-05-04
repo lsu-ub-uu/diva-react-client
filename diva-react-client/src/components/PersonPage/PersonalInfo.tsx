@@ -23,7 +23,10 @@ const PersonalInfo = function ({ person }: { person: Person }) {
 	return (
 		<Parent>
 			{alternativeNames.length > 0 && (
-				<ListWithLabel label="Alternativa namn" list={alternativeNames} />
+				<ListWithLabel
+					label="Alternativa namn (namnformer som förekommit i publikationer)"
+					list={alternativeNames}
+				/>
 			)}
 			{person.externalURLs !== undefined && (
 				<ul>

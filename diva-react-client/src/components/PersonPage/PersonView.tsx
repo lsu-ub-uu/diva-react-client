@@ -6,6 +6,7 @@ import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import AffiliationDisplay from './AffiliationDisplay';
 import BackButton from '../BackButton';
+import { Paragraph, Box, Heading } from 'grommet';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -83,7 +84,10 @@ const PersonView = function ({
 						);
 					})}
 				{person.otherAffiliation !== undefined && (
-					<AffiliationDisplay affiliation={person.otherAffiliation} />
+					<Box>
+						<Heading level="4">Andra organisationer (utanför DiVA)</Heading>
+						<AffiliationDisplay affiliation={person.otherAffiliation} />
+					</Box>
 				)}
 			</Main>
 			<BackButton />

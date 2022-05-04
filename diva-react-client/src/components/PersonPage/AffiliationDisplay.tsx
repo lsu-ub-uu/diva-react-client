@@ -1,5 +1,6 @@
 import React from 'react';
 import { Affiliation } from 'diva-cora-ts-api-wrapper';
+import { Paragraph } from 'grommet';
 
 const AffiliationDisplay = function ({
 	affiliation,
@@ -18,7 +19,7 @@ const AffiliationDisplay = function ({
 		return affiliationName;
 	};
 
-	return <p>{getAffiliationText()}</p>;
+	return <Paragraph>{getAffiliationText()}</Paragraph>;
 };
 
 const displayYear = (year: string | undefined) => {
