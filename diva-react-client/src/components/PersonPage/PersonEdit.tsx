@@ -22,6 +22,8 @@ import {
 } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
+import { useAuth } from '../../context/AuthContext';
+import OrganisationChooser from './OrganisationChooser';
 
 export interface FormPerson {
 	id: string;
@@ -180,6 +182,8 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  */
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
+	const { auth } = useAuth();
+
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
@@ -226,6 +230,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	enum PersonDomainPartActionType {
 		SET_AFFILIATION_FIELD = 'set_affiliation_field',
 		DELETE_AFFILIATION = 'DELETE_AFFILIATION',
+		ADD_AFFILIATION = 'ADD_AFFILIATION',
 	}
 
 	type PersonDomainpartAction =
@@ -244,6 +249,12 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					personDomainPartId: string;
 					affiliationId: string;
 				};
+		  }
+		| {
+				type: PersonDomainPartActionType.ADD_AFFILIATION;
+				payload: {
+					personDomainPartId: string;
+				};
 		  };
 
 	const personDomainPartReducer = (
@@ -251,7 +262,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		action: PersonDomainpartAction
 	): FormPersonDomainPart[] => {
 		const { type } = action;
-		const { personDomainPartId, affiliationId } = action.payload;
+		const { personDomainPartId } = action.payload;
 		switch (type) {
 			case PersonDomainPartActionType.SET_AFFILIATION_FIELD:
 				// eslint-disable-next-line no-case-declarations
@@ -263,7 +274,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						return {
 							...personDomainPart,
 							affiliations: personDomainPart.affiliations.map((affiliation) => {
-								if (affiliation.id === affiliationId) {
+								if (affiliation.id === action.payloadaffiliationId) {
 									return {
 										...affiliation,
 										[field]: value,
@@ -282,9 +293,23 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							...personDomainpart,
 							affiliations: personDomainpart.affiliations.filter(
 								(item: any) => {
-									return item.id !== affiliationId;
+									return item.id !== action.payloadaffiliationId;
 								}
 							),
+						};
+					}
+					return personDomainpart;
+				});
+			case PersonDomainPartActionType.ADD_AFFILIATION:
+				return state.map((personDomainpart) => {
+					if (personDomainpart.id === personDomainPartId) {
+						return {
+							...personDomainpart,
+							affiliations: personDomainpart.affiliations.concat({
+								id: '',
+								fromYear: '',
+								untilYear: '',
+							}),
 						};
 					}
 					return personDomainpart;
@@ -864,7 +889,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							const personDomainPart = personDomainParts.find(
 								(pdp) => pdp.id === pdpId
 							);
-							if (!personDomainPart) {
+							if (
+								!personDomainPart ||
+								personDomainPart.domain !== auth.domain
+							) {
 								return null;
 							}
 							const title =
@@ -877,22 +905,23 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									</Heading>
 									{/* <Text>{personDomainPart.domain}</Text> */}
 									{Object.values(personDomainPart.affiliations).map(
-										(affiliation) => {
-											const organisationName =
-												initialOrganisations.get(affiliation.id) ||
-												affiliation.id;
+										(affiliation, index) => {
 											// const affiliation = affiliations[affiliation.id];
 											return (
 												<Card
 													// eslint-disable-next-line react/no-array-index-key
-													key={affiliation.id}
+													key={`${personDomainPart.id}-${affiliation.id}-${index}`}
 													margin={{ top: 'small', bottom: 'small' }}
 													pad="small"
 												>
 													<CardHeader pad="small">
-														<Heading margin="none" level="6">
-															{organisationName}
-														</Heading>
+														{affiliation.id !== '' && (
+															<Heading margin="none" level="6">
+																{initialOrganisations.get(affiliation.id) ||
+																	affiliation.id}
+															</Heading>
+														)}
+														{affiliation.id === '' && <OrganisationChooser />}
 													</CardHeader>
 													{/* <Text>{affiliation.name}</Text> */}
 													<Box direction="row" justify="between">
@@ -960,6 +989,26 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											);
 										}
 									)}
+									<Box
+										direction="row"
+										justify="start"
+										margin={{ bottom: 'small' }}
+									>
+										<Button
+											icon={<Add />}
+											label="Lägg till Affiliering"
+											plain
+											hoverIndicator
+											onClick={() => {
+												dispatchPersonDomainParts({
+													type: PersonDomainPartActionType.ADD_AFFILIATION,
+													payload: {
+														personDomainPartId: personDomainPart.id,
+													},
+												});
+											}}
+										/>
+									</Box>
 								</Box>
 							);
 						})}
