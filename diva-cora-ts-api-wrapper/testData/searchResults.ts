@@ -1,4 +1,8 @@
-import { DataListWrapper, RecordWrapper } from '../src/cora-data/CoraData';
+import {
+	DataList,
+	DataListWrapper,
+	RecordWrapper,
+} from '../src/cora-data/CoraData';
 
 export const dataListContainingOnePerson: DataListWrapper = {
 	dataList: {
@@ -2134,5 +2138,671 @@ export const onePerson: RecordWrapper = {
 			],
 			name: 'person',
 		},
+	},
+};
+
+export const dataListContainingOneOrganisation: DataListWrapper = {
+	dataList: {
+		fromNo: '1',
+		data: [
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: '985' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/recordType/subOrganisation',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'coraUser' },
+											{
+												name: 'linkedRecordId',
+												value: 'coraUser:4412982402853626',
+											},
+										],
+										name: 'createdBy',
+									},
+									{ name: 'tsCreated', value: '2017-01-01T00:00:00.000000Z' },
+									{
+										repeatId: '0',
+										children: [
+											{
+												children: [
+													{ name: 'linkedRecordType', value: 'coraUser' },
+													{
+														name: 'linkedRecordId',
+														value: 'coraUser:4412982402853626',
+													},
+												],
+												name: 'updatedBy',
+											},
+											{
+												name: 'tsUpdated',
+												value: '2017-01-01T00:00:00.000000Z',
+											},
+										],
+										name: 'updated',
+									},
+									{ name: 'domain', value: 'uu' },
+									{ name: 'selectable', value: 'yes' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{ name: 'name', value: 'Universitetsbiblioteket' },
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'organisationName',
+							},
+							{
+								children: [
+									{ name: 'language', value: 'en' },
+									{ name: 'name', value: 'University Library' },
+								],
+								name: 'organisationAlternativeName',
+							},
+							{ name: 'organisationType', value: 'unit' },
+							{
+								children: [
+									{ name: 'city', value: 'Uppsala' },
+									{ name: 'box', value: 'Box 510' },
+									{ name: 'postcode', value: '75120' },
+									{ name: 'country', value: 'SE' },
+								],
+								name: 'address',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'topOrganisation' },
+											{ name: 'linkedRecordId', value: '978' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/topOrganisation/978',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'organisationLink',
+									},
+								],
+								name: 'parentOrganisation',
+							},
+						],
+						name: 'organisation',
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/985',
+							accept: 'application/vnd.uub.record+json',
+						},
+						update: {
+							requestMethod: 'POST',
+							rel: 'update',
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/985',
+							accept: 'application/vnd.uub.record+json',
+						},
+						index: {
+							requestMethod: 'POST',
+							rel: 'index',
+							body: {
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										name: 'recordType',
+									},
+									{ name: 'recordId', value: '985' },
+									{ name: 'type', value: 'index' },
+								],
+								name: 'workOrder',
+							},
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/workOrder/',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+		],
+		totalNo: '1',
+		containDataOfType: 'mix',
+		toNo: '1',
+	},
+};
+
+export const dataListContainingThreeOrganisations: DataListWrapper = {
+	dataList: {
+		fromNo: '1',
+		data: [
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: '979' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/recordType/subOrganisation',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'coraUser' },
+											{
+												name: 'linkedRecordId',
+												value: 'coraUser:4412982402853626',
+											},
+										],
+										name: 'createdBy',
+									},
+									{ name: 'tsCreated', value: '2017-01-01T00:00:00.000000Z' },
+									{
+										repeatId: '0',
+										children: [
+											{
+												children: [
+													{ name: 'linkedRecordType', value: 'coraUser' },
+													{
+														name: 'linkedRecordId',
+														value: 'coraUser:4412982402853626',
+													},
+												],
+												name: 'updatedBy',
+											},
+											{
+												name: 'tsUpdated',
+												value: '2017-01-01T00:00:00.000000Z',
+											},
+										],
+										name: 'updated',
+									},
+									{ name: 'domain', value: 'uu' },
+									{ name: 'selectable', value: 'yes' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{ name: 'name', value: 'Universitetsförvaltningen' },
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'organisationName',
+							},
+							{
+								children: [
+									{ name: 'language', value: 'en' },
+									{ name: 'name', value: 'University Administration' },
+								],
+								name: 'organisationAlternativeName',
+							},
+							{ name: 'organisationType', value: 'unit' },
+							{
+								children: [
+									{ name: 'city', value: 'Uppsala' },
+									{ name: 'box', value: 'Box 256' },
+									{ name: 'postcode', value: '75105' },
+									{ name: 'country', value: 'SE' },
+								],
+								name: 'address',
+							},
+							{ name: 'organisationCode', value: 'TEST2' },
+							{
+								repeatId: '0',
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'topOrganisation' },
+											{ name: 'linkedRecordId', value: '978' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/topOrganisation/978',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'organisationLink',
+									},
+								],
+								name: 'parentOrganisation',
+							},
+						],
+						name: 'organisation',
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/979',
+							accept: 'application/vnd.uub.record+json',
+						},
+						update: {
+							requestMethod: 'POST',
+							rel: 'update',
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/979',
+							accept: 'application/vnd.uub.record+json',
+						},
+						index: {
+							requestMethod: 'POST',
+							rel: 'index',
+							body: {
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										name: 'recordType',
+									},
+									{ name: 'recordId', value: '979' },
+									{ name: 'type', value: 'index' },
+								],
+								name: 'workOrder',
+							},
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/workOrder/',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: '985' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/recordType/subOrganisation',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'coraUser' },
+											{
+												name: 'linkedRecordId',
+												value: 'coraUser:4412982402853626',
+											},
+										],
+										name: 'createdBy',
+									},
+									{ name: 'tsCreated', value: '2017-01-01T00:00:00.000000Z' },
+									{
+										repeatId: '0',
+										children: [
+											{
+												children: [
+													{ name: 'linkedRecordType', value: 'coraUser' },
+													{
+														name: 'linkedRecordId',
+														value: 'coraUser:4412982402853626',
+													},
+												],
+												name: 'updatedBy',
+											},
+											{
+												name: 'tsUpdated',
+												value: '2017-01-01T00:00:00.000000Z',
+											},
+										],
+										name: 'updated',
+									},
+									{ name: 'domain', value: 'uu' },
+									{ name: 'selectable', value: 'yes' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{ name: 'name', value: 'Universitetsbiblioteket' },
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'organisationName',
+							},
+							{
+								children: [
+									{ name: 'language', value: 'en' },
+									{ name: 'name', value: 'University Library' },
+								],
+								name: 'organisationAlternativeName',
+							},
+							{ name: 'organisationType', value: 'unit' },
+							{
+								children: [
+									{ name: 'city', value: 'Uppsala' },
+									{ name: 'box', value: 'Box 510' },
+									{ name: 'postcode', value: '75120' },
+									{ name: 'country', value: 'SE' },
+								],
+								name: 'address',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'topOrganisation' },
+											{ name: 'linkedRecordId', value: '978' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/topOrganisation/978',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'organisationLink',
+									},
+								],
+								name: 'parentOrganisation',
+							},
+						],
+						name: 'organisation',
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/985',
+							accept: 'application/vnd.uub.record+json',
+						},
+						update: {
+							requestMethod: 'POST',
+							rel: 'update',
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/985',
+							accept: 'application/vnd.uub.record+json',
+						},
+						index: {
+							requestMethod: 'POST',
+							rel: 'index',
+							body: {
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										name: 'recordType',
+									},
+									{ name: 'recordId', value: '985' },
+									{ name: 'type', value: 'index' },
+								],
+								name: 'workOrder',
+							},
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/workOrder/',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+			{
+				record: {
+					data: {
+						children: [
+							{
+								children: [
+									{ name: 'id', value: '11211' },
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/recordType/subOrganisation',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'type',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'system' },
+											{ name: 'linkedRecordId', value: 'diva' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/system/diva',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'dataDivider',
+									},
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'coraUser' },
+											{
+												name: 'linkedRecordId',
+												value: 'coraUser:4412982402853626',
+											},
+										],
+										name: 'createdBy',
+									},
+									{ name: 'tsCreated', value: '2017-01-01T00:00:00.000000Z' },
+									{
+										repeatId: '0',
+										children: [
+											{
+												children: [
+													{ name: 'linkedRecordType', value: 'coraUser' },
+													{
+														name: 'linkedRecordId',
+														value: 'coraUser:4412982402853626',
+													},
+												],
+												name: 'updatedBy',
+											},
+											{
+												name: 'tsUpdated',
+												value: '2017-01-01T00:00:00.000000Z',
+											},
+										],
+										name: 'updated',
+									},
+									{ name: 'domain', value: 'uu' },
+									{ name: 'selectable', value: 'yes' },
+								],
+								name: 'recordInfo',
+							},
+							{
+								children: [
+									{
+										name: 'name',
+										value:
+											'Avdelningen för universitetspedagogisk utveckling (PU)',
+									},
+									{ name: 'language', value: 'sv' },
+								],
+								name: 'organisationName',
+							},
+							{
+								children: [
+									{ name: 'language', value: 'en' },
+									{
+										name: 'name',
+										value: 'Division for Development of Teaching and Learning',
+									},
+								],
+								name: 'organisationAlternativeName',
+							},
+							{ name: 'closedDate', value: '2013-12-31' },
+							{ name: 'organisationType', value: 'division' },
+							{
+								children: [
+									{ name: 'city', value: 'Uppsala' },
+									{ name: 'box', value: '2136' },
+									{ name: 'postcode', value: '750 02' },
+								],
+								name: 'address',
+							},
+							{
+								repeatId: '0',
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'subOrganisation' },
+											{ name: 'linkedRecordId', value: '979' },
+										],
+										actionLinks: {
+											read: {
+												requestMethod: 'GET',
+												rel: 'read',
+												url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/979',
+												accept: 'application/vnd.uub.record+json',
+											},
+										},
+										name: 'organisationLink',
+									},
+								],
+								name: 'parentOrganisation',
+							},
+						],
+						name: 'organisation',
+					},
+					actionLinks: {
+						read: {
+							requestMethod: 'GET',
+							rel: 'read',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/11211',
+							accept: 'application/vnd.uub.record+json',
+						},
+						update: {
+							requestMethod: 'POST',
+							rel: 'update',
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/subOrganisation/11211',
+							accept: 'application/vnd.uub.record+json',
+						},
+						index: {
+							requestMethod: 'POST',
+							rel: 'index',
+							body: {
+								children: [
+									{
+										children: [
+											{ name: 'linkedRecordType', value: 'recordType' },
+											{ name: 'linkedRecordId', value: 'subOrganisation' },
+										],
+										name: 'recordType',
+									},
+									{ name: 'recordId', value: '11211' },
+									{ name: 'type', value: 'index' },
+								],
+								name: 'workOrder',
+							},
+							contentType: 'application/vnd.uub.record+json',
+							url: 'https://cora.test.diva-portal.org/diva/rest/record/workOrder/',
+							accept: 'application/vnd.uub.record+json',
+						},
+					},
+				},
+			},
+		],
+		totalNo: '3',
+		containDataOfType: 'mix',
+		toNo: '3',
 	},
 };
