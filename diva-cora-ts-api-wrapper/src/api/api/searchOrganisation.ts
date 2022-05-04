@@ -13,7 +13,7 @@ import { IHttpClientRequestParameters } from '../http/IHttpClient';
 const searchEndpoint = 'record/searchResult/';
 const domainSearch = `publicOrganisationSearch?searchData=`;
 
-export function searchOrganisationsByDomain(
+function searchOrganisationsByDomain(
 	domain: string,
 	authToken?: string
 ): Promise<List> {
@@ -28,10 +28,15 @@ export function searchOrganisationsByDomain(
 				authToken,
 			};
 
-			httpClient.get<DataListWrapper>(parameters).then((dataListWrapper) => {
-				const list = extractListFromDataList(dataListWrapper);
-				resolve(list);
-			});
+			httpClient
+				.get<DataListWrapper>(parameters)
+				.then((dataListWrapper) => {
+					const list = extractListFromDataList(dataListWrapper);
+					resolve(list);
+				})
+				.catch((error) => {
+					reject(error);
+				});
 		}
 	});
 }
