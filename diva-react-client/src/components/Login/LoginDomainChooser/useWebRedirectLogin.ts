@@ -25,13 +25,29 @@ export const receiveMessage = (event: MessageEvent) => {
 	if (loginOrigin === event.origin && openedWindow === event.source) {
 		const authInfo = event.data as AuthInfo;
 
+		const domain = getDomainFromUrl();
+
 		onAuthChange({
 			status: LOGIN_STATUS.LOGGED_IN,
 			token: authInfo.token,
 			idFromLogin: authInfo.idFromLogin,
 			deleteUrl: authInfo.actionLinks.delete.url,
+			domain,
 		});
 	}
+};
+
+const getDomainFromUrl = () => {
+	if (
+		urlToIdpLogin.indexOf('Login/') > 0 &&
+		urlToIdpLogin.indexOf('?target') > 0
+	) {
+		return urlToIdpLogin.slice(
+			urlToIdpLogin.indexOf('Login/') + 6,
+			urlToIdpLogin.indexOf('?target')
+		);
+	}
+	return '';
 };
 
 export default useWebRedirectLogin;

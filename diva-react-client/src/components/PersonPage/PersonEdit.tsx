@@ -163,9 +163,9 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  * - organisationssök efter domain för att kunna lägga till nya organisationer
  *
  * Till specialistmötet
- * - lägga till samtliga (för alla synliga) fält X
- * - lägg till validering X
- * - lägg till högersida (den ska hänga med när det ändras på vänster sida)
+ * - X lägga till samtliga (för alla synliga) fält X
+ * - X lägg till validering X
+ * - X lägg till högersida (den ska hänga med när det ändras på vänster sida) X
  * -- scrollbar för båda för att kunna scrolla oberoende
  * - icke inloggad
  * - transformera från FormPerson till Person

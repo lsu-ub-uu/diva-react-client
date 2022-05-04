@@ -12,6 +12,7 @@ const AuthProvider = function ({ children }: { children: JSX.Element }) {
 		token: '',
 		idFromLogin: '',
 		deleteUrl: '',
+		domain: '',
 	});
 
 	const value = React.useMemo((): ContextType => {
@@ -27,6 +28,7 @@ const AuthContext = React.createContext<ContextType>({
 		idFromLogin: '',
 		status: LOGIN_STATUS.LOGGED_OUT,
 		token: '',
+		domain: '',
 	},
 	setAuth: () => {
 		throw new Error('useAuth can only be used within a child of AuthProvider.');

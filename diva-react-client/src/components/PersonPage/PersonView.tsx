@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Box, Button, Heading } from 'grommet';
+import { Link } from 'react-router-dom';
+import { Edit } from 'grommet-icons';
 import { Person } from 'diva-cora-ts-api-wrapper';
 import Identifiers from './Identifiers';
 import PersonalInfo from './PersonalInfo';
 import PersonDomainPartWrapper from './PersonDomainPartWrapper';
 import AffiliationDisplay from './AffiliationDisplay';
 import BackButton from '../BackButton';
-import { Paragraph, Box, Heading } from 'grommet';
+import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -22,9 +25,10 @@ const StyledPersonView = styled.div`
 const Top = styled.div`
 	grid-area: top;
 	display: grid;
-	grid-template-columns: 1fr;
-	grid-template-rows: auto;
-	row-gap: 0.2em;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr;
+	align-items: center;
+	column-gap: 0.2em;
 `;
 
 const Left = styled.div`
@@ -50,12 +54,22 @@ const PersonView = function ({
 	person: Person;
 	showAll?: boolean;
 }) {
+	const { auth } = useAuth();
+
 	return (
 		<StyledPersonView>
 			<Top>
 				<h1>{displayName(person)}</h1>
 				{person.academicTitle !== undefined && person.academicTitle !== '' && (
 					<p data-testid="personTitle">{person.academicTitle}</p>
+				)}
+				{auth.status === LOGIN_STATUS.LOGGED_IN && (
+					<Link
+						to={`/${person.recordType}/edit/${person.id}`}
+						style={{ justifySelf: 'end' }}
+					>
+						<Button label="Editera" icon={<Edit />} />
+					</Link>
 				)}
 			</Top>
 			<Left>

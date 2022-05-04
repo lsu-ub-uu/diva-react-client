@@ -33,6 +33,7 @@ beforeAll(() => {
 			token: '',
 			idFromLogin: '',
 			deleteUrl: '',
+			domain: '',
 		},
 		onAuthChange: mockOnAuthChange,
 	});
@@ -115,6 +116,65 @@ describe('useWebDirectLogin.spec', () => {
 				token: defaultAuthinfo.token,
 				idFromLogin: defaultAuthinfo.idFromLogin,
 				deleteUrl: defaultAuthinfo.actionLinks.delete.url,
+				domain: expect.any(String),
+			});
+		});
+
+		it('calls onAuthUpdate with URL parsed from urlToIdpLogin string', () => {
+			const { result } = renderHook(() => useWebRedirectLogin());
+			result.current.startLoginProcess(
+				'http://asfd/Login/interestingDomain?target=xyx'
+			);
+			receiveMessage(defaultEvent);
+
+			expect(mockOnAuthChange).toHaveBeenLastCalledWith({
+				status: expect.any(String),
+				token: expect.any(String),
+				idFromLogin: expect.any(String),
+				deleteUrl: expect.any(String),
+				domain: 'interestingDomain',
+			});
+
+			result.current.startLoginProcess(
+				'http://fdasfd/Login/otherInterestingDomain?target=234324'
+			);
+			receiveMessage(defaultEvent);
+
+			expect(mockOnAuthChange).toHaveBeenLastCalledWith({
+				status: expect.any(String),
+				token: expect.any(String),
+				idFromLogin: expect.any(String),
+				deleteUrl: expect.any(String),
+				domain: 'otherInterestingDomain',
+			});
+
+			result.current.startLoginProcess(
+				'wronglyFormattedotherInterestingDomain?target=234324'
+			);
+			receiveMessage(defaultEvent);
+
+			expect(mockOnAuthChange).toHaveBeenLastCalledWith({
+				status: expect.any(String),
+				token: expect.any(String),
+				idFromLogin: expect.any(String),
+				deleteUrl: expect.any(String),
+				domain: '',
+			});
+		});
+
+		it('calls onAuthUpdate with empty URL if urlToIdpLogin does not include Login/ and ?target', () => {
+			const { result } = renderHook(() => useWebRedirectLogin());
+			result.current.startLoginProcess(
+				'wronglyFormattedotherInterestingDomain?target=234324'
+			);
+			receiveMessage(defaultEvent);
+
+			expect(mockOnAuthChange).toHaveBeenLastCalledWith({
+				status: expect.any(String),
+				token: expect.any(String),
+				idFromLogin: expect.any(String),
+				deleteUrl: expect.any(String),
+				domain: '',
 			});
 		});
 

@@ -19,6 +19,7 @@ type Auth = {
 	token: string;
 	idFromLogin: string;
 	deleteUrl: string;
+	domain: string;
 };
 
 export { Auth, ContextType, AuthInfo };
