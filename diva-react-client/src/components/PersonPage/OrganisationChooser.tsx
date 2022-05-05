@@ -1,9 +1,9 @@
 import {
+	List,
 	Organisation,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
-import { DropButton, Select } from 'grommet';
-import { Search } from 'grommet-icons';
+import { Select } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import useApi from '../../hooks/useApi';
@@ -11,7 +11,7 @@ import { escapeSearchString } from '../Login/LoginDomainChooser/helpers';
 
 const OrganisationChooser = function () {
 	const { auth } = useAuth();
-	const { isLoading, result, setApiParams } = useApi(
+	const { isLoading, result, setApiParams } = useApi<List>(
 		searchOrganisationsByDomain,
 		{}
 	);
@@ -22,7 +22,8 @@ const OrganisationChooser = function () {
 		}
 	}, []);
 
-	const [options, setOptions] = useState<Organisation[]>([]);
+	const [allOptions, setAllOptions] = useState<Organisation[]>([]);
+	const [currentOptions, setCurrentOptions] = useState<Organisation[]>([]);
 
 	const [value, setValue] = useState<Organisation | undefined>(undefined);
 
@@ -31,8 +32,8 @@ const OrganisationChooser = function () {
 	};
 
 	const handleSearch = (text: string) => {
-		const filteredOptions = filterOrganisations(options, text);
-		setOptions(filteredOptions);
+		const filteredOptions = filterOrganisations(allOptions, text);
+		setCurrentOptions(filteredOptions);
 	};
 
 	const filterOrganisations = (units: Organisation[], searchTerm: string) => {
@@ -44,16 +45,20 @@ const OrganisationChooser = function () {
 	useEffect(() => {
 		if (result.hasData && result.data) {
 			const newOptions = result.data.data as Organisation[];
-			setOptions(newOptions);
+			setAllOptions(newOptions);
+			setCurrentOptions(newOptions);
 		}
 	}, [result]);
 
 	return (
 		<>
-			{isLoading && 'Loading'}
-			{result && (
+			{isLoading && 'Laddar organisationer'}
+			{result.hasData && (
 				<Select
-					options={options}
+					options={currentOptions}
+					onClose={() => {
+						setCurrentOptions(allOptions);
+					}}
 					size="medium"
 					placeholder="Välj organisation"
 					value={value}
