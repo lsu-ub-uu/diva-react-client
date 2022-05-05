@@ -8,7 +8,6 @@ import {
 	Form,
 	FormField,
 	Grid,
-	Text,
 	TextArea,
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
@@ -23,7 +22,8 @@ import {
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
 import { useAuth } from '../../context/AuthContext';
-import OrganisationChooser, {
+import {
+	OrganisationChooser,
 	OrganisationChooserDropButton,
 } from './OrganisationChooser';
 
@@ -237,6 +237,8 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	 * I vyn behöver vi ha tillgång till alla kopplade (existerande och nya) organisationer
 	 * I enklaste fallet är detta då initialOrganisations + domainOrganisations
 	 *
+	 * en state för domainOrganisations
+	 * en state för kombinerad domainOrganisations + initialOrganisations
 	 *
 	 *  */
 
