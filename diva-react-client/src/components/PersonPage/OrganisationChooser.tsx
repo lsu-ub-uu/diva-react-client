@@ -3,13 +3,18 @@ import {
 	Organisation,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
-import { Select } from 'grommet';
+import { Box, DropButton, Select } from 'grommet';
+import { Add } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import useApi from '../../hooks/useApi';
 import { escapeSearchString } from '../Login/LoginDomainChooser/helpers';
 
-const OrganisationChooser = function () {
+export const OrganisationChooser = function ({
+	onChange,
+}: {
+	onChange: (organisation: Organisation) => void;
+}) {
 	const { auth } = useAuth();
 	const { isLoading, result, setApiParams } = useApi<List>(
 		searchOrganisationsByDomain,
@@ -29,6 +34,7 @@ const OrganisationChooser = function () {
 
 	const handleChange = ({ value: newValue }: { value: Organisation }) => {
 		setValue(newValue);
+		onChange(newValue);
 	};
 
 	const handleSearch = (text: string) => {
@@ -72,4 +78,37 @@ const OrganisationChooser = function () {
 	);
 };
 
-export default OrganisationChooser;
+export const OrganisationChooserDropButton = function ({
+	onOrganisationChange,
+}: {
+	onOrganisationChange: (organisation: Organisation) => void;
+}) {
+	const [open, setOpen] = React.useState<boolean>(false);
+
+	const onOpen = () => {
+		setOpen(true);
+	};
+
+	const onClose = () => {
+		setOpen(false);
+	};
+
+	const onChange = (organistion: Organisation) => {
+		onOrganisationChange(organistion);
+		onClose();
+	};
+
+	return (
+		<Box align="center" pad="small">
+			<DropButton
+				icon={<Add />}
+				label="Lägg till Affiliering"
+				open={open}
+				onOpen={onOpen}
+				onClose={onClose}
+				dropContent={<OrganisationChooser onChange={onChange} />}
+				dropProps={{ align: { top: 'bottom' } }}
+			/>
+		</Box>
+	);
+};

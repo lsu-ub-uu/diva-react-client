@@ -23,7 +23,9 @@ import {
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
 import { useAuth } from '../../context/AuthContext';
-import OrganisationChooser from './OrganisationChooser';
+import OrganisationChooser, {
+	OrganisationChooserDropButton,
+} from './OrganisationChooser';
 
 export interface FormPerson {
 	id: string;
@@ -217,6 +219,52 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		});
 	}
 
+	/**
+	 *
+	 * initialOrganisations:
+	 * - innehåller id -> name för samtliga organisationer en person är kopplat till
+	 *
+	 *
+	 * domainOrganisations:
+	 * - organisationer som finns på en given domän
+	 * - vi får dessa via searchOrganisationsByDomain
+	 *
+	 *
+	 * När vi vill lägga till en ny affiliering behöver vi BARA ha tillgång till samtliga
+	 * organisationer som är kopplade till användarens domän. Dvs domainOrganisations
+	 *
+	 *
+	 * I vyn behöver vi ha tillgång till alla kopplade (existerande och nya) organisationer
+	 * I enklaste fallet är detta då initialOrganisations + domainOrganisations
+	 *
+	 *
+	 *  */
+
+	enum ORGANISATION_ACTION {
+		ADD = 'ADD',
+	}
+
+	const organisationReducer = (
+		state: Map<string, string>,
+		action: {
+			type: ORGANISATION_ACTION.ADD;
+			payload: {
+				id: string;
+				name: string;
+			};
+		}
+	) => {
+		const { id, name } = action.payload;
+		const newState = new Map<string, string>(state);
+		newState.set(id, name);
+		return newState;
+	};
+
+	const [organisationMap, dispatchOrganisationMap] = useReducer(
+		organisationReducer,
+		initialOrganisations
+	);
+
 	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
 
 	if (originalPerson.connectedDomains) {
@@ -254,6 +302,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				type: PersonDomainPartActionType.ADD_AFFILIATION;
 				payload: {
 					personDomainPartId: string;
+					affiliationId: string;
 				};
 		  };
 
@@ -274,7 +323,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						return {
 							...personDomainPart,
 							affiliations: personDomainPart.affiliations.map((affiliation) => {
-								if (affiliation.id === action.payloadaffiliationId) {
+								if (affiliation.id === action.payload.affiliationId) {
 									return {
 										...affiliation,
 										[field]: value,
@@ -293,7 +342,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							...personDomainpart,
 							affiliations: personDomainpart.affiliations.filter(
 								(item: any) => {
-									return item.id !== action.payloadaffiliationId;
+									return item.id !== action.payload.affiliationId;
 								}
 							),
 						};
@@ -306,7 +355,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						return {
 							...personDomainpart,
 							affiliations: personDomainpart.affiliations.concat({
-								id: '',
+								id: action.payload.affiliationId,
 								fromYear: '',
 								untilYear: '',
 							}),
@@ -917,7 +966,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 													<CardHeader pad="small">
 														{affiliation.id !== '' && (
 															<Heading margin="none" level="6">
-																{initialOrganisations.get(affiliation.id) ||
+																{organisationMap.get(affiliation.id) ||
 																	affiliation.id}
 															</Heading>
 														)}
@@ -994,16 +1043,18 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 										justify="start"
 										margin={{ bottom: 'small' }}
 									>
-										<Button
-											icon={<Add />}
-											label="Lägg till Affiliering"
-											plain
-											hoverIndicator
-											onClick={() => {
+										<OrganisationChooserDropButton
+											onOrganisationChange={(organisation: Organisation) => {
+												const { id, name } = organisation;
+												dispatchOrganisationMap({
+													type: ORGANISATION_ACTION.ADD,
+													payload: { id, name },
+												});
 												dispatchPersonDomainParts({
 													type: PersonDomainPartActionType.ADD_AFFILIATION,
 													payload: {
 														personDomainPartId: personDomainPart.id,
+														affiliationId: id,
 													},
 												});
 											}}
@@ -1039,7 +1090,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				<h2>Organisations</h2>
 				<pre>
 					{JSON.stringify(
-						Object.fromEntries(initialOrganisations.entries()),
+						Object.fromEntries(organisationMap.entries()),
 						null,
 						2
 					)}
