@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import {
 	Box,
 	Button,
@@ -18,6 +18,7 @@ import {
 	OtherAffiliation,
 	Person,
 	PersonDomainPart,
+	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
@@ -242,30 +243,58 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	 *
 	 *  */
 
-	enum ORGANISATION_ACTION {
-		ADD = 'ADD',
-	}
+	// enum ORGANISATION_ACTION {
+	// 	ADD = 'ADD',
+	// 	ADD_ALL = 'ADD_ALL',
+	// }
 
-	const organisationReducer = (
-		state: Map<string, string>,
-		action: {
-			type: ORGANISATION_ACTION.ADD;
-			payload: {
-				id: string;
-				name: string;
-			};
-		}
-	) => {
-		const { id, name } = action.payload;
-		const newState = new Map<string, string>(state);
-		newState.set(id, name);
-		return newState;
-	};
+	// const organisationReducer = (
+	// 	state: Map<string, string>,
+	// 	action:
+	// 		| {
+	// 				type: ORGANISATION_ACTION.ADD;
+	// 				payload: {
+	// 					id: string;
+	// 					name: string;
+	// 				};
+	// 		  }
+	// 		| {
+	// 				type: ORGANISATION_ACTION.ADD_ALL;
+	// 				payload: {
+	// 					organisations: Organisation[];
+	// 				};
+	// 		  }
+	// ) => {
 
-	const [organisationMap, dispatchOrganisationMap] = useReducer(
-		organisationReducer,
-		initialOrganisations
-	);
+	// 	switch()
+
+	// 	const { id, name } = action.payload;
+	// 	const newState = new Map<string, string>(state);
+	// 	newState.set(id, name);
+	// 	return newState;
+	// };
+
+	const [organisationMap, setOrganisationMap] = useState(initialOrganisations);
+
+	const [domainOrganisations, setDomainOrganisations] = useState<
+		Organisation[]
+	>([]);
+
+	useEffect(() => {
+		searchOrganisationsByDomain(auth.domain, auth.token).then((list) => {
+			const organisations = list.data as Organisation[];
+			setDomainOrganisations(organisations);
+
+			const newOrganisationMap = new Map(organisationMap);
+
+			organisations.forEach((organisation) => {
+				const { id, name } = organisation;
+				newOrganisationMap.set(id, name);
+			});
+
+			setOrganisationMap(newOrganisationMap);
+		});
+	}, []);
 
 	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
 
@@ -972,7 +1001,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 																	affiliation.id}
 															</Heading>
 														)}
-														{affiliation.id === '' && <OrganisationChooser />}
+														{/* {affiliation.id === '' && <OrganisationChooser />} */}
 													</CardHeader>
 													{/* <Text>{affiliation.name}</Text> */}
 													<Box direction="row" justify="between">
@@ -1045,13 +1074,51 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 										justify="start"
 										margin={{ bottom: 'small' }}
 									>
+										<OrganisationChooser
+											organisations={[
+												...getNumbers().map((index: number) => {
+													let name = 'someName';
+													switch (index % 4) {
+														case 0:
+															name = `Uppsala ${index}`;
+															break;
+														case 1:
+															name = `KTH ${index}`;
+															break;
+														case 2:
+															name = `Göteborg ${index}`;
+															break;
+														case 3:
+															name = `foo ${index}`;
+															break;
+
+														default:
+															break;
+													}
+													return {
+														id: `${index}`,
+														alternativeName: `altName ${index}`,
+														name,
+														organisationType: 'subOrganisation',
+														recordType: 'subOrganisation',
+													};
+												}),
+											]}
+											onChange={(organisation: Organisation) => {
+												const { id } = organisation;
+												dispatchPersonDomainParts({
+													type: PersonDomainPartActionType.ADD_AFFILIATION,
+													payload: {
+														personDomainPartId: personDomainPart.id,
+														affiliationId: id,
+													},
+												});
+											}}
+										/>
 										<OrganisationChooserDropButton
+											organisations={domainOrganisations}
 											onOrganisationChange={(organisation: Organisation) => {
 												const { id, name } = organisation;
-												dispatchOrganisationMap({
-													type: ORGANISATION_ACTION.ADD,
-													payload: { id, name },
-												});
 												dispatchPersonDomainParts({
 													type: PersonDomainPartActionType.ADD_AFFILIATION,
 													payload: {
@@ -1103,6 +1170,14 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			{/* <PersonView person={person} /> */}
 		</Grid>
 	);
+};
+
+const getNumbers = () => {
+	const numbers: number[] = [];
+	for (let index = 0; index < 200; index++) {
+		numbers.push(index);
+	}
+	return numbers;
 };
 
 const StringFormField = function ({
