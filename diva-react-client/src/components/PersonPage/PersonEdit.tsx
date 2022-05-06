@@ -180,6 +180,14 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  * Bonus:
  * - inloggad läge
  *
+ * GUI
+ * - jobba med "editera"-knappen
+ * - "lokal identifikator" i inloggad läge i vyn
+ * - Nice-to-have: Tillbaka-knappen - att den är på bra ställe oavsett om vi är i edit eller vy läge
+ * - Listan på alternativa namn i vy
+ * -- de ser konstiga ut i presentationen, jobba med formateringen
+ * -- När en lägger till ett nytt alternativt namn dyker det upp ett komma
+ *
  * @param param0
  * @returns
  */
@@ -704,12 +712,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						{person.librisIDs.map((identifier, index) => {
-							if (identifier === '') {
-								return null;
-							}
 							return (
 								<Card
-									key={identifier}
+									// eslint-disable-next-line react/no-array-index-key
+									key={`libris-${index}`}
 									direction="row"
 									justify="between"
 									align="center"
@@ -772,12 +778,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						{person.viafIDs.map((identifier, index) => {
-							if (identifier === '') {
-								return null;
-							}
 							return (
 								<Card
-									key={identifier}
+									// eslint-disable-next-line react/no-array-index-key
+									key={`viaf-${index}`}
 									direction="row"
 									justify="between"
 									align="center"
