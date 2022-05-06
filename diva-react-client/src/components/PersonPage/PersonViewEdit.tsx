@@ -94,6 +94,7 @@ const PersonViewEdit = function ({
 
 						return (
 							<PersonDomainPartView
+								key={personDomainPart.id}
 								personDomainPart={personDomainPart}
 								organisations={organisations}
 							/>

@@ -703,9 +703,13 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.librisIDs.map((librisId, index) => {
+						{person.librisIDs.map((identifier, index) => {
+							if (identifier === '') {
+								return null;
+							}
 							return (
 								<Card
+									key={identifier}
 									direction="row"
 									justify="between"
 									align="center"
@@ -715,7 +719,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									<FormField
 										name={`libris-${index}`}
 										label="Libris ID"
-										value={librisId}
+										value={identifier}
 										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 											dispatchPerson({
 												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
@@ -767,9 +771,13 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.viafIDs.map((viaf, index) => {
+						{person.viafIDs.map((identifier, index) => {
+							if (identifier === '') {
+								return null;
+							}
 							return (
 								<Card
+									key={identifier}
 									direction="row"
 									justify="between"
 									align="center"
@@ -779,7 +787,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									<FormField
 										name={`viaf-${index}`}
 										label="VIAF"
-										value={viaf}
+										value={identifier}
 										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 											dispatchPerson({
 												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
@@ -831,9 +839,13 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.orcids.map((orcid, index) => {
+						{person.orcids.map((identifier, index) => {
+							if (identifier === '') {
+								return null;
+							}
 							return (
 								<Card
+									key={identifier}
 									direction="row"
 									justify="between"
 									align="center"
@@ -843,7 +855,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									<FormField
 										name={`orcid-${index}`}
 										label="ORCID"
-										value={orcid}
+										value={identifier}
 										validate={validateWithRegex(
 											/^(\d{4})-(\d{4})-(\d{4})-(\d{3}[0-9X])$/,
 											`Ange ett giltigt ORCID`
@@ -979,7 +991,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 								getDomainCollection().get(personDomainPart.domain) ||
 								`DomänId: ${personDomainPart.domain}`;
 							return (
-								<Box margin={{ top: 'large', bottom: 'large' }}>
+								<Box
+									margin={{ top: 'large', bottom: 'large' }}
+									key={personDomainPart.id}
+								>
 									<Heading margin="none" level="5">
 										{title}
 									</Heading>
