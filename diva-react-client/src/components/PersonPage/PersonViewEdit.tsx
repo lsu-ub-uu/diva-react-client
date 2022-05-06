@@ -42,7 +42,6 @@ const Main = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
-	row-gap: 1.5em;
 `;
 
 const PersonViewEdit = function ({
