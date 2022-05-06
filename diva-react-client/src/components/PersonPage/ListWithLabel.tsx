@@ -50,9 +50,7 @@ const ListWithLabel = function ({
 				))}
 			</StyledUl>
 		</>
-	) : (
-		<div />
-	);
+	) : null;
 };
 
 export default ListWithLabel;
