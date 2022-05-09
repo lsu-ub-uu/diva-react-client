@@ -44,10 +44,12 @@ const ListWithLabel = function ({
 		<>
 			{label !== '' && <b>{label}:</b>}
 			<StyledUl>
-				{listToDisplay.map((text, key) => (
-					// eslint-disable-next-line react/no-array-index-key
-					<StyledLi key={`${key}-${text}`}>{text}</StyledLi>
-				))}
+				{listToDisplay.map((text, key) =>
+					text.trim() !== ',' ? (
+						// eslint-disable-next-line react/no-array-index-key
+						<StyledLi key={`${key}-${text}`}>{text}</StyledLi>
+					) : null
+				)}
 			</StyledUl>
 		</>
 	) : null;
