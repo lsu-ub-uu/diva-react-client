@@ -13,7 +13,36 @@ import { IHttpClientRequestParameters } from '../http/IHttpClient';
 const searchEndpoint = 'record/searchResult/';
 const domainSearch = `publicOrganisationSearch?searchData=`;
 
-function searchOrganisationsByDomain(
+export function searchOrganisationsByDomainAndSearchTerm(
+	domain: string,
+	searchTerm: string,
+	authToken?: string
+): Promise<List> {
+	return new Promise((resolve, reject) => {
+		if (domain === '') {
+			reject(new Error('No domain was passed to searchOrganisationsByDomain.'));
+		} else {
+			const urlForSearch = composeUrlForDomainSearch(domain, searchTerm);
+
+			const parameters: IHttpClientRequestParameters = {
+				url: urlForSearch,
+				authToken,
+			};
+
+			httpClient
+				.get<DataListWrapper>(parameters)
+				.then((dataListWrapper) => {
+					const list = extractListFromDataList(dataListWrapper);
+					resolve(list);
+				})
+				.catch((error) => {
+					reject(error);
+				});
+		}
+	});
+}
+
+export function searchOrganisationsByDomain(
 	domain: string,
 	authToken?: string
 ): Promise<List> {
@@ -41,8 +70,8 @@ function searchOrganisationsByDomain(
 	});
 }
 
-function composeUrlForDomainSearch(domain: string) {
-	const searchData = composeReturnData(domain, 1, 1000);
+function composeUrlForDomainSearch(domain: string, searchTerm?: string) {
+	const searchData = composeSearchDataForDomain(domain, searchTerm, 1, 1000);
 	return (
 		process.env.BASE_URL +
 		searchEndpoint +
@@ -51,7 +80,25 @@ function composeUrlForDomainSearch(domain: string) {
 	);
 }
 
-const composeReturnData = (domain: string, start?: number, rows?: number) => {
+const composeSearchDataForDomain = (
+	domain: string,
+	searchTerm?: string,
+	start?: number,
+	rows?: number
+) => {
+	const includeParts = [
+		{
+			name: 'divaOrganisationDomainSearchTerm',
+			value: domain,
+		},
+	];
+	if (searchTerm && searchTerm !== '') {
+		includeParts.push({
+			name: 'divaOrganisationNameSearchTerm',
+			value: searchTerm,
+		});
+	}
+
 	const searchData: DataGroup = {
 		name: 'search',
 		children: [
@@ -60,12 +107,7 @@ const composeReturnData = (domain: string, start?: number, rows?: number) => {
 				children: [
 					{
 						name: 'includePart',
-						children: [
-							{
-								name: 'divaOrganisationDomainSearchTerm',
-								value: domain,
-							},
-						],
+						children: includeParts,
 					},
 				],
 			},
@@ -110,5 +152,3 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 
 	return list;
 }
-
-export default searchOrganisationsByDomain;
