@@ -20,7 +20,8 @@ const StyledPersonView = styled.div`
 		'top top top top top'
 		'left left left left right'
 		'main main main main main';
-	column-gap: 0.5em;
+	column-gap: 1.5em;
+	row-gap: 0.5em;
 `;
 
 const Top = styled.div`
