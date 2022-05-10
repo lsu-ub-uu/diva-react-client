@@ -5,6 +5,7 @@ import {
 	PersonDomainPart,
 	RecordType,
 } from 'diva-cora-ts-api-wrapper';
+import { NameValueList, NameValuePair, Text } from 'grommet';
 import getDomainCollection from '../../divaData/resources';
 import ListWithLabel from './ListWithLabel';
 import RecordFetcher from '../RecordFetcher';
@@ -27,13 +28,13 @@ const PersonDomainPartView = function ({
 
 	return (
 		<>
-			<h2>{title}</h2>
+			<h3>{title}</h3>
 			{personDomainPart.identifiers && (
-				<ListWithLabel
-					list={personDomainPart.identifiers}
-					label="Lokal identifikator"
-				/>
+				<Text size="small">
+					Lokal identifikator: {personDomainPart.identifiers[0]}
+				</Text>
 			)}
+
 			{personDomainPart.affiliations && (
 				<StyledUl>
 					{personDomainPart.affiliations.map((organisation) => {

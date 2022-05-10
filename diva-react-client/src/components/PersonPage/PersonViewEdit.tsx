@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NameValueList, NameValuePair, Text } from 'grommet';
+
+import { NameValueList, NameValuePair, Text, Box } from 'grommet';
+
 import { Name } from 'diva-cora-ts-api-wrapper';
+import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
 import BackButton from '../BackButton';
 import { FormPerson, FormPersonDomainPart } from './PersonEdit';
-import ListWithLabel from './ListWithLabel';
 import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
 
@@ -18,7 +20,7 @@ const StyledPersonView = styled.div`
 		'top top top top top'
 		'left left left left right'
 		'main main main main main';
-	row-gap: 1.3em;
+	column-gap: 0.5em;
 `;
 
 const Top = styled.div`
@@ -26,7 +28,6 @@ const Top = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
-	row-gap: 0.2em;
 `;
 
 const Left = styled.div`
@@ -82,6 +83,7 @@ const PersonViewEdit = function ({
 						<p>{person.biographyEnglish}</p>
 					</section>
 				)}
+				<h2>Organisationer</h2>
 				{person.personDomainParts !== undefined &&
 					person.personDomainParts.map((personDomainPartId) => {
 						const personDomainPart = personDomainParts.find(
@@ -100,7 +102,10 @@ const PersonViewEdit = function ({
 						);
 					})}
 				{person.otherAffiliation !== undefined && (
-					<AffiliationDisplay affiliation={person.otherAffiliation} />
+					<Box>
+						<h4>Andra organisationer (utanför DiVA)</h4>
+						<AffiliationDisplay affiliation={person.otherAffiliation} />
+					</Box>
 				)}
 			</Main>
 			<BackButton />
@@ -123,7 +128,12 @@ const PersonalInfo = function ({ person }: { person: FormPerson }) {
 	return (
 		<Parent>
 			{alternativeNames.length > 0 && (
-				<ListWithLabel label="Alternativa namn" list={alternativeNames} />
+				<Box>
+					<ListWithLabel
+						label="Alternativa namn (namnformer som förekommit i publikationer)"
+						list={alternativeNames}
+					/>
+				</Box>
 			)}
 			{person.externalURLs.length > 0 && (
 				<ul>
@@ -158,6 +168,7 @@ const displayNameValuePairIfNotEmptyString = (value: string, name: string) => {
 
 const StyledUl = styled.ul`
 	padding-left: 1em;
+	margin: 0;
 `;
 
 const PersonDomainPartView = function ({
@@ -174,13 +185,12 @@ const PersonDomainPartView = function ({
 		`DomänId: ${personDomainPart.domain}`;
 
 	return (
-		<>
-			<h2>{title}</h2>
+		<Box margin={{ bottom: 'small' }}>
+			<h3>{title}</h3>
 			{personDomainPart.identifiers && (
-				<ListWithLabel
-					list={personDomainPart.identifiers}
-					label="Lokal identifikator"
-				/>
+				<Text size="small">
+					Lokal identifikator: {personDomainPart.identifiers[0]}
+				</Text>
 			)}
 			{personDomainPart.affiliations && (
 				<StyledUl>
@@ -199,7 +209,7 @@ const PersonDomainPartView = function ({
 					})}
 				</StyledUl>
 			)}
-		</>
+		</Box>
 	);
 };
 

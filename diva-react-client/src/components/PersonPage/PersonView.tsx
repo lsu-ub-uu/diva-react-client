@@ -25,7 +25,7 @@ const StyledPersonView = styled.div`
 const Top = styled.div`
 	grid-area: top;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 2fr;
 	grid-template-rows: 1fr;
 	align-items: center;
 	column-gap: 0.2em;
@@ -59,19 +59,28 @@ const PersonView = function ({
 	return (
 		<StyledPersonView>
 			<Top>
-				<h1>{displayName(person)}</h1>
-				{person.academicTitle !== undefined && person.academicTitle !== '' && (
-					<p data-testid="personTitle">{person.academicTitle}</p>
-				)}
-				{auth.status === LOGIN_STATUS.LOGGED_IN && (
-					<Link
-						to={`/${person.recordType}/edit/${person.id}`}
-						style={{ justifySelf: 'end' }}
-					>
-						<Button label="Editera" icon={<Edit />} />
-					</Link>
-				)}
+				<Box direction="row-responsive">
+					<h1>{displayName(person)}</h1>
+					<Box margin={{ top: '0.5em' }}>
+						{auth.status === LOGIN_STATUS.LOGGED_IN && (
+							<Link
+								to={`/${person.recordType}/edit/${person.id}`}
+								style={{ justifySelf: 'start' }}
+							>
+								<Button icon={<Edit />} a11yTitle="Editera" />
+							</Link>
+						)}
+					</Box>
+				</Box>
+
+				<Box>
+					{person.academicTitle !== undefined &&
+						person.academicTitle !== '' && (
+							<p data-testid="personTitle">{person.academicTitle}</p>
+						)}
+				</Box>
 			</Top>
+
 			<Left>
 				<PersonalInfo person={person} />
 			</Left>
@@ -91,6 +100,7 @@ const PersonView = function ({
 						<p>{person.biographyEnglish}</p>
 					</section>
 				)}
+				<h2>Organisationer</h2>
 				{person.personDomainParts !== undefined &&
 					person.personDomainParts.map((part) => {
 						return (
