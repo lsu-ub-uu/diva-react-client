@@ -76,6 +76,8 @@ export const OrganisationChooser = function ({
 			valueKey={{ key: 'id' }}
 			onChange={handleChange}
 			onSearch={handleSearch}
+			dropHeight="medium"
+			emptySearchMessage="Inga resultat."
 		/>
 	);
 };
