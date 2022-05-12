@@ -7,7 +7,6 @@ import { Name } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
-import BackButton from '../BackButton';
 import { FormPerson, FormPersonDomainPart } from './PersonEdit';
 import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
@@ -65,13 +64,11 @@ const PersonViewEdit = function ({
 					<p data-testid="personTitle">{person.academicTitle}</p>
 				)}
 			</Top>
-			<Left>
-				<PersonalInfo person={person} />
-			</Left>
-			<Right>
-				<Identifiers person={person} />
-			</Right>
+
 			<Main>
+				<PersonalInfo person={person} />
+
+				<Identifiers person={person} />
 				{person.biographySwedish && (
 					<section>
 						<h2>Biografi</h2>
@@ -109,7 +106,6 @@ const PersonViewEdit = function ({
 					</Box>
 				)}
 			</Main>
-			<BackButton />
 		</StyledPersonView>
 	);
 };
@@ -129,12 +125,10 @@ const PersonalInfo = function ({ person }: { person: FormPerson }) {
 	return (
 		<Parent>
 			{alternativeNames.length > 0 && (
-				<Box>
-					<ListWithLabel
-						label="Alternativa namn (namnformer som förekommit i publikationer)"
-						list={alternativeNames}
-					/>
-				</Box>
+				<ListWithLabel
+					label="Alternativa namn (namnformer som förekommit i publikationer)"
+					list={alternativeNames}
+				/>
 			)}
 			{person.externalURLs.length > 0 && (
 				<ul>

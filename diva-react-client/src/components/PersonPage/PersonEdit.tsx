@@ -29,7 +29,7 @@ import {
 } from './PersonEdit/personDomainPartReducer';
 import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
 import { PersonActionType, personReducer } from './PersonEdit/personReducer';
-
+import BackButton from '../BackButton';
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
  *
@@ -697,6 +697,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre> */}
 			</Box>
 			{/* <PersonView person={person} /> */}
+			<Box margin={{ left: '1em', top: '1em' }}>
+				<BackButton />
+			</Box>
 		</Grid>
 	);
 };

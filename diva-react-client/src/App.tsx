@@ -68,10 +68,6 @@ const App = function () {
 		<Grommet theme={theme}>
 			<AuthProvider>
 				<Layout>
-					{/* <Header>
-						<Navigation />
-					</Header> */}
-
 					<Sidebar>
 						<AuthComponent />
 					</Sidebar>

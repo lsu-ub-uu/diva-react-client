@@ -18,7 +18,8 @@ const StyledPersonView = styled.div`
 	grid-template-areas:
 		'top top top top top'
 		'left left left left right'
-		'main main main main main';
+		'main main main main main'
+		'bottom bottom bottom bottom bottom';
 	row-gap: 1.3em;
 `;
 
@@ -37,6 +38,11 @@ const Left = styled.div`
 
 const Right = styled.div`
 	grid-area: right;
+`;
+
+const Bottom = styled.footer`
+	grid-area: bottom;
+	grid-template-columns: 1fr;
 `;
 
 const Main = styled.div`
@@ -114,7 +120,9 @@ const PersonView = function ({
 					</Box>
 				)}
 			</Main>
-			<BackButton />
+			<Bottom>
+				<BackButton />
+			</Bottom>
 		</StyledPersonView>
 	);
 };

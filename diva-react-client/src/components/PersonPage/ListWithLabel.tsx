@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const StyledUl = styled.ul`
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	flex-wrap: wrap;
 	column-gap: 1em;
 	list-style: none;
