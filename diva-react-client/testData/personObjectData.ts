@@ -8,6 +8,7 @@ export const personWithDomain: Person = {
 	},
 	domains: ['Uppsala Universitet', 'Test'],
 	recordType: 'person',
+	personDomainParts: [],
 };
 
 export const createPersonObject = (
@@ -22,6 +23,7 @@ export const createPersonObject = (
 			givenName,
 		},
 		recordType: 'person',
+		personDomainParts: [],
 	};
 };
 

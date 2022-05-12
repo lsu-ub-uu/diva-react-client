@@ -22,6 +22,7 @@ beforeEach(() => {
 			idFromLogin: 'someId',
 			status: LOGIN_STATUS.LOGGED_IN,
 			token: 'someToken',
+			domain: 'someDomain',
 		},
 		onAuthChange: jest.fn(),
 	});
@@ -78,6 +79,7 @@ describe('The useApi hook', () => {
 				idFromLogin: 'someId',
 				status: LOGIN_STATUS.LOGGED_IN,
 				token: 'someOtherToken',
+				domain: 'someOtherDomain',
 			},
 			onAuthChange: jest.fn(),
 		});
@@ -94,6 +96,7 @@ describe('The useApi hook', () => {
 				idFromLogin: '',
 				status: LOGIN_STATUS.LOGGED_OUT,
 				token: '',
+				domain: '',
 			},
 			onAuthChange: jest.fn(),
 		});

@@ -10,6 +10,7 @@ const anotherAuth: Auth = {
 	token: 'someNewToken',
 	idFromLogin: 'someIdFromlogin',
 	deleteUrl: 'someDeleteurl',
+	domain: 'someDomain',
 };
 
 const ChildComponent = function () {
@@ -93,6 +94,7 @@ describe('AuthContext', () => {
 				token: '',
 				idFromLogin: '',
 				deleteUrl: '',
+				domain: '',
 			});
 
 			expect(result.current.onAuthChange).toBeDefined();
@@ -106,6 +108,7 @@ describe('AuthContext', () => {
 				token: 'someToken',
 				idFromLogin: 'someIdFromlogin',
 				deleteUrl: 'someDeleteurl',
+				domain: 'someDomain',
 			};
 
 			try {

@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import axios from 'axios';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
+import { Auth } from '../../context/types';
 import useLogout from './useLogout';
 
 jest.mock('../../context/AuthContext');
@@ -9,11 +10,12 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const someOtherAuth = {
+const someOtherAuth: Auth = {
 	deleteUrl: 'someOtherDeleteUrl',
 	idFromLogin: 'someOtherId',
 	status: LOGIN_STATUS.LOGGED_IN,
 	token: 'someOtherToken',
+	domain: 'someOtherDomain',
 };
 
 const mockOnAuthChange = jest.fn();
@@ -29,6 +31,7 @@ beforeAll(() => {
 			idFromLogin: 'someId',
 			status: LOGIN_STATUS.LOGGED_IN,
 			token: 'someToken',
+			domain: 'someDomain',
 		},
 		onAuthChange: mockOnAuthChange,
 	});
@@ -52,6 +55,7 @@ describe('useLogout', () => {
 				idFromLogin: '',
 				status: LOGIN_STATUS.LOGGED_OUT,
 				token: '',
+				domain: '',
 			},
 			onAuthChange: mockOnAuthChange,
 		});
@@ -170,6 +174,7 @@ describe('useLogout', () => {
 				deleteUrl: '',
 				idFromLogin: '',
 				token: '',
+				domain: '',
 				status: LOGIN_STATUS.LOGGED_OUT,
 			});
 		});

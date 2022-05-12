@@ -64,6 +64,7 @@ describe('PersonView', () => {
 		const somePersonWithoutName: Person = {
 			id: 'someId',
 			recordType: 'person',
+			personDomainParts: [],
 		};
 		const { rerender } = renderWithRouter(
 			<ComponentToTest person={somePersonWithoutName} />
@@ -74,6 +75,7 @@ describe('PersonView', () => {
 		const someOtherPersonWithoutName: Person = {
 			id: 'someOtherId',
 			recordType: 'person',
+			personDomainParts: [],
 		};
 		rerender(<ComponentToTest person={someOtherPersonWithoutName} />);
 		expect(

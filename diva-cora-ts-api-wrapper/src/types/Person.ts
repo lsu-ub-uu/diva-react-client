@@ -49,6 +49,4 @@ export interface Person extends Record {
 	personDomainParts: {
 		recordId: string;
 	}[];
-
-	connectedDomains: PersonDomainPart[];
 }

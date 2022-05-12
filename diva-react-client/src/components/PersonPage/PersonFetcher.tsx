@@ -1,4 +1,7 @@
-import { getPersonById, Person, RecordType } from 'diva-cora-ts-api-wrapper';
+import {
+	ExtendedPersonReturnType,
+	getPersonById,
+} from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import useApi from '../../hooks/useApi';
 
@@ -7,17 +10,18 @@ type InjectedRecordProp<T> = {
 };
 
 const PersonFetcher = function ({
-	recordType,
 	id,
 	children,
 }: {
-	recordType: RecordType;
 	id: string;
-	children(props: InjectedRecordProp<Person>): JSX.Element;
+	children(props: InjectedRecordProp<ExtendedPersonReturnType>): JSX.Element;
 }) {
-	const { isLoading, result } = useApi<Person>(getPersonById, {
-		id,
-	});
+	const { isLoading, result } = useApi<ExtendedPersonReturnType>(
+		getPersonById,
+		{
+			id,
+		}
+	);
 
 	return (
 		<section>

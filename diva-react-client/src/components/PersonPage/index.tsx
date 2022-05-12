@@ -1,7 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Person, RecordType } from 'diva-cora-ts-api-wrapper';
-import RecordFetcher from '../RecordFetcher';
 import PersonView from './PersonView';
 import PersonEdit from './PersonEdit';
 import PersonFetcher from './PersonFetcher';
@@ -14,12 +12,21 @@ const PersonPage = function ({ edit = false }: { edit?: boolean }) {
 	}
 
 	return (
-		<PersonFetcher recordType={RecordType.Person} id={personId}>
+		<PersonFetcher id={personId}>
 			{(injectedProps) => {
+				const { person, organisations, personDomainParts } =
+					injectedProps.record;
 				if (edit) {
-					return <PersonEdit originalPerson={injectedProps.record} />;
+					console.log(injectedProps.record);
+					return (
+						<PersonEdit
+							originalPerson={person}
+							originalOrganisations={organisations}
+							originalPersonDomainParts={personDomainParts}
+						/>
+					);
 				}
-				return <PersonView person={injectedProps.record} />;
+				return <PersonView person={injectedProps.record.person} />;
 			}}
 		</PersonFetcher>
 	);

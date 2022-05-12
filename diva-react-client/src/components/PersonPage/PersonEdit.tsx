@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useReducer, useState, useEffect } from 'react';
 import {
 	Box,
@@ -14,6 +15,7 @@ import { Add, Trash } from 'grommet-icons';
 import {
 	Organisation,
 	Person,
+	PersonDomainPart,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/resources';
@@ -30,6 +32,7 @@ import {
 import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
 import { PersonActionType, personReducer } from './PersonEdit/personReducer';
 import BackButton from '../BackButton';
+
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
  *
@@ -82,28 +85,31 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  * @returns
  */
 
-const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
+const PersonEdit = function ({
+	originalPerson,
+	originalPersonDomainParts = [],
+	originalOrganisations = [],
+}: {
+	originalPerson: Person;
+	originalPersonDomainParts?: PersonDomainPart[];
+	originalOrganisations?: Organisation[];
+}) {
 	const { auth } = useAuth();
+
+	console.log('originalPerson', originalPerson);
 
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
+	console.log('formPerson', originalFormPersonWithEmptyDefaults);
+	console.log('personDomainParts', originalPersonDomainParts);
+	console.log('organisations', originalOrganisations);
+
 	const initialOrganisations: Map<string, string> = new Map();
 
-	if (originalPerson.connectedDomains) {
-		originalPerson.connectedDomains.forEach((domain) => {
-			if (domain.affiliations) {
-				domain.affiliations.forEach((affiliation) => {
-					if (affiliation.organisation) {
-						initialOrganisations.set(
-							affiliation.organisation.id,
-							affiliation.organisation.name
-						);
-					}
-				});
-			}
-		});
-	}
+	originalOrganisations.forEach((organisation) => {
+		initialOrganisations.set(organisation.id, organisation.name);
+	});
 
 	const [organisationMap, setOrganisationMap] = useState(initialOrganisations);
 
@@ -127,15 +133,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		});
 	}, []);
 
-	let initialPersonDomainPartsArr: FormPersonDomainPart[] = [];
-
-	if (originalPerson.connectedDomains) {
-		initialPersonDomainPartsArr = originalPerson.connectedDomains.map(
-			(domain) => {
-				return convertToFormPersonDomainPart(domain);
-			}
-		);
-	}
+	const initialPersonDomainPartsArr: FormPersonDomainPart[] =
+		originalPersonDomainParts.map((personDomainPart) => {
+			return convertToFormPersonDomainPart(personDomainPart);
+		});
 
 	const [personDomainParts, dispatchPersonDomainParts] = useReducer(
 		personDomainPartReducer,
@@ -525,7 +526,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						<Box direction="row" justify="start" margin={{ top: 'small' }}>
 							<AddButton
 								label="Lägg till extern URL"
-								hoverIndicator
 								onClick={() => {
 									dispatchPerson({
 										type: PersonActionType.ADD_ARRAY_OBJECT,
@@ -555,7 +555,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 					{person.personDomainParts &&
 						person.personDomainParts.length > 0 &&
 						person.personDomainParts.map((pdpId) => {
-							const personDomainPart = personDomainParts.find(
+							const personDomainPart = originalPersonDomainParts.find(
 								(pdp) => pdp.id === pdpId
 							);
 							if (
@@ -680,7 +680,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 				<PersonViewEdit
 					person={person}
 					organisations={initialOrganisations}
-					personDomainParts={personDomainParts}
+					personDomainParts={originalPersonDomainParts}
 				/>
 
 				{/* <h2>Person</h2>

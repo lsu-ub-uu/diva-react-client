@@ -22,6 +22,7 @@ beforeAll(() => {
 			idFromLogin: '',
 			status: LOGIN_STATUS.LOGGED_OUT,
 			token: '',
+			domain: '',
 		},
 		onAuthChange: jest.fn(),
 	});
@@ -45,6 +46,7 @@ describe('AuthComponent.spec', () => {
 				idFromLogin: '',
 				status: LOGIN_STATUS.LOGGED_IN,
 				token: '',
+				domain: '',
 			},
 			onAuthChange: jest.fn(),
 		});
@@ -66,6 +68,7 @@ describe('AuthComponent.spec', () => {
 				idFromLogin: '',
 				status: LOGIN_STATUS.LOGGED_IN,
 				token: '',
+				domain: '',
 			},
 			onAuthChange: jest.fn(),
 		});

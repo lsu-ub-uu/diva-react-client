@@ -1,5 +1,4 @@
 import React from 'react';
-import { Affiliation } from 'diva-cora-ts-api-wrapper';
 import { Paragraph } from 'grommet';
 
 const AffiliationDisplay = function ({

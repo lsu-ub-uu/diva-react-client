@@ -23,6 +23,7 @@ const useLogout = () => {
 								idFromLogin: '',
 								token: '',
 								status: LOGIN_STATUS.LOGGED_OUT,
+								domain: '',
 							});
 							resolve();
 						}

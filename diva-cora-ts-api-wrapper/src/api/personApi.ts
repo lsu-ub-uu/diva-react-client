@@ -4,8 +4,17 @@ import { getRecordById } from './api';
 import { PersonDomainPart } from '../types/PersonDomainPart';
 import { Organisation } from '../types/Organisation';
 
+export type ExtendedPersonReturnType = {
+	person: Person;
+	personDomainParts?: PersonDomainPart[];
+	organisations?: Organisation[];
+};
+
 // eslint-disable-next-line import/prefer-default-export
-export function getPersonById(id: string, authToken?: string): Promise<Person> {
+export function getPersonById(
+	id: string,
+	authToken?: string
+): Promise<ExtendedPersonReturnType> {
 	return new Promise((resolve, reject) => {
 		getRecordById<Person>(RecordType.Person, id, authToken)
 			.then((person) => {
@@ -20,15 +29,24 @@ export function getPersonById(id: string, authToken?: string): Promise<Person> {
 					);
 
 					Promise.all(pdpPromises)
-						.then((personDomainPartObjects) => {
-							person.connectedDomains = personDomainPartObjects;
-							resolve(person);
+						.then((results) => {
+							let personDomainParts: PersonDomainPart[] = [];
+							let organisations: Organisation[] = [];
+
+							results.forEach(({ personDomainPart, organisations: orgArr }) => {
+								personDomainParts = [...personDomainParts, personDomainPart];
+								if (orgArr) {
+									organisations = [...organisations, ...orgArr];
+								}
+							});
+
+							resolve({ person, personDomainParts, organisations });
 						})
 						.catch((error) => {
 							reject(error);
 						});
 				} else {
-					resolve(person);
+					resolve({ person });
 				}
 			})
 			.catch((error) => {
@@ -40,36 +58,35 @@ export function getPersonById(id: string, authToken?: string): Promise<Person> {
 export function getPersonDomainPartById(
 	id: string,
 	authToken?: string
-): Promise<PersonDomainPart> {
+): Promise<{
+	personDomainPart: PersonDomainPart;
+	organisations?: Organisation[];
+}> {
 	return new Promise((resolve, reject) => {
 		getRecordById<PersonDomainPart>(RecordType.PersonDomainPart, id, authToken)
 			.then((personDomainPart) => {
 				if (personDomainPart.affiliations !== undefined) {
-					const affiliationsPromises = personDomainPart.affiliations.map(
-						(affiliationHolder) => {
+					const organisationPromises = personDomainPart.affiliations.map(
+						(affiliation) => {
 							return getRecordById<Organisation>(
 								RecordType.Organisation,
-								affiliationHolder.id,
+								affiliation.id,
 								authToken
 							).then((organisation) => {
-								affiliationHolder.organisation = organisation;
-								return affiliationHolder;
+								return organisation;
 							});
 						}
 					);
 
-					// resolve(personDomainPart);
-
-					Promise.all(affiliationsPromises)
-						.then((affiliations) => {
-							personDomainPart.affiliations = affiliations;
-							resolve(personDomainPart);
+					Promise.all(organisationPromises)
+						.then((organisations) => {
+							resolve({ personDomainPart, organisations });
 						})
 						.catch((error) => {
 							reject(error);
 						});
 				} else {
-					resolve(personDomainPart);
+					resolve({ personDomainPart });
 				}
 			})
 			.catch((error) => {
