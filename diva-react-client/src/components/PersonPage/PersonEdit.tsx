@@ -12,129 +12,23 @@ import {
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
-	ExternalUrl,
-	Name,
 	Organisation,
-	OtherAffiliation,
 	Person,
-	PersonDomainPart,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
 import { useAuth } from '../../context/AuthContext';
-
-export interface FormPerson {
-	id: string;
-
-	domains: string[];
-
-	authorisedName: Name;
-
-	academicTitle: string;
-
-	yearOfBirth: string;
-
-	yearOfDeath: string;
-
-	emailAddress: string;
-
-	alternativeNames: Name[];
-
-	externalURLs: ExternalUrl[];
-
-	otherAffiliation: OtherAffiliation;
-
-	orcids: string[];
-
-	viafIDs: string[];
-
-	librisIDs: string[];
-
-	biographyEnglish: string;
-
-	biographySwedish: string;
-
-	personDomainParts: string[];
-}
-
-const returnStringIfUndefined = (field: string | undefined) => {
-	return field || '';
-};
-
-const returnEmptyArrayIfUndefined = function <T>(field: T[] | undefined) {
-	return field || [];
-};
-
-const convertToFormPerson = (person: Person): FormPerson => {
-	const personDomainParts: string[] = [];
-	if (person.personDomainParts) {
-		person.personDomainParts.forEach((pdp) => {
-			personDomainParts.push(pdp.recordId);
-		});
-	}
-	return {
-		id: person.id,
-		domains: returnEmptyArrayIfUndefined<string>(person.domains),
-		academicTitle: returnStringIfUndefined(person.academicTitle),
-		alternativeNames: returnEmptyArrayIfUndefined<Name>(
-			person.alternativeNames
-		),
-		authorisedName: person.authorisedName
-			? person.authorisedName
-			: { familyName: '', givenName: '' },
-		biographyEnglish: returnStringIfUndefined(person.biographyEnglish),
-		biographySwedish: returnStringIfUndefined(person.biographySwedish),
-		emailAddress: returnStringIfUndefined(person.emailAddress),
-		externalURLs: returnEmptyArrayIfUndefined<ExternalUrl>(person.externalURLs),
-		librisIDs: returnEmptyArrayIfUndefined<string>(person.librisIDs),
-		orcids: returnEmptyArrayIfUndefined<string>(person.orcids),
-		viafIDs: returnEmptyArrayIfUndefined<string>(person.viafIDs),
-		otherAffiliation: person.otherAffiliation
-			? person.otherAffiliation
-			: { name: '', fromYear: '', untilYear: '' },
-		personDomainParts,
-		yearOfBirth: returnStringIfUndefined(person.yearOfBirth),
-		yearOfDeath: returnStringIfUndefined(person.yearOfDeath),
-	};
-};
-
-type FormAffiliation = {
-	id: string;
-	fromYear: string;
-	untilYear: string;
-};
-
-export interface FormPersonDomainPart {
-	id: string;
-	identifiers: string[];
-	domain: string;
-	affiliations: FormAffiliation[];
-}
-
-const convertToFormPersonDomainPart = (
-	personDomainPart: PersonDomainPart
-): FormPersonDomainPart => {
-	let affiliations: FormAffiliation[] = [];
-
-	if (personDomainPart.affiliations) {
-		affiliations = personDomainPart.affiliations.map((affiliation) => {
-			return {
-				fromYear: '',
-				untilYear: '',
-				...affiliation,
-				organisation: undefined,
-			};
-		});
-	}
-
-	return {
-		id: personDomainPart.id,
-		domain: personDomainPart.domain,
-		affiliations,
-		identifiers: personDomainPart.identifiers || [],
-	};
-};
+import {
+	convertToFormPersonDomainPart,
+	FormPersonDomainPart,
+} from './PersonEdit/FormPersonDomainPart';
+import {
+	PersonDomainPartActionType,
+	personDomainPartReducer,
+} from './PersonEdit/personDomainPartReducer';
+import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
+import { PersonActionType, personReducer } from './PersonEdit/personReducer';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
@@ -189,24 +83,10 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  */
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
-	g;
 	const { auth } = useAuth();
 
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
-
-	// type FormPersonDomainPartObject = {
-	// 	[key: string]: FormPersonDomainPart;
-	// };
-
-	// const initialPersonDomainParts: FormPersonDomainPart[] = [];
-
-	// if (originalPerson.connectedDomains) {
-	// 	originalPerson.connectedDomains.forEach((domain) => {
-	// 		initialPersonDomainParts.push()
-	// 			convertToFormPersonDomainPart(domain);
-	// 	});
-	// }
 
 	const initialOrganisations: Map<string, string> = new Map();
 
@@ -224,60 +104,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 			}
 		});
 	}
-
-	/**
-	 *
-	 * initialOrganisations:
-	 * - innehåller id -> name för samtliga organisationer en person är kopplat till
-	 *
-	 *
-	 * domainOrganisations:
-	 * - organisationer som finns på en given domän
-	 * - vi får dessa via searchOrganisationsByDomain
-	 *
-	 *
-	 * När vi vill lägga till en ny affiliering behöver vi BARA ha tillgång till samtliga
-	 * organisationer som är kopplade till användarens domän. Dvs domainOrganisations
-	 *
-	 *
-	 * I vyn behöver vi ha tillgång till alla kopplade (existerande och nya) organisationer
-	 * I enklaste fallet är detta då initialOrganisations + domainOrganisations
-	 *
-	 * en state för domainOrganisations
-	 * en state för kombinerad domainOrganisations + initialOrganisations
-	 *
-	 *  */
-
-	// enum ORGANISATION_ACTION {
-	// 	ADD = 'ADD',
-	// 	ADD_ALL = 'ADD_ALL',
-	// }
-
-	// const organisationReducer = (
-	// 	state: Map<string, string>,
-	// 	action:
-	// 		| {
-	// 				type: ORGANISATION_ACTION.ADD;
-	// 				payload: {
-	// 					id: string;
-	// 					name: string;
-	// 				};
-	// 		  }
-	// 		| {
-	// 				type: ORGANISATION_ACTION.ADD_ALL;
-	// 				payload: {
-	// 					organisations: Organisation[];
-	// 				};
-	// 		  }
-	// ) => {
-
-	// 	switch()
-
-	// 	const { id, name } = action.payload;
-	// 	const newState = new Map<string, string>(state);
-	// 	newState.set(id, name);
-	// 	return newState;
-	// };
 
 	const [organisationMap, setOrganisationMap] = useState(initialOrganisations);
 
@@ -311,239 +137,10 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 		);
 	}
 
-	enum PersonDomainPartActionType {
-		SET_AFFILIATION_FIELD = 'set_affiliation_field',
-		DELETE_AFFILIATION = 'DELETE_AFFILIATION',
-		ADD_AFFILIATION = 'ADD_AFFILIATION',
-	}
-
-	type PersonDomainpartAction =
-		| {
-				type: PersonDomainPartActionType.SET_AFFILIATION_FIELD;
-				payload: {
-					personDomainPartId: string;
-					affiliationId: string;
-					field: string;
-					value: string;
-				};
-		  }
-		| {
-				type: PersonDomainPartActionType.DELETE_AFFILIATION;
-				payload: {
-					personDomainPartId: string;
-					affiliationId: string;
-				};
-		  }
-		| {
-				type: PersonDomainPartActionType.ADD_AFFILIATION;
-				payload: {
-					personDomainPartId: string;
-					affiliationId: string;
-				};
-		  };
-
-	const personDomainPartReducer = (
-		state: FormPersonDomainPart[],
-		action: PersonDomainpartAction
-	): FormPersonDomainPart[] => {
-		const { type } = action;
-		const { personDomainPartId } = action.payload;
-		switch (type) {
-			case PersonDomainPartActionType.SET_AFFILIATION_FIELD:
-				// eslint-disable-next-line no-case-declarations
-				const {
-					payload: { field, value },
-				} = action;
-				return state.map((personDomainPart) => {
-					if (personDomainPart.id === personDomainPartId) {
-						return {
-							...personDomainPart,
-							affiliations: personDomainPart.affiliations.map((affiliation) => {
-								if (affiliation.id === action.payload.affiliationId) {
-									return {
-										...affiliation,
-										[field]: value,
-									};
-								}
-								return affiliation;
-							}),
-						};
-					}
-					return personDomainPart;
-				});
-			case PersonDomainPartActionType.DELETE_AFFILIATION:
-				return state.map((personDomainpart) => {
-					if (personDomainpart.id === personDomainPartId) {
-						return {
-							...personDomainpart,
-							affiliations: personDomainpart.affiliations.filter(
-								(item: any) => {
-									return item.id !== action.payload.affiliationId;
-								}
-							),
-						};
-					}
-					return personDomainpart;
-				});
-			case PersonDomainPartActionType.ADD_AFFILIATION:
-				return state.map((personDomainpart) => {
-					if (personDomainpart.id === personDomainPartId) {
-						return {
-							...personDomainpart,
-							affiliations: personDomainpart.affiliations.concat({
-								id: action.payload.affiliationId,
-								fromYear: '',
-								untilYear: '',
-							}),
-						};
-					}
-					return personDomainpart;
-				});
-
-			default: {
-				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
-			}
-		}
-	};
-
 	const [personDomainParts, dispatchPersonDomainParts] = useReducer(
 		personDomainPartReducer,
 		initialPersonDomainPartsArr
 	);
-
-	enum PersonActionType {
-		UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
-		UPDATE_ARRAY_STRING_FIELD = 'UPDATE_ARRAY_STRING_FIELD',
-		ADD_ARRAY_STRING_FIELD = 'ADD_ARRAY_STRING_FIELD',
-		DELETE_ARRAY_WITH_INDEX = 'DELETE_ARRAY_WITH_INDEX',
-		UPDATE_ARRAY_OBJECT_FIELD = 'UPDATE_ARRAY_OBJECT_FIELD',
-		ADD_ARRAY_OBJECT = 'ADD_ARRAY_OBJECT',
-		UPDATE_OBJECT = 'UPDATE_OBJECT',
-	}
-
-	type PersonAction =
-		| {
-				type: PersonActionType.UPDATE_STRING_FIELD;
-				payload: {
-					field: string;
-					value: string;
-				};
-		  }
-		| {
-				type: PersonActionType.ADD_ARRAY_STRING_FIELD;
-				payload: {
-					field: string;
-				};
-		  }
-		| {
-				type: PersonActionType.UPDATE_ARRAY_STRING_FIELD;
-				payload: {
-					field: string;
-					value: string;
-					index: number;
-				};
-		  }
-		| {
-				type: PersonActionType.UPDATE_OBJECT;
-				payload: {
-					field: string;
-					childField: string;
-					value: string;
-				};
-		  }
-		| {
-				type: PersonActionType.ADD_ARRAY_OBJECT;
-				payload: {
-					field: string;
-					emptyObject: Name | ExternalUrl;
-				};
-		  }
-		| {
-				type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD;
-				payload: {
-					field: string;
-					childField: string;
-					value: string;
-					index: number;
-				};
-		  }
-		| {
-				type: PersonActionType.DELETE_ARRAY_WITH_INDEX;
-				payload: {
-					field: string;
-					index: number;
-				};
-		  };
-
-	const personReducer = (
-		state: FormPerson,
-		action: PersonAction
-	): FormPerson => {
-		const { type, payload } = action;
-		switch (type) {
-			case PersonActionType.UPDATE_STRING_FIELD:
-				return { ...state, [payload.field]: payload.value };
-			case PersonActionType.UPDATE_ARRAY_STRING_FIELD:
-				return {
-					...state,
-					[payload.field]: state[payload.field].map(
-						(item: string, i: number) => {
-							if (payload.index === i) {
-								return payload.value;
-							}
-							return item;
-						}
-					),
-				};
-			case PersonActionType.ADD_ARRAY_STRING_FIELD:
-				return {
-					...state,
-					[payload.field]: state[payload.field].concat(''),
-				};
-			case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD:
-				return {
-					...state,
-					[payload.field]: state[payload.field].map(
-						(item: Name | ExternalUrl, i: number) => {
-							if (payload.index === i) {
-								return {
-									...item,
-									[payload.childField]: payload.value,
-								};
-							}
-							return item;
-						}
-					),
-				};
-			case PersonActionType.DELETE_ARRAY_WITH_INDEX:
-				return {
-					...state,
-					[payload.field]: state[payload.field].filter(
-						(item: any, i: number) => {
-							if (i !== payload.index) {
-								return item;
-							}
-						}
-					),
-				};
-			case PersonActionType.ADD_ARRAY_OBJECT:
-				return {
-					...state,
-					[payload.field]: state[payload.field].concat(payload.emptyObject),
-				};
-			case PersonActionType.UPDATE_OBJECT:
-				return {
-					...state,
-					[payload.field]: {
-						...state[payload.field],
-						[payload.childField]: payload.value,
-					},
-				};
-			default: {
-				throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
-			}
-		}
-	};
 
 	const updateStringField = React.useCallback(
 		(field: string, value: string) => {
@@ -649,11 +246,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 									}}
 								/>
 
-								<Button
-									icon={<Trash />}
-									label=""
-									plain
-									hoverIndicator
+								<TrashButton
 									onClick={() => {
 										dispatchPerson({
 											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
@@ -667,11 +260,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							</Box>
 						</Card>
 					))}
-					<Button
-						icon={<Add />}
+					<AddButton
 						label="Lägg till alternativt namn"
 						plain
-						hoverIndicator
 						onClick={() => {
 							dispatchPerson({
 								type: PersonActionType.ADD_ARRAY_OBJECT,
@@ -738,10 +329,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											`Ange ett giltigt Libris-ID`
 										)}
 									/>
-									<Button
-										icon={<Trash />}
-										plain
-										hoverIndicator
+									<TrashButton
 										onClick={() => {
 											dispatchPerson({
 												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
@@ -756,11 +344,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							);
 						})}
 						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
-							<Button
-								icon={<Add />}
+							<AddButton
 								label="Lägg till Libris ID"
 								plain
-								hoverIndicator
 								onClick={() => {
 									dispatchPerson({
 										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
@@ -804,10 +390,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											`Ange ett giltigt VIAF-ID`
 										)}
 									/>
-									<Button
-										icon={<Trash />}
-										plain
-										hoverIndicator
+									<TrashButton
 										onClick={() => {
 											dispatchPerson({
 												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
@@ -822,11 +405,9 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							);
 						})}
 						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
-							<Button
-								icon={<Add />}
+							<AddButton
 								label="Lägg till VIAF"
 								plain
-								hoverIndicator
 								onClick={() => {
 									dispatchPerson({
 										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
@@ -925,10 +506,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 												`Ange en giltig URL.`
 											)}
 										/>
-										<Button
-											icon={<Trash />}
-											plain
-											hoverIndicator
+										<TrashButton
 											onClick={() => {
 												dispatchPerson({
 													type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
@@ -945,10 +523,8 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 						})}
 
 						<Box direction="row" justify="start" margin={{ top: 'small' }}>
-							<Button
-								icon={<Add />}
+							<AddButton
 								label="Lägg till extern URL"
-								plain
 								hoverIndicator
 								onClick={() => {
 									dispatchPerson({
@@ -1065,11 +641,8 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 																});
 															}}
 														/>
-														<Button
-															icon={<Trash />}
-															label=""
+														<TrashButton
 															plain
-															hoverIndicator
 															onClick={() => {
 																dispatchPersonDomainParts({
 																	type: PersonDomainPartActionType.DELETE_AFFILIATION,
@@ -1085,92 +658,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 											);
 										}
 									)}
-									<Box
-										direction="row"
-										justify="start"
-										margin={{ bottom: 'small' }}
-									>
-										{/* <label htmlFor="ice-cream-choice">Choose a flavor:</label>
-										<TextInput
-											list="ice-cream-flavors"
-											id="ice-cream-choice"
-											name="ice-cream-choice"
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) => {
-												console.log(event.target);
-											}}
-										/>
-
-										<datalist id="ice-cream-flavors">
-											{domainOrganisations.map((organisation) => {
-												return (
-													<option
-														value={organisation.name}
-														id={organisation.id}
-													>
-														{organisation.name}
-													</option>
-												);
-											})}
-										</datalist> */}
-										{/* <option value="foo"></option> */}
-
-										{/* <OrganisationChooser
-											organisations={[
-												...getNumbers().map((index: number) => {
-													let name = 'someName';
-													switch (index % 4) {
-														case 0:
-															name = `Uppsala ${index}`;
-															break;
-														case 1:
-															name = `KTH ${index}`;
-															break;
-														case 2:
-															name = `Göteborg ${index}`;
-															break;
-														case 3:
-															name = `foo ${index}`;
-															break;
-
-														default:
-															break;
-													}
-													return {
-														id: `${index}`,
-														alternativeName: `altName ${index}`,
-														name,
-														organisationType: 'subOrganisation',
-														recordType: 'subOrganisation',
-													};
-												}),
-											]}
-											onChange={(organisation: Organisation) => {
-												const { id } = organisation;
-												dispatchPersonDomainParts({
-													type: PersonDomainPartActionType.ADD_AFFILIATION,
-													payload: {
-														personDomainPartId: personDomainPart.id,
-														affiliationId: id,
-													},
-												});
-											}}
-										/> */}
-										{/* <OrganisationChooserDropButton
-											organisations={domainOrganisations}
-											onOrganisationChange={(organisation: Organisation) => {
-												const { id, name } = organisation;
-												dispatchPersonDomainParts({
-													type: PersonDomainPartActionType.ADD_AFFILIATION,
-													payload: {
-														personDomainPartId: personDomainPart.id,
-														affiliationId: id,
-													},
-												});
-											}}
-										/> */}
-									</Box>
 								</Box>
 							);
 						})}
@@ -1214,14 +701,6 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 	);
 };
 
-const getNumbers = () => {
-	const numbers: number[] = [];
-	for (let index = 0; index < 200; index++) {
-		numbers.push(index);
-	}
-	return numbers;
-};
-
 const StringFormField = function ({
 	label,
 	value,
@@ -1245,6 +724,45 @@ const StringFormField = function ({
 				onChange(field, event.target.value);
 			}}
 			validate={validate}
+		/>
+	);
+};
+
+const TrashButton = function ({
+	onClick,
+	plain = undefined,
+}: {
+	onClick: () => void;
+	// eslint-disable-next-line react/require-default-props
+	plain?: boolean;
+}) {
+	return (
+		<Button
+			icon={<Trash />}
+			label=""
+			plain={plain}
+			hoverIndicator
+			onClick={onClick}
+		/>
+	);
+};
+const AddButton = function ({
+	onClick,
+	plain = undefined,
+	label,
+}: {
+	onClick: () => void;
+	// eslint-disable-next-line react/require-default-props
+	plain?: boolean;
+	label: string;
+}) {
+	return (
+		<Button
+			icon={<Add />}
+			label={label}
+			plain={plain}
+			hoverIndicator
+			onClick={onClick}
 		/>
 	);
 };
