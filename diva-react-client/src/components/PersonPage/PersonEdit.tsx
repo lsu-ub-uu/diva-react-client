@@ -23,10 +23,6 @@ import {
 import getDomainCollection from '../../divaData/resources';
 import PersonViewEdit from './PersonViewEdit';
 import { useAuth } from '../../context/AuthContext';
-import {
-	OrganisationChooser,
-	OrganisationChooserDropButton,
-} from './OrganisationChooser';
 
 export interface FormPerson {
 	id: string;
@@ -193,6 +189,7 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  */
 
 const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
+	g;
 	const { auth } = useAuth();
 
 	const originalFormPersonWithEmptyDefaults: FormPerson =
@@ -1093,7 +1090,33 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 										justify="start"
 										margin={{ bottom: 'small' }}
 									>
-										<OrganisationChooser
+										{/* <label htmlFor="ice-cream-choice">Choose a flavor:</label>
+										<TextInput
+											list="ice-cream-flavors"
+											id="ice-cream-choice"
+											name="ice-cream-choice"
+											onChange={(
+												event: React.ChangeEvent<HTMLInputElement>
+											) => {
+												console.log(event.target);
+											}}
+										/>
+
+										<datalist id="ice-cream-flavors">
+											{domainOrganisations.map((organisation) => {
+												return (
+													<option
+														value={organisation.name}
+														id={organisation.id}
+													>
+														{organisation.name}
+													</option>
+												);
+											})}
+										</datalist> */}
+										{/* <option value="foo"></option> */}
+
+										{/* <OrganisationChooser
 											organisations={[
 												...getNumbers().map((index: number) => {
 													let name = 'someName';
@@ -1133,8 +1156,8 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 													},
 												});
 											}}
-										/>
-										<OrganisationChooserDropButton
+										/> */}
+										{/* <OrganisationChooserDropButton
 											organisations={domainOrganisations}
 											onOrganisationChange={(organisation: Organisation) => {
 												const { id, name } = organisation;
@@ -1146,7 +1169,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 													},
 												});
 											}}
-										/>
+										/> */}
 									</Box>
 								</Box>
 							);
@@ -1158,7 +1181,7 @@ const PersonEdit = function ({ originalPerson }: { originalPerson: Person }) {
 							label="Skicka"
 							primary
 							onClick={() => {
-								alert('BOOM!');
+								alert('Skickar...');
 							}}
 						/>
 					</Box>
