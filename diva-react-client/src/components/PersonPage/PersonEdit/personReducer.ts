@@ -1,4 +1,5 @@
 import { ExternalUrl, Name } from 'diva-cora-ts-api-wrapper';
+import { ActionMap, createMsg } from '../../../types/reducerHelpers';
 import { FormPerson } from './FormPerson';
 
 export enum PersonActionType {
@@ -11,99 +12,70 @@ export enum PersonActionType {
 	UPDATE_OBJECT = 'UPDATE_OBJECT',
 }
 
-interface PersonActionPayload {
-	field: keyof FormPerson;
-}
+type Messages = {
+	[PersonActionType.UPDATE_STRING_FIELD]: { field: string; value: string };
+	[PersonActionType.UPDATE_ARRAY_STRING_FIELD]: {
+		field: string;
+		index: number;
+		value: string;
+	};
+	[PersonActionType.ADD_ARRAY_STRING_FIELD]: { field: string };
+	[PersonActionType.DELETE_ARRAY_WITH_INDEX]: { field: string; index: number };
+	[PersonActionType.UPDATE_ARRAY_OBJECT_FIELD]: {
+		field: string;
+		index: number;
+		childField: string;
+		value: string;
+	};
+	[PersonActionType.ADD_ARRAY_OBJECT]: {
+		field: string;
+		emptyObject: Name | ExternalUrl;
+	};
+	[PersonActionType.UPDATE_OBJECT]: {
+		field: string;
+		childField: string;
+		value: string;
+	};
+};
 
-interface PersonActionUpdateString extends PersonActionPayload {
-	value: string;
-}
-
-interface PersonActionUpdateArray extends PersonActionUpdateString {
-	index: number;
-}
-
-interface PersonActionUpdateObject extends PersonActionUpdateString {
-	childField: string;
-}
-
-interface PersonActionUpdateArrayObject
-	extends PersonActionUpdateArray,
-		PersonActionUpdateObject {}
-
-interface PersonActionDeleteArrayIndex extends PersonActionPayload {
-	index: number;
-}
-
-interface PersonActionAddObject extends PersonActionPayload {
-	emptyObject: Name | ExternalUrl;
-}
-
-export type PersonAction =
-	| {
-			type: PersonActionType.UPDATE_STRING_FIELD;
-			payload: PersonActionUpdateString;
-	  }
-	| {
-			type: PersonActionType.ADD_ARRAY_STRING_FIELD;
-			payload: PersonActionPayload;
-	  }
-	| {
-			type: PersonActionType.UPDATE_ARRAY_STRING_FIELD;
-			payload: PersonActionUpdateArray;
-	  }
-	| {
-			type: PersonActionType.UPDATE_OBJECT;
-			payload: PersonActionUpdateObject;
-	  }
-	| {
-			type: PersonActionType.ADD_ARRAY_OBJECT;
-			payload: PersonActionAddObject;
-	  }
-	| {
-			type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD;
-			payload: PersonActionUpdateArrayObject;
-	  }
-	| {
-			type: PersonActionType.DELETE_ARRAY_WITH_INDEX;
-			payload: PersonActionDeleteArrayIndex;
-	  };
+type PersonAction = ActionMap<Messages>[keyof ActionMap<Messages>];
+export const PersonMessage = createMsg<Messages>();
 
 export const personReducer = (
 	state: FormPerson,
 	action: PersonAction
 ): FormPerson => {
-	const { type, payload } = action;
-	switch (type) {
+	switch (action.type) {
 		case PersonActionType.UPDATE_STRING_FIELD: {
-			const actionPayload = payload as PersonActionUpdateString;
-			return { ...state, [actionPayload.field]: actionPayload.value };
+			return { ...state, [action.payload.field]: action.payload.value };
 		}
 		case PersonActionType.UPDATE_ARRAY_STRING_FIELD: {
-			const actionPayload = payload as PersonActionUpdateArray;
-			const currentArray = state[actionPayload.field] as any[];
+			const castField = action.payload.field as keyof FormPerson;
+			const currentArray = state[castField] as any[];
 
 			return {
 				...state,
-				[actionPayload.field]: currentArray.map((item: string, i: number) => {
-					if (actionPayload.index === i) {
-						return actionPayload.value;
+				[action.payload.field]: currentArray.map((item: string, i: number) => {
+					if (action.payload.index === i) {
+						return action.payload.value;
 					}
 					return item;
 				}),
 			};
 		}
 		case PersonActionType.ADD_ARRAY_STRING_FIELD: {
-			const currentString = state[payload.field] as string;
+			const castField = action.payload.field as keyof FormPerson;
+			const currentString = state[castField] as string;
 			return {
 				...state,
-				[payload.field]: currentString.concat(''),
+				[action.payload.field]: currentString.concat(''),
 			};
 		}
 		case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD: {
-			const actionPayload = payload as PersonActionUpdateArrayObject;
-			const { field, index, childField, value } = actionPayload;
-			const currentArray = state[field] as any[];
+			const { field, index, childField, value } = action.payload;
+			const castField = action.payload.field as keyof FormPerson;
+
+			const currentArray = state[castField] as any[];
 
 			return {
 				...state,
@@ -119,9 +91,10 @@ export const personReducer = (
 			};
 		}
 		case PersonActionType.DELETE_ARRAY_WITH_INDEX: {
-			const actionPayload = payload as PersonActionDeleteArrayIndex;
-			const { field, index } = actionPayload;
-			const currentArray = state[field] as any[];
+			const { field, index } = action.payload;
+			const castField = action.payload.field as keyof FormPerson;
+
+			const currentArray = state[castField] as any[];
 
 			return {
 				...state,
@@ -131,9 +104,10 @@ export const personReducer = (
 			};
 		}
 		case PersonActionType.ADD_ARRAY_OBJECT: {
-			const actionPayload = payload as PersonActionAddObject;
-			const { field, emptyObject } = actionPayload;
-			const currentArray = state[field] as Object[];
+			const { field, emptyObject } = action.payload;
+			const castField = action.payload.field as keyof FormPerson;
+
+			const currentArray = state[castField] as Object[];
 
 			return {
 				...state,
@@ -141,9 +115,10 @@ export const personReducer = (
 			};
 		}
 		case PersonActionType.UPDATE_OBJECT: {
-			const actionPayload = payload as PersonActionUpdateObject;
-			const { field, childField, value } = actionPayload;
-			const currentObject = state[field] as Object;
+			const { field, childField, value } = action.payload;
+			const castField = action.payload.field as keyof FormPerson;
+
+			const currentObject = state[castField] as Object;
 
 			return {
 				...state,

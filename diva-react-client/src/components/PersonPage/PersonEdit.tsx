@@ -30,7 +30,11 @@ import {
 	personDomainPartReducer,
 } from './PersonEdit/personDomainPartReducer';
 import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
-import { PersonActionType, personReducer } from './PersonEdit/personReducer';
+import {
+	PersonActionType,
+	PersonMessage,
+	personReducer,
+} from './PersonEdit/personReducer';
 import BackButton from '../BackButton';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
@@ -145,13 +149,11 @@ const PersonEdit = function ({
 
 	const updateStringField = React.useCallback(
 		(field: string, value: string) => {
-			dispatchPerson({
-				type: PersonActionType.UPDATE_STRING_FIELD,
-				payload: {
-					field,
-					value,
-				},
+			const action = PersonMessage(PersonActionType.UPDATE_STRING_FIELD, {
+				field,
+				value,
 			});
+			dispatchPerson(action);
 		},
 		[]
 	);
