@@ -9,6 +9,7 @@ export const personWithDomain: Person = {
 	domains: ['Uppsala Universitet', 'Test'],
 	recordType: 'person',
 	personDomainParts: [],
+	public: 'yes',
 };
 
 export const createPersonObject = (
@@ -24,6 +25,7 @@ export const createPersonObject = (
 		},
 		recordType: 'person',
 		personDomainParts: [],
+		public: 'yes',
 	};
 };
 
@@ -39,6 +41,7 @@ export const createCompletePerson = () => {
 		'Celsius',
 		'Anders'
 	);
+	completePerson.public = 'yes';
 
 	completePerson.academicTitle = 'someTitle';
 

@@ -112,6 +112,8 @@ describe('The Card component', () => {
 				const somePersonWithoutName: Person = {
 					id: 'someId',
 					recordType: 'person',
+					public: 'yes',
+					personDomainParts: [],
 				};
 				renderWithRouter(
 					<Card item={somePersonWithoutName} listItemNumber={1} />
@@ -142,6 +144,8 @@ describe('The Card component', () => {
 				const somePersonWithoutName: Person = {
 					id: 'someId',
 					recordType: 'person',
+					personDomainParts: [],
+					public: 'yes',
 				};
 				renderWithRouter(
 					<Card item={somePersonWithoutName} listItemNumber={1} />
@@ -153,6 +157,8 @@ describe('The Card component', () => {
 				const someOtherPersonWithoutName: Person = {
 					id: 'someOtherId',
 					recordType: 'person',
+					public: 'yes',
+					personDomainParts: [],
 				};
 				renderWithRouter(
 					<Card item={someOtherPersonWithoutName} listItemNumber={1} />

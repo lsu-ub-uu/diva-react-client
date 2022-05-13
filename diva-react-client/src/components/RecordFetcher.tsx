@@ -20,15 +20,7 @@ const RecordFetcher = function <T>({
 	id: string;
 	children(props: InjectedRecordProp<T>): JSX.Element;
 }) {
-	let res: any;
-	console.log(recordType, id);
-	if (recordType === RecordType.Person) {
-		res = useApi<Person>(getPersonById, { recordType, id });
-	} else {
-		res = useApi<T>(getRecordById, { recordType, id });
-	}
-	const { isLoading, result } = res;
-
+	const { isLoading, result } = useApi<T>(getRecordById, { recordType, id });
 	return (
 		<section>
 			{result.error && (

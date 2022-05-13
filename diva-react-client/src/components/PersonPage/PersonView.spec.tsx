@@ -60,11 +60,29 @@ describe('PersonView', () => {
 		).toBeInTheDocument();
 	});
 
+	it('should render person public yes', () => {
+		const person = createCompletePerson();
+		renderWithRouter(<ComponentToTest person={person} />);
+
+		expect(screen.queryByTestId('public')).toBeInTheDocument();
+		expect(screen.queryByTestId('public')).toHaveTextContent('Ja');
+	});
+
+	it('should render person public no', () => {
+		const person = createCompletePerson();
+		person.public = 'no';
+		renderWithRouter(<ComponentToTest person={person} />);
+
+		expect(screen.queryByTestId('public')).toBeInTheDocument();
+		expect(screen.queryByTestId('public')).toHaveTextContent('Nej');
+	});
+
 	it('if the person does not have an authorised name, display id', () => {
 		const somePersonWithoutName: Person = {
 			id: 'someId',
 			recordType: 'person',
 			personDomainParts: [],
+			public: 'yes',
 		};
 		const { rerender } = renderWithRouter(
 			<ComponentToTest person={somePersonWithoutName} />
@@ -76,6 +94,7 @@ describe('PersonView', () => {
 			id: 'someOtherId',
 			recordType: 'person',
 			personDomainParts: [],
+			public: 'yes',
 		};
 		rerender(<ComponentToTest person={someOtherPersonWithoutName} />);
 		expect(
@@ -115,127 +134,127 @@ describe('PersonView', () => {
 			expect(screen.queryByTestId('personTitle')).not.toBeInTheDocument();
 		});
 	});
+});
 
-	it('should call Identifiers with person', () => {
-		renderWithRouter(<ComponentToTest person={personWithDomain} />);
+it('should call Identifiers with person', () => {
+	renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
-		expect(Identifiers).toHaveBeenCalledTimes(1);
-		expect(Identifiers).toHaveBeenCalledWith(
-			expect.objectContaining({
-				person: personWithDomain,
-			}),
+	expect(Identifiers).toHaveBeenCalledTimes(1);
+	expect(Identifiers).toHaveBeenCalledWith(
+		expect.objectContaining({
+			person: personWithDomain,
+		}),
+		expect.any(Object)
+	);
+});
+
+describe('biography', () => {
+	it('if no biographySwedish, should not show biography', () => {
+		renderWithRouter(
+			<ComponentToTest person={createMinimumPersonWithIdAndName()} />
+		);
+
+		expect(
+			screen.queryByRole('heading', { name: 'Biografi' })
+		).not.toBeInTheDocument();
+	});
+
+	it('if biographySwedish, shows label "Biografi"', () => {
+		renderWithRouter(<ComponentToTest person={createCompletePerson()} />);
+
+		expect(
+			screen.queryByRole('heading', { name: 'Biografi' })
+		).toBeInTheDocument();
+	});
+
+	it('if biographySwedish, displays swedish biography', () => {
+		const completePerson = createCompletePerson();
+		renderWithRouter(<ComponentToTest person={completePerson} />);
+
+		const biographySwedish = completePerson.biographySwedish as string;
+
+		expect(screen.queryByText(biographySwedish)).toBeInTheDocument();
+	});
+});
+
+describe('Other affiliation', () => {
+	it('should not call AffiliationDisplay if otherAffiliation is NOT set', () => {
+		renderWithRouter(
+			<ComponentToTest person={createMinimumPersonWithIdAndName()} />
+		);
+		expect(AffiliationDisplay).not.toHaveBeenCalled();
+	});
+
+	it('should call AffiliationDisplay if otherAffiliation IS set', () => {
+		const person = createCompletePerson();
+		renderWithRouter(<ComponentToTest person={person} />);
+		expect(AffiliationDisplay).toHaveBeenLastCalledWith(
+			expect.objectContaining({ affiliation: person.otherAffiliation }),
+			expect.any(Object)
+		);
+
+		const otherPerson = createMinimumPersonWithIdAndName();
+		otherPerson.otherAffiliation = {
+			name: 'someOtherAffiliation',
+		};
+		renderWithRouter(<ComponentToTest person={otherPerson} />);
+		expect(AffiliationDisplay).toHaveBeenLastCalledWith(
+			expect.objectContaining({ affiliation: otherPerson.otherAffiliation }),
 			expect.any(Object)
 		);
 	});
+});
 
-	describe('biography', () => {
-		it('if no biographySwedish, should not show biography', () => {
-			renderWithRouter(
-				<ComponentToTest person={createMinimumPersonWithIdAndName()} />
-			);
+it('should call PersonalInfo with person', () => {
+	renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
-			expect(
-				screen.queryByRole('heading', { name: 'Biografi' })
-			).not.toBeInTheDocument();
-		});
+	expect(PersonalInfo).toHaveBeenCalledTimes(1);
+	expect(PersonalInfo).toHaveBeenCalledWith(
+		expect.objectContaining({
+			person: personWithDomain,
+		}),
+		expect.any(Object)
+	);
+});
 
-		it('if biographySwedish, shows label "Biografi"', () => {
-			renderWithRouter(<ComponentToTest person={createCompletePerson()} />);
-
-			expect(
-				screen.queryByRole('heading', { name: 'Biografi' })
-			).toBeInTheDocument();
-		});
-
-		it('if biographySwedish, displays swedish biography', () => {
-			const completePerson = createCompletePerson();
-			renderWithRouter(<ComponentToTest person={completePerson} />);
-
-			const biographySwedish = completePerson.biographySwedish as string;
-
-			expect(screen.queryByText(biographySwedish)).toBeInTheDocument();
-		});
-	});
-
-	describe('Other affiliation', () => {
-		it('should not call AffiliationDisplay if otherAffiliation is NOT set', () => {
-			renderWithRouter(
-				<ComponentToTest person={createMinimumPersonWithIdAndName()} />
-			);
-			expect(AffiliationDisplay).not.toHaveBeenCalled();
-		});
-
-		it('should call AffiliationDisplay if otherAffiliation IS set', () => {
-			const person = createCompletePerson();
-			renderWithRouter(<ComponentToTest person={person} />);
-			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
-				expect.objectContaining({ affiliation: person.otherAffiliation }),
-				expect.any(Object)
-			);
-
-			const otherPerson = createMinimumPersonWithIdAndName();
-			otherPerson.otherAffiliation = {
-				name: 'someOtherAffiliation',
-			};
-			renderWithRouter(<ComponentToTest person={otherPerson} />);
-			expect(AffiliationDisplay).toHaveBeenLastCalledWith(
-				expect.objectContaining({ affiliation: otherPerson.otherAffiliation }),
-				expect.any(Object)
-			);
-		});
-	});
-
-	it('should call PersonalInfo with person', () => {
+describe('PersonDomainParts', () => {
+	it('should not render PersonDomainPartWrapper if there are no personDomainParts', () => {
 		renderWithRouter(<ComponentToTest person={personWithDomain} />);
 
-		expect(PersonalInfo).toHaveBeenCalledTimes(1);
-		expect(PersonalInfo).toHaveBeenCalledWith(
+		expect(PersonDomainPartWrapper).not.toHaveBeenCalled();
+	});
+
+	it('should render PersonDomainPartWrapper for each of the personDomainParts', () => {
+		const person = createCompletePerson();
+		renderWithRouter(<ComponentToTest person={person} />);
+
+		expect(PersonDomainPartWrapper).toHaveBeenCalledTimes(3);
+	});
+
+	it('should render PersonDomainPartWrapper with each of the personDomainParts', () => {
+		const person = createCompletePerson();
+		renderWithRouter(<ComponentToTest person={person} />);
+
+		expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+			1,
 			expect.objectContaining({
-				person: personWithDomain,
+				id: 'personDomainPart1',
 			}),
 			expect.any(Object)
 		);
-	});
-
-	describe('PersonDomainParts', () => {
-		it('should not render PersonDomainPartWrapper if there are no personDomainParts', () => {
-			renderWithRouter(<ComponentToTest person={personWithDomain} />);
-
-			expect(PersonDomainPartWrapper).not.toHaveBeenCalled();
-		});
-
-		it('should render PersonDomainPartWrapper for each of the personDomainParts', () => {
-			const person = createCompletePerson();
-			renderWithRouter(<ComponentToTest person={person} />);
-
-			expect(PersonDomainPartWrapper).toHaveBeenCalledTimes(3);
-		});
-
-		it('should render PersonDomainPartWrapper with each of the personDomainParts', () => {
-			const person = createCompletePerson();
-			renderWithRouter(<ComponentToTest person={person} />);
-
-			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
-				1,
-				expect.objectContaining({
-					id: 'personDomainPart1',
-				}),
-				expect.any(Object)
-			);
-			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
-				2,
-				expect.objectContaining({
-					id: 'personDomainPart2',
-				}),
-				expect.any(Object)
-			);
-			expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
-				3,
-				expect.objectContaining({
-					id: 'personDomainPart3',
-				}),
-				expect.any(Object)
-			);
-		});
+		expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+			2,
+			expect.objectContaining({
+				id: 'personDomainPart2',
+			}),
+			expect.any(Object)
+		);
+		expect(PersonDomainPartWrapper).toHaveBeenNthCalledWith(
+			3,
+			expect.objectContaining({
+				id: 'personDomainPart3',
+			}),
+			expect.any(Object)
+		);
 	});
 });

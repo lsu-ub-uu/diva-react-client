@@ -120,6 +120,13 @@ const PersonView = function ({
 						<AffiliationDisplay affiliation={person.otherAffiliation} />
 					</Box>
 				)}
+
+				{person.public !== undefined && person.public !== '' && (
+					<Box>
+						<Heading level="4">Publik</Heading>
+						<p data-testid="public">{displayPublicYesOrNo(person)}</p>
+					</Box>
+				)}
 			</Main>
 			<Bottom>
 				<BackButton />
@@ -133,6 +140,13 @@ const displayName = (person: Person) => {
 		return person.id;
 	}
 	return `${person.authorisedName.familyName}, ${person.authorisedName.givenName}`;
+};
+
+const displayPublicYesOrNo = (person: Person) => {
+	if (person.public && person.public === 'yes') {
+		return 'Ja';
+	}
+	return 'Nej';
 };
 
 export default PersonView;
