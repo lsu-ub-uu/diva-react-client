@@ -29,11 +29,12 @@ const expectedMinimumPerson: Person = {
 		familyName: 'someGivenName',
 	},
 	personDomainParts: [],
-	connectedDomains: [],
+	public: 'yes',
 };
 
 const expectedCompletePerson: Person = {
 	id: 'authority-person:1',
+	public: 'yes',
 	recordType: 'person',
 	domains: ['du', 'hig', 'ivl', 'ltu', 'miun', 'ths', 'umu', 'uu'],
 	authorisedName: {
@@ -102,7 +103,6 @@ const expectedCompletePerson: Person = {
 			recordId: 'authority-person:1:uu',
 		},
 	],
-	connectedDomains: [],
 };
 
 const minimumPersonDataGroup: DataGroup = {
@@ -114,6 +114,10 @@ const minimumPersonDataGroup: DataGroup = {
 				{
 					name: 'id',
 					value: 'authority-person:2',
+				},
+				{
+					name: 'public',
+					value: 'yes',
 				},
 				{
 					name: 'type',

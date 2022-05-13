@@ -4,6 +4,7 @@ import { Record } from '../src/types/Record';
 
 export const personWithDomain: Person = {
 	id: '2',
+	public: 'yes',
 	authorisedName: {
 		familyName: 'Enequist',
 		givenName: 'Gerd',
@@ -11,7 +12,6 @@ export const personWithDomain: Person = {
 	domains: ['Uppsala Universitet', 'Test'],
 	recordType: 'person',
 	personDomainParts: [],
-	connectedDomains: [],
 };
 
 export const createPersonObject = (
@@ -21,13 +21,13 @@ export const createPersonObject = (
 ): Person => {
 	return {
 		id,
+		public: 'yes',
 		authorisedName: {
 			familyName,
 			givenName,
 		},
 		recordType: 'person',
 		personDomainParts: [],
-		connectedDomains: [],
 	};
 };
 

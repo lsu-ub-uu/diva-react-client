@@ -49,6 +49,11 @@ export const personMatcher: Matcher = [
 		required: true,
 	},
 	{
+		propertyName: 'public',
+		nameInDataPath: 'recordInfo/public',
+		required: true,
+	},
+	{
 		propertyName: 'recordType',
 		nameInDataPath: 'recordInfo/type/linkedRecordId',
 		required: true,

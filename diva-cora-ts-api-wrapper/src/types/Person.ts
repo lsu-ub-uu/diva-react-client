@@ -18,6 +18,8 @@ export type Affiliation = {
 };
 
 export interface Person extends Record {
+	public: string;
+
 	domains?: string[];
 
 	authorisedName?: Name;
