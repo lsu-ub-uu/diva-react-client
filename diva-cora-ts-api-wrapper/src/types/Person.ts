@@ -11,7 +11,7 @@ type ExternalUrl = {
 	URL: string;
 };
 
-export type OtherAffiliation = {
+export type Affiliation = {
 	name: string;
 	fromYear?: string;
 	untilYear?: string;
@@ -34,7 +34,7 @@ export interface Person extends Record {
 
 	externalURLs?: ExternalUrl[];
 
-	otherAffiliation?: OtherAffiliation;
+	otherAffiliation?: Affiliation;
 
 	orcids?: string[];
 

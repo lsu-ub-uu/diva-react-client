@@ -1,10 +1,11 @@
 import React from 'react';
 import { Paragraph } from 'grommet';
+import { Affiliation } from 'diva-cora-ts-api-wrapper';
 
 const AffiliationDisplay = function ({
 	affiliation,
 }: {
-	affiliation: { name: string; untilYear: string; fromYear: string };
+	affiliation: Affiliation;
 }) {
 	const getAffiliationText = () => {
 		let affiliationName = affiliation.name;

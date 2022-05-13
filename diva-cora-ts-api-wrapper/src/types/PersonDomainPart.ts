@@ -1,6 +1,6 @@
 import { Record } from './Record';
 
-export type Affiliation = {
+export type AffiliationLink = {
 	id: string;
 	fromYear?: string;
 	untilYear?: string;
@@ -9,5 +9,5 @@ export type Affiliation = {
 export interface PersonDomainPart extends Record {
 	identifiers?: string[];
 	domain: string;
-	affiliations: Affiliation[];
+	affiliations: AffiliationLink[];
 }

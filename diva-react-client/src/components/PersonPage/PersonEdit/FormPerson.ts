@@ -1,7 +1,7 @@
 import {
+	Affiliation,
 	ExternalUrl,
 	Name,
-	OtherAffiliation,
 	Person,
 } from 'diva-cora-ts-api-wrapper';
 
@@ -24,7 +24,7 @@ export interface FormPerson {
 
 	externalURLs: ExternalUrl[];
 
-	otherAffiliation: OtherAffiliation;
+	otherAffiliation: Affiliation;
 
 	orcids: string[];
 

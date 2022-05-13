@@ -679,8 +679,8 @@ const PersonEdit = function ({
 
 				<PersonViewEdit
 					person={person}
-					organisations={initialOrganisations}
-					personDomainParts={originalPersonDomainParts}
+					organisations={organisationMap}
+					personDomainParts={personDomainParts}
 				/>
 
 				{/* <h2>Person</h2>

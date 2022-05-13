@@ -47,7 +47,6 @@ const PersonDomainPartEdit = function ({
 		});
 	}, [personDomainPart]);
 
-	let AffiliationGroup = null;
 	const updateAlternativeNameGroup = () => {
 		console.log('running updatealternativenamegroup');
 		console.log(personDomainPart.affiliations);

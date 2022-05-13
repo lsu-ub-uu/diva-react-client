@@ -4,6 +4,7 @@ import PersonView from './PersonView';
 import PersonEdit from './PersonEdit';
 import PersonFetcher from './PersonFetcher';
 
+// eslint-disable-next-line react/require-default-props
 const PersonPage = function ({ edit = false }: { edit?: boolean }) {
 	const { personId = '' } = useParams<string>();
 

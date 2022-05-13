@@ -7,9 +7,10 @@ import { Name } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
-import { FormPerson, FormPersonDomainPart } from './PersonEdit';
 import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
+import { FormPerson } from './PersonEdit/FormPerson';
+import { FormPersonDomainPart } from './PersonEdit/FormPersonDomainPart';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -30,13 +31,13 @@ const Top = styled.div`
 	grid-template-rows: auto;
 `;
 
-const Left = styled.div`
-	grid-area: left;
-`;
+// const Left = styled.div`
+// 	grid-area: left;
+// `;
 
-const Right = styled.div`
-	grid-area: right;
-`;
+// const Right = styled.div`
+// 	grid-area: right;
+// `;
 
 const Main = styled.div`
 	grid-area: main;
@@ -54,6 +55,7 @@ const PersonViewEdit = function ({
 	person: FormPerson;
 	personDomainParts: FormPersonDomainPart[];
 	organisations: Map<string, string>;
+	// eslint-disable-next-line react/require-default-props
 	showAll?: boolean;
 }) {
 	return (

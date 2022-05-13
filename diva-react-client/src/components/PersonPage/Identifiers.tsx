@@ -1,6 +1,7 @@
 import React from 'react';
 import { NameValueList, NameValuePair, Text } from 'grommet';
 import { Person } from 'diva-cora-ts-api-wrapper';
+import { FormPerson } from './PersonEdit/FormPerson';
 
 const possiblyOutputListWithLabel = (
 	list: string[] | undefined,
@@ -22,7 +23,7 @@ const possiblyOutputListWithLabel = (
 	return undefined;
 };
 
-const Identifiers = function ({ person }: { person: Person }) {
+const Identifiers = function ({ person }: { person: Person | FormPerson }) {
 	return (
 		<NameValueList nameProps={{ width: 'xsmall' }}>
 			<NameValuePair name="pID">

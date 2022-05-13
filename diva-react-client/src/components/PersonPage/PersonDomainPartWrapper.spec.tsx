@@ -31,6 +31,7 @@ const somePersonDomainPart: PersonDomainPart = {
 	recordType: 'personDomainPart',
 	identifiers: ['someIdentifier'],
 	domain: 'someDomain',
+	affiliations: [],
 };
 
 const someOtherPersonDomainPart: PersonDomainPart = {
@@ -38,6 +39,7 @@ const someOtherPersonDomainPart: PersonDomainPart = {
 	recordType: 'personDomainPart',
 	identifiers: ['someOtherIdentifier'],
 	domain: 'someOtherDomain',
+	affiliations: [],
 };
 
 beforeAll(() => {

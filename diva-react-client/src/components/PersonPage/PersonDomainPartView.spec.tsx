@@ -32,6 +32,7 @@ const someBarePersonDomainPart: PersonDomainPart = {
 	id: 'someId',
 	recordType: 'personDomainPart',
 	domain: 'someDomainId',
+	affiliations: [],
 };
 
 const somePersonDomainPart: PersonDomainPart = {
@@ -39,6 +40,7 @@ const somePersonDomainPart: PersonDomainPart = {
 	recordType: 'personDomainPart',
 	identifiers: ['someIdentifier'],
 	domain: 'someDomainId',
+	affiliations: [],
 };
 
 const someOtherPersonDomainPart: PersonDomainPart = {
@@ -46,6 +48,7 @@ const someOtherPersonDomainPart: PersonDomainPart = {
 	recordType: 'personDomainPart',
 	identifiers: ['someOtherIdentifier'],
 	domain: 'someOtherDomainId',
+	affiliations: [],
 };
 
 const defaultPersonDomainPartWithAffiliation: PersonDomainPart = {

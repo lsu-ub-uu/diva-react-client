@@ -5,9 +5,8 @@ import {
 	PersonDomainPart,
 	RecordType,
 } from 'diva-cora-ts-api-wrapper';
-import { NameValueList, NameValuePair, Text } from 'grommet';
+import { Text } from 'grommet';
 import getDomainCollection from '../../divaData/resources';
-import ListWithLabel from './ListWithLabel';
 import RecordFetcher from '../RecordFetcher';
 import AffiliationDisplay from './AffiliationDisplay';
 

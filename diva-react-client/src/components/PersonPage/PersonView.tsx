@@ -58,6 +58,7 @@ const PersonView = function ({
 	showAll = false,
 }: {
 	person: Person;
+	// eslint-disable-next-line react/require-default-props
 	showAll?: boolean;
 }) {
 	const { auth } = useAuth();

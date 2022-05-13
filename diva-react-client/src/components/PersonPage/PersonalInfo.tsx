@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NameValueList, NameValuePair, Text, List, Box } from 'grommet';
+import { NameValueList, NameValuePair, Text } from 'grommet';
 import { Person, Name } from 'diva-cora-ts-api-wrapper';
 import ListWithLabel from './ListWithLabel';
 import ExternalLink from '../ExternalLink';

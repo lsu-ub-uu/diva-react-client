@@ -9,6 +9,7 @@ const PersonDomainPartWrapper = function ({
 	edit = false,
 }: {
 	id: string;
+	// eslint-disable-next-line react/require-default-props
 	edit?: boolean;
 }) {
 	if (id === '') {
