@@ -10,6 +10,8 @@ import {
 	FormField,
 	Grid,
 	TextArea,
+	RadioButtonGroup,
+	Text,
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
@@ -662,7 +664,21 @@ const PersonEdit = function ({
 							);
 						})}
 
-					<Box direction="row" justify="between" margin={{ top: 'medium' }}>
+					<Box align="start" pad={{ left: 'medium' }}>
+						<Box margin={{ bottom: 'small' }}>
+							<Text>Publik</Text>
+						</Box>
+						<RadioButtonGroup
+							name="radio"
+							options={[
+								{ label: 'Ja', value: 'yes' },
+								{ label: 'Nej', value: 'no' },
+							]}
+							onChange={(event) => console.log(event.target.value)}
+						/>
+					</Box>
+
+					<Box direction="column" align="end" margin={{ top: 'medium' }}>
 						<Button
 							type="submit"
 							label="Skicka"
