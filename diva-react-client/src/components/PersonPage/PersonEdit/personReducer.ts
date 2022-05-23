@@ -38,7 +38,7 @@ type Messages = {
 	};
 };
 
-type PersonAction = ActionMap<Messages>[keyof ActionMap<Messages>];
+export type PersonAction = ActionMap<Messages>[keyof ActionMap<Messages>];
 export const PersonMessage = createMsg<Messages>();
 
 export const personReducer = (

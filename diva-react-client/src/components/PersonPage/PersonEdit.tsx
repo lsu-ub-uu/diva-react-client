@@ -13,6 +13,7 @@ import {
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
+	Name,
 	Organisation,
 	Person,
 	PersonDomainPart,
@@ -23,19 +24,23 @@ import PersonViewEdit from './PersonViewEdit';
 import { useAuth } from '../../context/AuthContext';
 import {
 	convertToFormPersonDomainPart,
+	FormAffiliation,
 	FormPersonDomainPart,
 } from './PersonEdit/FormPersonDomainPart';
 import {
+	PersonDomainpartAction,
 	PersonDomainPartActionType,
 	personDomainPartReducer,
 } from './PersonEdit/personDomainPartReducer';
 import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
 import {
+	PersonAction,
 	PersonActionType,
 	PersonMessage,
 	personReducer,
 } from './PersonEdit/personReducer';
 import BackButton from '../BackButton';
+import { Auth } from '../../context/types';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
@@ -89,7 +94,7 @@ const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
  * @returns
  */
 
-const PersonEdit = function ({
+const PersonEdit = React.memo(function UnmemoizedPersonEdit({
 	originalPerson,
 	originalPersonDomainParts = [],
 	originalOrganisations = [],
@@ -100,14 +105,14 @@ const PersonEdit = function ({
 }) {
 	const { auth } = useAuth();
 
-	console.log('originalPerson', originalPerson);
+	// console.log('originalPerson', originalPerson);
 
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
-	console.log('formPerson', originalFormPersonWithEmptyDefaults);
-	console.log('personDomainParts', originalPersonDomainParts);
-	console.log('organisations', originalOrganisations);
+	// console.log('formPerson', originalFormPersonWithEmptyDefaults);
+	// console.log('personDomainParts', originalPersonDomainParts);
+	// console.log('organisations', originalOrganisations);
 
 	const initialOrganisations: Map<string, string> = new Map();
 
@@ -137,10 +142,13 @@ const PersonEdit = function ({
 		});
 	}, []);
 
-	const initialPersonDomainPartsArr: FormPersonDomainPart[] =
-		originalPersonDomainParts.map((personDomainPart) => {
-			return convertToFormPersonDomainPart(personDomainPart);
-		});
+	const initialPersonDomainPartsArr: FormPersonDomainPart[] = React.useMemo(
+		() =>
+			originalPersonDomainParts.map((personDomainPart) => {
+				return convertToFormPersonDomainPart(personDomainPart);
+			}),
+		[originalPersonDomainParts]
+	);
 
 	const [personDomainParts, dispatchPersonDomainParts] = useReducer(
 		personDomainPartReducer,
@@ -175,107 +183,43 @@ const PersonEdit = function ({
 							label="Efternamn"
 							required
 							value={person.authorisedName.familyName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_OBJECT,
-									payload: {
-										field: 'authorisedName',
-										childField: 'familyName',
-										value: event.target.value,
-									},
-								});
-							}}
+							onChange={React.useCallback(
+								(event: React.ChangeEvent<HTMLInputElement>) => {
+									dispatchPerson({
+										type: PersonActionType.UPDATE_OBJECT,
+										payload: {
+											field: 'authorisedName',
+											childField: 'familyName',
+											value: event.target.value,
+										},
+									});
+								},
+								[]
+							)}
 						/>
 						<FormField
 							label="Förnamn"
 							value={person.authorisedName.givenName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_OBJECT,
-									payload: {
-										field: 'authorisedName',
-										childField: 'givenName',
-										value: event.target.value,
-									},
-								});
-							}}
+							onChange={React.useCallback(
+								(event: React.ChangeEvent<HTMLInputElement>) => {
+									dispatchPerson({
+										type: PersonActionType.UPDATE_OBJECT,
+										payload: {
+											field: 'authorisedName',
+											childField: 'givenName',
+											value: event.target.value,
+										},
+									});
+								},
+								[]
+							)}
 						/>
 					</Box>
-					{person.alternativeNames.map((alternativeName, index) => (
-						<Card
-							// eslint-disable-next-line react/no-array-index-key
-							key={index}
-							margin={{ top: 'small', bottom: 'small' }}
-							pad="small"
-						>
-							<CardHeader pad="small">
-								<Heading margin="none" level="6">
-									Alternativt namn
-								</Heading>
-							</CardHeader>
-
-							<Box direction="row" justify="between">
-								<FormField
-									label="Efternamn"
-									name={alternativeName.familyName}
-									value={alternativeName.familyName}
-									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-										dispatchPerson({
-											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-											payload: {
-												field: 'alternativeNames',
-												childField: 'familyName',
-												value: event.target.value,
-												index,
-											},
-										});
-									}}
-									required
-								/>
-								<FormField
-									label="Förnamn"
-									name={alternativeName.givenName}
-									value={alternativeName.givenName}
-									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-										dispatchPerson({
-											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-											payload: {
-												field: 'alternativeNames',
-												childField: 'givenName',
-												value: event.target.value,
-												index,
-											},
-										});
-									}}
-								/>
-
-								<TrashButton
-									onClick={() => {
-										dispatchPerson({
-											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-											payload: {
-												field: 'alternativeNames',
-												index,
-											},
-										});
-									}}
-								/>
-							</Box>
-						</Card>
-					))}
-					<AddButton
-						label="Lägg till alternativt namn"
-						plain
-						onClick={() => {
-							dispatchPerson({
-								type: PersonActionType.ADD_ARRAY_OBJECT,
-								payload: {
-									field: 'alternativeNames',
-									emptyObject: { familyName: '', givenName: '' },
-								},
-							});
-						}}
+					<AlternativeNamesForm
+						alternativeNames={person.alternativeNames}
+						dispatchPerson={dispatchPerson}
 					/>
+
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringFormField
 							label="Akademisk titel"
@@ -289,19 +233,25 @@ const PersonEdit = function ({
 								field="yearOfBirth"
 								value={person.yearOfBirth}
 								onChange={updateStringField}
-								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+								validate={React.useCallback(
+									validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE),
+									[]
+								)}
 							/>
 							<StringFormField
 								label="Dödsår"
 								field="yearOfDeath"
 								value={person.yearOfDeath}
 								onChange={updateStringField}
-								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+								validate={React.useCallback(
+									validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE),
+									[]
+								)}
 							/>
 						</Box>
 					</Box>
 
-					<Box margin={{ top: 'large', bottom: 'large' }}>
+					{/* <Box margin={{ top: 'large', bottom: 'large' }}>
 						{person.librisIDs.map((identifier, index) => {
 							return (
 								<Card
@@ -554,115 +504,15 @@ const PersonEdit = function ({
 						/>
 					</Box>
 
-					{person.personDomainParts &&
-						person.personDomainParts.length > 0 &&
-						person.personDomainParts.map((pdpId) => {
-							const personDomainPart = originalPersonDomainParts.find(
-								(pdp) => pdp.id === pdpId
-							);
-							if (
-								!personDomainPart ||
-								personDomainPart.domain !== auth.domain
-							) {
-								return null;
-							}
-							const title =
-								getDomainCollection().get(personDomainPart.domain) ||
-								`DomänId: ${personDomainPart.domain}`;
-							return (
-								<Box
-									margin={{ top: 'large', bottom: 'large' }}
-									key={personDomainPart.id}
-								>
-									<Heading margin="none" level="5">
-										{title}
-									</Heading>
-									{/* <Text>{personDomainPart.domain}</Text> */}
-									{Object.values(personDomainPart.affiliations).map(
-										(affiliation, index) => {
-											// const affiliation = affiliations[affiliation.id];
-											return (
-												<Card
-													// eslint-disable-next-line react/no-array-index-key
-													key={`${personDomainPart.id}-${affiliation.id}-${index}`}
-													margin={{ top: 'small', bottom: 'small' }}
-													pad="small"
-												>
-													<CardHeader pad="small">
-														{affiliation.id !== '' && (
-															<Heading margin="none" level="6">
-																{organisationMap.get(affiliation.id) ||
-																	affiliation.id}
-															</Heading>
-														)}
-														{/* {affiliation.id === '' && <OrganisationChooser />} */}
-													</CardHeader>
-													{/* <Text>{affiliation.name}</Text> */}
-													<Box direction="row" justify="between">
-														<FormField
-															label="Från"
-															name={`${affiliation.id}-from`}
-															value={affiliation.fromYear}
-															onChange={(
-																event: React.ChangeEvent<HTMLInputElement>
-															) => {
-																dispatchPersonDomainParts({
-																	type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
-																	payload: {
-																		personDomainPartId: personDomainPart.id,
-																		affiliationId: affiliation.id,
-																		field: 'fromYear',
-																		value: event.target.value,
-																	},
-																});
-															}}
-															validate={validateWithRegex(
-																/^[0-9]{4}$/,
-																INVALID_YEAR_MESSAGE
-															)}
-														/>
-														<FormField
-															name={`${affiliation.id}-until`}
-															label="Till"
-															value={affiliation.untilYear}
-															validate={validateWithRegex(
-																/^[0-9]{4}$/,
-																INVALID_YEAR_MESSAGE
-															)}
-															onChange={(
-																event: React.ChangeEvent<HTMLInputElement>
-															) => {
-																dispatchPersonDomainParts({
-																	type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
-																	payload: {
-																		personDomainPartId: personDomainPart.id,
-																		affiliationId: affiliation.id,
-																		field: 'untilYear',
-																		value: event.target.value,
-																	},
-																});
-															}}
-														/>
-														<TrashButton
-															plain
-															onClick={() => {
-																dispatchPersonDomainParts({
-																	type: PersonDomainPartActionType.DELETE_AFFILIATION,
-																	payload: {
-																		personDomainPartId: personDomainPart.id,
-																		affiliationId: affiliation.id,
-																	},
-																});
-															}}
-														/>
-													</Box>
-												</Card>
-											);
-										}
-									)}
-								</Box>
-							);
-						})}
+					{person.personDomainParts && person.personDomainParts.length > 0 && (
+						<PersonDomainPartForm
+							personDomainPartIds={person.personDomainParts}
+							personDomainParts={personDomainParts}
+							auth={auth}
+							organisationMap={organisationMap}
+							dispatchPersonDomainParts={dispatchPersonDomainParts}
+						/>
+					)} */}
 
 					<Box direction="row" justify="between" margin={{ top: 'medium' }}>
 						<Button
@@ -704,9 +554,264 @@ const PersonEdit = function ({
 			</Box>
 		</Grid>
 	);
-};
+});
 
-const StringFormField = function ({
+const AlternativeNamesForm = React.memo(
+	({
+		alternativeNames,
+		dispatchPerson,
+	}: {
+		alternativeNames: Name[];
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		const testNames = alternativeNames.map((alternativeName, index) => {
+			return {
+				alternativeName,
+				id: index,
+			};
+		});
+
+		return (
+			<>
+				{testNames.map(({ alternativeName, id }, index) => (
+					<AlternativeNameForm
+						// eslint-disable-next-line react/no-array-index-key
+						key={id}
+						alternativeName={alternativeName}
+						index={index}
+						dispatchPerson={dispatchPerson}
+					/>
+				))}
+				<AddButton
+					label="Lägg till alternativt namn"
+					plain
+					onClick={React.useCallback(() => {
+						dispatchPerson({
+							type: PersonActionType.ADD_ARRAY_OBJECT,
+							payload: {
+								field: 'alternativeNames',
+								emptyObject: { familyName: '', givenName: '' },
+							},
+						});
+					}, [])}
+				/>
+			</>
+		);
+	}
+);
+
+const AlternativeNameForm = React.memo(
+	({
+		alternativeName,
+		index,
+		dispatchPerson,
+	}: {
+		alternativeName: Name;
+		index: number;
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<Card margin={{ top: 'small', bottom: 'small' }} pad="small">
+				<CardHeader pad="small">
+					<Heading margin="none" level="6">
+						Alternativt namn
+					</Heading>
+				</CardHeader>
+
+				<Box direction="row" justify="between">
+					<FormField
+						label="Efternamn"
+						name={alternativeName.familyName}
+						value={alternativeName.familyName}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+									payload: {
+										field: 'alternativeNames',
+										childField: 'familyName',
+										value: event.target.value,
+										index,
+									},
+								});
+							},
+							[]
+						)}
+						required
+					/>
+					<FormField
+						label="Förnamn"
+						name={alternativeName.givenName}
+						value={alternativeName.givenName}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+									payload: {
+										field: 'alternativeNames',
+										childField: 'givenName',
+										value: event.target.value,
+										index,
+									},
+								});
+							},
+							[]
+						)}
+					/>
+
+					<TrashButton
+						onClick={React.useCallback(() => {
+							dispatchPerson({
+								type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+								payload: {
+									field: 'alternativeNames',
+									index,
+								},
+							});
+						}, [])}
+					/>
+				</Box>
+			</Card>
+		);
+	}
+);
+
+const PersonDomainPartForm = React.memo(
+	function UnmemoizedPersonDomainPartForm({
+		personDomainPartIds,
+		personDomainParts,
+		auth,
+		organisationMap,
+		dispatchPersonDomainParts,
+	}: {
+		personDomainPartIds: string[];
+		personDomainParts: FormPersonDomainPart[];
+		auth: Auth;
+		organisationMap: Map<string, string>;
+		dispatchPersonDomainParts: (value: PersonDomainpartAction) => void;
+	}) {
+		return (
+			<>
+				{personDomainPartIds.map((pdpId) => {
+					const personDomainPart = personDomainParts.find(
+						(pdp) => pdp.id === pdpId
+					);
+					if (!personDomainPart || personDomainPart.domain !== auth.domain) {
+						return null;
+					}
+					const title =
+						getDomainCollection().get(personDomainPart.domain) ||
+						`DomänId: ${personDomainPart.domain}`;
+					return (
+						<Box
+							margin={{ top: 'large', bottom: 'large' }}
+							key={personDomainPart.id}
+						>
+							<Heading margin="none" level="5">
+								{title}
+							</Heading>
+							{/* <Text>{personDomainPart.domain}</Text> */}
+							{Object.values(personDomainPart.affiliations).map(
+								(affiliation, index) => {
+									// const affiliation = affiliations[affiliation.id];
+									return (
+										<AffiliationCard
+											// eslint-disable-next-line react/no-array-index-key
+											key={`${personDomainPart.id}-${affiliation.id}-${index}`}
+											personDomainPart={personDomainPart}
+											affiliation={affiliation}
+											organisationMap={organisationMap}
+											dispatchPersonDomainParts={dispatchPersonDomainParts}
+										/>
+									);
+								}
+							)}
+						</Box>
+					);
+				})}
+			</>
+		);
+	}
+);
+
+const AffiliationCard = React.memo(function UnmemoizedAffiliationCard({
+	personDomainPart,
+	affiliation,
+	organisationMap,
+	dispatchPersonDomainParts,
+}: {
+	personDomainPart: FormPersonDomainPart;
+	affiliation: FormAffiliation;
+	organisationMap: Map<string, string>;
+	dispatchPersonDomainParts: (value: PersonDomainpartAction) => void;
+}) {
+	return (
+		<Card margin={{ top: 'small', bottom: 'small' }} pad="small">
+			<CardHeader pad="small">
+				{affiliation.id !== '' && (
+					<Heading margin="none" level="6">
+						{organisationMap.get(affiliation.id) || affiliation.id}
+					</Heading>
+				)}
+				{/* {affiliation.id === '' && <OrganisationChooser />} */}
+			</CardHeader>
+			{/* <Text>{affiliation.name}</Text> */}
+			<Box direction="row" justify="between">
+				<FormField
+					label="Från"
+					name={`${affiliation.id}-from`}
+					value={affiliation.fromYear}
+					onChange={React.useCallback(
+						(event: React.ChangeEvent<HTMLInputElement>) => {
+							dispatchPersonDomainParts({
+								type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+								payload: {
+									personDomainPartId: personDomainPart.id,
+									affiliationId: affiliation.id,
+									field: 'fromYear',
+									value: event.target.value,
+								},
+							});
+						},
+						[]
+					)}
+					validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+				/>
+				<FormField
+					name={`${affiliation.id}-until`}
+					label="Till"
+					value={affiliation.untilYear}
+					validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+					onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+						dispatchPersonDomainParts({
+							type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
+							payload: {
+								personDomainPartId: personDomainPart.id,
+								affiliationId: affiliation.id,
+								field: 'untilYear',
+								value: event.target.value,
+							},
+						});
+					}}
+				/>
+				<TrashButton
+					plain
+					onClick={() => {
+						dispatchPersonDomainParts({
+							type: PersonDomainPartActionType.DELETE_AFFILIATION,
+							payload: {
+								personDomainPartId: personDomainPart.id,
+								affiliationId: affiliation.id,
+							},
+						});
+					}}
+				/>
+			</Box>
+		</Card>
+	);
+});
+
+const StringFormField = React.memo(function UnmemoizedStringFormField({
 	label,
 	value,
 	field,
@@ -731,7 +836,7 @@ const StringFormField = function ({
 			validate={validate}
 		/>
 	);
-};
+});
 
 const TrashButton = function ({
 	onClick,
