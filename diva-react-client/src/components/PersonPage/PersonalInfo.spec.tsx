@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import {
 	createCompletePerson,
@@ -22,6 +22,27 @@ jest.mock('../ExternalLink', () => {
 	});
 });
 
+jest.mock('grommet', () => ({
+	...jest.requireActual('grommet'),
+	NameValueList: jest.fn((props: any) => {
+		const { children } = props;
+		return <div>{children}</div>;
+	}),
+	NameValuePair: jest.fn((props: any) => {
+		const { children, name } = props;
+		return (
+			<div>
+				<p>{name}</p>
+				{children}
+			</div>
+		);
+	}),
+	Text: jest.fn((props: any) => {
+		const { children } = props;
+		return <p>{children}</p>;
+	}),
+}));
+
 describe('PersonalInfo', () => {
 	it('should take a person', () => {
 		render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
@@ -41,7 +62,7 @@ describe('PersonalInfo', () => {
 			expect(ListWithLabel).toHaveBeenCalled();
 			expect(ListWithLabel).toHaveBeenLastCalledWith(
 				expect.objectContaining({
-					label: '',
+					label: 'Alternativa namn (namnformer som förekommit i publikationer)',
 					list: [
 						'someAlternativeFamilyName, someAlternativeGivenName',
 						'someOtherAlternativeFamilyName, someOtherAlternativeGivenName',
@@ -103,6 +124,32 @@ describe('PersonalInfo', () => {
 				}),
 				expect.any(Object)
 			);
+		});
+
+		it('should display yearOfBirth, yearOfDeath and emailAddress if present', () => {
+			const person = createCompletePerson();
+
+			render(<ComponentToTest person={person} />);
+
+			expect(screen.getByText('Födelseår')).toBeInTheDocument();
+			expect(screen.getByText('1900')).toBeInTheDocument();
+			expect(screen.getByText('Dödsår')).toBeInTheDocument();
+			expect(screen.getByText('2000')).toBeInTheDocument();
+			expect(screen.getByText('E-Post')).toBeInTheDocument();
+			expect(screen.getByText('foo@bar.com')).toBeInTheDocument();
+		});
+
+		it('should not display yearOfBirth, yearOfDeath and emailAddress not if present', () => {
+			const person = createMinimumPersonWithIdAndName();
+
+			render(<ComponentToTest person={person} />);
+
+			expect(screen.getByText('Födelseår')).toBeInTheDocument();
+			expect(screen.queryByText('1900')).not.toBeInTheDocument();
+			expect(screen.getByText('Dödsår')).toBeInTheDocument();
+			expect(screen.queryByText('2000')).not.toBeInTheDocument();
+			expect(screen.getByText('E-Post')).toBeInTheDocument();
+			expect(screen.queryByText('foo@bar.com')).not.toBeInTheDocument();
 		});
 	});
 });
