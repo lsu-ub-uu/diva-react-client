@@ -20,20 +20,20 @@ import {
 	PersonDomainPart,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
-import getDomainCollection from '../../divaData/resources';
-import PersonViewEdit from './PersonViewEdit';
-import { useAuth } from '../../context/AuthContext';
+import getDomainCollection from '../../../divaData/resources';
+import PersonViewEdit from '../PersonViewEdit';
+import { useAuth } from '../../../context/AuthContext';
 import {
 	convertToFormPersonDomainPart,
 	FormPersonDomainPart,
-} from './PersonEdit/FormPersonDomainPart';
+} from './FormPersonDomainPart';
 import {
 	PersonDomainPartActionType,
 	personDomainPartReducer,
-} from './PersonEdit/personDomainPartReducer';
-import { convertToFormPerson, FormPerson } from './PersonEdit/FormPerson';
-import { PersonActionType, personReducer } from './PersonEdit/personReducer';
-import BackButton from '../BackButton';
+} from './personDomainPartReducer';
+import { convertToFormPerson, FormPerson } from './FormPerson';
+import { PersonActionType, personReducer } from './personReducer';
+import BackButton from '../../BackButton';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**

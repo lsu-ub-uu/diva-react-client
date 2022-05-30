@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import PersonView from './PersonView';
-import PersonEdit from './PersonEdit';
+import PersonEdit from './PersonEdit/PersonEdit';
 import PersonFetcher from './PersonFetcher';
 
 // eslint-disable-next-line react/require-default-props
@@ -18,7 +18,6 @@ const PersonPage = function ({ edit = false }: { edit?: boolean }) {
 				const { person, organisations, personDomainParts } =
 					injectedProps.record;
 				if (edit) {
-					console.log(injectedProps.record);
 					return (
 						<PersonEdit
 							originalPerson={person}
