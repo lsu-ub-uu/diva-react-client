@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
-import { RecordType } from 'diva-cora-ts-api-wrapper';
 import PersonPage from '.';
 import PersonView from './PersonView';
 import {
@@ -27,10 +26,10 @@ jest.mock('./PersonView', () => {
 
 let Child: (props: any) => JSX.Element;
 
-const mockedRecordFetcher = jest.fn();
-jest.mock('../RecordFetcher', () => {
+const mockedPersonFetcher = jest.fn();
+jest.mock('./PersonFetcher', () => {
 	return function RFetcher(props: any) {
-		mockedRecordFetcher(props);
+		mockedPersonFetcher(props);
 		const { children } = props;
 		Child = children;
 		return null;
@@ -46,24 +45,12 @@ beforeAll(() => {
 });
 
 describe('The Person component', () => {
-	it('should render RecordFetcher with recordType RecordType.Person', () => {
-		render(<PersonPage />);
-
-		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
-			expect.objectContaining({
-				recordType: RecordType.Person,
-				id: expect.any(String),
-			})
-		);
-	});
-
-	it('should render RecordFetcher id from useParams', () => {
+	it('should render PersonFetcher with id from useParams', () => {
 		useParams.mockReturnValueOnce({ personId: 'someNiceId' });
 		render(<PersonPage />);
 
-		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
+		expect(mockedPersonFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
-				recordType: expect.any(String),
 				id: 'someNiceId',
 			})
 		);
@@ -71,24 +58,23 @@ describe('The Person component', () => {
 		useParams.mockReturnValueOnce({ personId: 'someOtherId' });
 		render(<PersonPage />);
 
-		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
+		expect(mockedPersonFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
-				recordType: expect.any(String),
 				id: 'someOtherId',
 			})
 		);
 	});
 
-	it('should not render RecordFetcher if id from useParams is empty string or undefined', () => {
+	it('should not render PersonFetcher if id from useParams is empty string or undefined', () => {
 		useParams.mockReturnValueOnce({ personId: '' });
 		render(<PersonPage />);
 
-		expect(mockedRecordFetcher).not.toHaveBeenCalled();
+		expect(mockedPersonFetcher).not.toHaveBeenCalled();
 
 		useParams.mockReturnValueOnce({});
 		render(<PersonPage />);
 
-		expect(mockedRecordFetcher).not.toHaveBeenCalled();
+		expect(mockedPersonFetcher).not.toHaveBeenCalled();
 	});
 
 	it('should render "Ange ID för att hämta person." if id from useParams is empty string or undefined', () => {
@@ -116,10 +102,10 @@ describe('The Person component', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('should render PersonView with person from RecordFetcher', () => {
+	it('should render PersonView with person from PersonFetcher', () => {
 		render(<PersonPage />);
 
-		render(<Child record={personWithDomain} />);
+		render(<Child record={{ person: personWithDomain }} />);
 
 		expect(PersonView).toHaveBeenCalledTimes(1);
 		expect(PersonView).toHaveBeenCalledWith(
@@ -130,11 +116,11 @@ describe('The Person component', () => {
 		);
 	});
 
-	it('should render PersonView with person from RecordFetcher 2', () => {
+	it('should render PersonView with person from PersonFetcher 2', () => {
 		const person = createCompletePerson();
 		render(<PersonPage />);
 
-		render(<Child record={person} />);
+		render(<Child record={{ person }} />);
 
 		expect(PersonView).toHaveBeenCalledTimes(1);
 		expect(PersonView).toHaveBeenCalledWith(

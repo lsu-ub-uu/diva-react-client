@@ -147,10 +147,11 @@ const PersonEdit = function ({
 
 	const updateStringField = React.useCallback(
 		(field: string, value: string) => {
+			const castField = field as keyof FormPerson;
 			dispatchPerson({
 				type: PersonActionType.UPDATE_STRING_FIELD,
 				payload: {
-					field,
+					field: castField,
 					value,
 				},
 			});
