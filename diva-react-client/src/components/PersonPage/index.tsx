@@ -26,7 +26,7 @@ const PersonPage = function ({ edit = false }: { edit?: boolean }) {
 						/>
 					);
 				}
-				return <PersonView person={injectedProps.record.person} />;
+				return <PersonView person={person} />;
 			}}
 		</PersonFetcher>
 	);

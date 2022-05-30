@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
+import { Organisation, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonPage from '.';
 import PersonView from './PersonView';
 import {
@@ -8,6 +9,7 @@ import {
 	personWithDomain,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
+import PersonEdit from './PersonEdit/PersonEdit';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<
@@ -19,6 +21,12 @@ jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;
 
 jest.mock('./PersonView', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./PersonEdit/PersonEdit', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -129,5 +137,69 @@ describe('The Person component', () => {
 			}),
 			expect.any(Object)
 		);
+	});
+
+	describe('if edit is set', () => {
+		it('should not render PersonView', () => {
+			const person = createCompletePerson();
+
+			render(<PersonPage edit />);
+
+			render(<Child record={{ person }} />);
+
+			expect(PersonView).not.toHaveBeenCalled();
+		});
+
+		it('should render PersonEdit', () => {
+			const person = createCompletePerson();
+
+			render(<PersonPage edit />);
+
+			render(
+				<Child record={{ person, organisations: [], personDomainParts: [] }} />
+			);
+
+			expect(PersonEdit).toHaveBeenCalledTimes(1);
+			expect(PersonEdit).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					originalPerson: person,
+					originalOrganisations: [],
+					originalPersonDomainParts: [],
+				}),
+				expect.any(Object)
+			);
+
+			const organisations: Organisation[] = [
+				{
+					id: 'someId',
+					alternativeName: '',
+					name: 'someName',
+					organisationType: 'subOrganisation',
+					recordType: 'organisation',
+				},
+			];
+
+			const personDomainParts: PersonDomainPart[] = [
+				{
+					id: 'someId',
+					affiliations: [],
+					domain: 'uu',
+					recordType: 'personDomainPart',
+					identifiers: [],
+				},
+			];
+
+			render(<Child record={{ person, organisations, personDomainParts }} />);
+
+			expect(PersonEdit).toHaveBeenCalledTimes(2);
+			expect(PersonEdit).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					originalPerson: person,
+					originalOrganisations: organisations,
+					originalPersonDomainParts: personDomainParts,
+				}),
+				expect.any(Object)
+			);
+		});
 	});
 });
