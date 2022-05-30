@@ -1,9 +1,4 @@
-import {
-	getPersonById,
-	getRecordById,
-	Person,
-	RecordType,
-} from 'diva-cora-ts-api-wrapper';
+import { getRecordById, RecordType } from 'diva-cora-ts-api-wrapper';
 import React from 'react';
 import useApi from '../hooks/useApi';
 
