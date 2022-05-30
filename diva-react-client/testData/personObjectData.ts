@@ -68,6 +68,7 @@ export const createCompletePerson = () => {
 	];
 
 	completePerson.biographySwedish = 'A nice biography<br/> foobar';
+	completePerson.biographyEnglish = 'A nice biography in English<br/> foobar';
 
 	completePerson.otherAffiliation = {
 		name: 'SomeOtherAffiliation',
@@ -86,6 +87,10 @@ export const createCompletePerson = () => {
 			recordId: 'personDomainPart3',
 		},
 	];
+
+	completePerson.yearOfBirth = '1900';
+	completePerson.yearOfDeath = '2000';
+	completePerson.emailAddress = 'foo@bar.com';
 
 	return completePerson;
 };

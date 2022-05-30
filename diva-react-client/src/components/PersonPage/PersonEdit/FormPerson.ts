@@ -37,6 +37,8 @@ export interface FormPerson {
 	biographySwedish: string;
 
 	personDomainParts: string[];
+
+	public: string;
 }
 
 const returnStringIfUndefined = (field: string | undefined) => {
@@ -77,5 +79,6 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 		personDomainParts,
 		yearOfBirth: returnStringIfUndefined(person.yearOfBirth),
 		yearOfDeath: returnStringIfUndefined(person.yearOfDeath),
+		public: person.public,
 	};
 };
