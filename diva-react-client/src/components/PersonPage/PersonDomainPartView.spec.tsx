@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { Text } from 'grommet';
 import { Organisation, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonDomainPartView from './PersonDomainPartView';
-import ListWithLabel from './ListWithLabel';
 import getDomainCollection from '../../divaData/resources';
 import AffiliationDisplay from './AffiliationDisplay';
 import useApi from '../../hooks/useApi';
@@ -27,6 +27,14 @@ jest.mock('./AffiliationDisplay', () => {
 
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;
+
+jest.mock('grommet', () => ({
+	...jest.requireActual('grommet'),
+	Text: jest.fn((props: any) => {
+		const { children } = props;
+		return <p>{children}</p>;
+	}),
+}));
 
 const someBarePersonDomainPart: PersonDomainPart = {
 	id: 'someId',
@@ -116,44 +124,33 @@ describe('PersonDomainPartView', () => {
 		expectHeadingWithText('DomänId: someOtherDomainId');
 	});
 
-	it('should NOT call ListWithLabel with identifiers if identifiers undefined', () => {
+	it('should NOT call Tag with first identifier, if identifiers is undefined', () => {
 		render(
 			<PersonDomainPartView personDomainPart={someBarePersonDomainPart} />
 		);
 
-		expect(ListWithLabel).not.toHaveBeenCalled();
+		expect(Text).not.toHaveBeenCalled();
 	});
 
-	it('should call ListWithLabel with identifiers', () => {
+	it('should call Tag with label and first identifier', () => {
 		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
 
-		expect(ListWithLabel).toHaveBeenCalledWith(
+		expect(Text).toHaveBeenCalledWith(
 			expect.objectContaining({
-				list: somePersonDomainPart.identifiers,
-				label: expect.any(String),
+				size: 'small',
+				children: ['Lokal identifikator: ', 'someIdentifier'],
 			}),
 			expect.any(Object)
 		);
+
 		render(
 			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
 		);
 
-		expect(ListWithLabel).toHaveBeenCalledWith(
+		expect(Text).toHaveBeenCalledWith(
 			expect.objectContaining({
-				list: someOtherPersonDomainPart.identifiers,
-				label: expect.any(String),
-			}),
-			expect.any(Object)
-		);
-	});
-
-	it('should call ListWithLabel with identifiers', () => {
-		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
-
-		expect(ListWithLabel).toHaveBeenCalledWith(
-			expect.objectContaining({
-				list: expect.any(Array),
-				label: 'Lokal identifikator',
+				size: 'small',
+				children: ['Lokal identifikator: ', 'someOtherIdentifier'],
 			}),
 			expect.any(Object)
 		);

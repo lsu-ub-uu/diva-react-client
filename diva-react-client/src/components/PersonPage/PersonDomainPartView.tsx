@@ -34,7 +34,7 @@ const PersonDomainPartView = function ({
 				</Text>
 			)}
 
-			{personDomainPart.affiliations && (
+			{personDomainPart.affiliations && personDomainPart.affiliations.length && (
 				<StyledUl>
 					{personDomainPart.affiliations.map((organisation) => {
 						return (
