@@ -32,7 +32,7 @@ import {
 	personDomainPartReducer,
 } from './personDomainPartReducer';
 import { convertToFormPerson, FormPerson } from './FormPerson';
-import { PersonActionType, personReducer } from './personReducer';
+import { PersonAction, PersonActionType, personReducer } from './personReducer';
 import BackButton from '../../BackButton';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
@@ -303,125 +303,22 @@ const PersonEdit = function ({
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.librisIDs.map((identifier, index) => {
-							return (
-								<Card
-									// eslint-disable-next-line react/no-array-index-key
-									key={`libris-${index}`}
-									direction="row"
-									justify="between"
-									align="center"
-									margin={{ top: 'small', bottom: 'small' }}
-									pad="small"
-								>
-									<FormField
-										name={`libris-${index}`}
-										label="Libris ID"
-										value={identifier}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
-												payload: {
-													field: 'librisIDs',
-													index,
-													value: event.target.value,
-												},
-											});
-										}}
-										validate={validateWithRegex(
-											/(^[0-9]{2,10}$)|(^https:\/\/libris\.kb\.se\/[0-9A-Za-z.#]{2,50}$)/,
-											`Ange ett giltigt Libris-ID`
-										)}
-									/>
-									<TrashButton
-										onClick={() => {
-											dispatchPerson({
-												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-												payload: {
-													field: 'librisIDs',
-													index,
-												},
-											});
-										}}
-									/>
-								</Card>
-							);
-						})}
-						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
-							<AddButton
-								label="Lägg till Libris ID"
-								plain
-								onClick={() => {
-									dispatchPerson({
-										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
-										payload: {
-											field: 'librisIDs',
-										},
-									});
-								}}
-							/>
-						</Box>
+						{/* Break out as sub-component */}
+						<StringArray
+							stringArray={person.librisIDs}
+							label="Libris ID"
+							field="librisIDs"
+							dispatchPerson={dispatchPerson}
+						/>
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.viafIDs.map((identifier, index) => {
-							return (
-								<Card
-									// eslint-disable-next-line react/no-array-index-key
-									key={`viaf-${index}`}
-									direction="row"
-									justify="between"
-									align="center"
-									margin={{ top: 'small', bottom: 'small' }}
-									pad="small"
-								>
-									<FormField
-										name={`viaf-${index}`}
-										label="VIAF"
-										value={identifier}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
-												payload: {
-													field: 'viafIDs',
-													index,
-													value: event.target.value,
-												},
-											});
-										}}
-										validate={validateWithRegex(
-											/^[1-9]\d(\d{0,7}|\d{17,20})$/,
-											`Ange ett giltigt VIAF-ID`
-										)}
-									/>
-									<TrashButton
-										onClick={() => {
-											dispatchPerson({
-												type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-												payload: {
-													field: 'viafIDs',
-													index,
-												},
-											});
-										}}
-									/>
-								</Card>
-							);
-						})}
-						<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
-							<AddButton
-								label="Lägg till VIAF"
-								plain
-								onClick={() => {
-									dispatchPerson({
-										type: PersonActionType.ADD_ARRAY_STRING_FIELD,
-										payload: {
-											field: 'viafIDs',
-										},
-									});
-								}}
-							/>
-						</Box>
+						<StringArray
+							stringArray={person.viafIDs}
+							label="VIAF"
+							field="viafIDs"
+							dispatchPerson={dispatchPerson}
+						/>
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
@@ -718,6 +615,81 @@ const PersonEdit = function ({
 				<BackButton />
 			</Box>
 		</Grid>
+	);
+};
+
+const StringArray = function ({
+	stringArray,
+	label,
+	field,
+	dispatchPerson,
+}: {
+	stringArray: string[];
+	label: string;
+	field: keyof FormPerson;
+	dispatchPerson: (value: PersonAction) => void;
+}) {
+	return (
+		<>
+			{stringArray.map((value, index) => {
+				return (
+					<Card
+						// eslint-disable-next-line react/no-array-index-key
+						key={`libris-${index}`}
+						direction="row"
+						justify="between"
+						align="center"
+						margin={{ top: 'small', bottom: 'small' }}
+						pad="small"
+					>
+						<FormField
+							name={`${field}-${index}`}
+							label={label}
+							value={value}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
+									payload: {
+										field,
+										index,
+										value: event.target.value,
+									},
+								});
+							}}
+							validate={validateWithRegex(
+								/(^[0-9]{2,10}$)|(^https:\/\/libris\.kb\.se\/[0-9A-Za-z.#]{2,50}$)/,
+								`Ange ett giltigt Libris-ID`
+							)}
+						/>
+						<TrashButton
+							onClick={() => {
+								dispatchPerson({
+									type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+									payload: {
+										field,
+										index,
+									},
+								});
+							}}
+						/>
+					</Card>
+				);
+			})}
+			<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
+				<AddButton
+					label={`Lägg till ${label}`}
+					plain
+					onClick={() => {
+						dispatchPerson({
+							type: PersonActionType.ADD_ARRAY_STRING_FIELD,
+							payload: {
+								field,
+							},
+						});
+					}}
+				/>
+			</Box>
+		</>
 	);
 };
 
