@@ -1,4 +1,3 @@
-import { PersonDomainPart } from './PersonDomainPart';
 import { Record } from './Record';
 
 export type Name = {
