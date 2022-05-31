@@ -4,6 +4,7 @@ import {
 	Name,
 	Person,
 } from 'diva-cora-ts-api-wrapper';
+import { Repeatable } from './Repeatable';
 
 export interface FormPerson {
 	id: string;
@@ -20,9 +21,9 @@ export interface FormPerson {
 
 	emailAddress: string;
 
-	alternativeNames: Name[];
+	alternativeNames: Repeatable<Name>[];
 
-	externalURLs: ExternalUrl[];
+	externalURLs: Repeatable<ExternalUrl>[];
 
 	otherAffiliation: Affiliation;
 
@@ -56,20 +57,22 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 			personDomainParts.push(pdp.recordId);
 		});
 	}
+
+	const alternativeNames = createRepeatableArray<Name>(person.alternativeNames);
+	const externalURLs = createRepeatableArray<ExternalUrl>(person.externalURLs);
+
 	return {
 		id: person.id,
 		domains: returnEmptyArrayIfUndefined<string>(person.domains),
 		academicTitle: returnStringIfUndefined(person.academicTitle),
-		alternativeNames: returnEmptyArrayIfUndefined<Name>(
-			person.alternativeNames
-		),
+		alternativeNames,
 		authorisedName: person.authorisedName
 			? person.authorisedName
 			: { familyName: '', givenName: '' },
 		biographyEnglish: returnStringIfUndefined(person.biographyEnglish),
 		biographySwedish: returnStringIfUndefined(person.biographySwedish),
 		emailAddress: returnStringIfUndefined(person.emailAddress),
-		externalURLs: returnEmptyArrayIfUndefined<ExternalUrl>(person.externalURLs),
+		externalURLs,
 		librisIDs: returnEmptyArrayIfUndefined<string>(person.librisIDs),
 		orcids: returnEmptyArrayIfUndefined<string>(person.orcids),
 		viafIDs: returnEmptyArrayIfUndefined<string>(person.viafIDs),
@@ -82,3 +85,15 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 		public: person.public,
 	};
 };
+function createRepeatableArray<T>(array?: T[]): Repeatable<T>[] {
+	const repeatableArray: Repeatable<T>[] = [];
+	if (array) {
+		array.forEach((content, repeatId) => {
+			repeatableArray.push({
+				repeatId,
+				content,
+			});
+		});
+	}
+	return repeatableArray;
+}

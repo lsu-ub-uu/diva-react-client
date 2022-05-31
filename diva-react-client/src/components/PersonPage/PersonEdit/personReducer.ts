@@ -1,11 +1,13 @@
 import { ExternalUrl, Name } from 'diva-cora-ts-api-wrapper';
 import { FormPerson } from '../../../types/FormPerson';
+import { Repeatable } from '../../../types/Repeatable';
 
 export enum PersonActionType {
 	UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
 	UPDATE_ARRAY_STRING_FIELD = 'UPDATE_ARRAY_STRING_FIELD',
 	ADD_ARRAY_STRING_FIELD = 'ADD_ARRAY_STRING_FIELD',
 	DELETE_ARRAY_WITH_INDEX = 'DELETE_ARRAY_WITH_INDEX',
+	DELETE_ARRAY_WITH_ID = 'DELETE_ARRAY_WITH_ID',
 	UPDATE_ARRAY_OBJECT_FIELD = 'UPDATE_ARRAY_OBJECT_FIELD',
 	ADD_ARRAY_OBJECT = 'ADD_ARRAY_OBJECT',
 	UPDATE_OBJECT = 'UPDATE_OBJECT',
@@ -33,6 +35,9 @@ interface PersonActionUpdateArrayObject
 
 interface PersonActionDeleteArrayIndex extends PersonActionPayload {
 	index: number;
+}
+interface PersonActionDeleteArrayId extends PersonActionPayload {
+	repeatId: number;
 }
 
 interface PersonActionAddObject extends PersonActionPayload {
@@ -67,6 +72,10 @@ export type PersonAction =
 	| {
 			type: PersonActionType.DELETE_ARRAY_WITH_INDEX;
 			payload: PersonActionDeleteArrayIndex;
+	  }
+	| {
+			type: PersonActionType.DELETE_ARRAY_WITH_ID;
+			payload: PersonActionDeleteArrayId;
 	  };
 
 export const personReducer = (
@@ -103,15 +112,18 @@ export const personReducer = (
 		case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD: {
 			const actionPayload = payload as PersonActionUpdateArrayObject;
 			const { field, index, childField, value } = actionPayload;
-			const currentArray = state[field] as any[];
+			const currentArray = state[field] as Repeatable<Name | ExternalUrl>[];
 
 			return {
 				...state,
-				[field]: currentArray.map((item: Name | ExternalUrl, i: number) => {
-					if (index === i) {
+				[field]: currentArray.map((item) => {
+					if (index === item.repeatId) {
 						return {
-							...item,
-							[childField]: value,
+							repeatId: item.repeatId,
+							content: {
+								...item.content,
+								[childField]: value,
+							},
 						};
 					}
 					return item;
@@ -130,14 +142,29 @@ export const personReducer = (
 				}),
 			};
 		}
-		case PersonActionType.ADD_ARRAY_OBJECT: {
-			const actionPayload = payload as PersonActionAddObject;
-			const { field, emptyObject } = actionPayload;
-			const currentArray = state[field] as Object[];
+		case PersonActionType.DELETE_ARRAY_WITH_ID: {
+			const actionPayload = payload as PersonActionDeleteArrayId;
+			const { field, repeatId } = actionPayload;
+			const currentArray = state[field] as any[];
 
 			return {
 				...state,
-				[field]: currentArray.concat(emptyObject),
+				[field]: currentArray.filter((item: any) => {
+					return item.repeatId !== repeatId;
+				}),
+			};
+		}
+		case PersonActionType.ADD_ARRAY_OBJECT: {
+			const actionPayload = payload as PersonActionAddObject;
+			const { field, emptyObject } = actionPayload;
+			const currentArray = state[field] as Repeatable<any>[];
+
+			return {
+				...state,
+				[field]: currentArray.concat({
+					content: emptyObject,
+					repeatId: getNextRepeatIdForArray(currentArray),
+				}),
 			};
 		}
 		case PersonActionType.UPDATE_OBJECT: {
@@ -158,3 +185,16 @@ export const personReducer = (
 		}
 	}
 };
+function getNextRepeatIdForArray(currentArray: Repeatable<any>[]): number {
+	if (currentArray.length === 0) {
+		return 0;
+	}
+
+	const repeatIds = currentArray.map(({ repeatId }) => repeatId);
+
+	const currentlyHighestRepeatId = repeatIds.reduce((previous, current) =>
+		current > previous ? current : previous
+	);
+
+	return currentlyHighestRepeatId + 1;
+}

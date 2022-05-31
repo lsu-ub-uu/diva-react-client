@@ -202,68 +202,70 @@ const PersonEdit = function ({
 							}}
 						/>
 					</Box>
-					{person.alternativeNames.map((alternativeName, index) => (
-						<Card
-							// eslint-disable-next-line react/no-array-index-key
-							key={index}
-							margin={{ top: 'small', bottom: 'small' }}
-							pad="small"
-						>
-							<CardHeader pad="small">
-								<Heading margin="none" level="6">
-									Alternativt namn
-								</Heading>
-							</CardHeader>
+					{person.alternativeNames.map(
+						({ repeatId, content: alternativeName }) => (
+							<Card
+								// eslint-disable-next-line react/no-array-index-key
+								key={repeatId}
+								margin={{ top: 'small', bottom: 'small' }}
+								pad="small"
+							>
+								<CardHeader pad="small">
+									<Heading margin="none" level="6">
+										Alternativt namn
+									</Heading>
+								</CardHeader>
 
-							<Box direction="row" justify="between">
-								<FormField
-									label="Efternamn"
-									name={alternativeName.familyName}
-									value={alternativeName.familyName}
-									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-										dispatchPerson({
-											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-											payload: {
-												field: 'alternativeNames',
-												childField: 'familyName',
-												value: event.target.value,
-												index,
-											},
-										});
-									}}
-									required
-								/>
-								<FormField
-									label="Förnamn"
-									name={alternativeName.givenName}
-									value={alternativeName.givenName}
-									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-										dispatchPerson({
-											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-											payload: {
-												field: 'alternativeNames',
-												childField: 'givenName',
-												value: event.target.value,
-												index,
-											},
-										});
-									}}
-								/>
+								<Box direction="row" justify="between">
+									<FormField
+										label="Efternamn"
+										name={alternativeName.familyName}
+										value={alternativeName.familyName}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+												payload: {
+													field: 'alternativeNames',
+													childField: 'familyName',
+													value: event.target.value,
+													index: repeatId,
+												},
+											});
+										}}
+										required
+									/>
+									<FormField
+										label="Förnamn"
+										name={alternativeName.givenName}
+										value={alternativeName.givenName}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											dispatchPerson({
+												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+												payload: {
+													field: 'alternativeNames',
+													childField: 'givenName',
+													value: event.target.value,
+													index: repeatId,
+												},
+											});
+										}}
+									/>
 
-								<TrashButton
-									onClick={() => {
-										dispatchPerson({
-											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-											payload: {
-												field: 'alternativeNames',
-												index,
-											},
-										});
-									}}
-								/>
-							</Box>
-						</Card>
-					))}
+									<TrashButton
+										onClick={() => {
+											dispatchPerson({
+												type: PersonActionType.DELETE_ARRAY_WITH_ID,
+												payload: {
+													field: 'alternativeNames',
+													repeatId,
+												},
+											});
+										}}
+									/>
+								</Box>
+							</Card>
+						)
+					)}
 					<AddButton
 						label="Lägg till alternativt namn"
 						plain
@@ -351,11 +353,11 @@ const PersonEdit = function ({
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.externalURLs.map((externalURL, index) => {
+						{person.externalURLs.map(({ content: externalURL, repeatId }) => {
 							return (
 								<Card
 									// eslint-disable-next-line react/no-array-index-key
-									key={index}
+									key={repeatId}
 									margin={{ top: 'small', bottom: 'small' }}
 									pad="small"
 								>
@@ -367,7 +369,7 @@ const PersonEdit = function ({
 									<Box direction="row" justify="between">
 										<FormField
 											label="Länktext"
-											name={`externalURLs[${index}].linkTitle`}
+											name={`externalURLs[${repeatId}].linkTitle`}
 											value={externalURL.linkTitle}
 											onChange={(
 												event: React.ChangeEvent<HTMLInputElement>
@@ -378,7 +380,7 @@ const PersonEdit = function ({
 														field: 'externalURLs',
 														childField: 'linkTitle',
 														value: event.target.value,
-														index,
+														index: repeatId,
 													},
 												});
 											}}
@@ -386,7 +388,7 @@ const PersonEdit = function ({
 										/>
 										<FormField
 											label="URL"
-											name={`externalURLs[${index}].URL`}
+											name={`externalURLs[${repeatId}].URL`}
 											value={externalURL.URL}
 											onChange={(
 												event: React.ChangeEvent<HTMLInputElement>
@@ -397,7 +399,7 @@ const PersonEdit = function ({
 														field: 'externalURLs',
 														childField: 'URL',
 														value: event.target.value,
-														index,
+														index: repeatId,
 													},
 												});
 											}}
@@ -413,7 +415,7 @@ const PersonEdit = function ({
 													type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
 													payload: {
 														field: 'externalURLs',
-														index,
+														index: repeatId,
 													},
 												});
 											}}

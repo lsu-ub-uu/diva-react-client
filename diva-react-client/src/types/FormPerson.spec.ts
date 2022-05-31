@@ -60,17 +60,26 @@ describe('FormPerson', () => {
 				domains: ['someDomain', 'someOtherDomain'],
 				alternativeNames: [
 					{
-						familyName: 'someAlternativeFamilyName',
-						givenName: 'someAlternativeGivenName',
+						content: {
+							familyName: 'someAlternativeFamilyName',
+							givenName: 'someAlternativeGivenName',
+						},
+						repeatId: 0,
 					},
 					{
-						familyName: 'someOtherAlternativeFamilyName',
-						givenName: 'someOtherAlternativeGivenName',
+						content: {
+							familyName: 'someOtherAlternativeFamilyName',
+							givenName: 'someOtherAlternativeGivenName',
+						},
+						repeatId: 1,
 					},
 				],
 				externalURLs: [
-					{ URL: 'http://du.se', linkTitle: 'DU' },
-					{ URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+					{ content: { URL: 'http://du.se', linkTitle: 'DU' }, repeatId: 0 },
+					{
+						content: { URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+						repeatId: 1,
+					},
 				],
 				biographySwedish: 'A nice biography<br/> foobar',
 				otherAffiliation: {

@@ -9,8 +9,8 @@ import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
 import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
-import { FormPerson } from './PersonEdit/FormPerson';
-import { FormPersonDomainPart } from './PersonEdit/FormPersonDomainPart';
+import { FormPerson } from '../../types/FormPerson';
+import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -120,23 +120,30 @@ const Parent = styled.div`
 `;
 
 const PersonalInfo = function ({ person }: { person: FormPerson }) {
-	const alternativeNames: string[] = person.alternativeNames.map((name) => {
-		return displayName(name);
-	});
+	const alternativeNames: string[] = person.alternativeNames.map(
+		({ content: name }) => {
+			return displayName(name);
+		}
+	);
 
 	return (
 		<Parent>
 			{alternativeNames.length > 0 && (
-				<ListWithLabel
-					label="Alternativa namn (namnformer som förekommit i publikationer)"
-					list={alternativeNames}
-				/>
+				// <ListWithLabel
+				// 	label="Alternativa namn (namnformer som förekommit i publikationer)"
+				// 	list={alternativeNames}
+				// />
+				<ul>
+					{person.alternativeNames.map(({ content: name, repeatId }) => {
+						return <li key={repeatId}>{displayName(name)}</li>;
+					})}
+				</ul>
 			)}
 			{person.externalURLs.length > 0 && (
 				<ul>
-					{person.externalURLs.map((link) => {
+					{person.externalURLs.map(({ content: link, repeatId }) => {
 						return (
-							<li key={link.URL}>
+							<li key={repeatId}>
 								<ExternalLink URL={link.URL} text={link.linkTitle} />
 							</li>
 						);
