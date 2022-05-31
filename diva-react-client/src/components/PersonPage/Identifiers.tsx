@@ -1,7 +1,7 @@
 import React from 'react';
 import { NameValueList, NameValuePair, Text } from 'grommet';
 import { Person } from 'diva-cora-ts-api-wrapper';
-import { FormPerson } from './PersonEdit/FormPerson';
+import { FormPerson } from '../../types/FormPerson';
 
 const possiblyOutputListWithLabel = (
 	list: string[] | undefined,

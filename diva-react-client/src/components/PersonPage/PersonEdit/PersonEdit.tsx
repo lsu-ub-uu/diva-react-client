@@ -24,16 +24,16 @@ import getDomainCollection from '../../../divaData/resources';
 import PersonViewEdit from '../PersonViewEdit';
 import { useAuth } from '../../../context/AuthContext';
 import {
-	convertToFormPersonDomainPart,
-	FormPersonDomainPart,
-} from './FormPersonDomainPart';
-import {
 	PersonDomainPartActionType,
 	personDomainPartReducer,
 } from './personDomainPartReducer';
-import { convertToFormPerson, FormPerson } from './FormPerson';
 import { PersonAction, PersonActionType, personReducer } from './personReducer';
 import BackButton from '../../BackButton';
+import { convertToFormPerson, FormPerson } from '../../../types/FormPerson';
+import {
+	convertToFormPersonDomainPart,
+	FormPersonDomainPart,
+} from '../../../types/FormPersonDomainPart';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**

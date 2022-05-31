@@ -1,7 +1,7 @@
 import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
-} from '../../../../testData/personObjectData';
+} from '../../testData/personObjectData';
 import { convertToFormPerson, FormPerson } from './FormPerson';
 
 describe('FormPerson', () => {

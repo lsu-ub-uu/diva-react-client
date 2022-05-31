@@ -10,6 +10,7 @@ import PersonSearch from './components/PersonSearch';
 import PersonPage from './components/PersonPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthComponent from './components/Login/AuthComponent';
+import FakeLogin from '../fake/FakeLogin';
 
 const theme: ThemeType = {
 	global: {
@@ -70,6 +71,7 @@ const App = function () {
 				<Layout>
 					<Sidebar>
 						<AuthComponent />
+						<FakeLogin />
 					</Sidebar>
 					<Main>
 						<Routes>

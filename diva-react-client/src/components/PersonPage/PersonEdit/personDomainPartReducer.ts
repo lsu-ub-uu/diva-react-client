@@ -1,4 +1,4 @@
-import { FormPersonDomainPart } from './FormPersonDomainPart';
+import { FormPersonDomainPart } from '../../../types/FormPersonDomainPart';
 
 export enum PersonDomainPartActionType {
 	SET_AFFILIATION_FIELD = 'set_affiliation_field',

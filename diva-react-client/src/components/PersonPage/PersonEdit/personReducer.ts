@@ -1,5 +1,5 @@
 import { ExternalUrl, Name } from 'diva-cora-ts-api-wrapper';
-import { FormPerson } from './FormPerson';
+import { FormPerson } from '../../../types/FormPerson';
 
 export enum PersonActionType {
 	UPDATE_STRING_FIELD = 'UPDATE_STRING_FIELD',
