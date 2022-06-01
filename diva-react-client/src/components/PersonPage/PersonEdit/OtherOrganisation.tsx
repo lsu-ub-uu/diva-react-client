@@ -38,7 +38,7 @@ export const OtherOrganisation = React.memo(
 							},
 							[]
 						)}
-						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+						validate={validateWithRegex(/^.+$/, INVALID_YEAR_MESSAGE)}
 					/>
 				</Box>
 				<Box direction="row" justify="between">
