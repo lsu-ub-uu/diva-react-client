@@ -81,9 +81,12 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 		librisIDs: returnEmptyArrayIfUndefined<string>(person.librisIDs),
 		orcids: returnEmptyArrayIfUndefined<string>(person.orcids),
 		viafIDs: returnEmptyArrayIfUndefined<string>(person.viafIDs),
-		otherAffiliation: person.otherAffiliation
-			? person.otherAffiliation
-			: { name: '', fromYear: '', untilYear: '' },
+		otherAffiliation: {
+			name: '',
+			fromYear: '',
+			untilYear: '',
+			...person.otherAffiliation,
+		},
 		personDomainParts,
 		yearOfBirth: returnStringIfUndefined(person.yearOfBirth),
 		yearOfDeath: returnStringIfUndefined(person.yearOfDeath),
