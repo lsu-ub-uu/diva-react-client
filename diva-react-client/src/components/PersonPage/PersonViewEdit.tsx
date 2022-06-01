@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { NameValueList, NameValuePair, Text, Box } from 'grommet';
+import { NameValueList, NameValuePair, Text, Box, Heading } from 'grommet';
 
 import { Name } from 'diva-cora-ts-api-wrapper';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
 import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
-import { FormPerson } from '../../types/FormPerson';
+import { BinaryString, FormPerson } from '../../types/FormPerson';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
 
 const StyledPersonView = styled.div`
@@ -98,9 +98,20 @@ const PersonViewEdit = function ({
 						<AffiliationDisplay affiliation={person.otherAffiliation} />
 					</Box>
 				)}
+				<Box>
+					<Heading level="4">Publik</Heading>
+					<p data-testid="public">{translateBinaryString(person.public)}</p>
+				</Box>
 			</Main>
 		</StyledPersonView>
 	);
+};
+
+const translateBinaryString = (isPublic: BinaryString) => {
+	if (isPublic === 'yes') {
+		return 'Ja';
+	}
+	return 'Nej';
 };
 
 const Parent = styled.div`
