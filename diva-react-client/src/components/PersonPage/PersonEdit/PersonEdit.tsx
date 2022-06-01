@@ -39,56 +39,6 @@ import {
 import { Repeatable } from '../../../types/Repeatable';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
-/**
- *
- *
- * Vi behöver:
- * - Personen
- * - personDomainParts för de domäner som nuvarande användaren har rättighet till
- * - organisationsnamnen som är kopplade till ovannämnda personDomainParts
- *
- * Vi har:
- * - Vi får in HELA personen, inklusive persondomainparts och organisationer
- * - en basal uppsättning formulärfält som vi kan använda
- * - transformering från person till FormPerson
- *
- *
- * Vi behöver göra:
- * - lägga till samtliga fält
- * - undersöka om bara vissa fält får visas
- * - lägga till validering till berörda fält
- * -
- * - transformera från FormPerson till Person
- * - transformera från Person till CoraData
- * - skicka update
- * - testa på något sätt
- * - lägg till högersida
- * - organisationssök efter domain för att kunna lägga till nya organisationer
- *
- * Till specialistmötet
- * - X lägga till samtliga (för alla synliga) fält X
- * - X lägg till validering X
- * - X lägg till högersida (den ska hänga med när det ändras på vänster sida) X
- * -- scrollbar för båda för att kunna scrolla oberoende
- * - icke inloggad
- * - transformera från FormPerson till Person
- * - Lägg till rubriker ifrån U&Ms förslag
- * - edit-knapp
- *
- * Bonus:
- * - inloggad läge
- *
- * GUI
- * - jobba med "editera"-knappen
- * - "lokal identifikator" i inloggad läge i vyn
- * - Nice-to-have: Tillbaka-knappen - att den är på bra ställe oavsett om vi är i edit eller vy läge
- * - Listan på alternativa namn i vy
- * -- de ser konstiga ut i presentationen, jobba med formateringen
- * -- När en lägger till ett nytt alternativt namn dyker det upp ett komma
- *
- * @param param0
- * @returns
- */
 
 const PersonEdit = function ({
 	originalPerson,
@@ -205,25 +155,9 @@ const PersonEdit = function ({
 							)}
 						/>
 					</Box>
-					{person.alternativeNames.map((repeatable) => (
-						<AlternativeNameForm
-							key={repeatable.repeatId}
-							repeatable={repeatable}
-							dispatchPerson={dispatchPerson}
-						/>
-					))}
-					<AddButton
-						label="Lägg till alternativt namn"
-						plain
-						onClick={React.useCallback(() => {
-							dispatchPerson({
-								type: PersonActionType.ADD_ARRAY_OBJECT,
-								payload: {
-									field: 'alternativeNames',
-									emptyObject: { familyName: '', givenName: '' },
-								},
-							});
-						}, [])}
+					<AlternativeNames
+						alternativeNames={person.alternativeNames}
+						dispatchPerson={dispatchPerson}
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringFormField
@@ -541,28 +475,12 @@ const PersonEdit = function ({
 				</Form>
 			</Box>
 			<Box>
-				{/* <pre>{JSON.stringify(affiliations, null, 2)}</pre> */}
-
 				<PersonViewEdit
 					person={person}
 					organisations={organisationMap}
 					personDomainParts={personDomainParts}
 				/>
-
-				{/* <h2>Person</h2>
-				<pre>{JSON.stringify(person, null, 2)}</pre>
-				<h2>Organisations</h2>
-				<pre>
-					{JSON.stringify(
-						Object.fromEntries(organisationMap.entries()),
-						null,
-						2
-					)}
-				</pre>
-				<h2>PersonDomainParts</h2>
-				<pre>{JSON.stringify(personDomainParts, null, 2)}</pre> */}
 			</Box>
-			{/* <PersonView person={person} /> */}
 			<Box margin={{ left: '1em', top: '1em' }}>
 				<BackButton />
 			</Box>
@@ -602,6 +520,41 @@ const MemoizedFormField = React.memo(
 				component={component}
 				disabled={disabled}
 			/>
+		);
+	}
+);
+
+const AlternativeNames = React.memo(
+	({
+		alternativeNames,
+		dispatchPerson,
+	}: {
+		alternativeNames: Repeatable<Name>[];
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<>
+				{alternativeNames.map((repeatable) => (
+					<AlternativeNameForm
+						key={repeatable.repeatId}
+						repeatable={repeatable}
+						dispatchPerson={dispatchPerson}
+					/>
+				))}
+				<AddButton
+					label="Lägg till alternativt namn"
+					plain
+					onClick={React.useCallback(() => {
+						dispatchPerson({
+							type: PersonActionType.ADD_ARRAY_OBJECT,
+							payload: {
+								field: 'alternativeNames',
+								emptyObject: { familyName: '', givenName: '' },
+							},
+						});
+					}, [])}
+				/>
+			</>
 		);
 	}
 );
