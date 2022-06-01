@@ -402,10 +402,9 @@ const PersonEdit = function ({
 						/>
 					</Box>
 
-					{person.personDomainParts &&
-						person.personDomainParts.length > 0 &&
+					{person.personDomainParts.length > 0 &&
 						person.personDomainParts.map((pdpId) => {
-							const personDomainPart = originalPersonDomainParts.find(
+							const personDomainPart = personDomainParts.find(
 								(pdp) => pdp.id === pdpId
 							);
 							if (
