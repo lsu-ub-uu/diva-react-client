@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks/dom';
+import { renderHook } from '@testing-library/react';
 import { useSearchParams } from 'react-router-dom';
 import usePersonSearchParams from './usePersonSearchParams';
 

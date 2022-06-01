@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks/dom';
+import { renderHook } from '@testing-library/react';
 import { LOGIN_STATUS, useAuth } from '../../../context/AuthContext';
 import useWebRedirectLogin, { receiveMessage } from './useWebRedirectLogin';
 import { window } from './window';

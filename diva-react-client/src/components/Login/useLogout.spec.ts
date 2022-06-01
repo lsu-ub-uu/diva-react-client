@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks/dom';
+import { renderHook } from '@testing-library/react';
 import axios from 'axios';
 import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 import { Auth } from '../../context/types';
