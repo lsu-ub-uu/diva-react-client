@@ -16,6 +16,7 @@ import {
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
+	Affiliation,
 	ExternalUrl,
 	Name,
 	Organisation,
@@ -33,9 +34,14 @@ import {
 } from './personDomainPartReducer';
 import { PersonAction, PersonActionType, personReducer } from './personReducer';
 import BackButton from '../../BackButton';
-import { convertToFormPerson, FormPerson } from '../../../types/FormPerson';
+import {
+	convertToFormPerson,
+	FormAffiliation,
+	FormPerson,
+} from '../../../types/FormPerson';
 import {
 	convertToFormPersonDomainPart,
+	FormAffiliationLink,
 	FormPersonDomainPart,
 } from '../../../types/FormPersonDomainPart';
 import { Repeatable } from '../../../types/Repeatable';
@@ -262,6 +268,11 @@ const PersonEdit = function ({
 						dispatchPersonDomainParts={dispatchPersonDomainParts}
 					/>
 
+					<OtherOrganisation
+						otherAffiliation={person.otherAffiliation}
+						dispatchPerson={dispatchPerson}
+					/>
+
 					<Public publicValue={person.public} dispatchPerson={dispatchPerson} />
 
 					<Box direction="column" align="end" margin={{ top: 'medium' }}>
@@ -289,6 +300,87 @@ const PersonEdit = function ({
 		</Grid>
 	);
 };
+
+const OtherOrganisation = React.memo(
+	({
+		otherAffiliation,
+		dispatchPerson,
+	}: {
+		otherAffiliation: FormAffiliation;
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<Card
+				margin={{ top: 'small', bottom: 'small' }}
+				pad="small"
+				key="otherOrganisation"
+			>
+				<CardHeader pad="small">Annan organisation</CardHeader>
+				<Box direction="row" justify="between">
+					<MemoizedFormField
+						label="Namn"
+						name="otherAffiliation-name"
+						value={otherAffiliation.name}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_OBJECT,
+									payload: {
+										field: 'otherAffiliation',
+										childField: 'name',
+										value: event.target.value,
+									},
+								});
+							},
+							[]
+						)}
+						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+					/>
+				</Box>
+				<Box direction="row" justify="between">
+					<MemoizedFormField
+						label="Från"
+						name="otherAffiliation-from"
+						value={otherAffiliation.fromYear}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_OBJECT,
+									payload: {
+										field: 'otherAffiliation',
+										childField: 'fromYear',
+										value: event.target.value,
+									},
+								});
+							},
+							[]
+						)}
+						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+					/>
+					<MemoizedFormField
+						name="otherAffiliation-until"
+						label="Till"
+						value={otherAffiliation.untilYear}
+						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_OBJECT,
+									payload: {
+										field: 'otherAffiliation',
+										childField: 'untilYear',
+										value: event.target.value,
+									},
+								});
+							},
+							[]
+						)}
+					/>
+				</Box>
+			</Card>
+		);
+	}
+);
 
 const PersonDomainParts = React.memo(
 	({

@@ -1,12 +1,13 @@
-import {
-	Affiliation,
-	ExternalUrl,
-	Name,
-	Person,
-} from 'diva-cora-ts-api-wrapper';
+import { ExternalUrl, Name, Person } from 'diva-cora-ts-api-wrapper';
 import { Repeatable } from './Repeatable';
 
 export type BinaryString = 'yes' | 'no';
+
+export type FormAffiliation = {
+	name: string;
+	fromYear: string;
+	untilYear: string;
+};
 
 export interface FormPerson {
 	id: string;
@@ -27,7 +28,7 @@ export interface FormPerson {
 
 	externalURLs: Repeatable<ExternalUrl>[];
 
-	otherAffiliation: Affiliation;
+	otherAffiliation: FormAffiliation;
 
 	orcids: string[];
 

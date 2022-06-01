@@ -1,6 +1,6 @@
 import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 
-export type FormAffiliation = {
+export type FormAffiliationLink = {
 	id: string;
 	fromYear: string;
 	untilYear: string;
@@ -10,13 +10,13 @@ export interface FormPersonDomainPart {
 	id: string;
 	identifiers: string[];
 	domain: string;
-	affiliations: FormAffiliation[];
+	affiliations: FormAffiliationLink[];
 }
 
 export const convertToFormPersonDomainPart = (
 	personDomainPart: PersonDomainPart
 ): FormPersonDomainPart => {
-	let affiliations: FormAffiliation[] = [];
+	let affiliations: FormAffiliationLink[] = [];
 
 	if (personDomainPart.affiliations) {
 		affiliations = personDomainPart.affiliations.map((affiliation) => {
