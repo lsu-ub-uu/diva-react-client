@@ -16,6 +16,7 @@ import {
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
+	ExternalUrl,
 	Name,
 	Organisation,
 	Person,
@@ -185,7 +186,6 @@ const PersonEdit = function ({
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{/* Break out as sub-component */}
 						<StringArray
 							stringArray={person.librisIDs}
 							label="Libris ID"
@@ -232,94 +232,10 @@ const PersonEdit = function ({
 						})}
 					</Box>
 
-					<Box margin={{ top: 'large', bottom: 'large' }}>
-						{person.externalURLs.map(({ content: externalURL, repeatId }) => {
-							return (
-								<Card
-									// eslint-disable-next-line react/no-array-index-key
-									key={repeatId}
-									margin={{ top: 'small', bottom: 'small' }}
-									pad="small"
-								>
-									<CardHeader pad="small">
-										<Heading margin="none" level="6">
-											Extern url
-										</Heading>
-									</CardHeader>
-									<Box direction="row" justify="between">
-										<MemoizedFormField
-											label="Länktext"
-											name={`externalURLs[${repeatId}].linkTitle`}
-											value={externalURL.linkTitle}
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) => {
-												dispatchPerson({
-													type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-													payload: {
-														field: 'externalURLs',
-														childField: 'linkTitle',
-														value: event.target.value,
-														index: repeatId,
-													},
-												});
-											}}
-											required
-										/>
-										<MemoizedFormField
-											label="URL"
-											name={`externalURLs[${repeatId}].URL`}
-											value={externalURL.URL}
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) => {
-												dispatchPerson({
-													type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-													payload: {
-														field: 'externalURLs',
-														childField: 'URL',
-														value: event.target.value,
-														index: repeatId,
-													},
-												});
-											}}
-											required
-											validate={validateWithRegex(
-												/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
-												`Ange en giltig URL.`
-											)}
-										/>
-										<TrashButton
-											onClick={() => {
-												dispatchPerson({
-													type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
-													payload: {
-														field: 'externalURLs',
-														index: repeatId,
-													},
-												});
-											}}
-										/>
-									</Box>
-								</Card>
-							);
-						})}
-
-						<Box direction="row" justify="start" margin={{ top: 'small' }}>
-							<AddButton
-								label="Lägg till extern URL"
-								onClick={React.useCallback(() => {
-									dispatchPerson({
-										type: PersonActionType.ADD_ARRAY_OBJECT,
-										payload: {
-											field: 'externalURLs',
-											emptyObject: { linkTitle: '', URL: '' },
-										},
-									});
-								}, [])}
-							/>
-						</Box>
-					</Box>
+					<ExternalUrls
+						externalURLs={person.externalURLs}
+						dispatchPerson={dispatchPerson}
+					/>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<MemoizedFormField
@@ -520,6 +436,103 @@ const MemoizedFormField = React.memo(
 				component={component}
 				disabled={disabled}
 			/>
+		);
+	}
+);
+
+const ExternalUrls = React.memo(
+	({
+		externalURLs,
+		dispatchPerson,
+	}: {
+		externalURLs: Repeatable<ExternalUrl>[];
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<Box margin={{ top: 'large', bottom: 'large' }}>
+				{externalURLs.map(({ content: externalURL, repeatId }) => {
+					return (
+						<Card
+							// eslint-disable-next-line react/no-array-index-key
+							key={repeatId}
+							margin={{ top: 'small', bottom: 'small' }}
+							pad="small"
+						>
+							<CardHeader pad="small">
+								<Heading margin="none" level="6">
+									Extern url
+								</Heading>
+							</CardHeader>
+							<Box direction="row" justify="between">
+								<MemoizedFormField
+									label="Länktext"
+									name={`externalURLs[${repeatId}].linkTitle`}
+									value={externalURL.linkTitle}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+										dispatchPerson({
+											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+											payload: {
+												field: 'externalURLs',
+												childField: 'linkTitle',
+												value: event.target.value,
+												index: repeatId,
+											},
+										});
+									}}
+									required
+								/>
+								<MemoizedFormField
+									label="URL"
+									name={`externalURLs[${repeatId}].URL`}
+									value={externalURL.URL}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+										dispatchPerson({
+											type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+											payload: {
+												field: 'externalURLs',
+												childField: 'URL',
+												value: event.target.value,
+												index: repeatId,
+											},
+										});
+									}}
+									required
+									validate={validateWithRegex(
+										/(?=^.{3,255}$)^(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._+~#=]{1,240}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+										`Ange en giltig URL.`
+									)}
+								/>
+								<TrashButton
+									onClick={() => {
+										dispatchPerson({
+											type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+											payload: {
+												field: 'externalURLs',
+												index: repeatId,
+											},
+										});
+									}}
+								/>
+							</Box>
+						</Card>
+					);
+				})}
+
+				<Box direction="row" justify="start" margin={{ top: 'small' }}>
+					<AddButton
+						label="Lägg till extern URL"
+						onClick={React.useCallback(() => {
+							dispatchPerson({
+								type: PersonActionType.ADD_ARRAY_OBJECT,
+								payload: {
+									field: 'externalURLs',
+									emptyObject: { linkTitle: '', URL: '' },
+								},
+							});
+						}, [])}
+					/>
+				</Box>
+			</Box>
 		);
 	}
 );
