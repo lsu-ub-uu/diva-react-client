@@ -361,22 +361,7 @@ const PersonEdit = function ({
 							);
 						})}
 
-					<Box align="start" pad={{ left: 'medium' }}>
-						<Box margin={{ bottom: 'small' }}>
-							<Text>Publik</Text>
-						</Box>
-						<RadioButtonGroup
-							name="radio"
-							options={[
-								{ label: 'Ja', value: 'yes' },
-								{ label: 'Nej', value: 'no' },
-							]}
-							onChange={React.useCallback(
-								(event) => console.log(event.target.value),
-								[]
-							)}
-						/>
-					</Box>
+					<Public publicValue={person.public} dispatchPerson={dispatchPerson} />
 
 					<Box direction="column" align="end" margin={{ top: 'medium' }}>
 						<Button
@@ -436,6 +421,38 @@ const MemoizedFormField = React.memo(
 				component={component}
 				disabled={disabled}
 			/>
+		);
+	}
+);
+
+const Public = React.memo(
+	({
+		publicValue,
+		dispatchPerson,
+	}: {
+		publicValue: string;
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<Box align="start" pad={{ left: 'medium' }}>
+				<Box margin={{ bottom: 'small' }}>
+					<Text>Publik</Text>
+				</Box>
+				<RadioButtonGroup
+					name="radio"
+					options={[
+						{ label: 'Ja', value: 'yes' },
+						{ label: 'Nej', value: 'no' },
+					]}
+					value={publicValue}
+					onChange={React.useCallback(() => {
+						dispatchPerson({
+							type: PersonActionType.TOGGLE_PUBLIC,
+							payload: { field: 'public' },
+						});
+					}, [])}
+				/>
+			</Box>
 		);
 	}
 );

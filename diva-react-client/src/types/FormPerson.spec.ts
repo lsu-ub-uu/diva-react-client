@@ -12,11 +12,12 @@ describe('FormPerson', () => {
 				'familyName',
 				'givenName'
 			);
+			minimalPerson.public = 'no';
 			const expectedFormPerson: FormPerson = {
 				id: 'someId',
 				authorisedName: { familyName: 'familyName', givenName: 'givenName' },
 				personDomainParts: [],
-				public: 'yes',
+				public: 'no',
 				academicTitle: '',
 				domains: [],
 				yearOfBirth: '',

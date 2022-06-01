@@ -11,6 +11,7 @@ export enum PersonActionType {
 	UPDATE_ARRAY_OBJECT_FIELD = 'UPDATE_ARRAY_OBJECT_FIELD',
 	ADD_ARRAY_OBJECT = 'ADD_ARRAY_OBJECT',
 	UPDATE_OBJECT = 'UPDATE_OBJECT',
+	TOGGLE_PUBLIC = 'TOGGLE_PUBLIC',
 }
 
 interface PersonActionPayload {
@@ -76,6 +77,10 @@ export type PersonAction =
 	| {
 			type: PersonActionType.DELETE_ARRAY_WITH_ID;
 			payload: PersonActionDeleteArrayId;
+	  }
+	| {
+			type: PersonActionType.TOGGLE_PUBLIC;
+			payload: PersonActionPayload;
 	  };
 
 export const personReducer = (
@@ -178,6 +183,14 @@ export const personReducer = (
 					...currentObject,
 					[childField]: value,
 				},
+			};
+		}
+		case PersonActionType.TOGGLE_PUBLIC: {
+			const newPublic = state.public === 'yes' ? 'no' : 'yes';
+
+			return {
+				...state,
+				public: newPublic,
 			};
 		}
 		default: {

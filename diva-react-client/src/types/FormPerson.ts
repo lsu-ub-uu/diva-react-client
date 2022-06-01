@@ -6,6 +6,8 @@ import {
 } from 'diva-cora-ts-api-wrapper';
 import { Repeatable } from './Repeatable';
 
+export type BinaryString = 'yes' | 'no';
+
 export interface FormPerson {
 	id: string;
 
@@ -39,7 +41,7 @@ export interface FormPerson {
 
 	personDomainParts: string[];
 
-	public: string;
+	public: BinaryString;
 }
 
 const returnStringIfUndefined = (field: string | undefined) => {
@@ -60,6 +62,8 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 
 	const alternativeNames = createRepeatableArray<Name>(person.alternativeNames);
 	const externalURLs = createRepeatableArray<ExternalUrl>(person.externalURLs);
+
+	const isPublic = person.public === 'yes' ? 'yes' : 'no';
 
 	return {
 		id: person.id,
@@ -82,7 +86,7 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 		personDomainParts,
 		yearOfBirth: returnStringIfUndefined(person.yearOfBirth),
 		yearOfDeath: returnStringIfUndefined(person.yearOfDeath),
-		public: person.public,
+		public: isPublic,
 	};
 };
 function createRepeatableArray<T>(array?: T[]): Repeatable<T>[] {
