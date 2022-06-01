@@ -12,9 +12,11 @@ import {
 	TextArea,
 	RadioButtonGroup,
 	Text,
+	TextAreaExtendedProps,
 } from 'grommet';
 import { Add, Trash } from 'grommet-icons';
 import {
+	Name,
 	Organisation,
 	Person,
 	PersonDomainPart,
@@ -34,6 +36,7 @@ import {
 	convertToFormPersonDomainPart,
 	FormPersonDomainPart,
 } from '../../../types/FormPersonDomainPart';
+import { Repeatable } from '../../../types/Repeatable';
 
 const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 /**
@@ -98,14 +101,8 @@ const PersonEdit = function ({
 }) {
 	const { auth } = useAuth();
 
-	console.log('originalPerson', originalPerson);
-
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
-
-	console.log('formPerson', originalFormPersonWithEmptyDefaults);
-	console.log('personDomainParts', originalPersonDomainParts);
-	console.log('organisations', originalOrganisations);
 
 	const initialOrganisations: Map<string, string> = new Map();
 
@@ -172,104 +169,53 @@ const PersonEdit = function ({
 					messages={{ required: 'Fältet får inte vara tomt' }}
 				>
 					<Box direction="row" justify="between" align="center">
-						<FormField
+						<MemoizedFormField
 							label="Efternamn"
 							required
 							value={person.authorisedName.familyName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_OBJECT,
-									payload: {
-										field: 'authorisedName',
-										childField: 'familyName',
-										value: event.target.value,
-									},
-								});
-							}}
+							onChange={React.useCallback(
+								(event: React.ChangeEvent<HTMLInputElement>) => {
+									dispatchPerson({
+										type: PersonActionType.UPDATE_OBJECT,
+										payload: {
+											field: 'authorisedName',
+											childField: 'familyName',
+											value: event.target.value,
+										},
+									});
+								},
+								[]
+							)}
 						/>
-						<FormField
+						<MemoizedFormField
 							label="Förnamn"
 							value={person.authorisedName.givenName}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								dispatchPerson({
-									type: PersonActionType.UPDATE_OBJECT,
-									payload: {
-										field: 'authorisedName',
-										childField: 'givenName',
-										value: event.target.value,
-									},
-								});
-							}}
+							onChange={React.useCallback(
+								(event: React.ChangeEvent<HTMLInputElement>) => {
+									dispatchPerson({
+										type: PersonActionType.UPDATE_OBJECT,
+										payload: {
+											field: 'authorisedName',
+											childField: 'givenName',
+											value: event.target.value,
+										},
+									});
+								},
+								[]
+							)}
 						/>
 					</Box>
-					{person.alternativeNames.map(
-						({ repeatId, content: alternativeName }) => (
-							<Card
-								// eslint-disable-next-line react/no-array-index-key
-								key={repeatId}
-								margin={{ top: 'small', bottom: 'small' }}
-								pad="small"
-							>
-								<CardHeader pad="small">
-									<Heading margin="none" level="6">
-										Alternativt namn
-									</Heading>
-								</CardHeader>
-
-								<Box direction="row" justify="between">
-									<FormField
-										label="Efternamn"
-										name={alternativeName.familyName}
-										value={alternativeName.familyName}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-												payload: {
-													field: 'alternativeNames',
-													childField: 'familyName',
-													value: event.target.value,
-													index: repeatId,
-												},
-											});
-										}}
-										required
-									/>
-									<FormField
-										label="Förnamn"
-										name={alternativeName.givenName}
-										value={alternativeName.givenName}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											dispatchPerson({
-												type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
-												payload: {
-													field: 'alternativeNames',
-													childField: 'givenName',
-													value: event.target.value,
-													index: repeatId,
-												},
-											});
-										}}
-									/>
-
-									<TrashButton
-										onClick={() => {
-											dispatchPerson({
-												type: PersonActionType.DELETE_ARRAY_WITH_ID,
-												payload: {
-													field: 'alternativeNames',
-													repeatId,
-												},
-											});
-										}}
-									/>
-								</Box>
-							</Card>
-						)
-					)}
+					{person.alternativeNames.map((repeatable) => (
+						<AlternativeNameForm
+							key={repeatable.repeatId}
+							repeatable={repeatable}
+							dispatchPerson={dispatchPerson}
+						/>
+					))}
 					<AddButton
 						label="Lägg till alternativt namn"
 						plain
-						onClick={() => {
+						onClick={React.useCallback(() => {
 							dispatchPerson({
 								type: PersonActionType.ADD_ARRAY_OBJECT,
 								payload: {
@@ -277,7 +223,7 @@ const PersonEdit = function ({
 									emptyObject: { familyName: '', givenName: '' },
 								},
 							});
-						}}
+						}, [])}
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringFormField
@@ -337,7 +283,7 @@ const PersonEdit = function ({
 									margin={{ top: 'small', bottom: 'small' }}
 									pad="small"
 								>
-									<FormField
+									<MemoizedFormField
 										name={`orcid-${index}`}
 										label="ORCID"
 										value={identifier}
@@ -367,7 +313,7 @@ const PersonEdit = function ({
 										</Heading>
 									</CardHeader>
 									<Box direction="row" justify="between">
-										<FormField
+										<MemoizedFormField
 											label="Länktext"
 											name={`externalURLs[${repeatId}].linkTitle`}
 											value={externalURL.linkTitle}
@@ -386,7 +332,7 @@ const PersonEdit = function ({
 											}}
 											required
 										/>
-										<FormField
+										<MemoizedFormField
 											label="URL"
 											name={`externalURLs[${repeatId}].URL`}
 											value={externalURL.URL}
@@ -428,7 +374,7 @@ const PersonEdit = function ({
 						<Box direction="row" justify="start" margin={{ top: 'small' }}>
 							<AddButton
 								label="Lägg till extern URL"
-								onClick={() => {
+								onClick={React.useCallback(() => {
 									dispatchPerson({
 										type: PersonActionType.ADD_ARRAY_OBJECT,
 										payload: {
@@ -436,18 +382,20 @@ const PersonEdit = function ({
 											emptyObject: { linkTitle: '', URL: '' },
 										},
 									});
-								}}
+								}, [])}
 							/>
 						</Box>
 					</Box>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						<FormField
+						<MemoizedFormField
+							key="biografi"
 							label="Biografi"
 							value={person.biographySwedish}
 							component={TextArea}
 						/>
-						<FormField
+						<MemoizedFormField
+							key="biography"
 							label="Biography"
 							value={person.biographyEnglish}
 							component={TextArea}
@@ -499,7 +447,7 @@ const PersonEdit = function ({
 													</CardHeader>
 													{/* <Text>{affiliation.name}</Text> */}
 													<Box direction="row" justify="between">
-														<FormField
+														<MemoizedFormField
 															label="Från"
 															name={`${affiliation.id}-from`}
 															value={affiliation.fromYear}
@@ -521,7 +469,7 @@ const PersonEdit = function ({
 																INVALID_YEAR_MESSAGE
 															)}
 														/>
-														<FormField
+														<MemoizedFormField
 															name={`${affiliation.id}-until`}
 															label="Till"
 															value={affiliation.untilYear}
@@ -574,7 +522,10 @@ const PersonEdit = function ({
 								{ label: 'Ja', value: 'yes' },
 								{ label: 'Nej', value: 'no' },
 							]}
-							onChange={(event) => console.log(event.target.value)}
+							onChange={React.useCallback(
+								(event) => console.log(event.target.value),
+								[]
+							)}
 						/>
 					</Box>
 
@@ -620,6 +571,121 @@ const PersonEdit = function ({
 	);
 };
 
+const MemoizedFormField = React.memo(
+	({
+		label,
+		required = false,
+		disabled = false,
+		value,
+		onChange = undefined,
+		name = undefined,
+		validate = undefined,
+		component = undefined,
+	}: {
+		label: string;
+		required?: boolean;
+		disabled?: boolean;
+		value: string;
+		onChange?: React.ChangeEventHandler<HTMLInputElement> &
+			((event: React.ChangeEvent<HTMLInputElement>) => void);
+		name?: string;
+		validate?: (value: string) => string | undefined;
+		component?: React.FC<TextAreaExtendedProps>;
+	}) => {
+		return (
+			<FormField
+				label={label}
+				name={name}
+				required={required}
+				value={value}
+				onChange={onChange}
+				validate={validate}
+				component={component}
+				disabled={disabled}
+			/>
+		);
+	}
+);
+
+const AlternativeNameForm = React.memo(
+	({
+		repeatable: { repeatId, content: alternativeName },
+		dispatchPerson,
+	}: {
+		repeatable: Repeatable<Name>;
+		dispatchPerson: (value: PersonAction) => void;
+	}) => {
+		return (
+			<Card
+				// eslint-disable-next-line react/no-array-index-key
+				key={repeatId}
+				margin={{ top: 'small', bottom: 'small' }}
+				pad="small"
+			>
+				<CardHeader pad="small">
+					<Heading margin="none" level="6">
+						Alternativt namn
+					</Heading>
+				</CardHeader>
+
+				<Box direction="row" justify="between">
+					<MemoizedFormField
+						label="Efternamn"
+						name={alternativeName.familyName}
+						value={alternativeName.familyName}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+									payload: {
+										field: 'alternativeNames',
+										childField: 'familyName',
+										value: event.target.value,
+										index: repeatId,
+									},
+								});
+							},
+							[repeatId]
+						)}
+						required
+					/>
+					<MemoizedFormField
+						label="Förnamn"
+						name={alternativeName.givenName}
+						value={alternativeName.givenName}
+						onChange={React.useCallback(
+							(event: React.ChangeEvent<HTMLInputElement>) => {
+								dispatchPerson({
+									type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+									payload: {
+										field: 'alternativeNames',
+										childField: 'givenName',
+										value: event.target.value,
+										index: repeatId,
+									},
+								});
+							},
+							[repeatId]
+						)}
+					/>
+
+					<TrashButton
+						onClick={() => {
+							dispatchPerson({
+								type: PersonActionType.DELETE_ARRAY_WITH_ID,
+								payload: {
+									field: 'alternativeNames',
+									repeatId,
+								},
+							});
+						}}
+					/>
+				</Box>
+			</Card>
+		);
+	}
+);
+
 const StringArray = function ({
 	stringArray,
 	label,
@@ -644,7 +710,7 @@ const StringArray = function ({
 						margin={{ top: 'small', bottom: 'small' }}
 						pad="small"
 					>
-						<FormField
+						<MemoizedFormField
 							name={`${field}-${index}`}
 							label={label}
 							value={value}
@@ -681,85 +747,91 @@ const StringArray = function ({
 				<AddButton
 					label={`Lägg till ${label}`}
 					plain
-					onClick={() => {
+					onClick={React.useCallback(() => {
 						dispatchPerson({
 							type: PersonActionType.ADD_ARRAY_STRING_FIELD,
 							payload: {
 								field,
 							},
 						});
-					}}
+					}, [field])}
 				/>
 			</Box>
 		</>
 	);
 };
 
-const StringFormField = function ({
-	label,
-	value,
-	field,
-	onChange,
-	validate = undefined,
-}: {
-	label: string;
-	value: string;
-	field: string;
-	onChange: (field: string, value: string) => void;
-	// eslint-disable-next-line react/require-default-props
-	validate?: (value: string) => string | undefined;
-}) {
-	return (
-		<FormField
-			name={field}
-			label={label}
-			value={value}
-			onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-				onChange(field, event.target.value);
-			}}
-			validate={validate}
-		/>
-	);
-};
+const StringFormField = React.memo(
+	({
+		label,
+		value,
+		field,
+		onChange,
+		validate = undefined,
+	}: {
+		label: string;
+		value: string;
+		field: string;
+		onChange: (field: string, value: string) => void;
+		// eslint-disable-next-line react/require-default-props
+		validate?: (value: string) => string | undefined;
+	}) => {
+		return (
+			<MemoizedFormField
+				name={field}
+				label={label}
+				value={value}
+				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+					onChange(field, event.target.value);
+				}}
+				validate={validate}
+			/>
+		);
+	}
+);
 
-const TrashButton = function ({
-	onClick,
-	plain = undefined,
-}: {
-	onClick: () => void;
-	// eslint-disable-next-line react/require-default-props
-	plain?: boolean;
-}) {
-	return (
-		<Button
-			icon={<Trash />}
-			label=""
-			plain={plain}
-			hoverIndicator
-			onClick={onClick}
-		/>
-	);
-};
-const AddButton = function ({
-	onClick,
-	plain = undefined,
-	label,
-}: {
-	onClick: () => void;
-	// eslint-disable-next-line react/require-default-props
-	plain?: boolean;
-	label: string;
-}) {
-	return (
-		<Button
-			icon={<Add />}
-			label={label}
-			plain={plain}
-			hoverIndicator
-			onClick={onClick}
-		/>
-	);
-};
+const TrashButton = React.memo(
+	({
+		onClick,
+		plain = undefined,
+	}: {
+		onClick: () => void;
+		// eslint-disable-next-line react/require-default-props
+		plain?: boolean;
+	}) => {
+		return (
+			<Button
+				icon={<Trash />}
+				label=""
+				plain={plain}
+				hoverIndicator
+				onClick={onClick}
+			/>
+		);
+	}
+);
+const AddButton = React.memo(
+	({
+		onClick,
+		plain = undefined,
+		label,
+	}: {
+		onClick: () => void;
+		// eslint-disable-next-line react/require-default-props
+		plain?: boolean;
+		label: string;
+	}) => {
+		return (
+			<Button
+				icon={<Add />}
+				label={label}
+				plain={plain}
+				hoverIndicator
+				onClick={onClick}
+			/>
+		);
+	}
+);
 
 const validateWithRegex =
 	(regex: RegExp, invalidMessage: string) => (value: string) => {

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { NameValueList, NameValuePair, Text, Box } from 'grommet';
 
 import { Name } from 'diva-cora-ts-api-wrapper';
-import ListWithLabel from './ListWithLabel';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
 import ExternalLink from '../ExternalLink';
@@ -30,14 +29,6 @@ const Top = styled.div`
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
 `;
-
-// const Left = styled.div`
-// 	grid-area: left;
-// `;
-
-// const Right = styled.div`
-// 	grid-area: right;
-// `;
 
 const Main = styled.div`
 	grid-area: main;
