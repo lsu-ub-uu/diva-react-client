@@ -1,3 +1,4 @@
+import { Person } from 'diva-cora-ts-api-wrapper';
 import {
 	createCompletePerson,
 	createMinimumPersonWithIdAndName,
@@ -6,6 +7,43 @@ import { convertToFormPerson, FormPerson } from './FormPerson';
 
 describe('FormPerson', () => {
 	describe('convertToFormPerson', () => {
+		it('converts a minimal person without name', () => {
+			const personWithoutName: Person = {
+				id: 'someId',
+				recordType: 'person',
+				personDomainParts: [],
+				public: 'yes',
+			};
+
+			const expectedFormPerson: FormPerson = {
+				id: 'someId',
+				authorisedName: { familyName: '', givenName: '' },
+				personDomainParts: [],
+				public: 'yes',
+				academicTitle: '',
+				domains: [],
+				yearOfBirth: '',
+				yearOfDeath: '',
+				emailAddress: '',
+				alternativeNames: [],
+				externalURLs: [],
+				otherAffiliation: {
+					name: '',
+					fromYear: '',
+					untilYear: '',
+				},
+				orcids: [],
+				viafIDs: [],
+				librisIDs: [],
+				biographyEnglish: '',
+				biographySwedish: '',
+			};
+
+			const formPerson: FormPerson = convertToFormPerson(personWithoutName);
+
+			expect(formPerson).toStrictEqual(expectedFormPerson);
+		});
+
 		it('converts a minimal person Object', () => {
 			const minimalPerson = createMinimumPersonWithIdAndName(
 				'someId',
