@@ -24,7 +24,6 @@ export const convertToFormPersonDomainPart = (
 				fromYear: '',
 				untilYear: '',
 				...affiliation,
-				organisation: undefined,
 			};
 		});
 	}
