@@ -1,4 +1,5 @@
 import { List, Person } from 'diva-cora-ts-api-wrapper';
+import { convertToFormPerson, FormPerson } from '../src/types/FormPerson';
 
 export const personWithDomain: Person = {
 	id: '2',
@@ -10,6 +11,33 @@ export const personWithDomain: Person = {
 	recordType: 'person',
 	personDomainParts: [],
 	public: 'yes',
+};
+
+export const formPersonWithDomain: FormPerson = {
+	id: '2',
+	authorisedName: {
+		familyName: 'Enequist',
+		givenName: 'Gerd',
+	},
+	domains: ['Uppsala Universitet', 'Test'],
+	personDomainParts: [],
+	public: 'yes',
+	academicTitle: '',
+	yearOfBirth: '',
+	yearOfDeath: '',
+	emailAddress: '',
+	alternativeNames: [],
+	externalURLs: [],
+	otherAffiliation: {
+		name: '',
+		fromYear: '',
+		untilYear: '',
+	},
+	orcids: [],
+	viafIDs: [],
+	librisIDs: [],
+	biographyEnglish: '',
+	biographySwedish: '',
 };
 
 export const createPersonObject = (
@@ -27,6 +55,40 @@ export const createPersonObject = (
 		personDomainParts: [],
 		public: 'yes',
 	};
+};
+
+export const createFormPersonObject = (
+	id: string = 'someId',
+	familyName: string = 'someFamilyName',
+	givenName: string = 'someGivenName'
+): FormPerson => {
+	const person: FormPerson = {
+		id,
+		authorisedName: {
+			familyName,
+			givenName,
+		},
+		personDomainParts: [],
+		public: 'yes',
+		domains: [],
+		academicTitle: '',
+		yearOfBirth: '',
+		yearOfDeath: '',
+		emailAddress: '',
+		alternativeNames: [],
+		externalURLs: [],
+		otherAffiliation: {
+			name: '',
+			fromYear: '',
+			untilYear: '',
+		},
+		orcids: [],
+		viafIDs: [],
+		librisIDs: [],
+		biographyEnglish: '',
+		biographySwedish: '',
+	};
+	return person;
 };
 
 export const threePersonObjects: Person[] = [
@@ -95,12 +157,26 @@ export const createCompletePerson = () => {
 	return completePerson;
 };
 
+export const createCompleteFormPerson = () => {
+	const person = createCompletePerson();
+
+	return convertToFormPerson(person);
+};
+
 export const createMinimumPersonWithIdAndName = (
 	id: string = 'someId',
 	familyName: string = 'LastName',
 	givenName: string = 'FirstName'
 ) => {
 	return createPersonObject(id, familyName, givenName);
+};
+
+export const createMinimumFormPersonWithIdAndName = (
+	id: string = 'someId',
+	familyName: string = 'LastName',
+	givenName: string = 'FirstName'
+) => {
+	return createFormPersonObject(id, familyName, givenName);
 };
 
 export const createListWithPersons = (persons: Person[]) => {
