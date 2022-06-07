@@ -91,6 +91,14 @@ describe('ListWithLabel...', () => {
 		expect(listItems[1]).toHaveTextContent('someOtherElement');
 	});
 
+	it('does not display strings only containing a comma', () => {
+		render(<ListWithLabel list={[',', ' ,', ', ', ' , ']} label="someLabel" />);
+
+		const listItems = screen.queryAllByRole('listitem');
+
+		expect(listItems).toHaveLength(0);
+	});
+
 	it('takes an optional parameter "tag"', () => {
 		render(<ListWithLabel list={defaultList} label="someLabel" tag />);
 	});
