@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { AlternativeNameForm } from './AlternativeNames';
+import { AlternativeNames } from './AlternativeNames';
+import userEvent from '@testing-library/user-event';
 
-const ComponentToTest = AlternativeNameForm;
+const ComponentToTest = AlternativeNames;
 
 // todo: mock-function dispatchPerson, ändra inputfält, kolla dispatchPerson anropas korrekt
 
@@ -20,15 +21,17 @@ describe('Alernatives names component', () => {
 
 		render(
 			<ComponentToTest
-				repeatable={alternativeName}
+				alternativeNames={[alternativeName]}
 				dispatchPerson={mockDispatchPerson}
 			/>
 		);
 
-		//screen.debug();
+		screen.debug();
+		const inputFields = screen.getAllByRole('textbox');
+		expect(inputFields[0]).toHaveAttribute('value', 'anka');
 
-		expect(screen.getByTestId('familyName')).toHaveAttribute('value', 'anka');
+		userEvent.type(inputFields[0], 'k');
 
-		// expect(mockDispatchPerson).toHaveBeenCalledTimes(1);
+		expect(mockDispatchPerson).toHaveBeenCalledTimes(1);
 	});
 });
