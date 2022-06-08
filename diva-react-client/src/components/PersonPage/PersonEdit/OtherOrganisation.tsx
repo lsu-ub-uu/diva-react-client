@@ -3,7 +3,7 @@ import { Box, Card, CardHeader } from 'grommet';
 import { PersonAction, PersonActionType } from './personReducer';
 import { FormAffiliation } from '../../../types/FormPerson';
 import { validateWithRegex, INVALID_YEAR_MESSAGE } from './PersonEdit';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 
 export const OtherOrganisation = React.memo(
 	({
@@ -21,7 +21,7 @@ export const OtherOrganisation = React.memo(
 			>
 				<CardHeader pad="small">Annan organisation</CardHeader>
 				<Box direction="row" justify="between">
-					<MemoizedFormField
+					<MemoizedTextField
 						label="Namn"
 						name="otherAffiliation-name"
 						value={otherAffiliation.name}
@@ -42,7 +42,7 @@ export const OtherOrganisation = React.memo(
 					/>
 				</Box>
 				<Box direction="row" justify="between">
-					<MemoizedFormField
+					<MemoizedTextField
 						label="Från"
 						name="otherAffiliation-from"
 						value={otherAffiliation.fromYear}
@@ -61,7 +61,7 @@ export const OtherOrganisation = React.memo(
 						)}
 						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
 					/>
-					<MemoizedFormField
+					<MemoizedTextField
 						name="otherAffiliation-until"
 						label="Till"
 						value={otherAffiliation.untilYear}

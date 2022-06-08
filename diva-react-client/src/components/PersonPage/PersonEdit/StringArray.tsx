@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Card } from 'grommet';
 import { PersonAction, PersonActionType } from './personReducer';
 import { FormPerson } from '../../../types/FormPerson';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 import { TrashButton, AddButton } from './Buttons';
 import { validateWithRegex } from './PersonEdit';
 
@@ -30,7 +30,7 @@ export const StringArray = function ({
 						margin={{ top: 'small', bottom: 'small' }}
 						pad="small"
 					>
-						<MemoizedFormField
+						<MemoizedTextField
 							name={`${field}-${index}`}
 							label={label}
 							value={value}

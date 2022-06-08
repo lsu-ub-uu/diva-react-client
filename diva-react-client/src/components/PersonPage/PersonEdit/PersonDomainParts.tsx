@@ -7,7 +7,7 @@ import {
 } from './personDomainPartReducer';
 import { FormPersonDomainPart } from '../../../types/FormPersonDomainPart';
 import { Auth } from '../../../context/types';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 import { TrashButton } from './Buttons';
 import { validateWithRegex, INVALID_YEAR_MESSAGE } from './PersonEdit';
 
@@ -68,7 +68,7 @@ export const PersonDomainParts = React.memo(
 												</CardHeader>
 												{/* <Text>{affiliation.name}</Text> */}
 												<Box direction="row" justify="between">
-													<MemoizedFormField
+													<MemoizedTextField
 														label="Från"
 														name={`${affiliation.id}-from`}
 														value={affiliation.fromYear}
@@ -90,7 +90,7 @@ export const PersonDomainParts = React.memo(
 															INVALID_YEAR_MESSAGE
 														)}
 													/>
-													<MemoizedFormField
+													<MemoizedTextField
 														name={`${affiliation.id}-until`}
 														label="Till"
 														value={affiliation.untilYear}

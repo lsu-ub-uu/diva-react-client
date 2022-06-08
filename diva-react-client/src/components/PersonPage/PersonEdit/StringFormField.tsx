@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 
 export const StringFormField = React.memo(
 	({
@@ -17,7 +17,7 @@ export const StringFormField = React.memo(
 		validate?: (value: string) => string | undefined;
 	}) => {
 		return (
-			<MemoizedFormField
+			<MemoizedTextField
 				name={field}
 				label={label}
 				value={value}

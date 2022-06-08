@@ -3,7 +3,7 @@ import { Box, Card, CardHeader, Heading } from 'grommet';
 import { Name } from 'diva-cora-ts-api-wrapper';
 import { PersonAction, PersonActionType } from './personReducer';
 import { Repeatable } from '../../../types/Repeatable';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 import { TrashButton, AddButton } from './Buttons';
 
 export const AlternativeNames = React.memo(
@@ -63,7 +63,7 @@ const AlternativeNameForm = React.memo(
 				</CardHeader>
 
 				<Box direction="row" justify="between">
-					<MemoizedFormField
+					<MemoizedTextField
 						label="Efternamn"
 						name={alternativeName.familyName}
 						value={alternativeName.familyName}
@@ -83,7 +83,7 @@ const AlternativeNameForm = React.memo(
 						)}
 						required
 					/>
-					<MemoizedFormField
+					<MemoizedTextField
 						label="Förnamn"
 						name={alternativeName.givenName}
 						value={alternativeName.givenName}

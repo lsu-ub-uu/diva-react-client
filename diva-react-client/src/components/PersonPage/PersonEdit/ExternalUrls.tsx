@@ -3,7 +3,7 @@ import { Box, Card, CardHeader, Heading } from 'grommet';
 import { ExternalUrl } from 'diva-cora-ts-api-wrapper';
 import { PersonAction, PersonActionType } from './personReducer';
 import { Repeatable } from '../../../types/Repeatable';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextField } from './MemoizedFormField';
 import { TrashButton, AddButton } from './Buttons';
 import { validateWithRegex } from './PersonEdit';
 
@@ -31,7 +31,7 @@ export const ExternalUrls = React.memo(
 								</Heading>
 							</CardHeader>
 							<Box direction="row" justify="between">
-								<MemoizedFormField
+								<MemoizedTextField
 									label="Länktext"
 									name={`externalURLs[${repeatId}].linkTitle`}
 									value={externalURL.linkTitle}
@@ -48,7 +48,7 @@ export const ExternalUrls = React.memo(
 									}}
 									required
 								/>
-								<MemoizedFormField
+								<MemoizedTextField
 									label="URL"
 									name={`externalURLs[${repeatId}].URL`}
 									value={externalURL.URL}

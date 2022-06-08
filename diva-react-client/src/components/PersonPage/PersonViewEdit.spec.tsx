@@ -66,6 +66,8 @@ describe('PersonView', () => {
 		expect(
 			screen.getByRole('heading', { name: 'SomeLastName, SomeFirstName' })
 		).toBeInTheDocument();
+
+		screen.getByRole('');
 	});
 
 	it('should render person public yes', () => {

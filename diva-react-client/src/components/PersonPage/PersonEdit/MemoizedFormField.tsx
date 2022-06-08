@@ -1,8 +1,8 @@
 /* eslint-disable react/require-default-props */
 import React from 'react';
-import { FormField, TextAreaExtendedProps } from 'grommet';
+import { FormField, TextArea, TextInput } from 'grommet';
 
-export const MemoizedFormField = React.memo(
+export const MemoizedTextField = React.memo(
 	({
 		label,
 		required = false,
@@ -11,7 +11,6 @@ export const MemoizedFormField = React.memo(
 		onChange = undefined,
 		name = undefined,
 		validate = undefined,
-		component = undefined,
 	}: {
 		label: string;
 		required?: boolean;
@@ -21,21 +20,53 @@ export const MemoizedFormField = React.memo(
 			((event: React.ChangeEvent<HTMLInputElement>) => void);
 		name?: string;
 		validate?: (value: string) => string | undefined;
-		component?: React.FC<TextAreaExtendedProps>;
 	}) => {
 		return (
 			<FormField
 				label={label}
 				name={name}
 				required={required}
-				value={value}
-				onChange={onChange}
 				validate={validate}
-				component={component}
 				disabled={disabled}
-			/>
+			>
+				<TextInput value={value} onChange={onChange} />
+			</FormField>
 		);
 	}
 );
 
-export default MemoizedFormField;
+export const MemoizedTextArea = React.memo(
+	({
+		label,
+		required = false,
+		disabled = false,
+		value,
+		onChange = undefined,
+		name = undefined,
+		validate = undefined,
+	}: {
+		label: string;
+		required?: boolean;
+		disabled?: boolean;
+		value: string;
+		onChange?: React.ChangeEventHandler<HTMLInputElement> &
+			((event: React.ChangeEvent<HTMLInputElement>) => void);
+		name?: string;
+		validate?: (value: string) => string | undefined;
+	}) => {
+		return (
+			<FormField
+				label={label}
+				name={name}
+				required={required}
+				validate={validate}
+				disabled={disabled}
+				onChange={onChange}
+			>
+				<TextArea value={value} />
+			</FormField>
+		);
+	}
+);
+
+export default MemoizedTextField;

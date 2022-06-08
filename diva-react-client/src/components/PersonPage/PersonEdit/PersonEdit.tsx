@@ -18,7 +18,7 @@ import {
 	FormPersonDomainPart,
 } from '../../../types/FormPersonDomainPart';
 import { OtherOrganisation } from './OtherOrganisation';
-import { MemoizedFormField } from './MemoizedFormField';
+import { MemoizedTextArea, MemoizedTextField } from './MemoizedFormField';
 import { StringFormField } from './StringFormField';
 import { StringArray } from './StringArray';
 import { AlternativeNames } from './AlternativeNames';
@@ -107,7 +107,7 @@ const PersonEdit = function ({
 					messages={{ required: 'Fältet får inte vara tomt' }}
 				>
 					<Box direction="row" justify="between" align="center">
-						<MemoizedFormField
+						<MemoizedTextField
 							label="Efternamn"
 							required
 							value={person.authorisedName.familyName}
@@ -125,7 +125,7 @@ const PersonEdit = function ({
 								[]
 							)}
 						/>
-						<MemoizedFormField
+						<MemoizedTextField
 							label="Förnamn"
 							value={person.authorisedName.givenName}
 							onChange={React.useCallback(
@@ -204,7 +204,7 @@ const PersonEdit = function ({
 									margin={{ top: 'small', bottom: 'small' }}
 									pad="small"
 								>
-									<MemoizedFormField
+									<MemoizedTextField
 										name={`orcid-${index}`}
 										label="ORCID"
 										value={identifier}
@@ -225,17 +225,15 @@ const PersonEdit = function ({
 					/>
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
-						<MemoizedFormField
+						<MemoizedTextArea
 							key="biografi"
 							label="Biografi"
 							value={person.biographySwedish}
-							component={TextArea}
 						/>
-						<MemoizedFormField
+						<MemoizedTextArea
 							key="biography"
 							label="Biography"
 							value={person.biographyEnglish}
-							component={TextArea}
 						/>
 					</Box>
 
