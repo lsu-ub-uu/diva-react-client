@@ -26,6 +26,7 @@ export const AlternativeNames = React.memo(
 				<AddButton
 					label="Lägg till alternativt namn"
 					plain
+					data-testid="addAltName"
 					onClick={React.useCallback(() => {
 						dispatchPerson({
 							type: PersonActionType.ADD_ARRAY_OBJECT,
