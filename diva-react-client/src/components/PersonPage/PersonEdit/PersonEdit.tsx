@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import React, { useReducer, useState, useEffect } from 'react';
-import { Box, Button, Card, Form, Grid, TextArea } from 'grommet';
+import { Box, Button, Card, Form, Grid } from 'grommet';
 import {
 	Organisation,
 	Person,
@@ -25,6 +25,7 @@ import { AlternativeNames } from './AlternativeNames';
 import { ExternalUrls } from './ExternalUrls';
 import { Public } from './Public';
 import { PersonDomainParts } from './PersonDomainParts';
+import FormPersonView from '../FormPersonView';
 
 export const INVALID_YEAR_MESSAGE = 'Ange ett giltigt år';
 
@@ -265,7 +266,7 @@ const PersonEdit = function ({
 				</Form>
 			</Box>
 			<Box>
-				<PersonViewEdit
+				<FormPersonView
 					person={person}
 					organisations={organisationMap}
 					personDomainParts={personDomainParts}

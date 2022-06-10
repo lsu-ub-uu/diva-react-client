@@ -21,7 +21,7 @@ jest.mock('./Identifiers', () => {
 	});
 });
 
-jest.mock('./PersonalInfo', () => {
+jest.mock('./PersonalInfo.1', () => {
 	return jest.fn(() => {
 		return <div />;
 	});

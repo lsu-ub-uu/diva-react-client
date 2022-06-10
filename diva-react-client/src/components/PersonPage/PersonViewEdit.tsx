@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { NameValueList, NameValuePair, Text, Box, Heading } from 'grommet';
+import { Text, Box, Heading } from 'grommet';
 
 import { Name } from 'diva-cora-ts-api-wrapper';
 import Identifiers from './Identifiers';
 import AffiliationDisplay from './AffiliationDisplay';
-import ExternalLink from '../ExternalLink';
 import getDomainCollection from '../../divaData/resources';
 import { BinaryString, FormPerson } from '../../types/FormPerson';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
+import { PersonalInfo } from './PersonalInfo.1';
 
 const StyledPersonView = styled.div`
 	display: grid;
@@ -114,63 +114,12 @@ const translateBinaryString = (isPublic: BinaryString) => {
 	return 'Nej';
 };
 
-const Parent = styled.div`
+export const Parent = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto;
 	row-gap: 0.7em;
 `;
-
-const PersonalInfo = function ({ person }: { person: FormPerson }) {
-	const alternativeNames: string[] = person.alternativeNames.map(
-		({ content: name }) => {
-			return displayName(name);
-		}
-	);
-
-	return (
-		<Parent>
-			{alternativeNames.length > 0 && (
-				// <ListWithLabel
-				// 	label="Alternativa namn (namnformer som förekommit i publikationer)"
-				// 	list={alternativeNames}
-				// />
-				<ul>
-					{person.alternativeNames.map(({ content: name, repeatId }) => {
-						return <li key={repeatId}>{displayName(name)}</li>;
-					})}
-				</ul>
-			)}
-			{person.externalURLs.length > 0 && (
-				<ul>
-					{person.externalURLs.map(({ content: link, repeatId }) => {
-						return (
-							<li key={repeatId}>
-								<ExternalLink URL={link.URL} text={link.linkTitle} />
-							</li>
-						);
-					})}
-				</ul>
-			)}
-			<NameValueList nameProps={{ width: 'xsmall' }}>
-				{displayNameValuePairIfNotEmptyString(person.yearOfBirth, 'Födelseår')}
-				{displayNameValuePairIfNotEmptyString(person.yearOfDeath, 'Dödsår')}
-				{displayNameValuePairIfNotEmptyString(person.emailAddress, 'E-Post')}
-			</NameValueList>
-		</Parent>
-	);
-};
-
-const displayNameValuePairIfNotEmptyString = (value: string, name: string) => {
-	if (value !== '') {
-		return (
-			<NameValuePair name={name}>
-				<Text>{value}</Text>
-			</NameValuePair>
-		);
-	}
-	return null;
-};
 
 const StyledUl = styled.ul`
 	padding-left: 1em;
@@ -219,7 +168,7 @@ const PersonDomainPartView = function ({
 	);
 };
 
-const displayName = (name: Name) => {
+export const displayName = (name: Name) => {
 	return `${name.familyName}, ${name.givenName}`;
 };
 
