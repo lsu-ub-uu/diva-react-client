@@ -18,6 +18,7 @@ export const TrashButton = React.memo(
 				plain={plain}
 				hoverIndicator
 				onClick={onClick}
+				data-testid="trashbutton"
 			/>
 		);
 	}
@@ -35,6 +36,7 @@ export const AddButton = React.memo(
 	}) => {
 		return (
 			<Button
+				data-testid={label}
 				icon={<Add />}
 				label={label}
 				plain={plain}
