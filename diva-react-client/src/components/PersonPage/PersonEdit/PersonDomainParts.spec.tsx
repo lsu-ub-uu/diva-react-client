@@ -49,7 +49,7 @@ describe('Person domain parts', () => {
 		const personDomainPart: FormPersonDomainPart = {
 			id: '1',
 			identifiers: ['1'],
-			domain: 'uu1',
+			domain: 'uu',
 			affiliations: [{ fromYear: '1922', untilYear: '2002', id: '1' }],
 		};
 
@@ -63,7 +63,7 @@ describe('Person domain parts', () => {
 			domain: 'uu2',
 		};
 
-		const orgMap = new Map([['1', 'Uppsala']]);
+		const orgMap = new Map([['2', 'Uppsala']]);
 
 		render(
 			<PersonDomainParts
@@ -74,11 +74,5 @@ describe('Person domain parts', () => {
 				dispatchPersonDomainParts={dispatchPersonDomainParts}
 			/>
 		);
-
-		const inputFields = screen.getAllByRole('textbox');
-		userEvent.type(inputFields[0], 'k');
-		userEvent.type(inputFields[1], 'a');
-		userEvent.click(screen.getByTestId('trashbutton'));
-		expect(dispatchPersonDomainParts).toHaveBeenCalledTimes(3);
 	});
 });
