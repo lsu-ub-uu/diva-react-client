@@ -2,16 +2,19 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StringFormField from './StringFormField';
+import { FormPerson } from '../../../types/FormPerson';
 
 const mockOnChange = jest.fn();
 describe('String form field component', () => {
-	it('renders click public radio button', () => {
+	it('renders string form field and changes value', () => {
+		const field1 keyof FormPerson;
+
 		render(
 			<StringFormField
 				onChange={mockOnChange}
 				label="foo"
 				value="bar"
-				field="foobar"
+				field="{field1}"
 			/>
 		);
 		const inputFields = screen.getAllByRole('textbox');
