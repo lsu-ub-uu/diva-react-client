@@ -38,7 +38,6 @@ const PersonEdit = function ({
 	originalOrganisations?: Organisation[];
 }) {
 	const { auth } = useAuth();
-
 	const originalFormPersonWithEmptyDefaults: FormPerson =
 		convertToFormPerson(originalPerson);
 
