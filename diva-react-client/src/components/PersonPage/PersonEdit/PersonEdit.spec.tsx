@@ -11,12 +11,15 @@ import { LOGIN_STATUS, useAuth } from '../../../context/AuthContext';
 import StringFormField from './StringFormField';
 import { FormPerson } from '../../../types/FormPerson';
 import PersonEdit from './PersonEdit';
-import { createCompletePerson } from '../../../../testData/personObjectData';
+import {
+	createCompletePerson,
+	createMinimumFormPersonWithIdAndName,
+	createMinimumPersonWithIdAndName,
+} from '../../../../testData/personObjectData';
 import { renderWithRouter } from '../../../../test-utils';
 import createOrganisationWithNameAndId from '../../../../testData/organisationObjectData';
 
 const mockAuth = jest.fn();
-//jest.mock('diva-cora-ts-api-wrapper');
 
 jest.mock('diva-cora-ts-api-wrapper', () => ({
 	...jest.requireActual('diva-cora-ts-api-wrapper'),
@@ -84,9 +87,13 @@ describe('Person edit', () => {
 		];
 
 		const org1 = createOrganisationWithNameAndId('someName', 'someId');
-		const org2 = createOrganisationWithNameAndId('someName', 'someId');
+		const org2 = createOrganisationWithNameAndId(
+			'someOtherName',
+			'someOtherId'
+		);
 
 		const person = createCompletePerson();
+		const person2 = createMinimumFormPersonWithIdAndName();
 
 		renderWithRouter(
 			<PersonEdit
@@ -99,6 +106,8 @@ describe('Person edit', () => {
 		const inputFields = screen.getAllByRole('textbox');
 		const familyNameInput = inputFields[0];
 		const givenNameInput = inputFields[1];
+
+		const academicTitle = inputFields[6];
 		userEvent.clear(familyNameInput);
 		userEvent.type(familyNameInput, 'Anka');
 		expect(familyNameInput).toHaveValue('Anka');
@@ -106,5 +115,59 @@ describe('Person edit', () => {
 		userEvent.clear(givenNameInput);
 		userEvent.type(givenNameInput, 'Kalle');
 		expect(givenNameInput).toHaveValue('Kalle');
+
+		userEvent.clear(academicTitle);
+		userEvent.type(academicTitle, 'Professor');
+		expect(academicTitle).toHaveValue('Professor');
+	});
+
+	it('render person edit2', () => {
+		const somePersonDomainPart: PersonDomainPart = {
+			id: 'someId',
+			recordType: 'personDomainPart',
+			identifiers: ['someIdentifier'],
+			domain: 'someDomainId',
+			affiliations: [],
+		};
+
+		const someOtherPersonDomainPart: PersonDomainPart = {
+			id: 'someOtherId',
+			recordType: 'personDomainPart',
+			identifiers: ['someOtherIdentifier'],
+			domain: 'someOtherDomainId',
+			affiliations: [],
+		};
+
+		const parts: PersonDomainPart[] = [
+			somePersonDomainPart,
+			someOtherPersonDomainPart,
+		];
+
+		const org1 = createOrganisationWithNameAndId('someName', 'someId');
+		const org2 = createOrganisationWithNameAndId(
+			'someOtherName',
+			'someOtherId'
+		);
+
+		const person2 = createMinimumPersonWithIdAndName();
+		person2.orcids = [''];
+		renderWithRouter(
+			<PersonEdit
+				originalPerson={person2}
+				originalPersonDomainParts={parts}
+				originalOrganisations={[org1, org2]}
+			/>
+		);
+
+		const inputFields = screen.getAllByRole('textbox');
+		const yearOfBirth = inputFields[7];
+
+		userEvent.clear(yearOfBirth);
+		userEvent.type(yearOfBirth, '1945');
+		screen.debug();
+		expect(yearOfBirth).toHaveValue('1945');
+		userEvent.clear(yearOfBirth);
+		userEvent.type(yearOfBirth, '');
+		expect(yearOfBirth).toHaveValue('');
 	});
 });
