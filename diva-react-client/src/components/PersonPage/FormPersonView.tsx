@@ -5,6 +5,7 @@ import { FormPerson } from '../../types/FormPerson';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
 import Biography from './Biography';
 import Identifiers from './Identifiers';
+import Organisations from './Organisations';
 import PersonalInfo from './PersonalInfo.1';
 
 export const FormPersonView = function ({
@@ -31,6 +32,11 @@ export const FormPersonView = function ({
 			{showAll && (
 				<Biography label="Biography" text={person.biographyEnglish} />
 			)}
+			<Organisations
+				personDomainPartIds={person.personDomainParts}
+				personDomainParts={personDomainParts}
+				organisations={organisations}
+			/>
 		</Box>
 	);
 };

@@ -269,6 +269,7 @@ const PersonEdit = function ({
 					person={person}
 					organisations={organisationMap}
 					personDomainParts={personDomainParts}
+					showAll
 				/>
 			</Box>
 			<Box margin={{ left: '1em', top: '1em' }}>

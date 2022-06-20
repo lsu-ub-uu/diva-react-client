@@ -9,6 +9,7 @@ import {
 import Biography from './Biography';
 import FormPersonView from './FormPersonView';
 import Identifiers from './Identifiers';
+import Organisations from './Organisations';
 import PersonalInfo from './PersonalInfo.1';
 
 jest.mock('./PersonalInfo.1', () => {
@@ -24,6 +25,12 @@ jest.mock('./Identifiers', () => {
 });
 
 jest.mock('./Biography', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./Organisations', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -245,6 +252,74 @@ describe('FormPersonView', () => {
 					expect.objectContaining({
 						label: 'Biography',
 						text: '',
+					}),
+					expect.any(Object)
+				);
+			});
+
+			it('Should call Organisations with personDomainPartIds, personDomainParts and organisations', () => {
+				const person = createCompleteFormPerson();
+				const personDomainParts = [
+					{
+						id: 'someId',
+						domain: 'uu',
+						identifiers: [],
+						affiliations: [],
+					},
+				];
+				const { rerender } = renderWithRouter(
+					<ComponentToTest
+						person={person}
+						organisations={organisations}
+						personDomainParts={personDomainParts}
+					/>
+				);
+
+				expect(Organisations).toHaveBeenCalledTimes(1);
+				expect(Organisations).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						personDomainPartIds: person.personDomainParts,
+						personDomainParts,
+						organisations,
+					}),
+					expect.any(Object)
+				);
+
+				const otherPerson = createCompleteFormPerson();
+
+				otherPerson.personDomainParts.push('someOtherPDPId');
+				const otherOrganisations = new Map<string, string>();
+				otherOrganisations.set('someKey', 'someValue');
+
+				const otherPersonDomainParts = [
+					{
+						id: 'someId',
+						domain: 'uu',
+						identifiers: [],
+						affiliations: [],
+					},
+					{
+						id: 'someOtherId',
+						domain: 'kth',
+						identifiers: [],
+						affiliations: [],
+					},
+				];
+
+				rerender(
+					<ComponentToTest
+						person={otherPerson}
+						organisations={otherOrganisations}
+						personDomainParts={otherPersonDomainParts}
+					/>
+				);
+
+				expect(Organisations).toHaveBeenCalledTimes(2);
+				expect(Organisations).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						personDomainPartIds: otherPerson.personDomainParts,
+						personDomainParts: otherPersonDomainParts,
+						organisations: otherOrganisations,
 					}),
 					expect.any(Object)
 				);
