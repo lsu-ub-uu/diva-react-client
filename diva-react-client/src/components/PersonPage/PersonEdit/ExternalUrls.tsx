@@ -33,6 +33,7 @@ export const ExternalUrls = React.memo(
 							<Box direction="row" justify="between">
 								<MemoizedTextField
 									label="Länktext"
+									data-testid="linkText"
 									name={`externalURLs[${repeatId}].linkTitle`}
 									value={externalURL.linkTitle}
 									onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

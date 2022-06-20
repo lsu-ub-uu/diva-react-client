@@ -29,7 +29,12 @@ export const MemoizedTextField = React.memo(
 				validate={validate}
 				disabled={disabled}
 			>
-				<TextInput value={value} onChange={onChange} />
+				<TextInput
+					data-testid={name}
+					value={value}
+					onChange={onChange}
+					name={name}
+				/>
 			</FormField>
 		);
 	}
@@ -63,7 +68,7 @@ export const MemoizedTextArea = React.memo(
 				disabled={disabled}
 				onChange={onChange}
 			>
-				<TextArea value={value} />
+				<TextArea value={value} name={name} />
 			</FormField>
 		);
 	}

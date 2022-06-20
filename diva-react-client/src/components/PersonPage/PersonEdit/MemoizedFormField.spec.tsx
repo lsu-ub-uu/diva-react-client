@@ -1,12 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { TextInput } from 'grommet';
-import MemoizedTextField from './MemoizedFormField';
+import { MemoizedTextField, MemoizedTextArea } from './MemoizedFormField';
 
-describe('Memoized', () => {
-	it('renders', () => {
+describe('Memoized form field', () => {
+	it('renders MemoizedTextField', () => {
 		render(<MemoizedTextField label="someLabel" value="someValue" />);
+		expect(screen.getByRole('textbox')).toHaveValue('someValue');
+	});
 
-		screen.debug();
+	it('renders MemoizedTextArea', () => {
+		render(<MemoizedTextArea label="someLabel" value="someValue" />);
+		expect(screen.getByRole('textbox')).toHaveValue('someValue');
 	});
 });

@@ -5,8 +5,6 @@ import { AlternativeNames } from './AlternativeNames';
 
 const ComponentToTest = AlternativeNames;
 
-// todo: mock-function dispatchPerson, ändra inputfält, kolla dispatchPerson anropas korrekt
-
 const mockDispatchPerson = jest.fn();
 
 describe('Alernatives names component', () => {
