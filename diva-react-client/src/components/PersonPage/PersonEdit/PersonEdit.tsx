@@ -7,7 +7,6 @@ import {
 	PersonDomainPart,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
-import PersonViewEdit from '../PersonViewEdit';
 import { useAuth } from '../../../context/AuthContext';
 import { personDomainPartReducer } from './personDomainPartReducer';
 import { PersonActionType, personReducer } from './personReducer';
