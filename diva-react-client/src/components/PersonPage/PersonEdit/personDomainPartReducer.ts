@@ -37,6 +37,7 @@ export const personDomainPartReducer = (
 ): FormPersonDomainPart[] => {
 	const { type } = action;
 	const { personDomainPartId } = action.payload;
+	// eslint-disable-next-line default-case
 	switch (type) {
 		case PersonDomainPartActionType.SET_AFFILIATION_FIELD:
 			// eslint-disable-next-line no-case-declarations
@@ -86,9 +87,5 @@ export const personDomainPartReducer = (
 				}
 				return personDomainpart;
 			});
-
-		default: {
-			throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
-		}
 	}
 };
