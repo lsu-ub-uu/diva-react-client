@@ -40,6 +40,25 @@ describe('personReducer.spec', () => {
 		expect(formPerson).toStrictEqual(formPersonModified);
 	});
 
+	it('add string field', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+
+		const personAction: PersonAction = {
+			type: PersonActionType.ADD_ARRAY_STRING_FIELD,
+			payload: {
+				field: 'orcids' as keyof FormPerson,
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		initialFormPerson.orcids.push('');
+
+		expect(formPerson).toStrictEqual(initialFormPerson);
+	});
+
 	it('update string field', () => {
 		const initialFormPerson: FormPerson = createCompleteFormPerson();
 
