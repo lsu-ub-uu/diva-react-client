@@ -6,7 +6,9 @@ import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
 import Biography from './Biography';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
+import OtherAffiliation from './OtherAffiliation';
 import PersonalInfo from './PersonalInfo.1';
+import Public from './Public';
 
 export const FormPersonView = function ({
 	person,
@@ -37,6 +39,8 @@ export const FormPersonView = function ({
 				personDomainParts={personDomainParts}
 				organisations={organisations}
 			/>
+			<OtherAffiliation affiliation={person.otherAffiliation} />
+			<Public isPublic={person.public} />
 		</Box>
 	);
 };

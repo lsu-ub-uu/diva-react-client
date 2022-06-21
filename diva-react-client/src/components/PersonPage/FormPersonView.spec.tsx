@@ -10,7 +10,9 @@ import Biography from './Biography';
 import FormPersonView from './FormPersonView';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
+import OtherAffiliation from './OtherAffiliation';
 import PersonalInfo from './PersonalInfo.1';
+import Public from './Public';
 
 jest.mock('./PersonalInfo.1', () => {
 	return jest.fn(() => {
@@ -31,6 +33,18 @@ jest.mock('./Biography', () => {
 });
 
 jest.mock('./Organisations', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./OtherAffiliation', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('./Public', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -320,6 +334,82 @@ describe('FormPersonView', () => {
 						personDomainPartIds: otherPerson.personDomainParts,
 						personDomainParts: otherPersonDomainParts,
 						organisations: otherOrganisations,
+					}),
+					expect.any(Object)
+				);
+			});
+
+			it('Should call OtherAffiliation with otherAffiliation', () => {
+				const person = createCompleteFormPerson();
+
+				const { rerender } = renderWithRouter(
+					<ComponentToTest
+						person={person}
+						organisations={organisations}
+						personDomainParts={[]}
+					/>
+				);
+
+				expect(OtherAffiliation).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						affiliation: person.otherAffiliation,
+					}),
+					expect.any(Object)
+				);
+
+				const otherPerson = createCompleteFormPerson();
+				otherPerson.otherAffiliation = {
+					name: 'someAffilliation',
+					fromYear: '1000',
+					untilYear: '5555',
+				};
+
+				rerender(
+					<ComponentToTest
+						person={otherPerson}
+						organisations={organisations}
+						personDomainParts={[]}
+					/>
+				);
+
+				expect(OtherAffiliation).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						affiliation: otherPerson.otherAffiliation,
+					}),
+					expect.any(Object)
+				);
+			});
+
+			it('Calls Public with person.public', () => {
+				const person = createCompleteFormPerson();
+
+				const { rerender } = renderWithRouter(
+					<ComponentToTest
+						person={person}
+						organisations={organisations}
+						personDomainParts={[]}
+					/>
+				);
+
+				expect(Public).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						isPublic: person.public,
+					}),
+					expect.any(Object)
+				);
+
+				const otherPerson = createCompleteFormPerson();
+
+				rerender(
+					<ComponentToTest
+						person={person}
+						organisations={organisations}
+						personDomainParts={[]}
+					/>
+				);
+				expect(Public).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						isPublic: otherPerson.public,
 					}),
 					expect.any(Object)
 				);
