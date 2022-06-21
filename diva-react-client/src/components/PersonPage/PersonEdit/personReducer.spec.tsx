@@ -39,4 +39,25 @@ describe('personReducer.spec', () => {
 
 		expect(formPerson).toStrictEqual(formPersonModified);
 	});
+
+	it('update string field', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+
+		const personAction: PersonAction = {
+			type: PersonActionType.UPDATE_STRING_FIELD,
+			payload: {
+				value: 'doktor',
+				field: 'academicTitle' as keyof FormPerson,
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified: FormPerson = initialFormPerson;
+		formPersonModified.academicTitle = 'doktor';
+
+		expect(formPerson).toStrictEqual(formPersonModified);
+	});
 });
