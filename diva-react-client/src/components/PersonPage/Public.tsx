@@ -5,7 +5,7 @@ import { BinaryString } from '../../types/FormPerson';
 const Public = function ({ isPublic }: { isPublic: BinaryString }) {
 	return (
 		<>
-			<Heading>Publik</Heading>
+			<Heading level={4}>Publik</Heading>
 			<p>{translateBinaryString(isPublic)}</p>
 		</>
 	);
