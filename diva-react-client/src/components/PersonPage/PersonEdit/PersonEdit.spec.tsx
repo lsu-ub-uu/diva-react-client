@@ -18,6 +18,8 @@ import {
 } from '../../../../testData/personObjectData';
 import { renderWithRouter } from '../../../../test-utils';
 import createOrganisationWithNameAndId from '../../../../testData/organisationObjectData';
+import { act } from 'react-dom/test-utils';
+import { Action } from 'grommet-icons';
 
 const mockAuth = jest.fn();
 
@@ -169,5 +171,9 @@ describe('Person edit', () => {
 		userEvent.clear(yearOfBirth);
 		userEvent.type(yearOfBirth, '');
 		expect(yearOfBirth).toHaveValue('');
+
+		const submit = screen.getAllByRole('button');
+		console.log(submit);
+		userEvent.click(submit[4]);
 	});
 });
