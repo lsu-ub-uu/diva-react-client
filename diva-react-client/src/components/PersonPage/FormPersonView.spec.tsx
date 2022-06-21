@@ -6,6 +6,7 @@ import {
 	createMinimumFormPersonWithIdAndName,
 	formPersonWithDomain,
 } from '../../../testData/personObjectData';
+import EditButton from '../EditButton';
 import Biography from './Biography';
 import FormPersonView from './FormPersonView';
 import Identifiers from './Identifiers';
@@ -45,6 +46,12 @@ jest.mock('./OtherAffiliation', () => {
 });
 
 jest.mock('./Public', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
+
+jest.mock('../EditButton', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -239,7 +246,7 @@ describe('FormPersonView', () => {
 						person={person}
 						organisations={organisations}
 						personDomainParts={[]}
-						showAll
+						edit
 					/>
 				);
 
@@ -257,7 +264,7 @@ describe('FormPersonView', () => {
 						person={formPersonWithDomain}
 						organisations={organisations}
 						personDomainParts={[]}
-						showAll
+						edit
 					/>
 				);
 
@@ -270,150 +277,203 @@ describe('FormPersonView', () => {
 					expect.any(Object)
 				);
 			});
-
-			it('Should call Organisations with personDomainPartIds, personDomainParts and organisations', () => {
-				const person = createCompleteFormPerson();
-				const personDomainParts = [
-					{
-						id: 'someId',
-						domain: 'uu',
-						identifiers: [],
-						affiliations: [],
-					},
-				];
-				const { rerender } = renderWithRouter(
-					<ComponentToTest
-						person={person}
-						organisations={organisations}
-						personDomainParts={personDomainParts}
-					/>
-				);
-
-				expect(Organisations).toHaveBeenCalledTimes(1);
-				expect(Organisations).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						personDomainPartIds: person.personDomainParts,
-						personDomainParts,
-						organisations,
-					}),
-					expect.any(Object)
-				);
-
-				const otherPerson = createCompleteFormPerson();
-
-				otherPerson.personDomainParts.push('someOtherPDPId');
-				const otherOrganisations = new Map<string, string>();
-				otherOrganisations.set('someKey', 'someValue');
-
-				const otherPersonDomainParts = [
-					{
-						id: 'someId',
-						domain: 'uu',
-						identifiers: [],
-						affiliations: [],
-					},
-					{
-						id: 'someOtherId',
-						domain: 'kth',
-						identifiers: [],
-						affiliations: [],
-					},
-				];
-
-				rerender(
-					<ComponentToTest
-						person={otherPerson}
-						organisations={otherOrganisations}
-						personDomainParts={otherPersonDomainParts}
-					/>
-				);
-
-				expect(Organisations).toHaveBeenCalledTimes(2);
-				expect(Organisations).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						personDomainPartIds: otherPerson.personDomainParts,
-						personDomainParts: otherPersonDomainParts,
-						organisations: otherOrganisations,
-					}),
-					expect.any(Object)
-				);
-			});
-
-			it('Should call OtherAffiliation with otherAffiliation', () => {
-				const person = createCompleteFormPerson();
-
-				const { rerender } = renderWithRouter(
-					<ComponentToTest
-						person={person}
-						organisations={organisations}
-						personDomainParts={[]}
-					/>
-				);
-
-				expect(OtherAffiliation).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						affiliation: person.otherAffiliation,
-					}),
-					expect.any(Object)
-				);
-
-				const otherPerson = createCompleteFormPerson();
-				otherPerson.otherAffiliation = {
-					name: 'someAffilliation',
-					fromYear: '1000',
-					untilYear: '5555',
-				};
-
-				rerender(
-					<ComponentToTest
-						person={otherPerson}
-						organisations={organisations}
-						personDomainParts={[]}
-					/>
-				);
-
-				expect(OtherAffiliation).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						affiliation: otherPerson.otherAffiliation,
-					}),
-					expect.any(Object)
-				);
-			});
-
-			it('Calls Public with person.public', () => {
-				const person = createCompleteFormPerson();
-
-				const { rerender } = renderWithRouter(
-					<ComponentToTest
-						person={person}
-						organisations={organisations}
-						personDomainParts={[]}
-					/>
-				);
-
-				expect(Public).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						isPublic: person.public,
-					}),
-					expect.any(Object)
-				);
-
-				const otherPerson = createCompleteFormPerson();
-
-				rerender(
-					<ComponentToTest
-						person={person}
-						organisations={organisations}
-						personDomainParts={[]}
-					/>
-				);
-				expect(Public).toHaveBeenLastCalledWith(
-					expect.objectContaining({
-						isPublic: otherPerson.public,
-					}),
-					expect.any(Object)
-				);
-			});
 		});
+	});
+	it('Should call Organisations with personDomainPartIds, personDomainParts and organisations', () => {
+		const person = createCompleteFormPerson();
+		const personDomainParts = [
+			{
+				id: 'someId',
+				domain: 'uu',
+				identifiers: [],
+				affiliations: [],
+			},
+		];
+		const { rerender } = renderWithRouter(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={personDomainParts}
+			/>
+		);
+
+		expect(Organisations).toHaveBeenCalledTimes(1);
+		expect(Organisations).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				personDomainPartIds: person.personDomainParts,
+				personDomainParts,
+				organisations,
+			}),
+			expect.any(Object)
+		);
+
+		const otherPerson = createCompleteFormPerson();
+
+		otherPerson.personDomainParts.push('someOtherPDPId');
+		const otherOrganisations = new Map<string, string>();
+		otherOrganisations.set('someKey', 'someValue');
+
+		const otherPersonDomainParts = [
+			{
+				id: 'someId',
+				domain: 'uu',
+				identifiers: [],
+				affiliations: [],
+			},
+			{
+				id: 'someOtherId',
+				domain: 'kth',
+				identifiers: [],
+				affiliations: [],
+			},
+		];
+
+		rerender(
+			<ComponentToTest
+				person={otherPerson}
+				organisations={otherOrganisations}
+				personDomainParts={otherPersonDomainParts}
+			/>
+		);
+
+		expect(Organisations).toHaveBeenCalledTimes(2);
+		expect(Organisations).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				personDomainPartIds: otherPerson.personDomainParts,
+				personDomainParts: otherPersonDomainParts,
+				organisations: otherOrganisations,
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('Should call OtherAffiliation with otherAffiliation', () => {
+		const person = createCompleteFormPerson();
+
+		const { rerender } = renderWithRouter(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+
+		expect(OtherAffiliation).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				affiliation: person.otherAffiliation,
+			}),
+			expect.any(Object)
+		);
+
+		const otherPerson = createCompleteFormPerson();
+		otherPerson.otherAffiliation = {
+			name: 'someAffilliation',
+			fromYear: '1000',
+			untilYear: '5555',
+		};
+
+		rerender(
+			<ComponentToTest
+				person={otherPerson}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+
+		expect(OtherAffiliation).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				affiliation: otherPerson.otherAffiliation,
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('Calls Public with person.public', () => {
+		const person = createCompleteFormPerson();
+
+		const { rerender } = renderWithRouter(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+
+		expect(Public).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				isPublic: person.public,
+			}),
+			expect.any(Object)
+		);
+
+		const otherPerson = createCompleteFormPerson();
+
+		rerender(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+		expect(Public).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				isPublic: otherPerson.public,
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('It should call EditButton with recordType="person" and id=$id', () => {
+		const person = createCompleteFormPerson();
+
+		const { rerender } = renderWithRouter(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+
+		expect(EditButton).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				recordType: 'person',
+				id: person.id,
+			}),
+			expect.any(Object)
+		);
+
+		const otherPerson = createCompleteFormPerson();
+		otherPerson.id = 'someOtherId';
+
+		rerender(
+			<ComponentToTest
+				person={otherPerson}
+				organisations={organisations}
+				personDomainParts={[]}
+			/>
+		);
+
+		expect(EditButton).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				recordType: 'person',
+				id: otherPerson.id,
+			}),
+			expect.any(Object)
+		);
+	});
+
+	it('Should not call EditButton if edit=true', () => {
+		const person = createCompleteFormPerson();
+
+		renderWithRouter(
+			<ComponentToTest
+				person={person}
+				organisations={organisations}
+				personDomainParts={[]}
+				edit
+			/>
+		);
+
+		expect(EditButton).not.toHaveBeenCalled();
 	});
 });

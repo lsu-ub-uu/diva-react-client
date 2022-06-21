@@ -3,6 +3,7 @@ import { Box, Heading } from 'grommet';
 import React from 'react';
 import { FormPerson } from '../../types/FormPerson';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
+import EditButton from '../EditButton';
 import Biography from './Biography';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
@@ -14,26 +15,27 @@ export const FormPersonView = function ({
 	person,
 	personDomainParts,
 	organisations,
-	showAll = false,
+	edit = false,
 }: {
 	person: FormPerson;
 	personDomainParts: FormPersonDomainPart[];
 	organisations: Map<string, string>;
 	// eslint-disable-next-line react/require-default-props
-	showAll?: boolean;
+	edit?: boolean;
 }) {
 	return (
 		<Box direction="column">
-			<Heading level={3}>{displayName(person.authorisedName)}</Heading>
+			<Box direction="row-responsive">
+				<Heading level={3}>{displayName(person.authorisedName)}</Heading>
+				{!edit && <EditButton recordType="person" id={person.id} />}
+			</Box>
 			{person.academicTitle !== undefined && person.academicTitle !== '' && (
 				<p data-testid="personTitle">{person.academicTitle}</p>
 			)}
 			<PersonalInfo person={person} />
 			<Identifiers person={person} />
 			<Biography label="Biografi" text={person.biographySwedish} />
-			{showAll && (
-				<Biography label="Biography" text={person.biographyEnglish} />
-			)}
+			{edit && <Biography label="Biography" text={person.biographyEnglish} />}
 			<Organisations
 				personDomainPartIds={person.personDomainParts}
 				personDomainParts={personDomainParts}
