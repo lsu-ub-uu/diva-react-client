@@ -9,7 +9,10 @@ import {
 } from './personDomainPartReducer';
 import { personDomainPartReducer } from './personDomainPartReducer';
 import { PersonAction, PersonActionType, personReducer } from './personReducer';
-import { createCompleteFormPerson } from '../../../../testData/personObjectData';
+import {
+	createCompleteFormPerson,
+	createMinimumFormPersonWithIdAndName,
+} from '../../../../testData/personObjectData';
 
 import { FormPerson } from '../../../types/FormPerson';
 
@@ -35,6 +38,30 @@ describe('personReducer.spec', () => {
 				...initialFormPerson.externalURLs,
 				{ content: { linkTitle: 'foo', URL: 'foo.se' }, repeatId: 2 },
 			],
+		};
+
+		expect(formPerson).toStrictEqual(formPersonModified);
+	});
+
+	it('add array object with empty array', () => {
+		const initialFormPerson: FormPerson =
+			createMinimumFormPersonWithIdAndName();
+
+		const personAction: PersonAction = {
+			type: PersonActionType.ADD_ARRAY_OBJECT,
+			payload: {
+				emptyObject: { familyName: '', givenName: '' },
+				field: 'alternativeNames' as keyof FormPerson,
+			},
+		};
+
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+		formPerson.alternativeNames = [];
+		const formPersonModified: FormPerson = {
+			...initialFormPerson,
 		};
 
 		expect(formPerson).toStrictEqual(formPersonModified);
@@ -78,5 +105,175 @@ describe('personReducer.spec', () => {
 		formPersonModified.academicTitle = 'doktor';
 
 		expect(formPerson).toStrictEqual(formPersonModified);
+	});
+
+	it('update array object field and return item', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+
+		const personAction: PersonAction = {
+			type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+			payload: {
+				index: 1,
+				field: 'alternativeNames',
+				childField: 'givenName' as keyof FormPerson,
+				value: 'Ada',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.alternativeNames[0]).toStrictEqual({
+			content: {
+				familyName: 'someAlternativeFamilyName',
+				givenName: 'someAlternativeGivenName',
+			},
+			repeatId: 0,
+		});
+
+		expect(formPersonModified.alternativeNames[1]).toStrictEqual({
+			content: {
+				familyName: 'someOtherAlternativeFamilyName',
+				givenName: 'Ada',
+			},
+			repeatId: 1,
+		});
+	});
+
+	it('update array object field and return state', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+
+		const personAction: PersonAction = {
+			type: PersonActionType.UPDATE_ARRAY_OBJECT_FIELD,
+			payload: {
+				index: 2,
+				field: 'alternativeNames',
+				childField: 'givenName' as keyof FormPerson,
+				value: 'Kålle',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.alternativeNames[0]).toStrictEqual({
+			content: {
+				familyName: 'someAlternativeFamilyName',
+				givenName: 'someAlternativeGivenName',
+			},
+			repeatId: 0,
+		});
+	});
+
+	it('toggle public', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+		initialFormPerson.public = 'yes';
+
+		const personAction: PersonAction = {
+			type: PersonActionType.TOGGLE_PUBLIC,
+			payload: {
+				field: 'public',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.public).toBe('no');
+	});
+
+	it('toggle public yes', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+		initialFormPerson.public = 'yes';
+
+		const personAction: PersonAction = {
+			type: PersonActionType.TOGGLE_PUBLIC,
+			payload: {
+				field: 'public',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.public).toBe('no');
+	});
+
+	it('update array string field', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+		initialFormPerson.domains = ['uu', 'slu'];
+
+		const personAction: PersonAction = {
+			type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
+			payload: {
+				index: 1,
+				field: 'domains',
+				value: 'su',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.domains[1]).toBe('su');
+	});
+
+	it('delete array with index', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+		initialFormPerson.domains = ['uu', 'slu'];
+
+		const personAction: PersonAction = {
+			type: PersonActionType.DELETE_ARRAY_WITH_INDEX,
+			payload: {
+				index: 1,
+				field: 'domains',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.domains[1]).toBeUndefined();
+	});
+
+	it('delete array with id', () => {
+		const initialFormPerson: FormPerson = createCompleteFormPerson();
+		initialFormPerson.alternativeNames = [
+			{ content: { familyName: 'Smith', givenName: 'Bob' }, repeatId: 1 },
+		];
+
+		const personAction: PersonAction = {
+			type: PersonActionType.DELETE_ARRAY_WITH_ID,
+			payload: {
+				repeatId: 1,
+				field: 'alternativeNames',
+			},
+		};
+		const formPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+
+		const formPersonModified = formPerson;
+
+		expect(formPersonModified.alternativeNames).toStrictEqual([]);
 	});
 });

@@ -88,6 +88,7 @@ export const personReducer = (
 	action: PersonAction
 ): FormPerson => {
 	const { type, payload } = action;
+	// eslint-disable-next-line default-case
 	switch (type) {
 		case PersonActionType.UPDATE_STRING_FIELD: {
 			const actionPayload = payload as PersonActionUpdateString;
@@ -116,13 +117,13 @@ export const personReducer = (
 		}
 		case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD: {
 			const actionPayload = payload as PersonActionUpdateArrayObject;
-			const { field, index, childField, value } = actionPayload;
+			const { field, index: repeatId, childField, value } = actionPayload;
 			const currentArray = state[field] as Repeatable<Name | ExternalUrl>[];
 
 			return {
 				...state,
 				[field]: currentArray.map((item) => {
-					if (index === item.repeatId) {
+					if (repeatId === item.repeatId) {
 						return {
 							repeatId: item.repeatId,
 							content: {
@@ -192,9 +193,6 @@ export const personReducer = (
 				...state,
 				public: newPublic,
 			};
-		}
-		default: {
-			throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
 		}
 	}
 };
