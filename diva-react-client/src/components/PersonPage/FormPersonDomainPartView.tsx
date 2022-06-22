@@ -26,7 +26,7 @@ const FormPersonDomainPartView = function ({
 	return (
 		<Box margin={{ bottom: 'small' }}>
 			<h3>{title}</h3>
-			{personDomainPart.identifiers && (
+			{personDomainPart.identifiers.length && (
 				<Text size="small">
 					Lokal identifikator: {personDomainPart.identifiers[0]}
 				</Text>
