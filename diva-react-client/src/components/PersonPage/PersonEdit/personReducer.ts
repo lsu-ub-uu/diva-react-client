@@ -88,6 +88,7 @@ export const personReducer = (
 	action: PersonAction
 ): FormPerson => {
 	const { type, payload } = action;
+	// eslint-disable-next-line default-case
 	switch (type) {
 		case PersonActionType.UPDATE_STRING_FIELD: {
 			const actionPayload = payload as PersonActionUpdateString;
@@ -192,9 +193,6 @@ export const personReducer = (
 				...state,
 				public: newPublic,
 			};
-		}
-		default: {
-			throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
 		}
 	}
 };
