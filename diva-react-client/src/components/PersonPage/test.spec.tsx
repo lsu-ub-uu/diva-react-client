@@ -243,37 +243,6 @@ describe('The Person component', () => {
 				expect.any(Object)
 			);
 		});
-
-		it.skip('should render FormPersonView with person from PersonFetcher', () => {
-			// TODO remove
-			render(<PersonPage />);
-
-			render(<Child record={{ person: personWithDomain }} />);
-
-			expect(FormPersonView).toHaveBeenCalledTimes(1);
-			expect(FormPersonView).toHaveBeenCalledWith(
-				expect.objectContaining({
-					person: personWithDomain,
-				}),
-				expect.any(Object)
-			);
-		});
-
-		it.skip('should render FormPersonView with person from PersonFetcher 2', () => {
-			// TODO remove
-			const person = createCompletePerson();
-			render(<PersonPage />);
-
-			render(<Child record={{ person }} />);
-
-			expect(FormPersonView).toHaveBeenCalledTimes(1);
-			expect(FormPersonView).toHaveBeenCalledWith(
-				expect.objectContaining({
-					person,
-				}),
-				expect.any(Object)
-			);
-		});
 	});
 
 	describe('if edit is set', () => {
