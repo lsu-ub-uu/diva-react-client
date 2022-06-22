@@ -1,5 +1,5 @@
 import { List, Person } from 'diva-cora-ts-api-wrapper';
-import { convertToFormPerson, FormPerson } from '../src/types/FormPerson';
+import { FormPerson } from '../src/types/FormPerson';
 
 export const personWithDomain: Person = {
 	id: '2',
@@ -158,9 +158,59 @@ export const createCompletePerson = () => {
 };
 
 export const createCompleteFormPerson = () => {
-	const person = createCompletePerson();
+	const formPerson: FormPerson = {
+		id: 'somePID',
+		authorisedName: { familyName: 'Celsius', givenName: 'Anders' },
+		personDomainParts: [
+			'personDomainPart1',
+			'personDomainPart2',
+			'personDomainPart3',
+		],
+		public: 'yes',
+		academicTitle: 'someTitle',
+		orcids: ['someOrcid', 'someOtherOrcid'],
+		viafIDs: ['someViaf', 'someOtherViaf'],
+		librisIDs: ['someLibris', 'someOtherLibris'],
+		domains: ['someDomain', 'someOtherDomain'],
+		alternativeNames: [
+			{
+				repeatId: 0,
+				content: {
+					familyName: 'someAlternativeFamilyName',
+					givenName: 'someAlternativeGivenName',
+				},
+			},
+			{
+				repeatId: 1,
+				content: {
+					familyName: 'someOtherAlternativeFamilyName',
+					givenName: 'someOtherAlternativeGivenName',
+				},
+			},
+		],
+		externalURLs: [
+			{
+				repeatId: 0,
+				content: { URL: 'http://du.se', linkTitle: 'DU' },
+			},
+			{
+				repeatId: 0,
+				content: { URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+			},
+		],
+		biographySwedish: 'A nice biography<br/> foobar',
+		biographyEnglish: 'A nice biography in English<br/> foobar',
+		otherAffiliation: {
+			name: 'SomeOtherAffiliation',
+			fromYear: '2000',
+			untilYear: '2001',
+		},
+		yearOfBirth: '1900',
+		yearOfDeath: '2000',
+		emailAddress: 'foo@bar.com',
+	};
 
-	return convertToFormPerson(person);
+	return formPerson;
 };
 
 export const createMinimumPersonWithIdAndName = (
