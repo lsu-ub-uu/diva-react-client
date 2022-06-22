@@ -31,16 +31,16 @@ const FormPersonDomainPartView = function ({
 					Lokal identifikator: {personDomainPart.identifiers[0]}
 				</Text>
 			)}
-			{personDomainPart.affiliations && (
+			{personDomainPart.affiliations.length && (
 				<StyledUl>
-					{personDomainPart.affiliations.map((affiliation) => {
+					{personDomainPart.affiliations.map(({ id, fromYear, untilYear }) => {
 						return (
-							<li key={affiliation.id}>
+							<li key={id}>
 								<AffiliationDisplay
 									affiliation={{
-										name: organisations.get(affiliation.id) || affiliation.id,
-										fromYear: affiliation.fromYear,
-										untilYear: affiliation.untilYear,
+										name: organisations.get(id) || id,
+										fromYear,
+										untilYear,
 									}}
 								/>
 							</li>
