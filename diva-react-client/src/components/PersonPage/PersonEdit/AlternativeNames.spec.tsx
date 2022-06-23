@@ -65,7 +65,6 @@ describe('Alernatives names component', () => {
 			/>
 		);
 		const addButton = screen.getAllByRole('button');
-		screen.debug();
 		userEvent.click(addButton[0]);
 		expect(mockDispatchPerson).toHaveBeenCalledTimes(1);
 	});
@@ -86,7 +85,6 @@ describe('Alernatives names component', () => {
 			/>
 		);
 		const trashButton = screen.getAllByRole('button');
-		screen.debug();
 		userEvent.click(trashButton[1]);
 		expect(mockDispatchPerson).toHaveBeenCalledTimes(1);
 	});
