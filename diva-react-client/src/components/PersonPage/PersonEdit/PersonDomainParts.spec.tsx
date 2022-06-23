@@ -75,4 +75,35 @@ describe('Person domain parts', () => {
 			/>
 		);
 	});
+
+	it('renders person domain parts component 2', () => {
+		const personDomainPart: FormPersonDomainPart = {
+			id: '1',
+			identifiers: ['1'],
+			domain: 'uu',
+			affiliations: [{ fromYear: '1922', untilYear: '2002', id: '2' }],
+		};
+
+		const personDomainPartIds = ['1'];
+
+		const auth: Auth = {
+			status: LOGIN_STATUS.LOGGED_IN,
+			token: 'someToken',
+			idFromLogin: 'someIdFromLogin',
+			deleteUrl: 'someUrl',
+			domain: 'uu',
+		};
+
+		const orgMap = new Map([['22', 'Uppsala']]);
+
+		render(
+			<PersonDomainParts
+				personDomainPartIds={personDomainPartIds}
+				personDomainParts={[personDomainPart]}
+				auth={auth}
+				organisationMap={orgMap}
+				dispatchPersonDomainParts={dispatchPersonDomainParts}
+			/>
+		);
+	});
 });
