@@ -4,7 +4,7 @@
 	"description": "A react client for DiVA.",
 	"dependencies": {
 		"@types/react-router": "^5.1.18",
-		"axios": "^0.27.2",
+		"axios": "^0.25.0",
 		"diva-cora-ts-api-wrapper": "file:../diva-cora-ts-api-wrapper",
 		"grommet": "^2.24.0",
 		"grommet-icons": "^4.7.0",
