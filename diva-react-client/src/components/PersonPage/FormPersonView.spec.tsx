@@ -12,10 +12,10 @@ import FormPersonView from './FormPersonView';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
 import OtherAffiliation from './OtherAffiliation';
-import PersonalInfo from './PersonalInfo.1';
+import PersonalInfo from './PersonalInfo';
 import Public from './Public';
 
-jest.mock('./PersonalInfo.1', () => {
+jest.mock('./PersonalInfo', () => {
 	return jest.fn(() => {
 		return <div />;
 	});

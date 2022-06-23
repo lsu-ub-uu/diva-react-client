@@ -26,12 +26,12 @@ const FormPersonDomainPartView = function ({
 	return (
 		<Box margin={{ bottom: 'small' }}>
 			<h3>{title}</h3>
-			{personDomainPart.identifiers.length && (
+			{personDomainPart.identifiers.length > 0 && (
 				<Text size="small">
 					Lokal identifikator: {personDomainPart.identifiers[0]}
 				</Text>
 			)}
-			{personDomainPart.affiliations.length && (
+			{personDomainPart.affiliations.length > 0 && (
 				<StyledUl>
 					{personDomainPart.affiliations.map(({ id, fromYear, untilYear }) => {
 						return (

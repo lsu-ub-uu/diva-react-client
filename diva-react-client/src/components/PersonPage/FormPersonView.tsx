@@ -8,7 +8,7 @@ import Biography from './Biography';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
 import OtherAffiliation from './OtherAffiliation';
-import PersonalInfo from './PersonalInfo.1';
+import PersonalInfo from './PersonalInfo';
 import Public from './Public';
 
 export const FormPersonView = function ({

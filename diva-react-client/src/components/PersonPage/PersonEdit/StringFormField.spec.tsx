@@ -17,7 +17,6 @@ describe('String form field component', () => {
 		);
 		const inputFields = screen.getAllByRole('textbox');
 		userEvent.type(inputFields[0], 'k');
-		screen.debug();
 		expect(mockOnChange).toHaveBeenCalledTimes(1);
 		expect(inputFields[0]).toHaveAttribute('value', 'bar');
 	});

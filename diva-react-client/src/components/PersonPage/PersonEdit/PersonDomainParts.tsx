@@ -46,10 +46,8 @@ export const PersonDomainParts = React.memo(
 								<Heading margin="none" level="5">
 									{title}
 								</Heading>
-								{/* <Text>{personDomainPart.domain}</Text> */}
 								{Object.values(personDomainPart.affiliations).map(
 									(affiliation, index) => {
-										// const affiliation = affiliations[affiliation.id];
 										return (
 											<Card
 												// eslint-disable-next-line react/no-array-index-key
@@ -64,9 +62,7 @@ export const PersonDomainParts = React.memo(
 																affiliation.id}
 														</Heading>
 													)}
-													{/* {affiliation.id === '' && <OrganisationChooser />} */}
 												</CardHeader>
-												{/* <Text>{affiliation.name}</Text> */}
 												<Box direction="row" justify="between">
 													<MemoizedTextField
 														label="Från"

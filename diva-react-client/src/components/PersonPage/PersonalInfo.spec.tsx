@@ -4,7 +4,7 @@ import {
 	createCompleteFormPerson,
 	createMinimumFormPersonWithIdAndName,
 } from '../../../testData/personObjectData';
-import PersonalInfo from './PersonalInfo.1';
+import PersonalInfo from './PersonalInfo';
 import ExternalLink from '../ExternalLink';
 
 const ComponentToTest = PersonalInfo;
