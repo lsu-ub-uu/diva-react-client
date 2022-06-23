@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import {
-	createCompletePerson,
-	createMinimumPersonWithIdAndName,
+	createCompleteFormPerson,
+	createMinimumFormPersonWithIdAndName,
 } from '../../../testData/personObjectData';
 import PersonalInfo from './PersonalInfo';
 import ExternalLink from '../ExternalLink';
-import ListWithLabel from './ListWithLabel';
 
 const ComponentToTest = PersonalInfo;
 
@@ -45,63 +44,83 @@ jest.mock('grommet', () => ({
 
 describe('PersonalInfo', () => {
 	it('should take a person', () => {
-		render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
+		render(<ComponentToTest person={createMinimumFormPersonWithIdAndName()} />);
 	});
 
 	describe('alternative names', () => {
-		it('should NOT call ListWithLabel with alternative names and no label if there are no alternative names', () => {
-			render(<ComponentToTest person={createMinimumPersonWithIdAndName()} />);
-
-			expect(ListWithLabel).not.toHaveBeenCalled();
-		});
-
-		it('should call ListWithLabel with alternative names and no label if alternative names', () => {
-			const person = createCompletePerson();
+		it('should NOT display a list if no field with repeatable is given', () => {
+			const person = createMinimumFormPersonWithIdAndName();
 			render(<ComponentToTest person={person} />);
 
-			expect(ListWithLabel).toHaveBeenCalled();
-			expect(ListWithLabel).toHaveBeenLastCalledWith(
-				expect.objectContaining({
-					label: 'Alternativa namn (namnformer som förekommit i publikationer)',
-					list: [
-						'someAlternativeFamilyName, someAlternativeGivenName',
-						'someOtherAlternativeFamilyName, someOtherAlternativeGivenName',
-					],
-				}),
-				expect.any(Object)
-			);
+			expect(screen.queryByRole('list')).not.toBeInTheDocument();
+		});
+
+		it('should display list with names if alternativeNames exist', () => {
+			const person = createMinimumFormPersonWithIdAndName();
+			person.alternativeNames = [
+				{
+					repeatId: 0,
+					content: {
+						givenName: 'Kalle',
+						familyName: 'Anka',
+					},
+				},
+			];
+			const { rerender } = render(<ComponentToTest person={person} />);
+
+			expect(screen.getByRole('list')).toBeInTheDocument();
+			expect(screen.getByRole('listitem')).toHaveTextContent('Anka, Kalle');
+
+			person.alternativeNames.push({
+				repeatId: 1,
+				content: {
+					givenName: 'Mickey',
+					familyName: 'Mouse',
+				},
+			});
+			person.alternativeNames.push({
+				repeatId: 2,
+				content: {
+					givenName: '',
+					familyName: 'Maus',
+				},
+			});
+			person.alternativeNames.push({
+				repeatId: 3,
+				content: {
+					givenName: 'Micky',
+					familyName: '',
+				},
+			});
+			rerender(<ComponentToTest person={person} />);
+
+			const listItems = screen.getAllByRole('listitem');
+
+			expect(listItems[0]).toHaveTextContent('Anka, Kalle');
+			expect(listItems[1]).toHaveTextContent('Mouse, Mickey');
+			expect(listItems[2]).toHaveTextContent('Maus,');
+			expect(listItems[3]).toHaveTextContent(', Micky');
 		});
 	});
 	describe('External URLs ', () => {
-		it('should NOT call ExternalLink if externalURLs is undefined', () => {
-			const person = createMinimumPersonWithIdAndName();
-			render(<ComponentToTest person={person} />);
-
-			expect(ExternalLink).not.toHaveBeenCalled();
-		});
-
-		it('should NOT call ExternalLink if externalURLs is empty', () => {
-			const person = createMinimumPersonWithIdAndName();
-
-			person.externalURLs = [];
-
-			render(<ComponentToTest person={person} />);
-
-			expect(ExternalLink).not.toHaveBeenCalled();
-		});
-
 		it('should call ExternalLinks for one external URL', () => {
-			const person = createMinimumPersonWithIdAndName();
+			const person = createMinimumFormPersonWithIdAndName();
 
-			person.externalURLs = [{ URL: 'someUrl', linkTitle: 'someText' }];
+			person.externalURLs = [
+				{ content: { URL: 'someUrl', linkTitle: 'someText' }, repeatId: 0 },
+			];
 
 			render(<ComponentToTest person={person} />);
 
 			expect(ExternalLink).toHaveBeenCalledTimes(1);
+			expect(screen.getByRole('list')).toBeInTheDocument();
+			expect(screen.getAllByRole('listitem')).toHaveLength(1);
 		});
 
 		it('should call ExternalLinks for each external URL', () => {
-			const person = createCompletePerson();
+			const person = createCompleteFormPerson();
+
+			person.alternativeNames = [];
 
 			render(<ComponentToTest person={person} />);
 
@@ -124,10 +143,11 @@ describe('PersonalInfo', () => {
 				}),
 				expect.any(Object)
 			);
+			expect(screen.getAllByRole('listitem')).toHaveLength(2);
 		});
 
 		it('should display yearOfBirth, yearOfDeath and emailAddress if present', () => {
-			const person = createCompletePerson();
+			const person = createCompleteFormPerson();
 
 			render(<ComponentToTest person={person} />);
 
@@ -140,15 +160,15 @@ describe('PersonalInfo', () => {
 		});
 
 		it('should not display yearOfBirth, yearOfDeath and emailAddress not if present', () => {
-			const person = createMinimumPersonWithIdAndName();
+			const person = createMinimumFormPersonWithIdAndName();
 
 			render(<ComponentToTest person={person} />);
 
-			expect(screen.getByText('Födelseår')).toBeInTheDocument();
+			expect(screen.queryByText('Födelseår')).not.toBeInTheDocument();
 			expect(screen.queryByText('1900')).not.toBeInTheDocument();
-			expect(screen.getByText('Dödsår')).toBeInTheDocument();
+			expect(screen.queryByText('Dödsår')).not.toBeInTheDocument();
 			expect(screen.queryByText('2000')).not.toBeInTheDocument();
-			expect(screen.getByText('E-Post')).toBeInTheDocument();
+			expect(screen.queryByText('E-Post')).not.toBeInTheDocument();
 			expect(screen.queryByText('foo@bar.com')).not.toBeInTheDocument();
 		});
 	});

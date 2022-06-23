@@ -1,13 +1,3 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
-import { AlternativeNames } from './AlternativeNames';
-import {
-	PersonDomainpartAction,
-	PersonDomainPartActionType,
-} from './personDomainPartReducer';
-import { personDomainPartReducer } from './personDomainPartReducer';
 import { PersonAction, PersonActionType, personReducer } from './personReducer';
 import {
 	createCompleteFormPerson,
@@ -16,7 +6,7 @@ import {
 
 import { FormPerson } from '../../../types/FormPerson';
 
-describe('personReducer.spec', () => {
+describe('personReducer', () => {
 	it('add array object', () => {
 		const initialFormPerson: FormPerson = createCompleteFormPerson();
 
@@ -55,16 +45,65 @@ describe('personReducer.spec', () => {
 			},
 		};
 
-		const formPerson: FormPerson = personReducer(
+		const alteredFormPerson: FormPerson = personReducer(
 			initialFormPerson,
 			personAction
 		);
-		formPerson.alternativeNames = [];
-		const formPersonModified: FormPerson = {
+		const expectedFormPerson: FormPerson = {
 			...initialFormPerson,
 		};
 
-		expect(formPerson).toStrictEqual(formPersonModified);
+		expectedFormPerson.alternativeNames.push({
+			repeatId: 0,
+			content: { familyName: '', givenName: '' },
+		});
+
+		expect(alteredFormPerson).toStrictEqual(expectedFormPerson);
+	});
+
+	it('add array object with Repeatables that are in different order', () => {
+		const initialFormPerson: FormPerson =
+			createMinimumFormPersonWithIdAndName();
+
+		initialFormPerson.alternativeNames = [
+			{
+				repeatId: 3,
+				content: {
+					familyName: 'Anka',
+					givenName: 'Kalle',
+				},
+			},
+			{
+				repeatId: 1,
+				content: {
+					familyName: 'MMbaa',
+					givenName: 'Fifi',
+				},
+			},
+		];
+
+		const personAction: PersonAction = {
+			type: PersonActionType.ADD_ARRAY_OBJECT,
+			payload: {
+				emptyObject: { familyName: '', givenName: '' },
+				field: 'alternativeNames' as keyof FormPerson,
+			},
+		};
+
+		const alteredFormPerson: FormPerson = personReducer(
+			initialFormPerson,
+			personAction
+		);
+		const expectedFormPerson: FormPerson = {
+			...initialFormPerson,
+		};
+
+		expectedFormPerson.alternativeNames.push({
+			repeatId: 4,
+			content: { familyName: '', givenName: '' },
+		});
+
+		expect(alteredFormPerson).toStrictEqual(expectedFormPerson);
 	});
 
 	it('add string field', () => {
@@ -171,7 +210,7 @@ describe('personReducer.spec', () => {
 		});
 	});
 
-	it('toggle public', () => {
+	it('toggle public yes -> no', () => {
 		const initialFormPerson: FormPerson = createCompleteFormPerson();
 		initialFormPerson.public = 'yes';
 
@@ -191,9 +230,9 @@ describe('personReducer.spec', () => {
 		expect(formPersonModified.public).toBe('no');
 	});
 
-	it('toggle public yes', () => {
+	it('toggle public no -> yes', () => {
 		const initialFormPerson: FormPerson = createCompleteFormPerson();
-		initialFormPerson.public = 'yes';
+		initialFormPerson.public = 'no';
 
 		const personAction: PersonAction = {
 			type: PersonActionType.TOGGLE_PUBLIC,
@@ -208,7 +247,7 @@ describe('personReducer.spec', () => {
 
 		const formPersonModified = formPerson;
 
-		expect(formPersonModified.public).toBe('no');
+		expect(formPersonModified.public).toBe('yes');
 	});
 
 	it('update array string field', () => {

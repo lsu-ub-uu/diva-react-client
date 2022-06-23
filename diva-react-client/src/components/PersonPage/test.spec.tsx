@@ -3,13 +3,17 @@ import React from 'react';
 import { useParams as actualUseParams } from 'react-router-dom';
 import { Organisation, PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import PersonPage from '.';
-import PersonView from './PersonView';
 import {
+	createCompleteFormPerson,
 	createCompletePerson,
 	personWithDomain,
 } from '../../../testData/personObjectData';
 import useApi from '../../hooks/useApi';
 import PersonEdit from './PersonEdit/PersonEdit';
+import FormPersonView from './FormPersonView';
+import { convertToFormPerson } from '../../types/FormPerson';
+import { convertToFormPersonDomainPart } from '../../types/FormPersonDomainPart';
+import { minimalFormPersonDomainPart } from '../../../testData/personDomainPartObjectData';
 
 jest.mock('react-router-dom');
 const useParams = actualUseParams as jest.MockedFunction<
@@ -20,7 +24,7 @@ useParams.mockReturnValue({ personId: 'someId' });
 jest.mock('../../hooks/useApi');
 const mockUseApi = useApi as jest.MockedFunction<typeof useApi>;
 
-jest.mock('./PersonView', () => {
+jest.mock('./FormPersonView', () => {
 	return jest.fn(() => {
 		return <div />;
 	});
@@ -31,6 +35,17 @@ jest.mock('./PersonEdit/PersonEdit', () => {
 		return <div />;
 	});
 });
+
+jest.mock('../../types/FormPerson');
+const mockConvertToFormPerson = convertToFormPerson as jest.MockedFunction<
+	typeof convertToFormPerson
+>;
+
+jest.mock('../../types/FormPersonDomainPart');
+const mockConvertToFormPersonDomainPart =
+	convertToFormPersonDomainPart as jest.MockedFunction<
+		typeof convertToFormPersonDomainPart
+	>;
 
 let Child: (props: any) => JSX.Element;
 
@@ -44,12 +59,17 @@ jest.mock('./PersonFetcher', () => {
 	};
 });
 
-beforeAll(() => {
+beforeEach(() => {
 	mockUseApi.mockReturnValue({
 		result: { hasData: true, isError: false, data: personWithDomain },
 		isLoading: false,
 		setApiParams: jest.fn(),
 	});
+
+	mockConvertToFormPerson.mockReturnValue(createCompleteFormPerson());
+	mockConvertToFormPersonDomainPart.mockReturnValue(
+		minimalFormPersonDomainPart
+	);
 });
 
 describe('The Person component', () => {
@@ -110,44 +130,130 @@ describe('The Person component', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('should render PersonView with person from PersonFetcher', () => {
-		render(<PersonPage />);
+	describe('if edit is not set', () => {
+		it('Should not call PersonEdit', () => {
+			const person = createCompletePerson();
 
-		render(<Child record={{ person: personWithDomain }} />);
+			render(<PersonPage />);
 
-		expect(PersonView).toHaveBeenCalledTimes(1);
-		expect(PersonView).toHaveBeenCalledWith(
-			expect.objectContaining({
-				person: personWithDomain,
-			}),
-			expect.any(Object)
-		);
-	});
+			render(
+				<Child record={{ person, organisations: [], personDomainParts: [] }} />
+			);
 
-	it('should render PersonView with person from PersonFetcher 2', () => {
-		const person = createCompletePerson();
-		render(<PersonPage />);
+			expect(PersonEdit).not.toHaveBeenCalled();
+		});
 
-		render(<Child record={{ person }} />);
+		it('Should render FormPersonView with formPerson returned from convertToFormPerson', () => {
+			render(<PersonPage />);
 
-		expect(PersonView).toHaveBeenCalledTimes(1);
-		expect(PersonView).toHaveBeenCalledWith(
-			expect.objectContaining({
-				person,
-			}),
-			expect.any(Object)
-		);
+			render(
+				<Child
+					record={{
+						person: personWithDomain,
+						organisations: [],
+						personDomainParts: [],
+					}}
+				/>
+			);
+
+			expect(convertToFormPerson).toHaveBeenCalledTimes(1);
+			expect(convertToFormPerson).toHaveBeenLastCalledWith(personWithDomain);
+
+			expect(FormPersonView).toHaveBeenCalledWith(
+				expect.objectContaining({
+					person: createCompleteFormPerson(),
+					organisations: expect.any(Map),
+					personDomainParts: expect.any(Array),
+				}),
+				expect.any(Object)
+			);
+		});
+
+		it('Should render FormPersonView with an organisationMap containing id => name based on organisations returned from PersonFetcher', () => {
+			const person = createCompletePerson();
+
+			const organisationArray: Organisation[] = [
+				{
+					id: 'someId',
+					alternativeName: '',
+					name: 'someName',
+					organisationType: 'subOrganisation',
+					recordType: 'organisation',
+				},
+			];
+
+			render(<PersonPage />);
+
+			render(
+				<Child
+					record={{
+						person,
+						organisations: organisationArray,
+						personDomainParts: [],
+					}}
+				/>
+			);
+
+			const organisations = new Map<string, string>();
+
+			organisations.set('someId', 'someName');
+
+			expect(FormPersonView).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					person: expect.any(Object),
+					organisations,
+					personDomainParts: expect.any(Array),
+				}),
+				expect.any(Object)
+			);
+		});
+		it('Should render FormPersonView with formPersonDomainParts from convertToFormPersonDomainPart', () => {
+			const personDomainPart = {
+				id: 'someId',
+				affiliations: [],
+				domain: 'uu',
+				recordType: 'personDomainPart',
+				identifiers: [],
+			};
+			const personDomainParts: PersonDomainPart[] = [personDomainPart];
+
+			render(<PersonPage />);
+
+			render(
+				<Child
+					record={{
+						person: personWithDomain,
+						organisations: [],
+						personDomainParts,
+					}}
+				/>
+			);
+
+			expect(convertToFormPersonDomainPart).toHaveBeenCalledTimes(1);
+			expect(convertToFormPersonDomainPart).toHaveBeenLastCalledWith(
+				personDomainPart
+			);
+
+			expect(FormPersonView).toHaveBeenCalledWith(
+				expect.objectContaining({
+					person: expect.any(Object),
+					organisations: expect.any(Map),
+					personDomainParts: [minimalFormPersonDomainPart],
+				}),
+				expect.any(Object)
+			);
+		});
 	});
 
 	describe('if edit is set', () => {
-		it('should not render PersonView', () => {
+		it('should not render FormPersonView', () => {
 			const person = createCompletePerson();
 
 			render(<PersonPage edit />);
 
 			render(<Child record={{ person }} />);
 
-			expect(PersonView).not.toHaveBeenCalled();
+			expect(FormPersonView).not.toHaveBeenCalled();
 		});
 
 		it('should render PersonEdit', () => {
