@@ -1,11 +1,10 @@
 /* eslint-disable react/require-default-props */
-import React, { useReducer, useState, useEffect } from 'react';
+import React, { useReducer } from 'react';
 import { Box, Button, Card, Form, Grid } from 'grommet';
 import {
 	Organisation,
 	Person,
 	PersonDomainPart,
-	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
 import { useAuth } from '../../../context/AuthContext';
 import { personDomainPartReducer } from './personDomainPartReducer';
@@ -47,27 +46,29 @@ const PersonEdit = function ({
 		initialOrganisations.set(organisation.id, organisation.name);
 	});
 
-	const [organisationMap, setOrganisationMap] = useState(initialOrganisations);
+	const organisationMap = initialOrganisations;
 
-	const [domainOrganisations, setDomainOrganisations] = useState<
-		Organisation[]
-	>([]);
+	// const [organisationMap, setOrganisationMap] = useState(initialOrganisations);
 
-	useEffect(() => {
-		searchOrganisationsByDomain(auth.domain, auth.token).then((list) => {
-			const organisations = list.data as Organisation[];
-			setDomainOrganisations(organisations);
+	// const [domainOrganisations, setDomainOrganisations] = useState<
+	// 	Organisation[]
+	// >([]);
 
-			const newOrganisationMap = new Map(organisationMap);
+	// useEffect(() => {
+	// 	searchOrganisationsByDomain(auth.domain, auth.token).then((list) => {
+	// 		const organisations = list.data as Organisation[];
+	// 		setDomainOrganisations(organisations);
 
-			organisations.forEach((organisation) => {
-				const { id, name } = organisation;
-				newOrganisationMap.set(id, name);
-			});
+	// 		const newOrganisationMap = new Map(organisationMap);
 
-			setOrganisationMap(newOrganisationMap);
-		});
-	}, []);
+	// 		organisations.forEach((organisation) => {
+	// 			const { id, name } = organisation;
+	// 			newOrganisationMap.set(id, name);
+	// 		});
+
+	// 		setOrganisationMap(newOrganisationMap);
+	// 	});
+	// }, []);
 
 	const initialPersonDomainPartsArr: FormPersonDomainPart[] =
 		originalPersonDomainParts.map((personDomainPart) => {
@@ -236,13 +237,15 @@ const PersonEdit = function ({
 						/>
 					</Box>
 
-					<PersonDomainParts
-						personDomainPartIds={person.personDomainParts}
-						personDomainParts={personDomainParts}
-						auth={auth}
-						organisationMap={organisationMap}
-						dispatchPersonDomainParts={dispatchPersonDomainParts}
-					/>
+					<div data-testid="personDomainParts">
+						<PersonDomainParts
+							personDomainPartIds={person.personDomainParts}
+							personDomainParts={personDomainParts}
+							auth={auth}
+							organisationMap={organisationMap}
+							dispatchPersonDomainParts={dispatchPersonDomainParts}
+						/>
+					</div>
 
 					<OtherOrganisation
 						otherAffiliation={person.otherAffiliation}
@@ -257,7 +260,7 @@ const PersonEdit = function ({
 							label="Skicka"
 							primary
 							onClick={() => {
-								alert('Skickar...');
+								console.log('Skickar...');
 							}}
 						/>
 					</Box>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
 	List,
@@ -7,19 +7,18 @@ import {
 	PersonDomainPart,
 	searchOrganisationsByDomain,
 } from 'diva-cora-ts-api-wrapper';
-import { LOGIN_STATUS, useAuth } from '../../../context/AuthContext';
-import StringFormField from './StringFormField';
-import { FormPerson } from '../../../types/FormPerson';
+import { LOGIN_STATUS } from '../../../context/AuthContext';
 import PersonEdit from './PersonEdit';
 import {
 	createCompletePerson,
-	createMinimumFormPersonWithIdAndName,
 	createMinimumPersonWithIdAndName,
 } from '../../../../testData/personObjectData';
 import { renderWithRouter } from '../../../../test-utils';
 import createOrganisationWithNameAndId from '../../../../testData/organisationObjectData';
-import { act } from 'react-dom/test-utils';
-import { Action } from 'grommet-icons';
+import FormPersonView from '../FormPersonView';
+import { convertToFormPerson } from '../../../types/FormPerson';
+import { minimalPersonDomainPart } from '../../../../testData/personDomainPartObjectData';
+import { convertToFormPersonDomainPart } from '../../../types/FormPersonDomainPart';
 
 const mockAuth = jest.fn();
 
@@ -38,6 +37,12 @@ jest.mock('../../../context/AuthContext', () => ({
 		return mockAuth();
 	},
 }));
+
+jest.mock('../FormPersonView', () => {
+	return jest.fn(() => {
+		return <div />;
+	});
+});
 
 beforeAll(() => {
 	mockAuth.mockReturnValue({
@@ -95,7 +100,7 @@ describe('Person edit', () => {
 		);
 
 		const person = createCompletePerson();
-		const person2 = createMinimumFormPersonWithIdAndName();
+		// const person2 = createMinimumFormPersonWithIdAndName();
 
 		renderWithRouter(
 			<PersonEdit
@@ -166,14 +171,111 @@ describe('Person edit', () => {
 
 		userEvent.clear(yearOfBirth);
 		userEvent.type(yearOfBirth, '1945');
-		screen.debug();
 		expect(yearOfBirth).toHaveValue('1945');
 		userEvent.clear(yearOfBirth);
-		userEvent.type(yearOfBirth, '');
 		expect(yearOfBirth).toHaveValue('');
 
 		const submit = screen.getAllByRole('button');
-		console.log(submit);
 		userEvent.click(submit[4]);
 	});
+
+	describe('FormPersonView', () => {
+		it('Calls FormPersonView with correct parameters', () => {
+			const person = createCompletePerson();
+
+			renderWithRouter(<PersonEdit originalPerson={person} />);
+
+			const formPerson = convertToFormPerson(person);
+
+			const emptyMap = new Map<string, string>();
+
+			expect(FormPersonView).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					person: formPerson,
+					organisations: emptyMap,
+					personDomainParts: [],
+					edit: true,
+				}),
+				expect.any(Object)
+			);
+
+			const organisations: Organisation[] = [
+				{
+					name: 'someOrganisation',
+					alternativeName: 'someAlternativeName',
+					id: 'someOrganisationId',
+					recordType: 'organisation',
+					organisationType: 'subOrganisation',
+				},
+			];
+			const organisationMap = new Map<string, string>();
+			organisationMap.set('someOrganisationId', 'someOrganisation');
+
+			const otherPerson = createMinimumPersonWithIdAndName('someOtherId');
+			const personDomainPart = minimalPersonDomainPart;
+
+			renderWithRouter(
+				<PersonEdit
+					originalPerson={otherPerson}
+					originalOrganisations={organisations}
+					originalPersonDomainParts={[personDomainPart]}
+				/>
+			);
+
+			const otherFormPerson = convertToFormPerson(otherPerson);
+
+			const formPersonDomainPart =
+				convertToFormPersonDomainPart(personDomainPart);
+
+			expect(FormPersonView).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					person: otherFormPerson,
+					organisations: organisationMap,
+					personDomainParts: [formPersonDomainPart],
+					edit: true,
+				}),
+				expect.any(Object)
+			);
+		});
+	});
+
+	// describe('PersonDomainParts', () => {
+	// 	it('Displays ', () => {
+	// 		const person = createCompletePerson();
+
+	// 		const originalPersonDomainParts: PersonDomainPart[] = [
+	// 			{
+	// 				id: 'personDomainPart1',
+	// 				affiliations: [],
+	// 				domain: 'uu',
+	// 				recordType: 'personDomainPart',
+	// 			},
+	// 		];
+	// 		renderWithRouter(
+	// 			<PersonEdit
+	// 				originalPerson={person}
+	// 				originalPersonDomainParts={originalPersonDomainParts}
+	// 			/>
+	// 		);
+	// 		const personDomainPartView = screen.getByTestId('personDomainParts');
+	// 		screen.debug(personDomainPartView, 1000000000);
+	// 		expect(screen.getByText('DomänId: uu')).toBeInTheDocument();
+
+	// 		const organisations: Organisation[] = [
+	// 			{
+	// 				id: 'uu',
+
+	// 			}
+	// 		]
+
+	// 		renderWithRouter(
+	// 			<PersonEdit
+	// 				originalPerson={person}
+	// 				originalPersonDomainParts={originalPersonDomainParts}
+	// 				originalOrganisations={organisationMap}
+	// 			/>
+	// 		);
+	// 		expect(screen.getByText('SomeDomain')).toBeInTheDocument();
+	// 	});
+	// });
 });
