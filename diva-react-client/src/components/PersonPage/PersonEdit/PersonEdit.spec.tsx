@@ -238,44 +238,4 @@ describe('Person edit', () => {
 			);
 		});
 	});
-
-	// describe('PersonDomainParts', () => {
-	// 	it('Displays ', () => {
-	// 		const person = createCompletePerson();
-
-	// 		const originalPersonDomainParts: PersonDomainPart[] = [
-	// 			{
-	// 				id: 'personDomainPart1',
-	// 				affiliations: [],
-	// 				domain: 'uu',
-	// 				recordType: 'personDomainPart',
-	// 			},
-	// 		];
-	// 		renderWithRouter(
-	// 			<PersonEdit
-	// 				originalPerson={person}
-	// 				originalPersonDomainParts={originalPersonDomainParts}
-	// 			/>
-	// 		);
-	// 		const personDomainPartView = screen.getByTestId('personDomainParts');
-	// 		screen.debug(personDomainPartView, 1000000000);
-	// 		expect(screen.getByText('DomänId: uu')).toBeInTheDocument();
-
-	// 		const organisations: Organisation[] = [
-	// 			{
-	// 				id: 'uu',
-
-	// 			}
-	// 		]
-
-	// 		renderWithRouter(
-	// 			<PersonEdit
-	// 				originalPerson={person}
-	// 				originalPersonDomainParts={originalPersonDomainParts}
-	// 				originalOrganisations={organisationMap}
-	// 			/>
-	// 		);
-	// 		expect(screen.getByText('SomeDomain')).toBeInTheDocument();
-	// 	});
-	// });
 });
