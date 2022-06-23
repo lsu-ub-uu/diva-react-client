@@ -43,7 +43,9 @@ export const PersonalInfo = function ({ person }: { person: FormPerson }) {
 				// />
 				<ul>
 					{person.alternativeNames.map(({ content: name, repeatId }) => {
-						return <li key={repeatId}>{displayName(name)}</li>;
+						return (
+							<li key={`alternativeNames-${repeatId}`}>{displayName(name)}</li>
+						);
 					})}
 				</ul>
 			)}
@@ -51,7 +53,7 @@ export const PersonalInfo = function ({ person }: { person: FormPerson }) {
 				<ul>
 					{person.externalURLs.map(({ content: link, repeatId }) => {
 						return (
-							<li key={repeatId}>
+							<li key={`externalURLs-${repeatId}`}>
 								<ExternalLink URL={link.URL} text={link.linkTitle} />
 							</li>
 						);

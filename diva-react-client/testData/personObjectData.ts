@@ -194,7 +194,7 @@ export const createCompleteFormPerson = () => {
 				content: { URL: 'http://du.se', linkTitle: 'DU' },
 			},
 			{
-				repeatId: 0,
+				repeatId: 1,
 				content: { URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
 			},
 		],
