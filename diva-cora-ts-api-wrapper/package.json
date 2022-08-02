@@ -39,7 +39,7 @@
 		"whatwg-fetch": "^3.6.2"
 	},
 	"dependencies": {
-		"axios": "^0.25.0",
+		"axios": "^0.27.2",
 		"lodash": "^4.17.21",
 		"process": "^0.11.10"
 	}
