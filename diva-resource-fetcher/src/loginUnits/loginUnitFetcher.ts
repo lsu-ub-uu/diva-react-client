@@ -16,9 +16,10 @@ const fetchLoginUnits = async (): Promise<LoginUnitObject[]> => {
 			.then((list: List) => {
 				const webRedirectLogins = getAllWebRedirectLogins(list);
 
-				const promises = webRedirectLogins.map((loginUnit) =>
-					fetchWebRedirectDataAndCreateLoginUnitObject(loginUnit)
-				);
+				const promises = webRedirectLogins.map((record) => {
+					const loginUnit = record as LoginUnit;
+					return fetchWebRedirectDataAndCreateLoginUnitObject(loginUnit);
+				});
 
 				Promise.all(promises).then((loginUnitObjects) => {
 					resolve(loginUnitObjects);
@@ -31,7 +32,8 @@ const fetchLoginUnits = async (): Promise<LoginUnitObject[]> => {
 };
 
 function getAllWebRedirectLogins(list: List) {
-	return list.data.filter((item) => {
+	const loginUnits = list.data as LoginUnit[];
+	return loginUnits.filter((item) => {
 		return item.loginInfo.loginType === RecordType.LoginWebRedirect;
 	});
 }
