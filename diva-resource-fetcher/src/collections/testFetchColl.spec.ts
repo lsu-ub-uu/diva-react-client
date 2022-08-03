@@ -9,7 +9,7 @@ beforeAll(() => {
 describe('test', () => {
 	it.skip('fetch data', async () => {
 		jest.setTimeout(10000);
-		process.env.BASE_URL = '';
+		process.env.REST_API_BASE_URL = '';
 		const domainCollection = await fetchCollection('domainCollection');
 
 		const str = serializeMap(domainCollection);

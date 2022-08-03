@@ -19,7 +19,7 @@ export function getRecordById<T>(
 				)
 			);
 		} else {
-			const urlForRecord = `${process.env.BASE_URL}record/${recordType}/${id}`;
+			const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/${id}`;
 			const parameters: IHttpClientRequestParameters = {
 				url: urlForRecord,
 				authToken,
@@ -45,7 +45,7 @@ export function getRecords(
 	authToken?: string
 ): Promise<List> {
 	return new Promise((resolve, reject) => {
-		const urlForRecord = `${process.env.BASE_URL}record/${recordType}/`;
+		const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/`;
 
 		const parameters: IHttpClientRequestParameters = {
 			url: urlForRecord,

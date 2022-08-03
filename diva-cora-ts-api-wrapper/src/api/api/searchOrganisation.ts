@@ -73,7 +73,7 @@ export function searchOrganisationsByDomain(
 function composeUrlForDomainSearch(domain: string, searchTerm?: string) {
 	const searchData = composeSearchDataForDomain(domain, searchTerm, 1, 1000);
 	return (
-		process.env.BASE_URL +
+		process.env.REST_API_BASE_URL +
 		searchEndpoint +
 		domainSearch +
 		JSON.stringify(searchData)

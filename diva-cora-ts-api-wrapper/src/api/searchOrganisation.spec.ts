@@ -26,7 +26,7 @@ const searchEndpoint = 'record/searchResult/';
 describe('searchOrganisations', () => {
 	describe('searchOrganisationsByDomain', () => {
 		beforeAll(() => {
-			process.env.BASE_URL = 'baseUrl/';
+			process.env.REST_API_BASE_URL = 'baseUrl/';
 			mockHttpClientGet.mockResolvedValue(dataListContainingOneOrganisation);
 		});
 
@@ -50,7 +50,7 @@ describe('searchOrganisations', () => {
 			const organisationSearch = `publicOrganisationSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"divaOrganisationDomainSearchTerm","value":"${domain}"}]}]},{"name":"start","value":"1"},{"name":"rows","value":"1000"}]}`;
 
 			const expectedUrl =
-				process.env.BASE_URL + searchEndpoint + organisationSearch;
+				process.env.REST_API_BASE_URL + searchEndpoint + organisationSearch;
 
 			expect.assertions(2);
 

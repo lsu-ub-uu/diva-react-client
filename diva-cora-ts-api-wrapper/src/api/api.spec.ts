@@ -59,7 +59,7 @@ const listWithTwoRecords = createListWithRecords(twoRecordsArray);
 
 beforeAll(() => {
 	mockHttpClientGet.mockResolvedValue(onePerson);
-	process.env.BASE_URL = 'baseUrl/';
+	process.env.REST_API_BASE_URL = 'baseUrl/';
 
 	mockExtractListFromDataList.mockReturnValue(listWithTwoRecords);
 });

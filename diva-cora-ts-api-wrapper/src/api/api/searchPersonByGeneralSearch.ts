@@ -57,7 +57,7 @@ function composeUrlForPersonSearch(
 ) {
 	const searchData = composeReturnData(searchTerm, start, rows);
 	return (
-		process.env.BASE_URL +
+		process.env.REST_API_BASE_URL +
 		searchEndpoint +
 		generalSearch +
 		JSON.stringify(searchData)

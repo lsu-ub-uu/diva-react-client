@@ -5,7 +5,7 @@ jest.setTimeout(10000);
 
 describe.skip('run fetchCollections', () => {
 	it('runs it', async () => {
-		process.env.BASE_URL = '';
+		process.env.REST_API_BASE_URL = '';
 
 		try {
 			const res = await fetchCollectionsWithBaseDir('./lists/');
