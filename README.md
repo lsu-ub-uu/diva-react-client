@@ -18,3 +18,7 @@ In the future, more seldom-updated system-metadata should be added here. The goa
 
 ## [diva-react-client](https://github.com/lsu-ub-uu/diva-react-client/tree/master/diva-react-client#readme)
 This project contains code for the actual [diva-react-client](https://github.com/lsu-ub-uu/diva-react-client/tree/master/diva-react-client#readme). 
+
+
+# Development
+For development it is recommended to use the dockerized dev environment [cora-vscodium](https://github.com/lsu-ub-uu/cora-vscodium). Head over there to get up and running.
