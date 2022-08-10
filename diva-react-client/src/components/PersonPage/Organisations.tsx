@@ -1,4 +1,4 @@
-import { Heading } from 'grommet';
+import { Heading, Box } from 'grommet';
 import React from 'react';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
 import FormPersonDomainPartView from './FormPersonDomainPartView';
@@ -17,9 +17,9 @@ export const Organisations = function ({
 	}
 
 	return (
-		<>
-			<Heading level={4}>Organisationer</Heading>
-			<ul>
+		<Box>
+			<Heading level={3}>Organisationer</Heading>
+			<Box>
 				{personDomainPartIds.map((id) => {
 					const personDomainPart = personDomainParts.find(
 						(pdp) => pdp.id === id
@@ -27,23 +27,23 @@ export const Organisations = function ({
 
 					if (!personDomainPart) {
 						return (
-							<li key={id}>
+							<p key={id}>
 								{`Kunde inte hitta information för PersonDomainPart "${id}".`}
-							</li>
+							</p>
 						);
 					}
 
 					return (
-						<li key={id}>
+						<p key={id}>
 							<FormPersonDomainPartView
 								organisations={organisations}
 								personDomainPart={personDomainPart}
 							/>
-						</li>
+						</p>
 					);
 				})}
-			</ul>
-		</>
+			</Box>
+		</Box>
 	);
 };
 
