@@ -1,6 +1,6 @@
-# cora-react-client
+# diva-react-client
 
-It's recommended to use this together with https://github.com/belanglos/cora-vscodium
+It is recommended to use this together with https://github.com/lsu-ub-uu/cora-vscodium
 
 # To get started
 1. clone the repo
