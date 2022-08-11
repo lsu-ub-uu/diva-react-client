@@ -75,7 +75,7 @@ describe('Organisations', () => {
 			/>
 		);
 
-		expect(screen.getByRole('list')).toBeInTheDocument();
+		expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();
 	});
 
 	it('Loops over personDomainPartIds', () => {
@@ -87,7 +87,7 @@ describe('Organisations', () => {
 			/>
 		);
 
-		expect(screen.getAllByRole('listitem')).toHaveLength(1);
+		expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(1);
 
 		rerender(
 			<Organisations
@@ -96,7 +96,11 @@ describe('Organisations', () => {
 				personDomainParts={defaultPersonDomainParts}
 			/>
 		);
-		expect(screen.getAllByRole('listitem')).toHaveLength(3);
+		expect(
+			screen.getAllByText((content, element) =>
+				content.startsWith('Kunde inte')
+			)
+		).toHaveLength(3);
 	});
 
 	it('Displays "Kunde inte hitta information för persondomainpart: $ID" if personDomainParts does not include a personDomainPart with that id', () => {
@@ -109,12 +113,13 @@ describe('Organisations', () => {
 			/>
 		);
 
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-
-		expect(listItems[0]).toHaveTextContent(
-			'Kunde inte hitta information för PersonDomainPart "someId".'
-		);
+		expect(
+			screen.getAllByText((content, element) =>
+				content.startsWith(
+					'Kunde inte hitta information för PersonDomainPart "someId"'
+				)
+			)
+		).toHaveLength(1);
 
 		rerender(
 			<Organisations
@@ -124,18 +129,11 @@ describe('Organisations', () => {
 			/>
 		);
 
-		const otherListItems = screen.getAllByRole('listitem');
-		expect(otherListItems).toHaveLength(3);
-
-		expect(otherListItems[0]).toHaveTextContent(
-			'Kunde inte hitta information för PersonDomainPart "someId".'
-		);
-		expect(otherListItems[1]).toHaveTextContent(
-			'Kunde inte hitta information för PersonDomainPart "someOtherId".'
-		);
-		expect(otherListItems[2]).toHaveTextContent(
-			'Kunde inte hitta information för PersonDomainPart "someThirdId".'
-		);
+		expect(
+			screen.getAllByText((content, element) =>
+				content.startsWith('Kunde inte hitta information för PersonDomainPart')
+			)
+		).toHaveLength(3);
 	});
 
 	it('Does not display "Kunde inte hitta information för persondomainpart: $ID" if personDomainParts DOES include a personDomainPart with that id', () => {
@@ -154,13 +152,11 @@ describe('Organisations', () => {
 				personDomainParts={nonEmptyPersonDomainParts}
 			/>
 		);
-
-		const listItems = screen.getAllByRole('listitem');
-		expect(listItems).toHaveLength(1);
-
-		expect(listItems[0]).not.toHaveTextContent(
-			'Kunde inte hitta information för PersonDomainPart "someId".'
-		);
+		expect(() =>
+			screen.getByText(
+				'Kunde inte hitta information för PersonDomainPart "someId"'
+			)
+		).toThrow();
 	});
 
 	it('calls FormPersonDomainPartView with PersonDomainPart from list if it exists', () => {
