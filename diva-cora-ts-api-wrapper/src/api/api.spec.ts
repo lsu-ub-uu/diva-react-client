@@ -4,7 +4,7 @@ import {
 	getRecordById,
 	getRecords,
 } from './api';
-import searchPersonsByGeneralSearch from './api/searchPersonByGeneralSearch';
+import {searchPersonsByGeneralSearch} from './api/searchPersonByGeneralSearch';
 
 import httpClient from './http/HttpClient';
 import { Person } from '../types/Person';

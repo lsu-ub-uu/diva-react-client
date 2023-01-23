@@ -1,6 +1,6 @@
 {
 	"name": "diva-cora-ts-api-wrapper",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "TS API wrapper for DiVA powered by Cora.",
 	"source": "src/index.ts",
 	"main": "dist/main.js",

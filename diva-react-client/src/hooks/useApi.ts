@@ -1,3 +1,4 @@
+import { argv } from 'process';
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
@@ -5,6 +6,10 @@ const useApi = <T>(
 	apiToCall: (...args: any) => Promise<T>,
 	initialApiParams: any
 ) => {
+	console.log("2",apiToCall);
+	console.log("2.1",argv);
+	console.log("2.2",initialApiParams);
+		
 	type Result = {
 		hasData: boolean;
 		isError: boolean;
@@ -22,6 +27,7 @@ const useApi = <T>(
 	});
 
 	React.useEffect(() => {
+		console.log("3",initialApiParams);
 		const parameters = Object.values(apiParams);
 		if (auth.token !== '') {
 			parameters.push(auth.token);

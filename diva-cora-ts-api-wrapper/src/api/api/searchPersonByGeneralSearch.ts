@@ -13,13 +13,15 @@ import { Person } from '../../types/Person';
 const searchEndpoint = 'record/searchResult/';
 const generalSearch = `publicPersonSearch?searchData=`;
 
-function searchPersonsByGeneralSearch(
+export function searchPersonsByGeneralSearch(
 	searchTerm: string,
 	start: number,
 	rows: number,
 	authToken?: string
 ): Promise<List> {
+	console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! logginging stuff2")
 	return new Promise((resolve, reject) => {
+		console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! logginging stuff3")
 		if (searchTerm === '') {
 			reject(
 				new Error('No searchTerm was passed to searchPersonsByGeneralSearch')
@@ -56,8 +58,14 @@ function composeUrlForPersonSearch(
 	rows?: number
 ) {
 	const searchData = composeReturnData(searchTerm, start, rows);
+	console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! logginging stuff22222")
+	console.log("url: ", process.env.REST_API_BASE_URL)
+	console.log("name: ", process.env.NAME)
+	console.log("grrr");	
+	//"https://cora.test.diva-portal.org/diva/rest/"+	
 	return (
-		process.env.REST_API_BASE_URL +
+		//process.env.REST_API_BASE_URL +
+		"https://cora.test.diva-portal.org/diva/rest/"+
 		searchEndpoint +
 		generalSearch +
 		JSON.stringify(searchData)
@@ -125,4 +133,4 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 	return list;
 }
 
-export default searchPersonsByGeneralSearch;
+//export default SearchPersonsByGeneralSearch;

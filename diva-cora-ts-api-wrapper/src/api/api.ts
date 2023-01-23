@@ -19,7 +19,9 @@ export function getRecordById<T>(
 				)
 			);
 		} else {
-			const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/${id}`;
+			//const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/${id}`;
+			const urlForRecord = `https://cora.test.diva-portal.org/diva/rest/record/${recordType}/${id}`;
+			
 			const parameters: IHttpClientRequestParameters = {
 				url: urlForRecord,
 				authToken,
@@ -45,7 +47,8 @@ export function getRecords(
 	authToken?: string
 ): Promise<List> {
 	return new Promise((resolve, reject) => {
-		const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/`;
+		//const urlForRecord = `${process.env.REST_API_BASE_URL}record/${recordType}/`;
+		const urlForRecord = `https://cora.test.diva-portal.org/diva/rest/record/${recordType}/`;
 
 		const parameters: IHttpClientRequestParameters = {
 			url: urlForRecord,
@@ -64,6 +67,6 @@ export function getRecords(
 	});
 }
 
-export { default as searchPersonsByGeneralSearch } from './api/searchPersonByGeneralSearch';
-
+//export { default as SearchPersonsByGeneralSearch2 } from './api/SearchPersonByGeneralSearch2';
+export * from './api/searchPersonByGeneralSearch';
 export * from './api/searchOrganisation';
