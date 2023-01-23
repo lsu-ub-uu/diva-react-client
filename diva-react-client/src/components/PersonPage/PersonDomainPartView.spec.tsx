@@ -92,17 +92,23 @@ beforeAll(() => {
 
 describe('PersonDomainPartView', () => {
 	it('should take a personDomainPart', () => {
-		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
+		render(
+			<PersonDomainPartView personDomainPart={somePersonDomainPart} />
+		);
 	});
 
 	it('should render domain name from getDomainCollection', () => {
-		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
+		render(
+			<PersonDomainPartView personDomainPart={somePersonDomainPart} />
+		);
 
 		expect(getDomainCollection).toHaveBeenCalledTimes(1);
 		expectHeadingWithText('Some university');
 
 		render(
-			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
+			<PersonDomainPartView
+				personDomainPart={someOtherPersonDomainPart}
+			/>
 		);
 
 		expectHeadingWithText('Some other university');
@@ -119,7 +125,9 @@ describe('PersonDomainPartView', () => {
 
 		mockGetDomainCollection.mockReturnValueOnce(new Map());
 		rerender(
-			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
+			<PersonDomainPartView
+				personDomainPart={someOtherPersonDomainPart}
+			/>
 		);
 		expectHeadingWithText('DomänId: someOtherDomainId');
 	});
@@ -133,7 +141,9 @@ describe('PersonDomainPartView', () => {
 	});
 
 	it('should call Tag with label and first identifier', () => {
-		render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
+		render(
+			<PersonDomainPartView personDomainPart={somePersonDomainPart} />
+		);
 
 		expect(Text).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -144,7 +154,9 @@ describe('PersonDomainPartView', () => {
 		);
 
 		render(
-			<PersonDomainPartView personDomainPart={someOtherPersonDomainPart} />
+			<PersonDomainPartView
+				personDomainPart={someOtherPersonDomainPart}
+			/>
 		);
 
 		expect(Text).toHaveBeenCalledWith(
@@ -175,10 +187,8 @@ describe('PersonDomainPartView', () => {
 		});
 
 		it('passes organisation name to AffiliationDisplay', () => {
-			const someOrganisation: Organisation = createOrganisationWithNameAndId(
-				'someOrganisation',
-				'someId'
-			);
+			const someOrganisation: Organisation =
+				createOrganisationWithNameAndId('someOrganisation', 'someId');
 			mockUseApiReturnValueWithData(someOrganisation);
 
 			render(
@@ -198,7 +208,10 @@ describe('PersonDomainPartView', () => {
 			);
 
 			const someOtherOrganisation: Organisation =
-				createOrganisationWithNameAndId('someOtherOrganisation', 'someId');
+				createOrganisationWithNameAndId(
+					'someOtherOrganisation',
+					'someId'
+				);
 			mockUseApiReturnValueWithData(someOtherOrganisation);
 
 			render(
@@ -225,7 +238,9 @@ describe('PersonDomainPartView', () => {
 				domain: 'uu',
 				affiliations: [{ id: 'someId', fromYear: '1999' }],
 			};
-			render(<PersonDomainPartView personDomainPart={personDomainPart} />);
+			render(
+				<PersonDomainPartView personDomainPart={personDomainPart} />
+			);
 
 			expect(AffiliationDisplay).toHaveBeenNthCalledWith(
 				1,
@@ -244,7 +259,11 @@ describe('PersonDomainPartView', () => {
 				domain: 'uu',
 				affiliations: [{ id: 'someId', fromYear: '3000' }],
 			};
-			render(<PersonDomainPartView personDomainPart={otherPersonDomainPart} />);
+			render(
+				<PersonDomainPartView
+					personDomainPart={otherPersonDomainPart}
+				/>
+			);
 
 			expect(AffiliationDisplay).toHaveBeenNthCalledWith(
 				2,
@@ -265,7 +284,9 @@ describe('PersonDomainPartView', () => {
 				domain: 'uu',
 				affiliations: [{ id: 'someId', untilYear: '1999' }],
 			};
-			render(<PersonDomainPartView personDomainPart={personDomainPart} />);
+			render(
+				<PersonDomainPartView personDomainPart={personDomainPart} />
+			);
 
 			expect(AffiliationDisplay).toHaveBeenNthCalledWith(
 				1,
@@ -284,7 +305,11 @@ describe('PersonDomainPartView', () => {
 				domain: 'uu',
 				affiliations: [{ id: 'someId', untilYear: '3000' }],
 			};
-			render(<PersonDomainPartView personDomainPart={otherPersonDomainPart} />);
+			render(
+				<PersonDomainPartView
+					personDomainPart={otherPersonDomainPart}
+				/>
+			);
 
 			expect(AffiliationDisplay).toHaveBeenNthCalledWith(
 				2,
@@ -328,7 +353,9 @@ describe('PersonDomainPartView', () => {
 		});
 
 		it('does not render list or list items if there is no affiliation', () => {
-			render(<PersonDomainPartView personDomainPart={somePersonDomainPart} />);
+			render(
+				<PersonDomainPartView personDomainPart={somePersonDomainPart} />
+			);
 
 			expect(screen.queryAllByRole('list')).toHaveLength(0);
 			expect(screen.queryAllByRole('listitem')).toHaveLength(0);

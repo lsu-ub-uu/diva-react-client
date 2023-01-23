@@ -27,25 +27,27 @@ const FormPersonDomainPartView = function ({
 		<Box margin={{ bottom: 'small' }}>
 			<h3>{title}</h3>
 			{personDomainPart.identifiers.length > 0 && (
-				<Text size="small">
+				<Text size='small'>
 					Lokal identifikator: {personDomainPart.identifiers[0]}
 				</Text>
 			)}
 			{personDomainPart.affiliations.length > 0 && (
 				<StyledUl>
-					{personDomainPart.affiliations.map(({ id, fromYear, untilYear }) => {
-						return (
-							<li key={id}>
-								<AffiliationDisplay
-									affiliation={{
-										name: organisations.get(id) || id,
-										fromYear,
-										untilYear,
-									}}
-								/>
-							</li>
-						);
-					})}
+					{personDomainPart.affiliations.map(
+						({ id, fromYear, untilYear }) => {
+							return (
+								<li key={id}>
+									<AffiliationDisplay
+										affiliation={{
+											name: organisations.get(id) || id,
+											fromYear,
+											untilYear,
+										}}
+									/>
+								</li>
+							);
+						}
+					)}
 				</StyledUl>
 			)}
 		</Box>

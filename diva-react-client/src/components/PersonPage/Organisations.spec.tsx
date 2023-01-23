@@ -33,7 +33,9 @@ describe('Organisations', () => {
 			/>
 		);
 
-		const heading = screen.queryByRole('heading', { name: 'Organisationer' });
+		const heading = screen.queryByRole('heading', {
+			name: 'Organisationer',
+		});
 
 		expect(heading).not.toBeInTheDocument();
 	});
@@ -47,7 +49,9 @@ describe('Organisations', () => {
 			/>
 		);
 
-		const heading = screen.queryByRole('heading', { name: 'Organisationer' });
+		const heading = screen.queryByRole('heading', {
+			name: 'Organisationer',
+		});
 
 		expect(heading).toBeInTheDocument();
 	});
@@ -131,7 +135,9 @@ describe('Organisations', () => {
 
 		expect(
 			screen.getAllByText((content, element) =>
-				content.startsWith('Kunde inte hitta information för PersonDomainPart')
+				content.startsWith(
+					'Kunde inte hitta information för PersonDomainPart'
+				)
 			)
 		).toHaveLength(3);
 	});

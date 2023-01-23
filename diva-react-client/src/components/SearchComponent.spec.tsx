@@ -16,7 +16,7 @@ jest.mock('grommet', () => ({
 		const { onChange } = props;
 		return (
 			<button
-				type="button"
+				type='button'
 				onClick={() => {
 					onChange({
 						target: { value: newRows },
@@ -37,7 +37,7 @@ describe('The SearchComponent', () => {
 	it('Takes value:string, rows:number and handlers onValueChange, onSubmit as props', () => {
 		render(
 			<SearchComponent
-				value=""
+				value=''
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -50,7 +50,7 @@ describe('The SearchComponent', () => {
 	it('Renders an input field of type searchbox', () => {
 		render(
 			<SearchComponent
-				value=""
+				value=''
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -66,7 +66,7 @@ describe('The SearchComponent', () => {
 	it('Renders a button with text "Sök"', () => {
 		render(
 			<SearchComponent
-				value=""
+				value=''
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -84,7 +84,7 @@ describe('The SearchComponent', () => {
 	it('The button labels the input field', () => {
 		render(
 			<SearchComponent
-				value=""
+				value=''
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -103,7 +103,7 @@ describe('The SearchComponent', () => {
 	it('Renders the value in the input field', () => {
 		const { rerender } = render(
 			<SearchComponent
-				value="someSearchTerm"
+				value='someSearchTerm'
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -115,7 +115,7 @@ describe('The SearchComponent', () => {
 
 		rerender(
 			<SearchComponent
-				value="someOtherSearchTerm"
+				value='someOtherSearchTerm'
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -130,7 +130,7 @@ describe('The SearchComponent', () => {
 	it('Calls onValueChange with the new value if the input field is changed', () => {
 		render(
 			<SearchComponent
-				value="someSearchTerm"
+				value='someSearchTerm'
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -152,7 +152,7 @@ describe('The SearchComponent', () => {
 	it('Calls onSubmit if the submit-button is clicked', () => {
 		render(
 			<SearchComponent
-				value="someSearchTerm"
+				value='someSearchTerm'
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -171,7 +171,7 @@ describe('The SearchComponent', () => {
 	it('Calls onSubmit if user presses "enter" within the input field', () => {
 		render(
 			<SearchComponent
-				value="someSearchTerm"
+				value='someSearchTerm'
 				rows={10}
 				rowOptions={[10, 25, 50, 100]}
 				onValueChange={onValueChange}
@@ -192,7 +192,7 @@ describe('The SearchComponent', () => {
 			it('should exist and have label "Träffar per sida"', () => {
 				render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={10}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -210,7 +210,7 @@ describe('The SearchComponent', () => {
 
 				const { rerender } = render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={10}
 						rowOptions={rowOptions}
 						onValueChange={onValueChange}
@@ -233,7 +233,7 @@ describe('The SearchComponent', () => {
 				rowOptions = [20, 40, 60, 9999999];
 				rerender(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={20}
 						rowOptions={rowOptions}
 						onValueChange={onValueChange}
@@ -256,7 +256,7 @@ describe('The SearchComponent', () => {
 			it('should add a custom rows-value if not one of the defaults and if rows>1', () => {
 				const { rerender } = render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={1}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -270,13 +270,15 @@ describe('The SearchComponent', () => {
 						'aria-labelledby': 'rows-label',
 						value: '1',
 						onChange: expect.any(Function),
-						options: [10, 25, 50, 100, 1].map((option) => option.toString()),
+						options: [10, 25, 50, 100, 1].map((option) =>
+							option.toString()
+						),
 					}),
 					expect.any(Object)
 				);
 				rerender(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={999}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -290,7 +292,9 @@ describe('The SearchComponent', () => {
 						'aria-labelledby': 'rows-label',
 						value: '999',
 						onChange: expect.any(Function),
-						options: [10, 25, 50, 100, 999].map((option) => option.toString()),
+						options: [10, 25, 50, 100, 999].map((option) =>
+							option.toString()
+						),
 					}),
 					expect.any(Object)
 				);
@@ -298,7 +302,7 @@ describe('The SearchComponent', () => {
 			it('should set rows=50 if provided with rows<1, 50 should also be selected', () => {
 				const { rerender } = render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={0}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -312,13 +316,15 @@ describe('The SearchComponent', () => {
 						'aria-labelledby': 'rows-label',
 						value: '50',
 						onChange: expect.any(Function),
-						options: [10, 25, 50, 100].map((option) => option.toString()),
+						options: [10, 25, 50, 100].map((option) =>
+							option.toString()
+						),
 					}),
 					expect.any(Object)
 				);
 				rerender(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={-1}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -332,7 +338,9 @@ describe('The SearchComponent', () => {
 						'aria-labelledby': 'rows-label',
 						value: '50',
 						onChange: expect.any(Function),
-						options: [10, 25, 50, 100].map((option) => option.toString()),
+						options: [10, 25, 50, 100].map((option) =>
+							option.toString()
+						),
 					}),
 					expect.any(Object)
 				);
@@ -342,7 +350,7 @@ describe('The SearchComponent', () => {
 			it('if user selects other option, select should be updated', () => {
 				render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={10}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -351,7 +359,9 @@ describe('The SearchComponent', () => {
 					/>
 				);
 
-				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+				userEvent.click(
+					screen.getByRole('button', { name: 'onChange' })
+				);
 
 				expect(Select).toHaveBeenLastCalledWith(
 					expect.objectContaining({
@@ -359,7 +369,9 @@ describe('The SearchComponent', () => {
 						'aria-labelledby': 'rows-label',
 						value: '25',
 						onChange: expect.any(Function),
-						options: [10, 25, 50, 100].map((option) => option.toString()),
+						options: [10, 25, 50, 100].map((option) =>
+							option.toString()
+						),
 					}),
 					expect.any(Object)
 				);
@@ -367,7 +379,7 @@ describe('The SearchComponent', () => {
 			it('if user selects other option, onRowUpdate should be called with new row value', () => {
 				const { rerender } = render(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={10}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -377,13 +389,15 @@ describe('The SearchComponent', () => {
 				);
 				expect(onRowUpdate).not.toHaveBeenCalled();
 
-				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+				userEvent.click(
+					screen.getByRole('button', { name: 'onChange' })
+				);
 
 				expect(onRowUpdate).toHaveBeenCalled();
 				expect(onRowUpdate).toHaveBeenCalledWith(25);
 				rerender(
 					<SearchComponent
-						value="someSearchTerm"
+						value='someSearchTerm'
 						rows={50}
 						rowOptions={[10, 25, 50, 100]}
 						onValueChange={onValueChange}
@@ -394,7 +408,9 @@ describe('The SearchComponent', () => {
 				expect(onRowUpdate).toHaveBeenCalledTimes(1);
 
 				newRows = '100';
-				userEvent.click(screen.getByRole('button', { name: 'onChange' }));
+				userEvent.click(
+					screen.getByRole('button', { name: 'onChange' })
+				);
 
 				expect(onRowUpdate).toHaveBeenCalledTimes(2);
 				expect(onRowUpdate).toHaveBeenCalledWith(100);

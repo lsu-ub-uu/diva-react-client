@@ -493,7 +493,9 @@ describe('getAllDataAtomicsWithNameInData', () => {
 				dataGroupWithOneMatchingAtomicAndOneMatchingGroup,
 				'someInterestingChildName'
 			)
-		).toStrictEqual([{ name: 'someInterestingChildName', value: 'someValue' }]);
+		).toStrictEqual([
+			{ name: 'someInterestingChildName', value: 'someValue' },
+		]);
 	});
 	it('if dataGroup has several matching DataAtomic, should return array containing all the matching DataAtomics', () => {
 		expect(
@@ -732,9 +734,13 @@ describe('getFirstDataGroupWithNameInDataAndAttribues', () => {
 
 		expect(
 			getAllDataGroupsWithNameInDataAndAttributesSpy
-		).toHaveBeenLastCalledWith(dataGroupWithEmptyChildren, 'someChildName', {
-			someKey: 'someValue',
-		});
+		).toHaveBeenLastCalledWith(
+			dataGroupWithEmptyChildren,
+			'someChildName',
+			{
+				someKey: 'someValue',
+			}
+		);
 
 		cdu.getFirstDataGroupWithNameInDataAndAttribues(
 			dataGroupWithMultipleMatchingGroupWithAttributes,

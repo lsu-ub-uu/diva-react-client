@@ -170,7 +170,8 @@ describe('FieldMatcherExtractor', () => {
 
 				const someOtherMatcher: FieldMatcher = {
 					propertyName: 'someField',
-					nameInDataPath: 'someDataGroup/someDataGroup/someDataAtomic',
+					nameInDataPath:
+						'someDataGroup/someDataGroup/someDataAtomic',
 					required: true,
 					attributesToMatch: { someKey: 'someValue' },
 				};
@@ -280,12 +281,14 @@ describe('FieldMatcherExtractor', () => {
 			});
 
 			it('returns value returned by getAllDataAtomicValuesWithNameInData', () => {
-				const arrayToAdd = ['someAtomic', 'someOtherAtomic', 'someMore'];
-				mockExtractAllDataAtomicValuesFollowingNameInDatas.mockReturnValueOnce([
+				const arrayToAdd = [
 					'someAtomic',
 					'someOtherAtomic',
 					'someMore',
-				]);
+				];
+				mockExtractAllDataAtomicValuesFollowingNameInDatas.mockReturnValueOnce(
+					['someAtomic', 'someOtherAtomic', 'someMore']
+				);
 				const returnedValue = des.extractAndReturnChildren(
 					defaultMultipleDataAtomicDataGroup,
 					defaulMultipleDataAtomicObjectMatcher
@@ -365,7 +368,10 @@ describe('FieldMatcherExtractor', () => {
 					],
 				};
 
-				des.extractAndReturnChildren(someOtherDataGroup, someOtherMatcher);
+				des.extractAndReturnChildren(
+					someOtherDataGroup,
+					someOtherMatcher
+				);
 
 				expect(
 					mockExtractFirstDataGroupWithAttributesFollowingNameInDatas
@@ -461,11 +467,15 @@ describe('FieldMatcherExtractor', () => {
 
 				const someOtherMatcher: FieldMatcher = {
 					propertyName: 'someField',
-					nameInDataPath: 'someFirstDataGroup/someSecondDataGroup/someThird',
+					nameInDataPath:
+						'someFirstDataGroup/someSecondDataGroup/someThird',
 					multiple: true,
 					nextMatcher: someDefaultFinalMatcher,
 				};
-				des.extractAndReturnChildren(someDefaultDataGroup, someOtherMatcher);
+				des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someOtherMatcher
+				);
 
 				expect(
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
@@ -491,9 +501,14 @@ describe('FieldMatcherExtractor', () => {
 
 				expect(
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
-				).toHaveBeenNthCalledWith(1, expect.any(Object), expect.any(Array), {
-					someAttribute: 'someKey',
-				});
+				).toHaveBeenNthCalledWith(
+					1,
+					expect.any(Object),
+					expect.any(Array),
+					{
+						someAttribute: 'someKey',
+					}
+				);
 
 				const someOtherMatcher: FieldMatcher = {
 					propertyName: 'someField',
@@ -504,13 +519,21 @@ describe('FieldMatcherExtractor', () => {
 						someOtherAttribute: 'someOtherKey',
 					},
 				};
-				des.extractAndReturnChildren(someDefaultDataGroup, someOtherMatcher);
+				des.extractAndReturnChildren(
+					someDefaultDataGroup,
+					someOtherMatcher
+				);
 
 				expect(
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas
-				).toHaveBeenNthCalledWith(2, expect.any(Object), expect.any(Array), {
-					someOtherAttribute: 'someOtherKey',
-				});
+				).toHaveBeenNthCalledWith(
+					2,
+					expect.any(Object),
+					expect.any(Array),
+					{
+						someOtherAttribute: 'someOtherKey',
+					}
+				);
 			});
 
 			it('if extractAllDataGroupsFollowingNameInDatas returns empty array, returns undefined', () => {
@@ -554,7 +577,11 @@ describe('FieldMatcherExtractor', () => {
 					);
 
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
-						[someDefaultDataGroup, someDefaultDataGroup, someDefaultDataGroup]
+						[
+							someDefaultDataGroup,
+							someDefaultDataGroup,
+							someDefaultDataGroup,
+						]
 					);
 					des.extractAndReturnChildren(
 						someDefaultDataGroup,
@@ -589,7 +616,11 @@ describe('FieldMatcherExtractor', () => {
 					);
 
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
-						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+						[
+							someDefaultDataGroup,
+							someEmptyDataGroup,
+							someDefaultDataGroup,
+						]
 					);
 					des.extractAndReturnChildren(
 						someDefaultDataGroup,
@@ -614,7 +645,11 @@ describe('FieldMatcherExtractor', () => {
 				});
 				it('returns array containing results from all calls to extractWithMatcher', () => {
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
-						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+						[
+							someDefaultDataGroup,
+							someEmptyDataGroup,
+							someDefaultDataGroup,
+						]
 					);
 
 					const converterObjects: ConverterObject[] = [
@@ -642,7 +677,11 @@ describe('FieldMatcherExtractor', () => {
 				});
 				it('if extractWithMatcher returns an empty object, that object is not included in the return array', () => {
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
-						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+						[
+							someDefaultDataGroup,
+							someEmptyDataGroup,
+							someDefaultDataGroup,
+						]
 					);
 
 					const converterObjects: ConverterObject[] = [
@@ -675,7 +714,11 @@ describe('FieldMatcherExtractor', () => {
 				});
 				it('if extractWithMatcher returns only empty objects, an empty array is returned', () => {
 					mockExtractAllDataGroupsWithAttributesFollowingNameInDatas.mockReturnValueOnce(
-						[someDefaultDataGroup, someEmptyDataGroup, someDefaultDataGroup]
+						[
+							someDefaultDataGroup,
+							someEmptyDataGroup,
+							someDefaultDataGroup,
+						]
 					);
 
 					const converterObjects: ConverterObject[] = [{}, {}, {}];
@@ -712,15 +755,16 @@ describe('FieldMatcherExtractor', () => {
 			});
 
 			it('expect extractWithMatcher to be called with dataGroup returned by extractFirstDataGroupWithAttributesFollowingNameInDatas and nextMatcher set in matcher', () => {
-				const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup = {
-					name: 'someFinalDataGroupName',
-					children: [
-						{
-							name: 'someFinalName',
-							value: 'someFinalValue',
-						},
-					],
-				};
+				const dataGroupReturnedByGetDataGroupWithNameInDatas: DataGroup =
+					{
+						name: 'someFinalDataGroupName',
+						children: [
+							{
+								name: 'someFinalName',
+								value: 'someFinalValue',
+							},
+						],
+					};
 
 				const someMatcher: FieldMatcher = {
 					propertyName: 'someField',

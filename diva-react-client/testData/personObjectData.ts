@@ -195,7 +195,10 @@ export const createCompleteFormPerson = () => {
 			},
 			{
 				repeatId: 1,
-				content: { URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+				content: {
+					URL: 'http://uu.se',
+					linkTitle: 'Uppsala Universitet',
+				},
 			},
 		],
 		biographySwedish: 'A nice biography<br/> foobar',

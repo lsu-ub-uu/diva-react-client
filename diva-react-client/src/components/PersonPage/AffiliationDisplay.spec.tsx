@@ -34,7 +34,9 @@ describe('AffiliationDisplay', () => {
 
 		expect(screen.queryByText(/someAffiliation/)).not.toBeInTheDocument();
 
-		expect(screen.getByText(/SomeDifferentAffiliation/)).toBeInTheDocument();
+		expect(
+			screen.getByText(/SomeDifferentAffiliation/)
+		).toBeInTheDocument();
 	});
 
 	it('should display affiliation years if they are set', () => {
@@ -60,7 +62,9 @@ describe('AffiliationDisplay', () => {
 		const affiliation: Affiliation = {
 			name: 'SomeAffiliation',
 		};
-		const { rerender } = render(<ComponentToTest affiliation={affiliation} />);
+		const { rerender } = render(
+			<ComponentToTest affiliation={affiliation} />
+		);
 
 		expect(screen.queryByText(/ \( - \)/)).not.toBeInTheDocument();
 
@@ -77,7 +81,9 @@ describe('AffiliationDisplay', () => {
 			name: 'SomeAffiliation',
 			fromYear: '1999',
 		};
-		const { rerender } = render(<ComponentToTest affiliation={affiliation} />);
+		const { rerender } = render(
+			<ComponentToTest affiliation={affiliation} />
+		);
 
 		expect(screen.getByText(/ \(1999 - \)/)).toBeInTheDocument();
 
@@ -95,7 +101,9 @@ describe('AffiliationDisplay', () => {
 			name: 'SomeAffiliation',
 			untilYear: '1999',
 		};
-		const { rerender } = render(<ComponentToTest affiliation={affiliation} />);
+		const { rerender } = render(
+			<ComponentToTest affiliation={affiliation} />
+		);
 
 		expect(screen.getByText(/ \( - 1999\)/)).toBeInTheDocument();
 

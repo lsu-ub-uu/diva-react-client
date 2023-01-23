@@ -31,7 +31,7 @@ jest.mock('grommet', () => ({
 		return (
 			<>
 				<button
-					type="button"
+					type='button'
 					onClick={() => {
 						onChange({
 							value: loginUnitToReturn,
@@ -41,7 +41,7 @@ jest.mock('grommet', () => ({
 					onChange
 				</button>
 				<button
-					type="button"
+					type='button'
 					onClick={() => {
 						onSearch(searchTerm);
 					}}

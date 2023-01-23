@@ -84,7 +84,10 @@ describe('possiblySetReturnValue', () => {
 			fieldName: 'someValue',
 		});
 
-		returned = des.possiblySetReturnValue(['someValue'], 'someOtherFieldName');
+		returned = des.possiblySetReturnValue(
+			['someValue'],
+			'someOtherFieldName'
+		);
 
 		expect(returned).toStrictEqual({
 			someOtherFieldName: ['someValue'],

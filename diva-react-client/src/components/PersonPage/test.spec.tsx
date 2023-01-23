@@ -137,7 +137,13 @@ describe('The Person component', () => {
 			render(<PersonPage />);
 
 			render(
-				<Child record={{ person, organisations: [], personDomainParts: [] }} />
+				<Child
+					record={{
+						person,
+						organisations: [],
+						personDomainParts: [],
+					}}
+				/>
 			);
 
 			expect(PersonEdit).not.toHaveBeenCalled();
@@ -157,7 +163,9 @@ describe('The Person component', () => {
 			);
 
 			expect(convertToFormPerson).toHaveBeenCalledTimes(1);
-			expect(convertToFormPerson).toHaveBeenLastCalledWith(personWithDomain);
+			expect(convertToFormPerson).toHaveBeenLastCalledWith(
+				personWithDomain
+			);
 
 			expect(FormPersonView).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -262,7 +270,13 @@ describe('The Person component', () => {
 			render(<PersonPage edit />);
 
 			render(
-				<Child record={{ person, organisations: [], personDomainParts: [] }} />
+				<Child
+					record={{
+						person,
+						organisations: [],
+						personDomainParts: [],
+					}}
+				/>
 			);
 
 			expect(PersonEdit).toHaveBeenCalledTimes(1);
@@ -295,7 +309,9 @@ describe('The Person component', () => {
 				},
 			];
 
-			render(<Child record={{ person, organisations, personDomainParts }} />);
+			render(
+				<Child record={{ person, organisations, personDomainParts }} />
+			);
 
 			expect(PersonEdit).toHaveBeenCalledTimes(2);
 			expect(PersonEdit).toHaveBeenLastCalledWith(

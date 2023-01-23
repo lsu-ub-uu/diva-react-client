@@ -3,7 +3,9 @@ import fetchAndSaveLoginUnits from './fetchAndSaveLoginUnits';
 
 jest.mock('./fetchAndSaveLoginUnits');
 const mockFetchAndSaveLoginUnits =
-	fetchAndSaveLoginUnits as jest.MockedFunction<typeof fetchAndSaveLoginUnits>;
+	fetchAndSaveLoginUnits as jest.MockedFunction<
+		typeof fetchAndSaveLoginUnits
+	>;
 
 beforeAll(() => {
 	mockFetchAndSaveLoginUnits.mockResolvedValue(
@@ -47,7 +49,9 @@ describe('fetchLoginUnitsWithBaseDir', () => {
 	it('if fetchAndSaveLoginUnits rejects, rejects with same error', async () => {
 		expect.assertions(1);
 
-		const expectedError = new Error('some Error from fetchAndSaveLoginUnits');
+		const expectedError = new Error(
+			'some Error from fetchAndSaveLoginUnits'
+		);
 		mockFetchAndSaveLoginUnits.mockRejectedValueOnce(expectedError);
 
 		try {

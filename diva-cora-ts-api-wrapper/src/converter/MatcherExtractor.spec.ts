@@ -14,7 +14,9 @@ const mockExtractAndReturnChildren =
 jest.mock('./ElementSetter');
 
 const mockPossiblySetReturnValue =
-	possiblySetReturnValue as jest.MockedFunction<typeof possiblySetReturnValue>;
+	possiblySetReturnValue as jest.MockedFunction<
+		typeof possiblySetReturnValue
+	>;
 
 beforeAll(() => {
 	mockExtractAndReturnChildren.mockReturnValue('someAtomicString');
@@ -114,7 +116,10 @@ describe('The MatcherExtractor', () => {
 		});
 
 		it('calls extractAndReturnChildren for each matcher', () => {
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockExtractAndReturnChildren).toHaveBeenCalledTimes(4);
 
@@ -145,7 +150,10 @@ describe('The MatcherExtractor', () => {
 				expect.any(Object)
 			);
 
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockExtractAndReturnChildren).toHaveBeenCalledTimes(6);
 
@@ -171,7 +179,10 @@ describe('The MatcherExtractor', () => {
 				defaultTestObjectMatchers[0]
 			);
 
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockExtractAndReturnChildren).toHaveBeenNthCalledWith(
 				2,
@@ -197,7 +208,10 @@ describe('The MatcherExtractor', () => {
 
 			expect(mockPossiblySetReturnValue).toHaveBeenCalledTimes(1);
 
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenCalledTimes(5);
 		});
@@ -213,7 +227,10 @@ describe('The MatcherExtractor', () => {
 				undefined
 			);
 
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				2,
@@ -305,7 +322,10 @@ describe('The MatcherExtractor', () => {
 			});
 			mockExtractAndReturnChildren.mockReturnValueOnce('');
 
-			extractWithMatcher(defaultTestDataGroup, matcherWithFourFieldMatchers);
+			extractWithMatcher(
+				defaultTestDataGroup,
+				matcherWithFourFieldMatchers
+			);
 
 			expect(mockPossiblySetReturnValue).toHaveBeenNthCalledWith(
 				2,
@@ -363,7 +383,9 @@ describe('The MatcherExtractor', () => {
 		});
 
 		it('if possiblySetReturnValue returns object, returns it in an object (one matcher)', () => {
-			mockPossiblySetReturnValue.mockReturnValueOnce({ someKey: 'someValue' });
+			mockPossiblySetReturnValue.mockReturnValueOnce({
+				someKey: 'someValue',
+			});
 			let returned = extractWithMatcher(
 				defaultTestDataGroup,
 				defaultTestObjectMatchers
@@ -396,7 +418,9 @@ describe('The MatcherExtractor', () => {
 		});
 
 		it('takes what possiblySetReturnValue returns and returns it in an object (multiple matchers)', () => {
-			mockPossiblySetReturnValue.mockReturnValueOnce({ someKey: 'someValue' });
+			mockPossiblySetReturnValue.mockReturnValueOnce({
+				someKey: 'someValue',
+			});
 			mockPossiblySetReturnValue.mockReturnValueOnce({
 				someKey2: 'someValue2',
 			});

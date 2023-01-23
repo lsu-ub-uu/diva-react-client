@@ -79,7 +79,9 @@ describe('WebRedirectLogin', () => {
 				})
 			);
 
-			expect(mockStartLoginProcess).toHaveBeenCalledWith('some other Url');
+			expect(mockStartLoginProcess).toHaveBeenCalledWith(
+				'some other Url'
+			);
 		});
 	});
 });

@@ -32,7 +32,8 @@ describe('helpers', () => {
 				)
 			).toStrictEqual('someFakeLoginServerPart');
 
-			process.env.FAKE_IDPLOGINSERVERPART = 'someOtherFakeLoginServerPart';
+			process.env.FAKE_IDPLOGINSERVERPART =
+				'someOtherFakeLoginServerPart';
 			expect(
 				getIdpLoginServerPartFromUrl(
 					'https://somethingsomething?target=https://foobar/asdf/idplogin/login'

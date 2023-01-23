@@ -17,7 +17,10 @@ const LDAPLogin = function () {
 	}, [value]);
 
 	const onSubmit = (
-		event: FormExtendedEvent<{ username: string; password: string }, Element>
+		event: FormExtendedEvent<
+			{ username: string; password: string },
+			Element
+		>
 	) => {
 		console.log(event.value);
 	};
@@ -28,16 +31,30 @@ const LDAPLogin = function () {
 			onChange={(nextValue) => setValue(nextValue)}
 			onSubmit={onSubmit}
 		>
-			<FormField name="username" htmlFor="username">
-				<TextInput name="username" id="username" placeholder="Användarnamn" />
+			<FormField
+				name='username'
+				htmlFor='username'
+			>
+				<TextInput
+					name='username'
+					id='username'
+					placeholder='Användarnamn'
+				/>
 			</FormField>
-			<FormField name="password" htmlFor="password">
-				<TextInput name="password" type="password" placeholder="Lösenord" />
+			<FormField
+				name='password'
+				htmlFor='password'
+			>
+				<TextInput
+					name='password'
+					type='password'
+					placeholder='Lösenord'
+				/>
 			</FormField>
-			<Box direction="row">
+			<Box direction='row'>
 				<Button
-					label="Logga in på organisation"
-					type="submit"
+					label='Logga in på organisation'
+					type='submit'
 					primary
 					disabled={submitButtonIsDisabled()}
 				/>

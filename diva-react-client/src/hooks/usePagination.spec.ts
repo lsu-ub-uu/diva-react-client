@@ -111,8 +111,19 @@ describe('the usePagination hook', () => {
 		let expectedRows = 100;
 		const { result, rerender } = renderHook(
 			({ start, rows, totalNumber }) =>
-				usePagination(start, rows, totalNumber, defaultOnPaginationUpdate),
-			{ initialProps: { start: 201, rows: expectedRows, totalNumber: 300 } }
+				usePagination(
+					start,
+					rows,
+					totalNumber,
+					defaultOnPaginationUpdate
+				),
+			{
+				initialProps: {
+					start: 201,
+					rows: expectedRows,
+					totalNumber: 300,
+				},
+			}
 		);
 
 		result.current.goToNextPage();
@@ -133,8 +144,19 @@ describe('the usePagination hook', () => {
 		let expectedRows = 100;
 		const { result, rerender } = renderHook(
 			({ start, rows, totalNumber }) =>
-				usePagination(start, rows, totalNumber, defaultOnPaginationUpdate),
-			{ initialProps: { start: 201, rows: expectedRows, totalNumber: 600 } }
+				usePagination(
+					start,
+					rows,
+					totalNumber,
+					defaultOnPaginationUpdate
+				),
+			{
+				initialProps: {
+					start: 201,
+					rows: expectedRows,
+					totalNumber: 600,
+				},
+			}
 		);
 
 		result.current.goToLastPage();
@@ -154,7 +176,12 @@ describe('the usePagination hook', () => {
 	it('on the first page of a result set, isFirstPage should be true', () => {
 		const { result, rerender } = renderHook(
 			({ start, rows, totalNumber }) =>
-				usePagination(start, rows, totalNumber, defaultOnPaginationUpdate),
+				usePagination(
+					start,
+					rows,
+					totalNumber,
+					defaultOnPaginationUpdate
+				),
 			{ initialProps: { start: 1, rows: 100, totalNumber: 600 } }
 		);
 
@@ -172,7 +199,12 @@ describe('the usePagination hook', () => {
 	it('on the last page of a result set (if totalNumber - start <= rows), isLastPage should be true', () => {
 		const { result, rerender } = renderHook(
 			({ start, rows, totalNumber }) =>
-				usePagination(start, rows, totalNumber, defaultOnPaginationUpdate),
+				usePagination(
+					start,
+					rows,
+					totalNumber,
+					defaultOnPaginationUpdate
+				),
 			{ initialProps: { start: 550, rows: 100, totalNumber: 600 } }
 		);
 

@@ -57,7 +57,8 @@ describe('the useSearchPersonsByGeneralSearch hook', () => {
 
 		it('calls useApi with searchPersonByGeneralSearch and empty params, does NOT call setApiParams on subsequent renders, even if searchTerm given', () => {
 			const { rerender } = renderHook(
-				({ searchTerm }) => useSearchPersonsByGeneralSearch(searchTerm, 1, 10),
+				({ searchTerm }) =>
+					useSearchPersonsByGeneralSearch(searchTerm, 1, 10),
 				{ initialProps: { searchTerm: '' } }
 			);
 
@@ -75,7 +76,11 @@ describe('the useSearchPersonsByGeneralSearch hook', () => {
 		it('calls useApi with searchPersonByGeneralSearch and empty params, DOES call setApiParams on first render if given searchTerm', () => {
 			const { rerender } = renderHook(
 				({ start }) =>
-					useSearchPersonsByGeneralSearch('someSearchTerm', start, 10),
+					useSearchPersonsByGeneralSearch(
+						'someSearchTerm',
+						start,
+						10
+					),
 				{ initialProps: { start: 1 } }
 			);
 
@@ -159,7 +164,11 @@ describe('the useSearchPersonsByGeneralSearch hook', () => {
 				useSearchPersonsByGeneralSearch('someSearchTerm', 1, 10)
 			);
 
-			result.current.triggerSearchWithParams('someOtherSearchTerm', 11, 20);
+			result.current.triggerSearchWithParams(
+				'someOtherSearchTerm',
+				11,
+				20
+			);
 
 			expect(mockSetApiParams).toHaveBeenLastCalledWith({
 				searchTerm: 'someOtherSearchTerm',

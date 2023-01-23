@@ -14,7 +14,8 @@ const usePagination = (
 	}
 
 	function goToNextPage() {
-		const nextStart = start + rows > totalNumber ? totalNumber : start + rows;
+		const nextStart =
+			start + rows > totalNumber ? totalNumber : start + rows;
 		onPaginationUpdate(nextStart);
 	}
 

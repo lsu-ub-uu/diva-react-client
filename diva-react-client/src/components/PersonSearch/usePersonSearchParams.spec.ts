@@ -26,9 +26,11 @@ beforeEach(() => {
 		mockSetSearchParams,
 	]);
 
-	mockSetSearchParams.mockImplementation((newSearchParams: URLSearchParams) => {
-		receivedSearchParams = newSearchParams;
-	});
+	mockSetSearchParams.mockImplementation(
+		(newSearchParams: URLSearchParams) => {
+			receivedSearchParams = newSearchParams;
+		}
+	);
 });
 
 describe('the usePersonSearchParams hook', () => {
@@ -41,7 +43,9 @@ describe('the usePersonSearchParams hook', () => {
 	it('returns searchTerm: string, start: number, rows: number from useSearchParams', () => {
 		const { result, rerender } = renderHook(() => usePersonSearchParams());
 
-		expect(result.current.searchTerm).toStrictEqual('someDefaultSearchTerm');
+		expect(result.current.searchTerm).toStrictEqual(
+			'someDefaultSearchTerm'
+		);
 		expect(result.current.start).toStrictEqual(101);
 		expect(result.current.rows).toStrictEqual(50);
 
@@ -74,7 +78,9 @@ describe('the usePersonSearchParams hook', () => {
 	describe('start', () => {
 		it('if start is NaN (not set or not a numeric), returns start=1', () => {
 			mockReturnedStartValueOnce('');
-			const { result, rerender } = renderHook(() => usePersonSearchParams());
+			const { result, rerender } = renderHook(() =>
+				usePersonSearchParams()
+			);
 			expect(result.current.start).toStrictEqual(DEFAULT_START);
 
 			mockReturnedStartValueOnce('22');
@@ -88,7 +94,9 @@ describe('the usePersonSearchParams hook', () => {
 
 		it('if start<1, returns start=1', () => {
 			mockReturnedStartValueOnce('0');
-			const { result, rerender } = renderHook(() => usePersonSearchParams());
+			const { result, rerender } = renderHook(() =>
+				usePersonSearchParams()
+			);
 			expect(result.current.start).toStrictEqual(DEFAULT_START);
 
 			mockReturnedStartValueOnce('22');
@@ -104,7 +112,9 @@ describe('the usePersonSearchParams hook', () => {
 	describe('rows', () => {
 		it('if rows is NaN (not set or not a numeric), returns rows=10', () => {
 			mockReturnedRowsValueOnce('');
-			const { result, rerender } = renderHook(() => usePersonSearchParams());
+			const { result, rerender } = renderHook(() =>
+				usePersonSearchParams()
+			);
 			expect(result.current.rows).toStrictEqual(DEFAULT_ROWS);
 
 			mockReturnedRowsValueOnce('22');
@@ -118,7 +128,9 @@ describe('the usePersonSearchParams hook', () => {
 
 		it('if rows<1, returns rows=10', () => {
 			mockReturnedRowsValueOnce('0');
-			const { result, rerender } = renderHook(() => usePersonSearchParams());
+			const { result, rerender } = renderHook(() =>
+				usePersonSearchParams()
+			);
 			expect(result.current.rows).toStrictEqual(DEFAULT_ROWS);
 
 			mockReturnedRowsValueOnce('22');
@@ -132,7 +144,9 @@ describe('the usePersonSearchParams hook', () => {
 
 		it('if rows > 1000, returns rows=1000', () => {
 			mockReturnedRowsValueOnce('1001');
-			const { result, rerender } = renderHook(() => usePersonSearchParams());
+			const { result, rerender } = renderHook(() =>
+				usePersonSearchParams()
+			);
 			expect(result.current.rows).toStrictEqual(MAX_ROWS);
 
 			mockReturnedRowsValueOnce('9999');
@@ -211,5 +225,8 @@ function mockReturnedStartValueOnce(startString: string) {
 }
 
 function mockOnceWithSearchParams(searchParams: URLSearchParams) {
-	mockUseSearchParams.mockReturnValueOnce([searchParams, mockSetSearchParams]);
+	mockUseSearchParams.mockReturnValueOnce([
+		searchParams,
+		mockSetSearchParams,
+	]);
 }

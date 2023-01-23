@@ -44,7 +44,9 @@ jest.mock('grommet', () => ({
 
 describe('PersonalInfo', () => {
 	it('should take a person', () => {
-		render(<ComponentToTest person={createMinimumFormPersonWithIdAndName()} />);
+		render(
+			<ComponentToTest person={createMinimumFormPersonWithIdAndName()} />
+		);
 	});
 
 	describe('alternative names', () => {
@@ -69,7 +71,9 @@ describe('PersonalInfo', () => {
 			const { rerender } = render(<ComponentToTest person={person} />);
 
 			expect(screen.getByRole('list')).toBeInTheDocument();
-			expect(screen.getByRole('listitem')).toHaveTextContent('Anka, Kalle');
+			expect(screen.getByRole('listitem')).toHaveTextContent(
+				'Anka, Kalle'
+			);
 
 			person.alternativeNames.push({
 				repeatId: 1,
@@ -107,7 +111,10 @@ describe('PersonalInfo', () => {
 			const person = createMinimumFormPersonWithIdAndName();
 
 			person.externalURLs = [
-				{ content: { URL: 'someUrl', linkTitle: 'someText' }, repeatId: 0 },
+				{
+					content: { URL: 'someUrl', linkTitle: 'someText' },
+					repeatId: 0,
+				},
 			];
 
 			render(<ComponentToTest person={person} />);

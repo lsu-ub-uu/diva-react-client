@@ -27,7 +27,7 @@ jest.mock('grommet', () => ({
 		return (
 			<>
 				{icon}
-				<div data-testid="a11yTitle">{a11yTitle}</div>
+				<div data-testid='a11yTitle'>{a11yTitle}</div>
 			</>
 		);
 	}),
@@ -36,7 +36,7 @@ jest.mock('grommet', () => ({
 jest.mock('grommet-icons', () => ({
 	...jest.requireActual('grommet-icons'),
 	Edit: jest.fn(() => {
-		return <div data-testid="icon">Edit</div>;
+		return <div data-testid='icon'>Edit</div>;
 	}),
 }));
 
@@ -54,7 +54,12 @@ beforeAll(() => {
 
 describe('EditButton', () => {
 	it('Should take recordType and ID', () => {
-		renderWithRouter(<EditButton recordType="person" id="someId" />);
+		renderWithRouter(
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
+		);
 	});
 
 	it('Should not return link if user not logged in', () => {
@@ -68,20 +73,33 @@ describe('EditButton', () => {
 			},
 		});
 
-		renderWithRouter(<EditButton recordType="person" id="someId" />);
+		renderWithRouter(
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
+		);
 
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 	});
 
 	it('Should return a link if user is logged in', () => {
-		renderWithRouter(<EditButton recordType="person" id="someId" />);
+		renderWithRouter(
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
+		);
 
 		expect(screen.getByRole('link')).toBeInTheDocument();
 	});
 
 	it('Should return link with "to" = "/$recordType/edit/$id"', () => {
 		const { rerender } = renderWithRouter(
-			<EditButton recordType="person" id="someId" />
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
 		);
 
 		expect(screen.getByRole('link')).toHaveAttribute(
@@ -89,7 +107,12 @@ describe('EditButton', () => {
 			'/person/edit/someId'
 		);
 
-		rerender(<EditButton recordType="recordType" id="someOtherId" />);
+		rerender(
+			<EditButton
+				recordType='recordType'
+				id='someOtherId'
+			/>
+		);
 		expect(screen.getByRole('link')).toHaveAttribute(
 			'href',
 			'/recordType/edit/someOtherId'
@@ -97,13 +120,23 @@ describe('EditButton', () => {
 	});
 
 	it('Should render button containing Edit and a11yTitle "Editera"', () => {
-		renderWithRouter(<EditButton recordType="person" id="someId" />);
+		renderWithRouter(
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
+		);
 		expect(screen.getByTestId('icon')).toHaveTextContent('Edit');
 		expect(screen.getByTestId('a11yTitle')).toHaveTextContent('Editera');
 	});
 
 	it('Should render button containing Edit', () => {
-		renderWithRouter(<EditButton recordType="person" id="someId" />);
+		renderWithRouter(
+			<EditButton
+				recordType='person'
+				id='someId'
+			/>
+		);
 		expect(screen.getByTestId('icon')).toHaveTextContent('Edit');
 	});
 });

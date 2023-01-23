@@ -150,7 +150,9 @@ export default loginUnits;`;
 		mockSaveStringToFile.mockResolvedValueOnce();
 		const result2 = await fetchAndSaveLoginUnits('someOtherPathToFile');
 
-		expect(result2).toStrictEqual('Successfully wrote to someOtherPathToFile');
+		expect(result2).toStrictEqual(
+			'Successfully wrote to someOtherPathToFile'
+		);
 	});
 
 	it('if saveStringToFile rejects, rejects with same error', async () => {

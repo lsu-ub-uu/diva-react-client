@@ -10,8 +10,8 @@ describe('String form field component', () => {
 		render(
 			<StringFormField
 				onChange={mockOnChange}
-				label="foo"
-				value="bar"
+				label='foo'
+				value='bar'
 				field={'foobar' as keyof FormPerson}
 			/>
 		);

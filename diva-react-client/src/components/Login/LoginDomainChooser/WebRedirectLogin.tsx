@@ -11,9 +11,9 @@ const WebRedirectLogin = function ({
 	const { startLoginProcess } = useWebRedirectLogin();
 
 	return (
-		<Box direction="row">
+		<Box direction='row'>
 			<Button
-				label="Logga in på organisation"
+				label='Logga in på organisation'
 				primary
 				disabled={!value}
 				onClick={() => {

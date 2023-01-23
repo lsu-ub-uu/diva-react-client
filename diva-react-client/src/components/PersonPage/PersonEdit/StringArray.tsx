@@ -24,17 +24,19 @@ export const StringArray = function ({
 					<Card
 						// eslint-disable-next-line react/no-array-index-key
 						key={`libris-${index}`}
-						direction="row"
-						justify="between"
-						align="center"
+						direction='row'
+						justify='between'
+						align='center'
 						margin={{ top: 'small', bottom: 'small' }}
-						pad="small"
+						pad='small'
 					>
 						<MemoizedTextField
 							name={`${field}-${index}`}
 							label={label}
 							value={value}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							onChange={(
+								event: React.ChangeEvent<HTMLInputElement>
+							) => {
 								dispatchPerson({
 									type: PersonActionType.UPDATE_ARRAY_STRING_FIELD,
 									payload: {
@@ -63,7 +65,11 @@ export const StringArray = function ({
 					</Card>
 				);
 			})}
-			<Box direction="row" justify="start" margin={{ bottom: 'small' }}>
+			<Box
+				direction='row'
+				justify='start'
+				margin={{ bottom: 'small' }}
+			>
 				<AddButton
 					label={`Lägg till ${label}`}
 					plain

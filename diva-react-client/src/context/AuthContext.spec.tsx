@@ -22,11 +22,14 @@ const ChildComponent = function () {
 
 	return (
 		<>
-			<p data-testid="token">{auth.token}</p>
-			<p data-testid="status">{auth.status}</p>
-			<p data-testid="idFromLogin">{auth.idFromLogin}</p>
-			<p data-testid="deleteUrl">{auth.deleteUrl}</p>
-			<button type="button" onClick={handleClick}>
+			<p data-testid='token'>{auth.token}</p>
+			<p data-testid='status'>{auth.status}</p>
+			<p data-testid='idFromLogin'>{auth.idFromLogin}</p>
+			<p data-testid='deleteUrl'>{auth.deleteUrl}</p>
+			<button
+				type='button'
+				onClick={handleClick}
+			>
 				Click
 			</button>
 		</>
@@ -76,7 +79,9 @@ describe('AuthContext', () => {
 
 			expect(tokenHolder).toHaveTextContent(anotherAuth.token);
 			expect(statusHolder).toHaveTextContent(anotherAuth.status);
-			expect(idFromLoginHolder).toHaveTextContent(anotherAuth.idFromLogin);
+			expect(idFromLoginHolder).toHaveTextContent(
+				anotherAuth.idFromLogin
+			);
 			expect(deleteUrlHolder).toHaveTextContent(anotherAuth.deleteUrl);
 		});
 	});
@@ -115,7 +120,9 @@ describe('AuthContext', () => {
 				result.current.onAuthChange(newAuth);
 			} catch (error) {
 				expect(error).toStrictEqual(
-					new Error('useAuth can only be used within a child of AuthProvider.')
+					new Error(
+						'useAuth can only be used within a child of AuthProvider.'
+					)
 				);
 			}
 		});

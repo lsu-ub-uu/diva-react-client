@@ -26,7 +26,7 @@ const PersonFetcher = function ({
 	return (
 		<section>
 			{result.error && (
-				<p data-testid="errorMessage">
+				<p data-testid='errorMessage'>
 					Någonting gick fel: {result.error.message}
 				</p>
 			)}

@@ -107,7 +107,11 @@ describe('Person domain parts', () => {
 			identifiers: ['1'],
 			domain: 'uu',
 			affiliations: [
-				{ fromYear: '1922', untilYear: '2002', id: 'affiliationIdNotInMap' },
+				{
+					fromYear: '1922',
+					untilYear: '2002',
+					id: 'affiliationIdNotInMap',
+				},
 			],
 		};
 

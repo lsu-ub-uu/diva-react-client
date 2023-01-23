@@ -64,7 +64,10 @@ describe('RecordTypeConverter', () => {
 		expect(mockGetMatcherForRecordType).toHaveBeenLastCalledWith(
 			RecordType.Person
 		);
-		convertToObjectWithRecordType(someDataGroup, RecordType.PersonDomainPart);
+		convertToObjectWithRecordType(
+			someDataGroup,
+			RecordType.PersonDomainPart
+		);
 		expect(mockGetMatcherForRecordType).toHaveBeenLastCalledWith(
 			RecordType.PersonDomainPart
 		);
@@ -79,8 +82,13 @@ describe('RecordTypeConverter', () => {
 			personMatcher
 		);
 
-		mockGetMatcherForRecordType.mockReturnValueOnce(personDomainPartMatcher);
-		convertToObjectWithRecordType(someDataGroup, RecordType.PersonDomainPart);
+		mockGetMatcherForRecordType.mockReturnValueOnce(
+			personDomainPartMatcher
+		);
+		convertToObjectWithRecordType(
+			someDataGroup,
+			RecordType.PersonDomainPart
+		);
 
 		expect(mockConvertToObject).toHaveBeenLastCalledWith(
 			expect.any(Object),

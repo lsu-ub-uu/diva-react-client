@@ -52,7 +52,7 @@ beforeAll(() => {
 
 describe('The PersonDomainPartWrapper component', () => {
 	it('should render RecordFetcher with recordType RecordType.PersonDomainPart', () => {
-		render(<PersonDomainPartWrapper id="someId" />);
+		render(<PersonDomainPartWrapper id='someId' />);
 
 		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
@@ -63,7 +63,7 @@ describe('The PersonDomainPartWrapper component', () => {
 	});
 
 	it('should render RecordFetcher id from props', () => {
-		render(<PersonDomainPartWrapper id="someNiceId" />);
+		render(<PersonDomainPartWrapper id='someNiceId' />);
 
 		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
@@ -72,7 +72,7 @@ describe('The PersonDomainPartWrapper component', () => {
 			})
 		);
 
-		render(<PersonDomainPartWrapper id="someOtherId" />);
+		render(<PersonDomainPartWrapper id='someOtherId' />);
 
 		expect(mockedRecordFetcher).toHaveBeenLastCalledWith(
 			expect.objectContaining({
@@ -83,13 +83,13 @@ describe('The PersonDomainPartWrapper component', () => {
 	});
 
 	it('should not render RecordFetcher if id from props is empty string', () => {
-		render(<PersonDomainPartWrapper id="" />);
+		render(<PersonDomainPartWrapper id='' />);
 
 		expect(mockedRecordFetcher).not.toHaveBeenCalled();
 	});
 
 	it('should render PersonDomainPartView with personDomainPart from RecordFetcher', () => {
-		render(<PersonDomainPartWrapper id="someId" />);
+		render(<PersonDomainPartWrapper id='someId' />);
 
 		render(<Child record={somePersonDomainPart} />);
 
@@ -103,7 +103,7 @@ describe('The PersonDomainPartWrapper component', () => {
 	});
 
 	it('should render PersonDomainPartView with personDomainPart from RecordFetcher', () => {
-		render(<PersonDomainPartWrapper id="someId" />);
+		render(<PersonDomainPartWrapper id='someId' />);
 
 		render(<Child record={someOtherPersonDomainPart} />);
 

@@ -7,7 +7,9 @@ describe('LDAPLogin', () => {
 	describe('LoginForm', () => {
 		it('renders a text input for username with placeholder Användarnamn', () => {
 			render(<LDAPLogin />);
-			expect(screen.getByPlaceholderText('Användarnamn')).toBeInTheDocument();
+			expect(
+				screen.getByPlaceholderText('Användarnamn')
+			).toBeInTheDocument();
 		});
 		it('renders a text input for password with placeholder Lösenord', () => {
 			render(<LDAPLogin />);
@@ -39,7 +41,10 @@ describe('LDAPLogin', () => {
 			);
 			expect(submitButton).toBeDisabled();
 
-			userEvent.type(screen.getByPlaceholderText('Lösenord'), 'somePassword');
+			userEvent.type(
+				screen.getByPlaceholderText('Lösenord'),
+				'somePassword'
+			);
 			expect(submitButton).toBeEnabled();
 		});
 
@@ -54,7 +59,10 @@ describe('LDAPLogin', () => {
 				'someUserName'
 			);
 
-			userEvent.type(screen.getByPlaceholderText('Lösenord'), 'somePassword');
+			userEvent.type(
+				screen.getByPlaceholderText('Lösenord'),
+				'somePassword'
+			);
 
 			userEvent.click(submitButton);
 		});

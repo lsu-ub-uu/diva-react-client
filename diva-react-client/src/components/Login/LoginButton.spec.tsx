@@ -11,7 +11,7 @@ jest.mock('grommet', () => ({
 		return (
 			<>
 				<button
-					type="button"
+					type='button'
 					onClick={() => {
 						onOpen();
 					}}
@@ -19,7 +19,7 @@ jest.mock('grommet', () => ({
 					onOpen
 				</button>
 				<button
-					type="button"
+					type='button'
 					onClick={() => {
 						onClose();
 					}}

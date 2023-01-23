@@ -16,14 +16,17 @@ export const OtherOrganisation = React.memo(
 		return (
 			<Card
 				margin={{ top: 'small', bottom: 'small' }}
-				pad="small"
-				key="otherOrganisation"
+				pad='small'
+				key='otherOrganisation'
 			>
-				<CardHeader pad="small">Annan organisation</CardHeader>
-				<Box direction="row" justify="between">
+				<CardHeader pad='small'>Annan organisation</CardHeader>
+				<Box
+					direction='row'
+					justify='between'
+				>
 					<MemoizedTextField
-						label="Namn"
-						name="otherAffiliation-name"
+						label='Namn'
+						name='otherAffiliation-name'
 						value={otherAffiliation.name}
 						onChange={React.useCallback(
 							(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,13 +41,19 @@ export const OtherOrganisation = React.memo(
 							},
 							[]
 						)}
-						validate={validateWithRegex(/^.+$/, INVALID_YEAR_MESSAGE)}
+						validate={validateWithRegex(
+							/^.+$/,
+							INVALID_YEAR_MESSAGE
+						)}
 					/>
 				</Box>
-				<Box direction="row" justify="between">
+				<Box
+					direction='row'
+					justify='between'
+				>
 					<MemoizedTextField
-						label="Från"
-						name="otherAffiliation-from"
+						label='Från'
+						name='otherAffiliation-from'
 						value={otherAffiliation.fromYear}
 						onChange={React.useCallback(
 							(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,13 +68,19 @@ export const OtherOrganisation = React.memo(
 							},
 							[]
 						)}
-						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+						validate={validateWithRegex(
+							/^[0-9]{4}$/,
+							INVALID_YEAR_MESSAGE
+						)}
 					/>
 					<MemoizedTextField
-						name="otherAffiliation-until"
-						label="Till"
+						name='otherAffiliation-until'
+						label='Till'
 						value={otherAffiliation.untilYear}
-						validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+						validate={validateWithRegex(
+							/^[0-9]{4}$/,
+							INVALID_YEAR_MESSAGE
+						)}
 						onChange={React.useCallback(
 							(event: React.ChangeEvent<HTMLInputElement>) => {
 								dispatchPerson({

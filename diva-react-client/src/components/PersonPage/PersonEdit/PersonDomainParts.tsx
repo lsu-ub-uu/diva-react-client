@@ -32,99 +32,134 @@ export const PersonDomainParts = React.memo(
 						const personDomainPart = personDomainParts.find(
 							(pdp) => pdp.id === pdpId
 						);
-						if (!personDomainPart || personDomainPart.domain !== auth.domain) {
+						if (
+							!personDomainPart ||
+							personDomainPart.domain !== auth.domain
+						) {
 							return null;
 						}
 						const title =
-							getDomainCollection().get(personDomainPart.domain) ||
-							`DomänId: ${personDomainPart.domain}`;
+							getDomainCollection().get(
+								personDomainPart.domain
+							) || `DomänId: ${personDomainPart.domain}`;
 						return (
 							<Box
 								margin={{ top: 'large', bottom: 'large' }}
 								key={personDomainPart.id}
 							>
-								<Heading margin="none" level="5">
+								<Heading
+									margin='none'
+									level='5'
+								>
 									{title}
 								</Heading>
-								{Object.values(personDomainPart.affiliations).map(
-									(affiliation, index) => {
-										return (
-											<Card
-												// eslint-disable-next-line react/no-array-index-key
-												key={`${personDomainPart.id}-${affiliation.id}-${index}`}
-												margin={{ top: 'small', bottom: 'small' }}
-												pad="small"
+								{Object.values(
+									personDomainPart.affiliations
+								).map((affiliation, index) => {
+									return (
+										<Card
+											// eslint-disable-next-line react/no-array-index-key
+											key={`${personDomainPart.id}-${affiliation.id}-${index}`}
+											margin={{
+												top: 'small',
+												bottom: 'small',
+											}}
+											pad='small'
+										>
+											<CardHeader pad='small'>
+												{affiliation.id !== '' && (
+													<Heading
+														margin='none'
+														level='6'
+													>
+														{organisationMap.get(
+															affiliation.id
+														) || affiliation.id}
+													</Heading>
+												)}
+											</CardHeader>
+											<Box
+												direction='row'
+												justify='between'
 											>
-												<CardHeader pad="small">
-													{affiliation.id !== '' && (
-														<Heading margin="none" level="6">
-															{organisationMap.get(affiliation.id) ||
-																affiliation.id}
-														</Heading>
-													)}
-												</CardHeader>
-												<Box direction="row" justify="between">
-													<MemoizedTextField
-														label="Från"
-														name={`${affiliation.id}-from`}
-														value={affiliation.fromYear}
-														onChange={(
-															event: React.ChangeEvent<HTMLInputElement>
-														) => {
-															dispatchPersonDomainParts({
+												<MemoizedTextField
+													label='Från'
+													name={`${affiliation.id}-from`}
+													value={affiliation.fromYear}
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) => {
+														dispatchPersonDomainParts(
+															{
 																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
 																payload: {
-																	personDomainPartId: personDomainPart.id,
-																	affiliationId: affiliation.id,
+																	personDomainPartId:
+																		personDomainPart.id,
+																	affiliationId:
+																		affiliation.id,
 																	field: 'fromYear',
-																	value: event.target.value,
+																	value: event
+																		.target
+																		.value,
 																},
-															});
-														}}
-														validate={validateWithRegex(
-															/^[0-9]{4}$/,
-															INVALID_YEAR_MESSAGE
-														)}
-													/>
-													<MemoizedTextField
-														name={`${affiliation.id}-until`}
-														label="Till"
-														value={affiliation.untilYear}
-														validate={validateWithRegex(
-															/^[0-9]{4}$/,
-															INVALID_YEAR_MESSAGE
-														)}
-														onChange={(
-															event: React.ChangeEvent<HTMLInputElement>
-														) => {
-															dispatchPersonDomainParts({
+															}
+														);
+													}}
+													validate={validateWithRegex(
+														/^[0-9]{4}$/,
+														INVALID_YEAR_MESSAGE
+													)}
+												/>
+												<MemoizedTextField
+													name={`${affiliation.id}-until`}
+													label='Till'
+													value={
+														affiliation.untilYear
+													}
+													validate={validateWithRegex(
+														/^[0-9]{4}$/,
+														INVALID_YEAR_MESSAGE
+													)}
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) => {
+														dispatchPersonDomainParts(
+															{
 																type: PersonDomainPartActionType.SET_AFFILIATION_FIELD,
 																payload: {
-																	personDomainPartId: personDomainPart.id,
-																	affiliationId: affiliation.id,
+																	personDomainPartId:
+																		personDomainPart.id,
+																	affiliationId:
+																		affiliation.id,
 																	field: 'untilYear',
-																	value: event.target.value,
+																	value: event
+																		.target
+																		.value,
 																},
-															});
-														}}
-													/>
-													<TrashButton
-														plain
-														onClick={() => {
-															dispatchPersonDomainParts({
+															}
+														);
+													}}
+												/>
+												<TrashButton
+													plain
+													onClick={() => {
+														dispatchPersonDomainParts(
+															{
 																type: PersonDomainPartActionType.DELETE_AFFILIATION,
 																payload: {
-																	personDomainPartId: personDomainPart.id,
-																	affiliationId: affiliation.id,
+																	personDomainPartId:
+																		personDomainPart.id,
+																	affiliationId:
+																		affiliation.id,
 																},
-															});
-														}}
-													/>
-												</Box>
-											</Card>
-										);
-									}
-								)}
+															}
+														);
+													}}
+												/>
+											</Box>
+										</Card>
+									);
+								})}
 							</Box>
 						);
 					})}

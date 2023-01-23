@@ -31,7 +31,8 @@ beforeEach(() => {
 describe('The useApi hook', () => {
 	it('should take parameters: an API to call as well as parameters for that API call', () => {
 		const { rerender } = renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -48,7 +49,8 @@ describe('The useApi hook', () => {
 
 	it('should call useAuth', () => {
 		renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -61,7 +63,8 @@ describe('The useApi hook', () => {
 
 	it('should call apiToCall with params and authToken if it is set', () => {
 		const { rerender } = renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -86,7 +89,11 @@ describe('The useApi hook', () => {
 
 		rerender();
 
-		expect(mockApiToCall).toHaveBeenLastCalledWith('one', 2, 'someOtherToken');
+		expect(mockApiToCall).toHaveBeenLastCalledWith(
+			'one',
+			2,
+			'someOtherToken'
+		);
 	});
 
 	it('should call apiToCall with params but not with authToken if it is an empty string', async () => {
@@ -102,7 +109,8 @@ describe('The useApi hook', () => {
 		});
 
 		const { result } = renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -123,7 +131,8 @@ describe('The useApi hook', () => {
 
 	it('should not call apiToCall if params are empty', () => {
 		renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -137,7 +146,8 @@ describe('The useApi hook', () => {
 
 	it('should return setApiParams method, which can be used to send new params and should trigger new call to apiToCall', async () => {
 		const { result, waitFor } = renderHook(
-			({ apiToCall, initialApiParams }) => useApi(apiToCall, initialApiParams),
+			({ apiToCall, initialApiParams }) =>
+				useApi(apiToCall, initialApiParams),
 			{
 				initialProps: {
 					apiToCall: mockApiToCall,
@@ -276,7 +286,10 @@ describe('The useApi hook', () => {
 			});
 
 			act(() => {
-				result.current.setApiParams({ paramOne: 'newOne', paramTwo: 42 });
+				result.current.setApiParams({
+					paramOne: 'newOne',
+					paramTwo: 42,
+				});
 			});
 
 			expect(result.current.result.isError).toBe(false);
@@ -312,7 +325,9 @@ describe('The useApi hook', () => {
 			);
 
 			await waitFor(() => {
-				expect(result.current.result.error).toStrictEqual(expectedError);
+				expect(result.current.result.error).toStrictEqual(
+					expectedError
+				);
 			});
 		});
 
@@ -343,7 +358,9 @@ describe('The useApi hook', () => {
 			jest.advanceTimersByTime(100);
 
 			await waitFor(() => {
-				expect(result.current.result.error).toStrictEqual(expectedError);
+				expect(result.current.result.error).toStrictEqual(
+					expectedError
+				);
 			});
 
 			mockApiToCall.mockImplementationOnce(() => {
@@ -355,7 +372,10 @@ describe('The useApi hook', () => {
 			});
 
 			act(() => {
-				result.current.setApiParams({ paramOne: 'newOne', paramTwo: 42 });
+				result.current.setApiParams({
+					paramOne: 'newOne',
+					paramTwo: 42,
+				});
 			});
 
 			expect(result.current.result.error).toBeUndefined();
@@ -439,7 +459,10 @@ describe('The useApi hook', () => {
 			});
 
 			act(() => {
-				result.current.setApiParams({ paramOne: 'newOne', paramTwo: 42 });
+				result.current.setApiParams({
+					paramOne: 'newOne',
+					paramTwo: 42,
+				});
 			});
 
 			expect(result.current.result.hasData).toBe(false);
@@ -449,7 +472,9 @@ describe('The useApi hook', () => {
 
 			await waitFor(() => {
 				expect(result.current.result.hasData).toBe(true);
-				expect(result.current.result.data).toStrictEqual('someOtherResolve');
+				expect(result.current.result.data).toStrictEqual(
+					'someOtherResolve'
+				);
 			});
 
 			jest.useRealTimers();

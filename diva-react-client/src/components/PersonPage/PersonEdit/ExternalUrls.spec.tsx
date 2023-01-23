@@ -25,7 +25,9 @@ describe('External Urls Component', () => {
 			/>
 		);
 
-		const externalLinkTitle = screen.getByTestId('externalURLs[0].linkTitle');
+		const externalLinkTitle = screen.getByTestId(
+			'externalURLs[0].linkTitle'
+		);
 		const externalURLS = screen.getByTestId('externalURLs[0].URL');
 		expect(externalURLS).toHaveValue('http://www.dn.se');
 		expect(externalLinkTitle).toHaveValue('DN');

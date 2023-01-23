@@ -39,7 +39,8 @@ describe('FormPerson', () => {
 				biographySwedish: '',
 			};
 
-			const formPerson: FormPerson = convertToFormPerson(personWithoutName);
+			const formPerson: FormPerson =
+				convertToFormPerson(personWithoutName);
 
 			expect(formPerson).toStrictEqual(expectedFormPerson);
 		});
@@ -53,7 +54,10 @@ describe('FormPerson', () => {
 			minimalPerson.public = 'no';
 			const expectedFormPerson: FormPerson = {
 				id: 'someId',
-				authorisedName: { familyName: 'familyName', givenName: 'givenName' },
+				authorisedName: {
+					familyName: 'familyName',
+					givenName: 'givenName',
+				},
 				personDomainParts: [],
 				public: 'no',
 				academicTitle: '',
@@ -114,9 +118,15 @@ describe('FormPerson', () => {
 					},
 				],
 				externalURLs: [
-					{ content: { URL: 'http://du.se', linkTitle: 'DU' }, repeatId: 0 },
 					{
-						content: { URL: 'http://uu.se', linkTitle: 'Uppsala Universitet' },
+						content: { URL: 'http://du.se', linkTitle: 'DU' },
+						repeatId: 0,
+					},
+					{
+						content: {
+							URL: 'http://uu.se',
+							linkTitle: 'Uppsala Universitet',
+						},
 						repeatId: 1,
 					},
 				],

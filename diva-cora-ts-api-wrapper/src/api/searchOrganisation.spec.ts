@@ -27,7 +27,9 @@ describe('searchOrganisations', () => {
 	describe('searchOrganisationsByDomain', () => {
 		beforeAll(() => {
 			process.env.REST_API_BASE_URL = 'baseUrl/';
-			mockHttpClientGet.mockResolvedValue(dataListContainingOneOrganisation);
+			mockHttpClientGet.mockResolvedValue(
+				dataListContainingOneOrganisation
+			);
 		});
 
 		it('Takes a domain', () => {
@@ -40,7 +42,9 @@ describe('searchOrganisations', () => {
 				await searchOrganisationsByDomain('');
 			} catch (error) {
 				expect(error).toStrictEqual(
-					new Error('No domain was passed to searchOrganisationsByDomain.')
+					new Error(
+						'No domain was passed to searchOrganisationsByDomain.'
+					)
 				);
 				expect(mockHttpClientGet).toHaveBeenCalledTimes(0);
 			}
@@ -50,7 +54,9 @@ describe('searchOrganisations', () => {
 			const organisationSearch = `publicOrganisationSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"divaOrganisationDomainSearchTerm","value":"${domain}"}]}]},{"name":"start","value":"1"},{"name":"rows","value":"1000"}]}`;
 
 			const expectedUrl =
-				process.env.REST_API_BASE_URL + searchEndpoint + organisationSearch;
+				process.env.REST_API_BASE_URL +
+				searchEndpoint +
+				organisationSearch;
 
 			expect.assertions(2);
 
@@ -100,7 +106,8 @@ describe('searchOrganisations', () => {
 
 				expect(mockConvertToObject).toHaveBeenCalledTimes(1);
 				expect(mockConvertToObject).toHaveBeenCalledWith(
-					dataListContainingOneOrganisation.dataList.data[0].record.data,
+					dataListContainingOneOrganisation.dataList.data[0].record
+						.data,
 					organisationMatcher
 				);
 			});
@@ -116,12 +123,14 @@ describe('searchOrganisations', () => {
 				expect(mockConvertToObject).toHaveBeenCalledTimes(3);
 				expect(mockConvertToObject).toHaveBeenNthCalledWith(
 					1,
-					dataListContainingThreeOrganisations.dataList.data[0].record.data,
+					dataListContainingThreeOrganisations.dataList.data[0].record
+						.data,
 					organisationMatcher
 				);
 				expect(mockConvertToObject).toHaveBeenNthCalledWith(
 					3,
-					dataListContainingThreeOrganisations.dataList.data[2].record.data,
+					dataListContainingThreeOrganisations.dataList.data[2].record
+						.data,
 					organisationMatcher
 				);
 			});
@@ -144,7 +153,9 @@ describe('searchOrganisations', () => {
 		});
 
 		it('should set from/to/total accordingly', async () => {
-			mockHttpClientGet.mockResolvedValueOnce(dataListContainingTwoOfFifteen);
+			mockHttpClientGet.mockResolvedValueOnce(
+				dataListContainingTwoOfFifteen
+			);
 
 			expect.assertions(4);
 

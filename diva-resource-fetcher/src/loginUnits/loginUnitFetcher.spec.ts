@@ -25,27 +25,29 @@ beforeEach(() => {
 	mockGetRecords.mockResolvedValue(listWithThreeLoginUnits);
 	mockGetRecordById.mockResolvedValue({ url: 'someDefaultUrl' });
 
-	mockGetRecordById.mockImplementation((recordType: RecordType, id: string) => {
-		return new Promise((resolve) => {
-			if (recordType === RecordType.CoraText) {
-				const coraText: CoraText = {
-					id: 'someId',
-					recordType: 'coraText',
-					defaultText: { text: `someTextSv${id}` },
-					alternativeText: { text: `someTextEn${id}` },
-				};
-				resolve(coraText);
-			}
-			if (recordType === RecordType.LoginWebRedirect) {
-				const loginWebRedirect: LoginWebRedirect = {
-					id: 'someId',
-					recordType: 'loginWebRedirect',
-					url: `url${id}`,
-				};
-				resolve(loginWebRedirect);
-			}
-		});
-	});
+	mockGetRecordById.mockImplementation(
+		(recordType: RecordType, id: string) => {
+			return new Promise((resolve) => {
+				if (recordType === RecordType.CoraText) {
+					const coraText: CoraText = {
+						id: 'someId',
+						recordType: 'coraText',
+						defaultText: { text: `someTextSv${id}` },
+						alternativeText: { text: `someTextEn${id}` },
+					};
+					resolve(coraText);
+				}
+				if (recordType === RecordType.LoginWebRedirect) {
+					const loginWebRedirect: LoginWebRedirect = {
+						id: 'someId',
+						recordType: 'loginWebRedirect',
+						url: `url${id}`,
+					};
+					resolve(loginWebRedirect);
+				}
+			});
+		}
+	);
 });
 
 describe('loginUnitFetcher', () => {

@@ -77,11 +77,18 @@ describe('divaCollectionFetcher', () => {
 
 			await fetchAndSaveCollection('someCollectionId', 'somePathToFile');
 
-			expect(fetchCollection).toHaveBeenLastCalledWith('someCollectionId');
+			expect(fetchCollection).toHaveBeenLastCalledWith(
+				'someCollectionId'
+			);
 
-			await fetchAndSaveCollection('someOtherCollectionId', 'somePathToFile');
+			await fetchAndSaveCollection(
+				'someOtherCollectionId',
+				'somePathToFile'
+			);
 
-			expect(fetchCollection).toHaveBeenLastCalledWith('someOtherCollectionId');
+			expect(fetchCollection).toHaveBeenLastCalledWith(
+				'someOtherCollectionId'
+			);
 		});
 
 		it('if fetchCollection returns map, calls serializeMap with that map', async () => {
@@ -106,7 +113,10 @@ describe('divaCollectionFetcher', () => {
 				'somePathToFile'
 			);
 
-			await fetchAndSaveCollection('someCollectionId', 'someOtherPathToFile');
+			await fetchAndSaveCollection(
+				'someCollectionId',
+				'someOtherPathToFile'
+			);
 
 			expect(mockSaveStringToFile).toHaveBeenLastCalledWith(
 				expect.any(String),
@@ -128,7 +138,10 @@ export default someCollectionId;
 			);
 
 			mockSerializeMap.mockReturnValueOnce(stringifiedMap2);
-			await fetchAndSaveCollection('someOtherCollectionId', 'somePathToFile');
+			await fetchAndSaveCollection(
+				'someOtherCollectionId',
+				'somePathToFile'
+			);
 
 			const expectedString2 = `const someOtherCollectionId: Iterable<readonly [string, string]> = ${stringifiedMap2}
 export default someOtherCollectionId;
@@ -149,7 +162,9 @@ export default someOtherCollectionId;
 				'somePathToFile'
 			);
 
-			expect(result).toStrictEqual('Successfully wrote to somePathToFile');
+			expect(result).toStrictEqual(
+				'Successfully wrote to somePathToFile'
+			);
 
 			mockSaveStringToFile.mockResolvedValueOnce();
 			const result2 = await fetchAndSaveCollection(
@@ -169,7 +184,10 @@ export default someOtherCollectionId;
 			mockSaveStringToFile.mockRejectedValueOnce(expectedError);
 
 			try {
-				await fetchAndSaveCollection('someCollectionId', 'someOtherPathToFile');
+				await fetchAndSaveCollection(
+					'someCollectionId',
+					'someOtherPathToFile'
+				);
 			} catch (error) {
 				expect(error).toStrictEqual(expectedError);
 			}

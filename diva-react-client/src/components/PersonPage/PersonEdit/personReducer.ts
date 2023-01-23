@@ -100,12 +100,14 @@ export const personReducer = (
 
 			return {
 				...state,
-				[actionPayload.field]: currentArray.map((item: string, i: number) => {
-					if (actionPayload.index === i) {
-						return actionPayload.value;
+				[actionPayload.field]: currentArray.map(
+					(item: string, i: number) => {
+						if (actionPayload.index === i) {
+							return actionPayload.value;
+						}
+						return item;
 					}
-					return item;
-				}),
+				),
 			};
 		}
 		case PersonActionType.ADD_ARRAY_STRING_FIELD: {
@@ -118,7 +120,9 @@ export const personReducer = (
 		case PersonActionType.UPDATE_ARRAY_OBJECT_FIELD: {
 			const actionPayload = payload as PersonActionUpdateArrayObject;
 			const { field, index: repeatId, childField, value } = actionPayload;
-			const currentArray = state[field] as Repeatable<Name | ExternalUrl>[];
+			const currentArray = state[field] as Repeatable<
+				Name | ExternalUrl
+			>[];
 
 			return {
 				...state,

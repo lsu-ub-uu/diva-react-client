@@ -7,7 +7,9 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 beforeAll(() => {
-	mockedAxios.get.mockResolvedValue({ data: { someField: 'someDefaultData' } });
+	mockedAxios.get.mockResolvedValue({
+		data: { someField: 'someDefaultData' },
+	});
 });
 
 describe('The HttpClient', () => {

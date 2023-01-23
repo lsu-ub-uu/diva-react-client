@@ -1,18 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 import { AlternativeNames } from './AlternativeNames';
 import {
 	PersonDomainpartAction,
 	PersonDomainPartActionType,
+	personDomainPartReducer,
 } from './personDomainPartReducer';
-import { personDomainPartReducer } from './personDomainPartReducer';
 import { PersonActionType, personReducer } from './personReducer';
 import {
 	FormPersonDomainPart,
 	FormAffiliationLink,
 } from '../../../types/FormPersonDomainPart';
-import { PersonDomainPart } from 'diva-cora-ts-api-wrapper';
 
 describe('personDomainPartReducer.spec', () => {
 	it('addAffiliation', () => {
@@ -121,7 +121,12 @@ describe('personDomainPartReducer.spec', () => {
 				domain: 'uu',
 				identifiers: ['1'],
 				affiliations: [
-					{ id: '1', fromYear: '1902', untilYear: '2002', foo: 'slu' },
+					{
+						id: '1',
+						fromYear: '1902',
+						untilYear: '2002',
+						foo: 'slu',
+					},
 				],
 			},
 		]);
@@ -205,10 +210,11 @@ describe('personDomainPartReducer.spec', () => {
 				affiliationId: '35',
 			},
 		};
-		const personDomainParts: FormPersonDomainPart[] = personDomainPartReducer(
-			initialFormPersonDomainParts,
-			personDomainPartAction
-		);
+		const personDomainParts: FormPersonDomainPart[] =
+			personDomainPartReducer(
+				initialFormPersonDomainParts,
+				personDomainPartAction
+			);
 
 		expect(personDomainParts).toStrictEqual(initialFormPersonDomainParts);
 	});
@@ -235,10 +241,11 @@ describe('personDomainPartReducer.spec', () => {
 				affiliationId: '2',
 			},
 		};
-		const personDomainParts: FormPersonDomainPart[] = personDomainPartReducer(
-			initialFormPersonDomainParts,
-			personDomainPartAction
-		);
+		const personDomainParts: FormPersonDomainPart[] =
+			personDomainPartReducer(
+				initialFormPersonDomainParts,
+				personDomainPartAction
+			);
 
 		expect(personDomainParts).toStrictEqual(initialFormPersonDomainParts);
 	});

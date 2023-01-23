@@ -5,6 +5,8 @@ import NoMatch from './NoMatch';
 describe('The NoMatch component', () => {
 	it('Displays a paragraph that tells the user nothing is there', () => {
 		render(<NoMatch />);
-		expect(screen.getByText("There's nothing here: 404!")).toBeInTheDocument();
+		expect(
+			screen.getByText("There's nothing here: 404!")
+		).toBeInTheDocument();
 	});
 });

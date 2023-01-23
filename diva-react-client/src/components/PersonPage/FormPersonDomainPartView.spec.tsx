@@ -194,7 +194,9 @@ describe('FormPersonDomainPartView.spec', () => {
 		it('Renders AffiliationDisplay for each affiliation', () => {
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={organisations}
 				/>
 			);
@@ -203,7 +205,9 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={formPersonDomainPartWithMultipleAffiliations}
+					personDomainPart={
+						formPersonDomainPartWithMultipleAffiliations
+					}
 					organisations={organisations}
 				/>
 			);
@@ -216,7 +220,9 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={currentOrganisations}
 				/>
 			);
@@ -236,7 +242,9 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={currentOrganisations}
 				/>
 			);
@@ -259,7 +267,9 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={currentOrganisations}
 				/>
 			);
@@ -279,7 +289,9 @@ describe('FormPersonDomainPartView.spec', () => {
 		it('Passes fromYear and untilYear to AffiliationDisplay', () => {
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={organisations}
 				/>
 			);
@@ -297,14 +309,28 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={formPersonDomainPartWithMultipleAffiliations}
+					personDomainPart={
+						formPersonDomainPartWithMultipleAffiliations
+					}
 					organisations={organisations}
 				/>
 			);
 
-			expectNthCallToAffiliationDisplayWithFromAndUntilYear(2, '1930', '1950');
-			expectNthCallToAffiliationDisplayWithFromAndUntilYear(3, '', '2002');
-			expectNthCallToAffiliationDisplayWithFromAndUntilYear(4, '2010', '');
+			expectNthCallToAffiliationDisplayWithFromAndUntilYear(
+				2,
+				'1930',
+				'1950'
+			);
+			expectNthCallToAffiliationDisplayWithFromAndUntilYear(
+				3,
+				'',
+				'2002'
+			);
+			expectNthCallToAffiliationDisplayWithFromAndUntilYear(
+				4,
+				'2010',
+				''
+			);
 			expectNthCallToAffiliationDisplayWithFromAndUntilYear(5, '', '');
 		});
 	});
@@ -313,7 +339,9 @@ describe('FormPersonDomainPartView.spec', () => {
 		it('renders listitem for each affiliation', () => {
 			const { rerender } = render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={organisations}
 				/>
 			);
@@ -322,7 +350,9 @@ describe('FormPersonDomainPartView.spec', () => {
 
 			rerender(
 				<FormPersonDomainPartView
-					personDomainPart={formPersonDomainPartWithMultipleAffiliations}
+					personDomainPart={
+						formPersonDomainPartWithMultipleAffiliations
+					}
 					organisations={organisations}
 				/>
 			);
@@ -332,7 +362,9 @@ describe('FormPersonDomainPartView.spec', () => {
 		it('renders list if theres an affiliation', () => {
 			render(
 				<FormPersonDomainPartView
-					personDomainPart={defaultFormPersonDomainPartWithAffiliation}
+					personDomainPart={
+						defaultFormPersonDomainPartWithAffiliation
+					}
 					organisations={organisations}
 				/>
 			);

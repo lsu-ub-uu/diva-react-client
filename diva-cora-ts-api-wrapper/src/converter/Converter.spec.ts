@@ -157,10 +157,11 @@ describe('The Converter', () => {
 				someAtomicName: 'someAtomicValue',
 			});
 
-			const returned2: DefaultTestObject = convertToObject<DefaultTestObject>(
-				defaultTestDataGroup,
-				someTestMatcher
-			);
+			const returned2: DefaultTestObject =
+				convertToObject<DefaultTestObject>(
+					defaultTestDataGroup,
+					someTestMatcher
+				);
 
 			expect(returned2).toStrictEqual({
 				someAtomicName: 'someAtomicValue',

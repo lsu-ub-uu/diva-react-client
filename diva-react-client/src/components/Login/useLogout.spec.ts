@@ -196,7 +196,9 @@ describe('useLogout', () => {
 				expect(error).toStrictEqual(expectedError);
 			}
 
-			const expectedOtherError = new Error('Some other statusText from axios.');
+			const expectedOtherError = new Error(
+				'Some other statusText from axios.'
+			);
 			mockedAxios.delete.mockResolvedValueOnce({
 				status: 418,
 				statusText: 'Some other statusText from axios.',

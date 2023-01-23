@@ -46,7 +46,7 @@ const mockChild = jest.fn();
 
 const renderDefaultPersonFetcher = () => {
 	render(
-		<PersonFetcher id="someId">
+		<PersonFetcher id='someId'>
 			{
 				(injectedProps) => mockChild(injectedProps)
 				// return <p data-testid="injectedChild">{injectedProps.record.id}</p>
@@ -67,7 +67,10 @@ describe('PersonFetcher', () => {
 	it('should call hook with getPersonById', () => {
 		renderDefaultPersonFetcher();
 		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(getPersonById, expect.any(Object));
+		expect(mockUseApi).toHaveBeenCalledWith(
+			getPersonById,
+			expect.any(Object)
+		);
 	});
 	it('should call hook with id', () => {
 		renderDefaultPersonFetcher();
@@ -80,7 +83,7 @@ describe('PersonFetcher', () => {
 		);
 
 		render(
-			<PersonFetcher id="someOtherId">
+			<PersonFetcher id='someOtherId'>
 				{(injectedProps) => <div>{injectedProps.record.person.id}</div>}
 			</PersonFetcher>
 		);
@@ -93,7 +96,7 @@ describe('PersonFetcher', () => {
 		);
 
 		render(
-			<PersonFetcher id="">
+			<PersonFetcher id=''>
 				{(injectedProps) => <div>{injectedProps.record.person.id}</div>}
 			</PersonFetcher>
 		);

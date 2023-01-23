@@ -23,9 +23,13 @@ const Card = function ({
 }) {
 	return (
 		<GrommetCard>
-			<CardHeader pad="small" justify="start" gap="xsmall">
+			<CardHeader
+				pad='small'
+				justify='start'
+				gap='xsmall'
+			>
 				<Grid
-					width="100%"
+					width='100%'
 					gap={{ column: '0.4em' }}
 					columns={['min-content', 'auto', 'max-content']}
 					rows={['min-content']}
@@ -36,14 +40,19 @@ const Card = function ({
 					]}
 				>
 					<Box>{listItemNumber}.</Box>
-					<Link className="headingLink" to={`/${item.recordType}/${item.id}`}>
+					<Link
+						className='headingLink'
+						to={`/${item.recordType}/${item.id}`}
+					>
 						{getPresentation(item)}
 					</Link>
-					<div style={{ justifySelf: 'right', gridArea: 'id' }}>{item.id}</div>
+					<div style={{ justifySelf: 'right', gridArea: 'id' }}>
+						{item.id}
+					</div>
 				</Grid>
 			</CardHeader>
 			{possiblyShowOrcid(item)}
-			<CardFooter pad="small">{possiblyShowDomains(item)}</CardFooter>
+			<CardFooter pad='small'>{possiblyShowDomains(item)}</CardFooter>
 		</GrommetCard>
 	);
 };
@@ -69,8 +78,15 @@ const possiblyShowOrcid = (item: Record) => {
 			});
 			if (orcids.length > 0) {
 				return (
-					<CardBody pad={{ right: 'small' }} direction="row-reverse">
-						<ListWithLabel list={person.orcids} label="" omitEmptyStrings />
+					<CardBody
+						pad={{ right: 'small' }}
+						direction='row-reverse'
+					>
+						<ListWithLabel
+							list={person.orcids}
+							label=''
+							omitEmptyStrings
+						/>
 					</CardBody>
 				);
 			}
@@ -89,9 +105,19 @@ const possiblyShowDomains = (item: Record) => {
 			});
 
 			return (
-				<Box direction="row" wrap gap="0.5em">
+				<Box
+					direction='row'
+					wrap
+					gap='0.5em'
+				>
 					{domainNames.map((name) => {
-						return <Tag value={name} key={name} size="small" />;
+						return (
+							<Tag
+								value={name}
+								key={name}
+								size='small'
+							/>
+						);
 					})}
 				</Box>
 			);

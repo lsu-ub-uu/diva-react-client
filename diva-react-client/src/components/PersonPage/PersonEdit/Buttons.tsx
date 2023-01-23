@@ -14,11 +14,11 @@ export const TrashButton = React.memo(
 		return (
 			<Button
 				icon={<Trash />}
-				label=""
+				label=''
 				plain={plain}
 				hoverIndicator
 				onClick={onClick}
-				data-testid="trashbutton"
+				data-testid='trashbutton'
 			/>
 		);
 	}

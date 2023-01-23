@@ -13,7 +13,7 @@ describe('String array field component', () => {
 		render(
 			<StringArray
 				field={'foobar' as keyof FormPerson}
-				label="foo"
+				label='foo'
 				stringArray={arr}
 				dispatchPerson={dispatchPerson}
 			/>

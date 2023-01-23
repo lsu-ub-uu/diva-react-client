@@ -24,9 +24,9 @@ export const AlternativeNames = React.memo(
 					/>
 				))}
 				<AddButton
-					label="Lägg till alternativt namn"
+					label='Lägg till alternativt namn'
 					plain
-					data-testid="addAltName"
+					data-testid='addAltName'
 					onClick={React.useCallback(() => {
 						dispatchPerson({
 							type: PersonActionType.ADD_ARRAY_OBJECT,
@@ -55,17 +55,23 @@ const AlternativeNameForm = React.memo(
 				// eslint-disable-next-line react/no-array-index-key
 				key={repeatId}
 				margin={{ top: 'small', bottom: 'small' }}
-				pad="small"
+				pad='small'
 			>
-				<CardHeader pad="small">
-					<Heading margin="none" level="6">
+				<CardHeader pad='small'>
+					<Heading
+						margin='none'
+						level='6'
+					>
 						Alternativt namn
 					</Heading>
 				</CardHeader>
 
-				<Box direction="row" justify="between">
+				<Box
+					direction='row'
+					justify='between'
+				>
 					<MemoizedTextField
-						label="Efternamn"
+						label='Efternamn'
 						name={alternativeName.familyName}
 						value={alternativeName.familyName}
 						onChange={React.useCallback(
@@ -85,7 +91,7 @@ const AlternativeNameForm = React.memo(
 						required
 					/>
 					<MemoizedTextField
-						label="Förnamn"
+						label='Förnamn'
 						name={alternativeName.givenName}
 						value={alternativeName.givenName}
 						onChange={React.useCallback(

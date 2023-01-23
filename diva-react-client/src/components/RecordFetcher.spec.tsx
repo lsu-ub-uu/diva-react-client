@@ -37,7 +37,10 @@ const mockChild = jest.fn();
 
 const renderDefaultRecordFetcher = () => {
 	render(
-		<RecordFetcher<Person> recordType={RecordType.Person} id="someId">
+		<RecordFetcher<Person>
+			recordType={RecordType.Person}
+			id='someId'
+		>
 			{
 				(injectedProps) => mockChild(injectedProps)
 				// return <p data-testid="injectedChild">{injectedProps.record.id}</p>
@@ -61,7 +64,10 @@ describe('RecordFetcher', () => {
 	it('should call hook with getRecordById', () => {
 		renderDefaultRecordFetcher();
 		expect(mockUseApi).toHaveBeenCalledTimes(1);
-		expect(mockUseApi).toHaveBeenCalledWith(getRecordById, expect.any(Object));
+		expect(mockUseApi).toHaveBeenCalledWith(
+			getRecordById,
+			expect.any(Object)
+		);
 	});
 	it('should call hook with recordType that was passed', () => {
 		renderDefaultRecordFetcher();
@@ -77,7 +83,7 @@ describe('RecordFetcher', () => {
 		render(
 			<RecordFetcher<Person>
 				recordType={RecordType.PersonDomainPart}
-				id="someId"
+				id='someId'
 			>
 				{(injectedProps) => <div>{injectedProps.record.id}</div>}
 			</RecordFetcher>
@@ -103,7 +109,10 @@ describe('RecordFetcher', () => {
 		);
 
 		render(
-			<RecordFetcher<Person> recordType={RecordType.Person} id="someOtherId">
+			<RecordFetcher<Person>
+				recordType={RecordType.Person}
+				id='someOtherId'
+			>
 				{(injectedProps) => <div>{injectedProps.record.id}</div>}
 			</RecordFetcher>
 		);
@@ -117,7 +126,10 @@ describe('RecordFetcher', () => {
 		);
 
 		render(
-			<RecordFetcher<Person> recordType={RecordType.Person} id="">
+			<RecordFetcher<Person>
+				recordType={RecordType.Person}
+				id=''
+			>
 				{(injectedProps) => <div>{injectedProps.record.id}</div>}
 			</RecordFetcher>
 		);

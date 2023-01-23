@@ -4,7 +4,7 @@ import {
 	getRecordById,
 	getRecords,
 } from './api';
-import {searchPersonsByGeneralSearch} from './api/searchPersonByGeneralSearch';
+import { searchPersonsByGeneralSearch } from './api/searchPersonByGeneralSearch';
 
 import httpClient from './http/HttpClient';
 import { Person } from '../types/Person';
@@ -140,7 +140,11 @@ describe('Api', () => {
 		it('should correctly call httpClient with authToken', async () => {
 			expect.assertions(4);
 
-			await getRecordById(RecordType.PersonDomainPart, 'someId', 'someToken');
+			await getRecordById(
+				RecordType.PersonDomainPart,
+				'someId',
+				'someToken'
+			);
 
 			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
 			expect(mockHttpClientGet).toHaveBeenLastCalledWith(
@@ -177,7 +181,9 @@ describe('Api', () => {
 			} catch (error: unknown) {
 				const castError: Error = <Error>error;
 				expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
-				expect(castError.message).toStrictEqual('Some error from httpClient');
+				expect(castError.message).toStrictEqual(
+					'Some error from httpClient'
+				);
 			}
 		});
 
@@ -193,7 +199,8 @@ describe('Api', () => {
 				expect.any(String)
 			);
 
-			const anotherPerson = getDataListContainingFourPersons().dataList.data[2];
+			const anotherPerson =
+				getDataListContainingFourPersons().dataList.data[2];
 			mockHttpClientGet.mockResolvedValueOnce(anotherPerson);
 
 			await getRecordById(RecordType.Person, 'someId');
@@ -228,7 +235,9 @@ describe('Api', () => {
 		it('should resolve with an object of type T if one could be found', async () => {
 			const expectedPerson = createCompletePerson();
 
-			mockConvertToObjectWithRecordType.mockReturnValueOnce(expectedPerson);
+			mockConvertToObjectWithRecordType.mockReturnValueOnce(
+				expectedPerson
+			);
 
 			expect.assertions(1);
 
@@ -254,10 +263,11 @@ describe('Api', () => {
 
 			expect.assertions(1);
 
-			const returned: PersonDomainPart = await getRecordById<PersonDomainPart>(
-				RecordType.PersonDomainPart,
-				'someId'
-			);
+			const returned: PersonDomainPart =
+				await getRecordById<PersonDomainPart>(
+					RecordType.PersonDomainPart,
+					'someId'
+				);
 
 			expect(returned).toStrictEqual(expectedPersonDomainPart);
 		});
@@ -329,7 +339,9 @@ describe('Api', () => {
 					expect.any(String)
 				);
 
-				mockHttpClientGet.mockResolvedValueOnce(dataListWithThreeRecords);
+				mockHttpClientGet.mockResolvedValueOnce(
+					dataListWithThreeRecords
+				);
 				await getRecords(RecordType.PersonDomainPart);
 
 				expect(mockExtractListFromDataList).toHaveBeenLastCalledWith(

@@ -29,6 +29,8 @@ describe('BackButton.spec', () => {
 });
 
 const clickBackButton = () => {
-	const backButton = screen.getByRole('button', { name: 'Previous Tillbaka' });
+	const backButton = screen.getByRole('button', {
+		name: 'Previous Tillbaka',
+	});
 	userEvent.click(backButton);
 };
