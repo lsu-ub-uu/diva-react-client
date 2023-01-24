@@ -13,7 +13,7 @@ import { Person } from '../../types/Person';
 const searchEndpoint = 'record/searchResult/';
 const generalSearch = `publicPersonSearch?searchData=`;
 
-export function searchPersonsByGeneralSearch(
+function searchPersonsByGeneralSearch(
 	searchTerm: string,
 	start: number,
 	rows: number,
@@ -131,4 +131,4 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 	return list;
 }
 
-// export default SearchPersonsByGeneralSearch;
+export default searchPersonsByGeneralSearch;

@@ -93,7 +93,9 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	describe('transformation to Person', () => {
 		it('should call convertToObject once with correct data if httpClient resolves with dataList of size 1', async () => {
-			mockHttpClientGet.mockResolvedValueOnce(dataListContainingOnePerson);
+			mockHttpClientGet.mockResolvedValueOnce(
+				dataListContainingOnePerson
+			);
 
 			expect.assertions(2);
 
@@ -107,7 +109,9 @@ describe('searchPersonsByGeneralSearch', () => {
 		});
 
 		it('should call convertToObject for each person in dataList', async () => {
-			mockHttpClientGet.mockResolvedValueOnce(dataListContainingFourPersons);
+			mockHttpClientGet.mockResolvedValueOnce(
+				dataListContainingFourPersons
+			);
 
 			expect.assertions(3);
 
@@ -267,7 +271,12 @@ describe('searchPersonsByGeneralSearch', () => {
 	it('should authToken if defined', async () => {
 		expect.assertions(4);
 
-		await searchPersonsByGeneralSearch('someSearchTerm', 3, 4, 'someAuthToken');
+		await searchPersonsByGeneralSearch(
+			'someSearchTerm',
+			3,
+			4,
+			'someAuthToken'
+		);
 
 		expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
 		expect(mockHttpClientGet).toHaveBeenCalledWith(
@@ -305,7 +314,9 @@ describe('searchPersonsByGeneralSearch', () => {
 		} catch (error: unknown) {
 			const castError: Error = <Error>error;
 			expect(castError).toBeDefined();
-			expect(castError.message).toStrictEqual('Some error from httpClient');
+			expect(castError.message).toStrictEqual(
+				'Some error from httpClient'
+			);
 			expect(mockHttpClientGet).toHaveBeenCalledTimes(1);
 		}
 

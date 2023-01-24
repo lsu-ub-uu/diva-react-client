@@ -86,7 +86,10 @@ const dataListWithThreeRecords: DataListWrapper = {
 describe('DataListHandler', () => {
 	describe('extractListFromDataList', () => {
 		it('takes DataListWrapper', () => {
-			extractListFromDataList(dataListContainingOnePerson, RecordType.Person);
+			extractListFromDataList(
+				dataListContainingOnePerson,
+				RecordType.Person
+			);
 		});
 
 		describe('if dataListWrapper does not contain elements', () => {
@@ -103,7 +106,9 @@ describe('DataListHandler', () => {
 
 				extractListFromDataList(emptyDataList, RecordType.Person);
 
-				expect(mockConvertToObjectWithRecordType).not.toHaveBeenCalled();
+				expect(
+					mockConvertToObjectWithRecordType
+				).not.toHaveBeenCalled();
 			});
 			it('returns List with empty data array and fromNo/toNo/totalNo from dataList', () => {
 				const emptyDataList: DataListWrapper = {
@@ -116,7 +121,10 @@ describe('DataListHandler', () => {
 					},
 				};
 
-				let list = extractListFromDataList(emptyDataList, RecordType.Person);
+				let list = extractListFromDataList(
+					emptyDataList,
+					RecordType.Person
+				);
 
 				expect(list.data).toStrictEqual([]);
 				expect(list.fromNumber).toStrictEqual(0);
@@ -133,7 +141,10 @@ describe('DataListHandler', () => {
 					},
 				};
 
-				list = extractListFromDataList(emptyDataList2, RecordType.Person);
+				list = extractListFromDataList(
+					emptyDataList2,
+					RecordType.Person
+				);
 
 				expect(list.data).toStrictEqual([]);
 				expect(list.fromNumber).toStrictEqual(123);
@@ -144,9 +155,14 @@ describe('DataListHandler', () => {
 
 		describe('if dataListWrapper contains elements', () => {
 			it('does call convertToObjectWithRecordType with given recordType if dataListWrapper contains elements', () => {
-				extractListFromDataList(dataListContainingOnePerson, RecordType.Person);
+				extractListFromDataList(
+					dataListContainingOnePerson,
+					RecordType.Person
+				);
 
-				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(1);
+				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(
+					1
+				);
 				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
 					dataListContainingOnePerson.dataList.data[0].record.data,
 					RecordType.Person
@@ -157,7 +173,9 @@ describe('DataListHandler', () => {
 					RecordType.PersonDomainPart
 				);
 
-				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(2);
+				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(
+					2
+				);
 				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledWith(
 					dataListContainingOnePerson.dataList.data[0].record.data,
 					RecordType.PersonDomainPart
@@ -170,13 +188,19 @@ describe('DataListHandler', () => {
 					RecordType.Person
 				);
 
-				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(4);
-				expect(mockConvertToObjectWithRecordType).toHaveBeenNthCalledWith(
+				expect(mockConvertToObjectWithRecordType).toHaveBeenCalledTimes(
+					4
+				);
+				expect(
+					mockConvertToObjectWithRecordType
+				).toHaveBeenNthCalledWith(
 					1,
 					dataListContainingFourPersons.dataList.data[0].record.data,
 					RecordType.Person
 				);
-				expect(mockConvertToObjectWithRecordType).toHaveBeenNthCalledWith(
+				expect(
+					mockConvertToObjectWithRecordType
+				).toHaveBeenNthCalledWith(
 					4,
 					dataListContainingFourPersons.dataList.data[3].record.data,
 					RecordType.Person

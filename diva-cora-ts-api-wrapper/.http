@@ -1,0 +1,4 @@
+# GET recordType test
+GET https://cora.epc.ub.uu.se/systemone/rest/record/recordType/example
+
+Accept: application/vnd.uub.record+json
