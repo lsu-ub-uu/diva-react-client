@@ -4,7 +4,9 @@ const fetchLoginUnitsWithBaseDir = async (baseDir: string) => {
 	return new Promise((resolve, reject) => {
 		if (baseDir === '') {
 			reject(
-				new Error('Error in fetchCollectionsWithBaseDir. No baseDir given."')
+				new Error(
+					'Error in fetchCollectionsWithBaseDir. No baseDir given."'
+				)
 			);
 		}
 

@@ -16,7 +16,9 @@ export const deserializeMap = (serializedMap: string): Map<string, string> => {
 	try {
 		map = new Map(parsedJSON);
 	} catch (error) {
-		throw new Error('Error when deserializing map. Could not convert to map.');
+		throw new Error(
+			'Error when deserializing map. Could not convert to map.'
+		);
 	}
 	return map;
 };

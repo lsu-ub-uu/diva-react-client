@@ -8,11 +8,15 @@ const fetchAndSaveCollection = async (
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (collectionId === '') {
-			reject(Error('Error when fetching collection. CollectionId is empty.'));
+			reject(
+				Error('Error when fetching collection. CollectionId is empty.')
+			);
 		}
 		if (pathToFile === '') {
 			reject(
-				new Error('Error when fetching collection. Path to file is empty.')
+				new Error(
+					'Error when fetching collection. Path to file is empty.'
+				)
 			);
 		}
 
