@@ -131,4 +131,4 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 	return list;
 }
 
-export default searchPersonsByGeneralSearch;
+export { searchPersonsByGeneralSearch };
