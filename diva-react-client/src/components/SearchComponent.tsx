@@ -72,28 +72,33 @@ const SearchComponent = function ({
 	return (
 		<StyledForm onSubmit={handleSubmit}>
 			<TextInput
-				type="search"
+				type='search'
 				icon={<Search />}
 				reverse
-				placeholder="Sök med namn, ORCID eller id"
+				placeholder='Sök med namn, ORCID eller id'
 				value={value}
 				onChange={handleChange}
-				aria-labelledby="searchButton"
+				aria-labelledby='searchButton'
 			/>
-			<GrommetButton type="submit" id="searchButton" primary label="Sök" />
+			<GrommetButton
+				type='submit'
+				id='searchButton'
+				primary
+				label='Sök'
+			/>
 			<Grid
 				columns={['6.3em', 'max-content']}
 				gap={{ column: 'small' }}
-				align="center"
+				align='center'
 			>
 				<Select
-					id="rows-input"
-					aria-labelledby="rows-label"
+					id='rows-input'
+					aria-labelledby='rows-label'
 					value={opinionatedRows.toString()}
 					onChange={handleRowChange}
 					options={options}
 				/>
-				<span id="rows-label">Träffar per sida</span>
+				<span id='rows-label'>Träffar per sida</span>
 			</Grid>
 		</StyledForm>
 	);

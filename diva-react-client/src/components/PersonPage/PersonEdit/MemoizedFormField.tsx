@@ -68,7 +68,10 @@ export const MemoizedTextArea = React.memo(
 				disabled={disabled}
 				onChange={onChange}
 			>
-				<TextArea value={value} name={name} />
+				<TextArea
+					value={value}
+					name={name}
+				/>
 			</FormField>
 		);
 	}

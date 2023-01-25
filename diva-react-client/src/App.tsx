@@ -14,8 +14,7 @@ import AuthComponent from './components/Login/AuthComponent';
 const theme: ThemeType = {
 	global: {
 		font: {
-			family:
-				'-apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue',
+			family: '-apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue',
 		},
 		colors: {
 			brand: '#3183c8',
@@ -73,15 +72,33 @@ const App = function () {
 					</Sidebar>
 					<Main>
 						<Routes>
-							<Route index element={<PersonSearch />} />
-							<Route path="person" element={<PersonRoot />}>
-								<Route index element={<PersonSearch />} />
-								<Route path=":personId" element={<PersonPage />} />
-								<Route path="edit">
-									<Route path=":personId" element={<PersonPage edit />} />
+							<Route
+								index
+								element={<PersonSearch />}
+							/>
+							<Route
+								path='person'
+								element={<PersonRoot />}
+							>
+								<Route
+									index
+									element={<PersonSearch />}
+								/>
+								<Route
+									path=':personId'
+									element={<PersonPage />}
+								/>
+								<Route path='edit'>
+									<Route
+										path=':personId'
+										element={<PersonPage edit />}
+									/>
 								</Route>
 							</Route>
-							<Route path="*" element={<NoMatch />} />
+							<Route
+								path='*'
+								element={<NoMatch />}
+							/>
 						</Routes>
 					</Main>
 				</Layout>

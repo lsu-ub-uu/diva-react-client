@@ -37,7 +37,10 @@ const extractDeeperNestedValues = (
 				matcher.attributesToMatch
 			);
 
-		if (matchingDataGroups === undefined || matchingDataGroups.length === 0) {
+		if (
+			matchingDataGroups === undefined ||
+			matchingDataGroups.length === 0
+		) {
 			return undefined;
 		}
 

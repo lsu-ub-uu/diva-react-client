@@ -7,10 +7,10 @@ const BackButton = function () {
 	const navigate = useNavigate();
 
 	return (
-		<Box align="start">
+		<Box align='start'>
 			<Button
-				label="Tillbaka"
-				type="submit"
+				label='Tillbaka'
+				type='submit'
 				onClick={() => navigate(-1)}
 				plain
 				icon={<Previous />}

@@ -6,15 +6,18 @@ import useLogout from './useLogout';
 const LogoutButton = function () {
 	const { logout } = useLogout();
 	return (
-		<Box align="center" pad="small">
+		<Box
+			align='center'
+			pad='small'
+		>
 			<Button
 				icon={<Logout />}
 				primary
-				type="button"
+				type='button'
 				onClick={() => {
 					logout();
 				}}
-				label="Logga ut"
+				label='Logga ut'
 				reverse
 			/>
 		</Box>

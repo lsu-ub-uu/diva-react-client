@@ -60,14 +60,20 @@ describe('The Card component', () => {
 	it('should take a Listable and a listItemNumber as a prop', () => {
 		render(
 			<MemoryRouter>
-				<Card item={someRecord} listItemNumber={1} />
+				<Card
+					item={someRecord}
+					listItemNumber={1}
+				/>
 			</MemoryRouter>
 		);
 	});
 	it("should render the Listable's id", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someRecord} listItemNumber={1} />
+				<Card
+					item={someRecord}
+					listItemNumber={1}
+				/>
 			</MemoryRouter>
 		);
 		expect(screen.getAllByText(/someId/i)).toHaveLength(2);
@@ -78,28 +84,41 @@ describe('The Card component', () => {
 			it('show $recordType: $recordId', () => {
 				render(
 					<MemoryRouter>
-						<Card item={someRecord} listItemNumber={1} />
+						<Card
+							item={someRecord}
+							listItemNumber={1}
+						/>
 					</MemoryRouter>
 				);
-				expect(screen.getByText(/someRecordType: someId/i)).toBeInTheDocument();
+				expect(
+					screen.getByText(/someRecordType: someId/i)
+				).toBeInTheDocument();
 			});
 
 			it("should render the Listable's presentation as Link", () => {
 				render(
 					<MemoryRouter>
-						<Card item={someRecord} listItemNumber={1} />
+						<Card
+							item={someRecord}
+							listItemNumber={1}
+						/>
 					</MemoryRouter>
 				);
 				const links = screen.getAllByRole('link');
 				expect(links).toHaveLength(1);
-				expect(links[0].textContent).toStrictEqual('someRecordType: someId');
+				expect(links[0].textContent).toStrictEqual(
+					'someRecordType: someId'
+				);
 			});
 		});
 		describe('if the recordType is "person"', () => {
 			it('call getDisplayName with authorisedName', () => {
 				render(
 					<MemoryRouter>
-						<Card item={somePerson} listItemNumber={1} />
+						<Card
+							item={somePerson}
+							listItemNumber={1}
+						/>
 					</MemoryRouter>
 				);
 
@@ -116,16 +135,24 @@ describe('The Card component', () => {
 					personDomainParts: [],
 				};
 				renderWithRouter(
-					<Card item={somePersonWithoutName} listItemNumber={1} />
+					<Card
+						item={somePersonWithoutName}
+						listItemNumber={1}
+					/>
 				);
 
 				expect(mockGetDisplayName).not.toHaveBeenCalled();
 			});
 
 			it("should render the Listable's presentation as Link with content whatever getDisplayName returns", () => {
-				mockGetDisplayName.mockReturnValueOnce('Returned from getDisplayName');
+				mockGetDisplayName.mockReturnValueOnce(
+					'Returned from getDisplayName'
+				);
 				const { rerender } = renderWithRouter(
-					<Card item={somePerson} listItemNumber={1} />
+					<Card
+						item={somePerson}
+						listItemNumber={1}
+					/>
 				);
 				let links = screen.getAllByRole('link');
 				expect(links).toHaveLength(1);
@@ -134,7 +161,12 @@ describe('The Card component', () => {
 				);
 
 				mockGetDisplayName.mockReturnValueOnce('Something else');
-				rerender(<Card item={somePerson} listItemNumber={1} />);
+				rerender(
+					<Card
+						item={somePerson}
+						listItemNumber={1}
+					/>
+				);
 				links = screen.getAllByRole('link');
 				expect(links).toHaveLength(1);
 				expect(links[0].textContent).toStrictEqual('Something else');
@@ -148,7 +180,10 @@ describe('The Card component', () => {
 					public: 'yes',
 				};
 				renderWithRouter(
-					<Card item={somePersonWithoutName} listItemNumber={1} />
+					<Card
+						item={somePersonWithoutName}
+						listItemNumber={1}
+					/>
 				);
 				expect(
 					screen.getByRole('link', { name: 'someId' })
@@ -161,7 +196,10 @@ describe('The Card component', () => {
 					personDomainParts: [],
 				};
 				renderWithRouter(
-					<Card item={someOtherPersonWithoutName} listItemNumber={1} />
+					<Card
+						item={someOtherPersonWithoutName}
+						listItemNumber={1}
+					/>
 				);
 				expect(
 					screen.getByRole('link', { name: 'someOtherId' })
@@ -173,7 +211,10 @@ describe('The Card component', () => {
 	it("should pass the /recordType/id (from the Listable) to the Link's 'to'-attribute", () => {
 		render(
 			<MemoryRouter>
-				<Card item={someRecord} listItemNumber={1} />
+				<Card
+					item={someRecord}
+					listItemNumber={1}
+				/>
 			</MemoryRouter>
 		);
 
@@ -187,11 +228,21 @@ describe('The Card component', () => {
 	});
 
 	it('Should display the listItemNumber', () => {
-		renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
+		renderWithRouter(
+			<Card
+				item={someRecord}
+				listItemNumber={1}
+			/>
+		);
 
 		expect(screen.getByText(/1./));
 
-		renderWithRouter(<Card item={someRecord} listItemNumber={432} />);
+		renderWithRouter(
+			<Card
+				item={someRecord}
+				listItemNumber={432}
+			/>
+		);
 
 		expect(screen.getByText(/432./));
 	});
@@ -203,7 +254,10 @@ describe('The Card component', () => {
 				person.orcids = ['someOrcid'];
 
 				const { rerender } = renderWithRouter(
-					<Card item={person} listItemNumber={1} />
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
 				);
 
 				expect(ListWithLabel).toHaveBeenNthCalledWith(
@@ -219,7 +273,12 @@ describe('The Card component', () => {
 				const otherPerson = createPersonObject();
 				otherPerson.orcids = ['someOrcid', 'someOtherOrcid'];
 
-				rerender(<Card item={otherPerson} listItemNumber={1} />);
+				rerender(
+					<Card
+						item={otherPerson}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(ListWithLabel).toHaveBeenNthCalledWith(
 					2,
@@ -234,7 +293,12 @@ describe('The Card component', () => {
 			it('if orcids are undefined, should not call ListWithLabel', () => {
 				const person = createPersonObject();
 
-				renderWithRouter(<Card item={person} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});
@@ -242,14 +306,24 @@ describe('The Card component', () => {
 				const person = createPersonObject();
 				person.orcids = [];
 
-				renderWithRouter(<Card item={person} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});
 		});
 		describe('if recordType is not "person"', () => {
 			it('it should not call ListWithLabel', () => {
-				renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={someRecord}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});
@@ -262,14 +336,24 @@ describe('The Card component', () => {
 				const person = createPersonObject();
 				person.domains = ['someDomain'];
 
-				renderWithRouter(<Card item={person} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(mockGetDomainCollection).toHaveBeenCalledTimes(1);
 			});
 			it('if domains are undefined, should NOT call getDomainCollection', () => {
 				const person = createPersonObject();
 
-				renderWithRouter(<Card item={person} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(mockGetDomainCollection).not.toHaveBeenCalled();
 			});
@@ -277,7 +361,12 @@ describe('The Card component', () => {
 				const person = createPersonObject();
 				person.domains = [];
 
-				renderWithRouter(<Card item={person} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(mockGetDomainCollection).not.toHaveBeenCalled();
 			});
@@ -292,7 +381,10 @@ describe('The Card component', () => {
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection);
 
 				const { rerender } = renderWithRouter(
-					<Card item={person} listItemNumber={1} />
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
 				);
 
 				expect(Tag).toHaveBeenNthCalledWith(
@@ -317,10 +409,18 @@ describe('The Card component', () => {
 
 				const domainCollection2 = new Map();
 				domainCollection2.set('someDomain2', 'someDomainValue2');
-				domainCollection2.set('someOtherDomain2', 'someOtherDomainValue2');
+				domainCollection2.set(
+					'someOtherDomain2',
+					'someOtherDomainValue2'
+				);
 
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
-				rerender(<Card item={person2} listItemNumber={1} />);
+				rerender(
+					<Card
+						item={person2}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(Tag).toHaveBeenNthCalledWith(
 					3,
@@ -349,7 +449,10 @@ describe('The Card component', () => {
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection);
 
 				const { rerender } = renderWithRouter(
-					<Card item={person} listItemNumber={1} />
+					<Card
+						item={person}
+						listItemNumber={1}
+					/>
 				);
 
 				expect(Tag).toHaveBeenNthCalledWith(
@@ -375,7 +478,12 @@ describe('The Card component', () => {
 				const domainCollection2 = new Map();
 
 				mockGetDomainCollection.mockReturnValueOnce(domainCollection2);
-				rerender(<Card item={person2} listItemNumber={1} />);
+				rerender(
+					<Card
+						item={person2}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(Tag).toHaveBeenNthCalledWith(
 					3,
@@ -397,7 +505,12 @@ describe('The Card component', () => {
 		});
 		describe('if recordType is not "person"', () => {
 			it('it should not call ListWithLabel', () => {
-				renderWithRouter(<Card item={someRecord} listItemNumber={1} />);
+				renderWithRouter(
+					<Card
+						item={someRecord}
+						listItemNumber={1}
+					/>
+				);
 
 				expect(ListWithLabel).not.toHaveBeenCalled();
 			});

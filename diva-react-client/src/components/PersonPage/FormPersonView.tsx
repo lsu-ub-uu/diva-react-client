@@ -24,18 +24,34 @@ export const FormPersonView = function ({
 	edit?: boolean;
 }) {
 	return (
-		<Box direction="column">
-			<Box direction="row-responsive">
-				<Heading level={3}>{displayName(person.authorisedName)}</Heading>
-				{!edit && <EditButton recordType="person" id={person.id} />}
+		<Box direction='column'>
+			<Box direction='row-responsive'>
+				<Heading level={3}>
+					{displayName(person.authorisedName)}
+				</Heading>
+				{!edit && (
+					<EditButton
+						recordType='person'
+						id={person.id}
+					/>
+				)}
 			</Box>
-			{person.academicTitle !== undefined && person.academicTitle !== '' && (
-				<p data-testid="personTitle">{person.academicTitle}</p>
-			)}
+			{person.academicTitle !== undefined &&
+				person.academicTitle !== '' && (
+					<p data-testid='personTitle'>{person.academicTitle}</p>
+				)}
 			<PersonalInfo person={person} />
 			<Identifiers person={person} />
-			<Biography label="Biografi" text={person.biographySwedish} />
-			{edit && <Biography label="Biography" text={person.biographyEnglish} />}
+			<Biography
+				label='Biografi'
+				text={person.biographySwedish}
+			/>
+			{edit && (
+				<Biography
+					label='Biography'
+					text={person.biographyEnglish}
+				/>
+			)}
 			<Organisations
 				personDomainPartIds={person.personDomainParts}
 				personDomainParts={personDomainParts}

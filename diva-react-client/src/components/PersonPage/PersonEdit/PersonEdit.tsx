@@ -100,19 +100,31 @@ const PersonEdit = function ({
 	);
 
 	return (
-		<Grid columns={['1fr', '1fr']} gap={{ column: 'large' }}>
-			<Box pad="medium" width="large">
+		<Grid
+			columns={['1fr', '1fr']}
+			gap={{ column: 'large' }}
+		>
+			<Box
+				pad='medium'
+				width='large'
+			>
 				<Form
-					validate="blur"
+					validate='blur'
 					messages={{ required: 'Fältet får inte vara tomt' }}
 				>
-					<Box direction="row" justify="between" align="center">
+					<Box
+						direction='row'
+						justify='between'
+						align='center'
+					>
 						<MemoizedTextField
-							label="Efternamn"
+							label='Efternamn'
 							required
 							value={person.authorisedName.familyName}
 							onChange={React.useCallback(
-								(event: React.ChangeEvent<HTMLInputElement>) => {
+								(
+									event: React.ChangeEvent<HTMLInputElement>
+								) => {
 									dispatchPerson({
 										type: PersonActionType.UPDATE_OBJECT,
 										payload: {
@@ -126,10 +138,12 @@ const PersonEdit = function ({
 							)}
 						/>
 						<MemoizedTextField
-							label="Förnamn"
+							label='Förnamn'
 							value={person.authorisedName.givenName}
 							onChange={React.useCallback(
-								(event: React.ChangeEvent<HTMLInputElement>) => {
+								(
+									event: React.ChangeEvent<HTMLInputElement>
+								) => {
 									dispatchPerson({
 										type: PersonActionType.UPDATE_OBJECT,
 										payload: {
@@ -149,25 +163,35 @@ const PersonEdit = function ({
 					/>
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringFormField
-							label="Akademisk titel"
-							field="academicTitle"
+							label='Akademisk titel'
+							field='academicTitle'
 							value={person.academicTitle}
 							onChange={updateStringField}
 						/>
-						<Box direction="row" justify="between" align="center">
+						<Box
+							direction='row'
+							justify='between'
+							align='center'
+						>
 							<StringFormField
-								label="Födelseår"
-								field="yearOfBirth"
+								label='Födelseår'
+								field='yearOfBirth'
 								value={person.yearOfBirth}
 								onChange={updateStringField}
-								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+								validate={validateWithRegex(
+									/^[0-9]{4}$/,
+									INVALID_YEAR_MESSAGE
+								)}
 							/>
 							<StringFormField
-								label="Dödsår"
-								field="yearOfDeath"
+								label='Dödsår'
+								field='yearOfDeath'
 								value={person.yearOfDeath}
 								onChange={updateStringField}
-								validate={validateWithRegex(/^[0-9]{4}$/, INVALID_YEAR_MESSAGE)}
+								validate={validateWithRegex(
+									/^[0-9]{4}$/,
+									INVALID_YEAR_MESSAGE
+								)}
 							/>
 						</Box>
 					</Box>
@@ -175,8 +199,8 @@ const PersonEdit = function ({
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringArray
 							stringArray={person.librisIDs}
-							label="Libris ID"
-							field="librisIDs"
+							label='Libris ID'
+							field='librisIDs'
 							dispatchPerson={dispatchPerson}
 						/>
 					</Box>
@@ -184,8 +208,8 @@ const PersonEdit = function ({
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<StringArray
 							stringArray={person.viafIDs}
-							label="VIAF"
-							field="viafIDs"
+							label='VIAF'
+							field='viafIDs'
 							dispatchPerson={dispatchPerson}
 						/>
 					</Box>
@@ -198,15 +222,15 @@ const PersonEdit = function ({
 							return (
 								<Card
 									key={identifier}
-									direction="row"
-									justify="between"
-									align="center"
+									direction='row'
+									justify='between'
+									align='center'
 									margin={{ top: 'small', bottom: 'small' }}
-									pad="small"
+									pad='small'
 								>
 									<MemoizedTextField
 										name={`orcid-${index}`}
-										label="ORCID"
+										label='ORCID'
 										value={identifier}
 										validate={validateWithRegex(
 											/^(\d{4})-(\d{4})-(\d{4})-(\d{3}[0-9X])$/,
@@ -226,24 +250,26 @@ const PersonEdit = function ({
 
 					<Box margin={{ top: 'large', bottom: 'large' }}>
 						<MemoizedTextArea
-							key="biografi"
-							label="Biografi"
+							key='biografi'
+							label='Biografi'
 							value={person.biographySwedish}
 						/>
 						<MemoizedTextArea
-							key="biography"
-							label="Biography"
+							key='biography'
+							label='Biography'
 							value={person.biographyEnglish}
 						/>
 					</Box>
 
-					<div data-testid="personDomainParts">
+					<div data-testid='personDomainParts'>
 						<PersonDomainParts
 							personDomainPartIds={person.personDomainParts}
 							personDomainParts={personDomainParts}
 							auth={auth}
 							organisationMap={organisationMap}
-							dispatchPersonDomainParts={dispatchPersonDomainParts}
+							dispatchPersonDomainParts={
+								dispatchPersonDomainParts
+							}
 						/>
 					</div>
 
@@ -252,12 +278,19 @@ const PersonEdit = function ({
 						dispatchPerson={dispatchPerson}
 					/>
 
-					<Public publicValue={person.public} dispatchPerson={dispatchPerson} />
+					<Public
+						publicValue={person.public}
+						dispatchPerson={dispatchPerson}
+					/>
 
-					<Box direction="column" align="end" margin={{ top: 'medium' }}>
+					<Box
+						direction='column'
+						align='end'
+						margin={{ top: 'medium' }}
+					>
 						<Button
-							type="submit"
-							label="Skicka"
+							type='submit'
+							label='Skicka'
 							primary
 							onClick={() => {
 								console.log('Skickar...');

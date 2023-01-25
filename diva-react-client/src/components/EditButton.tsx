@@ -19,8 +19,14 @@ const EditButton = function ({
 
 	return (
 		<Box margin={{ top: '0.5em' }}>
-			<Link to={`/${recordType}/edit/${id}`} style={{ justifySelf: 'start' }}>
-				<Button icon={<Edit />} a11yTitle="Editera" />
+			<Link
+				to={`/${recordType}/edit/${id}`}
+				style={{ justifySelf: 'start' }}
+			>
+				<Button
+					icon={<Edit />}
+					a11yTitle='Editera'
+				/>
 			</Link>
 		</Box>
 	);

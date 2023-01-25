@@ -33,14 +33,29 @@ export function getPersonById(
 							let personDomainParts: PersonDomainPart[] = [];
 							let organisations: Organisation[] = [];
 
-							results.forEach(({ personDomainPart, organisations: orgArr }) => {
-								personDomainParts = [...personDomainParts, personDomainPart];
-								if (orgArr) {
-									organisations = [...organisations, ...orgArr];
+							results.forEach(
+								({
+									personDomainPart,
+									organisations: orgArr,
+								}) => {
+									personDomainParts = [
+										...personDomainParts,
+										personDomainPart,
+									];
+									if (orgArr) {
+										organisations = [
+											...organisations,
+											...orgArr,
+										];
+									}
 								}
-							});
+							);
 
-							resolve({ person, personDomainParts, organisations });
+							resolve({
+								person,
+								personDomainParts,
+								organisations,
+							});
 						})
 						.catch((error) => {
 							reject(error);
@@ -63,11 +78,15 @@ export function getPersonDomainPartById(
 	organisations?: Organisation[];
 }> {
 	return new Promise((resolve, reject) => {
-		getRecordById<PersonDomainPart>(RecordType.PersonDomainPart, id, authToken)
+		getRecordById<PersonDomainPart>(
+			RecordType.PersonDomainPart,
+			id,
+			authToken
+		)
 			.then((personDomainPart) => {
 				if (personDomainPart.affiliations !== undefined) {
-					const organisationPromises = personDomainPart.affiliations.map(
-						(affiliation) => {
+					const organisationPromises =
+						personDomainPart.affiliations.map((affiliation) => {
 							return getRecordById<Organisation>(
 								RecordType.Organisation,
 								affiliation.id,
@@ -75,8 +94,7 @@ export function getPersonDomainPartById(
 							).then((organisation) => {
 								return organisation;
 							});
-						}
-					);
+						});
 
 					Promise.all(organisationPromises)
 						.then((organisations) => {

@@ -64,7 +64,9 @@ const PersonSearch = function () {
 			)}
 			{isLoading && <div>Laddar...</div>}
 			{result.error && (
-				<div>Ett fel har inträffat: &quot;{result.error.message}&quot;</div>
+				<div>
+					Ett fel har inträffat: &quot;{result.error.message}&quot;
+				</div>
 			)}
 		</Parent>
 	);

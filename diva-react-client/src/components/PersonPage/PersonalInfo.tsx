@@ -42,11 +42,15 @@ export const PersonalInfo = function ({ person }: { person: FormPerson }) {
 				// 	list={alternativeNames}
 				// />
 				<ul>
-					{person.alternativeNames.map(({ content: name, repeatId }) => {
-						return (
-							<li key={`alternativeNames-${repeatId}`}>{displayName(name)}</li>
-						);
-					})}
+					{person.alternativeNames.map(
+						({ content: name, repeatId }) => {
+							return (
+								<li key={`alternativeNames-${repeatId}`}>
+									{displayName(name)}
+								</li>
+							);
+						}
+					)}
 				</ul>
 			)}
 			{person.externalURLs.length > 0 && (
@@ -54,16 +58,28 @@ export const PersonalInfo = function ({ person }: { person: FormPerson }) {
 					{person.externalURLs.map(({ content: link, repeatId }) => {
 						return (
 							<li key={`externalURLs-${repeatId}`}>
-								<ExternalLink URL={link.URL} text={link.linkTitle} />
+								<ExternalLink
+									URL={link.URL}
+									text={link.linkTitle}
+								/>
 							</li>
 						);
 					})}
 				</ul>
 			)}
 			<NameValueList nameProps={{ width: 'xsmall' }}>
-				{displayNameValuePairIfNotEmptyString(person.yearOfBirth, 'Födelseår')}
-				{displayNameValuePairIfNotEmptyString(person.yearOfDeath, 'Dödsår')}
-				{displayNameValuePairIfNotEmptyString(person.emailAddress, 'E-Post')}
+				{displayNameValuePairIfNotEmptyString(
+					person.yearOfBirth,
+					'Födelseår'
+				)}
+				{displayNameValuePairIfNotEmptyString(
+					person.yearOfDeath,
+					'Dödsår'
+				)}
+				{displayNameValuePairIfNotEmptyString(
+					person.emailAddress,
+					'E-Post'
+				)}
 			</NameValueList>
 		</Parent>
 	);

@@ -61,8 +61,12 @@ export const convertToFormPerson = (person: Person): FormPerson => {
 		});
 	}
 
-	const alternativeNames = createRepeatableArray<Name>(person.alternativeNames);
-	const externalURLs = createRepeatableArray<ExternalUrl>(person.externalURLs);
+	const alternativeNames = createRepeatableArray<Name>(
+		person.alternativeNames
+	);
+	const externalURLs = createRepeatableArray<ExternalUrl>(
+		person.externalURLs
+	);
 
 	const isPublic = person.public === 'yes' ? 'yes' : 'no';
 

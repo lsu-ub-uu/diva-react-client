@@ -73,10 +73,12 @@ beforeAll(() => {
 		rows: number;
 	};
 
-	mockPaginatedCardList.mockImplementation((props: PaginatedCardListProps) => {
-		receivedOnPaginationUpdate = props.onPaginationUpdate;
-		return <div />;
-	});
+	mockPaginatedCardList.mockImplementation(
+		(props: PaginatedCardListProps) => {
+			receivedOnPaginationUpdate = props.onPaginationUpdate;
+			return <div />;
+		}
+	);
 
 	mockReturnFromUsePersonSearchParams('someDefaultSearchTerm', 99999, 999999);
 });
@@ -136,7 +138,11 @@ describe('The PersonSearch component', () => {
 			});
 
 			it('passes searchTerm and rows from useSearchParams as value', () => {
-				mockReturnFromUsePersonSearchParams('someAwesomeSearchTerm', 1, 1234);
+				mockReturnFromUsePersonSearchParams(
+					'someAwesomeSearchTerm',
+					1,
+					1234
+				);
 				renderWithRouter(<PersonSearch />);
 
 				expect(mockSearchComponent).toHaveBeenLastCalledWith(
@@ -147,7 +153,11 @@ describe('The PersonSearch component', () => {
 					expect.any(Object)
 				);
 
-				mockReturnFromUsePersonSearchParams('someOtherSearchTerm', 1, 444);
+				mockReturnFromUsePersonSearchParams(
+					'someOtherSearchTerm',
+					1,
+					444
+				);
 
 				renderWithRouter(<PersonSearch />);
 
@@ -221,7 +231,9 @@ describe('The PersonSearch component', () => {
 					searchComponentReceivedOnValueChange('someNewValue');
 				});
 
-				expect(mockedSetSearchTerm).toHaveBeenCalledWith('someNewValue');
+				expect(mockedSetSearchTerm).toHaveBeenCalledWith(
+					'someNewValue'
+				);
 			});
 
 			it('if onSubmit is called, useSearchPersonses triggerSearchWithParams is called with the searchTerm, start=1 and rows from usePersonSearchParams', () => {
@@ -240,7 +252,11 @@ describe('The PersonSearch component', () => {
 					3
 				);
 
-				mockReturnFromUsePersonSearchParams('someNewSearchTerm', 500, 1234);
+				mockReturnFromUsePersonSearchParams(
+					'someNewSearchTerm',
+					500,
+					1234
+				);
 
 				renderWithRouter(<PersonSearch />);
 
@@ -422,7 +438,9 @@ describe('The PersonSearch component', () => {
 				result: {
 					hasData: false,
 					isError: true,
-					error: new Error('Some Error message returned by useSearchPersons'),
+					error: new Error(
+						'Some Error message returned by useSearchPersons'
+					),
 				},
 				triggerSearchWithParams: mockedTriggerSearchWithParams,
 			});

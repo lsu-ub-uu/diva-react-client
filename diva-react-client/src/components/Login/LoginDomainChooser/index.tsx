@@ -28,14 +28,14 @@ const LoginDomainChooser = function () {
 	};
 
 	return (
-		<Box pad="small">
-			<Grid gap="small">
+		<Box pad='small'>
+			<Grid gap='small'>
 				<Select
 					options={options}
-					size="medium"
-					placeholder="Välj organisation"
+					size='medium'
+					placeholder='Välj organisation'
 					value={value}
-					labelKey="displayTextSv"
+					labelKey='displayTextSv'
 					valueKey={{ key: 'displayTextSv' }}
 					onChange={handleChange}
 					onSearch={handleSearch}

@@ -37,16 +37,32 @@ const PaginationComponent = function ({
 
 	return (
 		<Parent>
-			<Button onClick={goToFirstPage} disabled={isFirstPage} label="|&lt;" />
+			<Button
+				onClick={goToFirstPage}
+				disabled={isFirstPage}
+				label='|&lt;'
+			/>
 
-			<Button onClick={goToPreviousPage} disabled={isFirstPage} label="&lt;" />
+			<Button
+				onClick={goToPreviousPage}
+				disabled={isFirstPage}
+				label='&lt;'
+			/>
 
 			<div>
 				{start}-{toNumber} av {totalNumber}
 			</div>
-			<Button onClick={goToNextPage} disabled={isLastPage} label="&gt;" />
+			<Button
+				onClick={goToNextPage}
+				disabled={isLastPage}
+				label='&gt;'
+			/>
 
-			<Button onClick={goToLastPage} disabled={isLastPage} label="&gt;|" />
+			<Button
+				onClick={goToLastPage}
+				disabled={isLastPage}
+				label='&gt;|'
+			/>
 		</Parent>
 	);
 };

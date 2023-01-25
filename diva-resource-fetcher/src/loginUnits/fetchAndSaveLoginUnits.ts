@@ -5,7 +5,9 @@ const fetchAndSaveLoginUnits = async (pathToFile: string): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (pathToFile === '') {
 			reject(
-				new Error('Error when fetching loginUnits. Path to file is empty.')
+				new Error(
+					'Error when fetching loginUnits. Path to file is empty.'
+				)
 			);
 		}
 		fetchLoginUnits()

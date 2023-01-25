@@ -17,7 +17,10 @@ const CardList = React.memo((props: Props) => {
 		<List>
 			{list.map((item, index) => (
 				<li key={item.id}>
-					<Card item={item} listItemNumber={index + fromNumber} />
+					<Card
+						item={item}
+						listItemNumber={index + fromNumber}
+					/>
 				</li>
 			))}
 		</List>

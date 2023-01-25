@@ -14,7 +14,10 @@ const possiblyOutputListWithLabel = (
 			})
 			.map((item) => {
 				return (
-					<NameValuePair name={label} key={item}>
+					<NameValuePair
+						name={label}
+						key={item}
+					>
 						<Text>{item}</Text>
 					</NameValuePair>
 				);
@@ -26,7 +29,7 @@ const possiblyOutputListWithLabel = (
 const Identifiers = function ({ person }: { person: Person | FormPerson }) {
 	return (
 		<NameValueList nameProps={{ width: 'xsmall' }}>
-			<NameValuePair name="pID">
+			<NameValuePair name='pID'>
 				<Text>{person.id}</Text>
 			</NameValuePair>
 			{possiblyOutputListWithLabel(person.orcids, 'ORCID')}

@@ -29,35 +29,39 @@ const PersonDomainPartView = function ({
 		<>
 			<h3>{title}</h3>
 			{personDomainPart.identifiers && (
-				<Text size="small">
+				<Text size='small'>
 					Lokal identifikator: {personDomainPart.identifiers[0]}
 				</Text>
 			)}
 
-			{personDomainPart.affiliations && personDomainPart.affiliations.length && (
-				<StyledUl>
-					{personDomainPart.affiliations.map((organisation) => {
-						return (
-							<li key={organisation.id}>
-								<RecordFetcher<Organisation>
-									recordType={RecordType.Organisation}
-									id={organisation.id}
-								>
-									{(injectedProps) => (
-										<AffiliationDisplay
-											affiliation={{
-												name: injectedProps.record.name,
-												fromYear: organisation.fromYear,
-												untilYear: organisation.untilYear,
-											}}
-										/>
-									)}
-								</RecordFetcher>
-							</li>
-						);
-					})}
-				</StyledUl>
-			)}
+			{personDomainPart.affiliations &&
+				personDomainPart.affiliations.length && (
+					<StyledUl>
+						{personDomainPart.affiliations.map((organisation) => {
+							return (
+								<li key={organisation.id}>
+									<RecordFetcher<Organisation>
+										recordType={RecordType.Organisation}
+										id={organisation.id}
+									>
+										{(injectedProps) => (
+											<AffiliationDisplay
+												affiliation={{
+													name: injectedProps.record
+														.name,
+													fromYear:
+														organisation.fromYear,
+													untilYear:
+														organisation.untilYear,
+												}}
+											/>
+										)}
+									</RecordFetcher>
+								</li>
+							);
+						})}
+					</StyledUl>
+				)}
 		</>
 	);
 };

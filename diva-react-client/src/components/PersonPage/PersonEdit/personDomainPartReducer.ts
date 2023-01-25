@@ -48,15 +48,20 @@ export const personDomainPartReducer = (
 				if (personDomainPart.id === personDomainPartId) {
 					return {
 						...personDomainPart,
-						affiliations: personDomainPart.affiliations.map((affiliation) => {
-							if (affiliation.id === action.payload.affiliationId) {
-								return {
-									...affiliation,
-									[field]: value,
-								};
+						affiliations: personDomainPart.affiliations.map(
+							(affiliation) => {
+								if (
+									affiliation.id ===
+									action.payload.affiliationId
+								) {
+									return {
+										...affiliation,
+										[field]: value,
+									};
+								}
+								return affiliation;
 							}
-							return affiliation;
-						}),
+						),
 					};
 				}
 				return personDomainPart;
@@ -66,9 +71,11 @@ export const personDomainPartReducer = (
 				if (personDomainpart.id === personDomainPartId) {
 					return {
 						...personDomainpart,
-						affiliations: personDomainpart.affiliations.filter((item: any) => {
-							return item.id !== action.payload.affiliationId;
-						}),
+						affiliations: personDomainpart.affiliations.filter(
+							(item: any) => {
+								return item.id !== action.payload.affiliationId;
+							}
+						),
 					};
 				}
 				return personDomainpart;

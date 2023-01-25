@@ -18,7 +18,9 @@ const fetchLoginUnits = async (): Promise<LoginUnitObject[]> => {
 
 				const promises = webRedirectLogins.map((record) => {
 					const loginUnit = record as LoginUnit;
-					return fetchWebRedirectDataAndCreateLoginUnitObject(loginUnit);
+					return fetchWebRedirectDataAndCreateLoginUnitObject(
+						loginUnit
+					);
 				});
 
 				Promise.all(promises).then((loginUnitObjects) => {

@@ -22,7 +22,9 @@ function searchPersonsByGeneralSearch(
 	return new Promise((resolve, reject) => {
 		if (searchTerm === '') {
 			reject(
-				new Error('No searchTerm was passed to searchPersonsByGeneralSearch')
+				new Error(
+					'No searchTerm was passed to searchPersonsByGeneralSearch'
+				)
 			);
 		} else {
 			const urlForPersonSearch = composeUrlForPersonSearch(
@@ -56,11 +58,12 @@ function composeUrlForPersonSearch(
 	rows?: number
 ) {
 	const searchData = composeReturnData(searchTerm, start, rows);
+
 	return (
-		process.env.REST_API_BASE_URL +
-		searchEndpoint +
-		generalSearch +
-		JSON.stringify(searchData)
+		// process.env.REST_API_BASE_URL +
+		`https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}${JSON.stringify(
+			searchData
+		)}`
 	);
 }
 
@@ -113,7 +116,10 @@ function extractListFromDataList(dataListWrapper: DataListWrapper): List {
 		const records: RecordWrapper[] = dataListWrapper.dataList.data;
 
 		persons = records.map((recordWrapper) => {
-			return convertToObject<Person>(recordWrapper.record.data, personMatcher);
+			return convertToObject<Person>(
+				recordWrapper.record.data,
+				personMatcher
+			);
 		});
 	}
 	const fromNumber = parseInt(dataListWrapper.dataList.fromNo, 10);

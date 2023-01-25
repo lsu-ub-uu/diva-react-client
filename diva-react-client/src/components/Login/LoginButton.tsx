@@ -14,11 +14,14 @@ const LoginButton = function () {
 		setOpen(false);
 	};
 	return (
-		<Box align="center" pad="small">
+		<Box
+			align='center'
+			pad='small'
+		>
 			<DropButton
 				icon={<Login />}
 				reverse
-				label="Logga in"
+				label='Logga in'
 				open={open}
 				onOpen={onOpen}
 				onClose={onClose}

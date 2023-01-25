@@ -40,7 +40,10 @@ const PersonPage = function ({ edit = false }: { edit?: boolean }) {
 				const initialOrganisations: Map<string, string> = new Map();
 
 				organisations.forEach((organisation) => {
-					initialOrganisations.set(organisation.id, organisation.name);
+					initialOrganisations.set(
+						organisation.id,
+						organisation.name
+					);
 				});
 
 				const initialPersonDomainPartsArr: FormPersonDomainPart[] =

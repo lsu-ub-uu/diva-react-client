@@ -22,7 +22,7 @@ interface SearchTextInput {
 function SearchTextField({ labelledbyID, val, action }: SearchTextInput) {
 	return (
 		<SearchInput
-			type="search"
+			type='search'
 			aria-labelledby={labelledbyID}
 			onChange={action}
 			value={val}

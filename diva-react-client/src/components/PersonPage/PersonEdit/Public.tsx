@@ -11,12 +11,15 @@ export const Public = React.memo(
 		dispatchPerson: (value: PersonAction) => void;
 	}) => {
 		return (
-			<Box align="start" pad={{ left: 'medium' }}>
+			<Box
+				align='start'
+				pad={{ left: 'medium' }}
+			>
 				<Box margin={{ bottom: 'small' }}>
 					<Text>Publik</Text>
 				</Box>
 				<RadioButtonGroup
-					name="radio"
+					name='radio'
 					options={[
 						{ label: 'Ja', value: 'yes' },
 						{ label: 'Nej', value: 'no' },

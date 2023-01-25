@@ -19,7 +19,9 @@ const AuthProvider = function ({ children }: { children: JSX.Element }) {
 		return { auth, setAuth };
 	}, [auth, setAuth]);
 
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+	);
 };
 
 const AuthContext = React.createContext<ContextType>({
@@ -31,7 +33,9 @@ const AuthContext = React.createContext<ContextType>({
 		domain: '',
 	},
 	setAuth: () => {
-		throw new Error('useAuth can only be used within a child of AuthProvider.');
+		throw new Error(
+			'useAuth can only be used within a child of AuthProvider.'
+		);
 	},
 });
 

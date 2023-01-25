@@ -1,4 +1,8 @@
-import { searchPersonsByGeneralSearch } from 'diva-cora-ts-api-wrapper';
+import {
+	searchOrganisationsByDomainAndSearchTerm,
+	searchPersonsByGeneralSearch,
+} from 'diva-cora-ts-api-wrapper';
+
 import React from 'react';
 import useApi from '../../hooks/useApi';
 
@@ -24,7 +28,11 @@ const useSearchPersons = (
 		possiblyCallApi(searchTerm, start, rows);
 	};
 
-	const possiblyCallApi = (searchTerm: string, start: number, rows: number) => {
+	const possiblyCallApi = (
+		searchTerm: string,
+		start: number,
+		rows: number
+	) => {
 		if (searchTerm !== '') {
 			setApiParams({
 				searchTerm,

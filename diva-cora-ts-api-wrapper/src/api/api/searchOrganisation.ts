@@ -20,7 +20,11 @@ export function searchOrganisationsByDomainAndSearchTerm(
 ): Promise<List> {
 	return new Promise((resolve, reject) => {
 		if (domain === '') {
-			reject(new Error('No domain was passed to searchOrganisationsByDomain.'));
+			reject(
+				new Error(
+					'No domain was passed to searchOrganisationsByDomain.'
+				)
+			);
 		} else {
 			const urlForSearch = composeUrlForDomainSearch(domain, searchTerm);
 
@@ -48,7 +52,11 @@ export function searchOrganisationsByDomain(
 ): Promise<List> {
 	return new Promise((resolve, reject) => {
 		if (domain === '') {
-			reject(new Error('No domain was passed to searchOrganisationsByDomain.'));
+			reject(
+				new Error(
+					'No domain was passed to searchOrganisationsByDomain.'
+				)
+			);
 		} else {
 			const urlForSearch = composeUrlForDomainSearch(domain);
 
