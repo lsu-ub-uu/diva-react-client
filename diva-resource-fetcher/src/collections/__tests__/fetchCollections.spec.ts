@@ -1,7 +1,7 @@
 import fetchAndSaveCollection from '../divaCollectionFetcher';
 import fetchCollectionsWithBaseDir from '../fetchCollections';
 
-jest.mock('./divaCollectionFetcher');
+jest.mock('../divaCollectionFetcher');
 const mockFetchAndSaveCollection =
 	fetchAndSaveCollection as jest.MockedFunction<
 		typeof fetchAndSaveCollection

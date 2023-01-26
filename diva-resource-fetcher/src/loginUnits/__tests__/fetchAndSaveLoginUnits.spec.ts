@@ -3,12 +3,12 @@ import saveStringToFile from '../../fileHandler';
 import fetchAndSaveLoginUnits from '../fetchAndSaveLoginUnits';
 import fetchLoginUnits from '../loginUnitFetcher';
 
-jest.mock('./loginUnitFetcher');
+jest.mock('../loginUnitFetcher');
 const mockFetchLoginUnits = fetchLoginUnits as jest.MockedFunction<
 	typeof fetchLoginUnits
 >;
 
-jest.mock('../fileHandler');
+jest.mock('../../fileHandler');
 const mockSaveStringToFile = saveStringToFile as jest.MockedFunction<
 	typeof saveStringToFile
 >;

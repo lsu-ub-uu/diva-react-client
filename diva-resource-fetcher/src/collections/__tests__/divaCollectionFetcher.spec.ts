@@ -3,17 +3,17 @@ import fetchAndSaveCollection from '../divaCollectionFetcher';
 import saveStringToFile from '../../fileHandler';
 import { serializeMap } from '../../mapHandler';
 
-jest.mock('./collectionFetcher');
+jest.mock('../collectionFetcher');
 const mockFetchCollection = fetchCollection as jest.MockedFunction<
 	typeof fetchCollection
 >;
 
-jest.mock('../mapHandler');
+jest.mock('../../mapHandler');
 const mockSerializeMap = serializeMap as jest.MockedFunction<
 	typeof serializeMap
 >;
 
-jest.mock('../fileHandler');
+jest.mock('../../fileHandler');
 const mockSaveStringToFile = saveStringToFile as jest.MockedFunction<
 	typeof saveStringToFile
 >;

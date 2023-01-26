@@ -1,7 +1,7 @@
 import fetchLoginUnitsWithBaseDir from '..';
 import fetchAndSaveLoginUnits from '../fetchAndSaveLoginUnits';
 
-jest.mock('./fetchAndSaveLoginUnits');
+jest.mock('../fetchAndSaveLoginUnits');
 const mockFetchAndSaveLoginUnits =
 	fetchAndSaveLoginUnits as jest.MockedFunction<
 		typeof fetchAndSaveLoginUnits
