@@ -25,19 +25,19 @@ import {
 	dataListWithTwoRecords,
 } from '../../../testData/dataLists';
 
-jest.mock('./api/DataListHandler');
+jest.mock('../api/DataListHandler');
 const mockExtractListFromDataList =
 	extractListFromDataList as jest.MockedFunction<
 		typeof extractListFromDataList
 	>;
 
-jest.mock('../converter/RecordTypeConverter');
+jest.mock('../../converter/RecordTypeConverter');
 const mockConvertToObjectWithRecordType =
 	convertToObjectWithRecordType as jest.MockedFunction<
 		typeof convertToObjectWithRecordType
 	>;
 
-jest.mock('./http/HttpClient');
+jest.mock('../http/HttpClient');
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
@@ -59,8 +59,9 @@ const listWithTwoRecords = createListWithRecords(twoRecordsArray);
 
 beforeAll(() => {
 	mockHttpClientGet.mockResolvedValue(onePerson);
+	// process.env.REST_API_BASE_URL = 'baseUrl/';
 	process.env.REST_API_BASE_URL = 'baseUrl/';
-
+	// console.log('aaaaaa', process.env.REST_API_BASE_URL);
 	mockExtractListFromDataList.mockReturnValue(listWithTwoRecords);
 });
 
@@ -108,7 +109,8 @@ describe('Api', () => {
 		});
 
 		it('should correctly call httpClient with id', async () => {
-			const expectedUrl = 'baseUrl/record/person/someId';
+			const expectedUrl =
+				'https://cora.test.diva-portal.org/diva/rest/record/person/someId';
 
 			expect.assertions(2);
 
@@ -123,7 +125,8 @@ describe('Api', () => {
 		});
 
 		it('should correctly call httpClient with recordType', async () => {
-			const expectedUrl = 'baseUrl/record/personDomainPart/someId';
+			const expectedUrl =
+				'https://cora.test.diva-portal.org/diva/rest/record/personDomainPart/someId';
 
 			expect.assertions(2);
 
@@ -280,7 +283,8 @@ describe('Api', () => {
 		});
 
 		it('should correctly call httpClient with recordType', async () => {
-			let expectedUrl = 'baseUrl/record/loginUnit/';
+			let expectedUrl =
+				'https://cora.test.diva-portal.org/diva/rest/record/loginUnit/';
 
 			expect.assertions(4);
 
@@ -293,7 +297,8 @@ describe('Api', () => {
 				})
 			);
 
-			expectedUrl = 'baseUrl/record/loginWebRedirect/';
+			expectedUrl =
+				'https://cora.test.diva-portal.org/diva/rest/record/loginWebRedirect/';
 
 			await getRecords(RecordType.LoginWebRedirect);
 

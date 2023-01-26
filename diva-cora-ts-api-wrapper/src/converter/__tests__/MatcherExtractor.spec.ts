@@ -4,14 +4,14 @@ import { DataGroup } from '../../cora-data/CoraData';
 import { possiblySetReturnValue } from '../ElementSetter';
 import { extractAndReturnChildren } from '../FieldMatcherExtractor';
 
-jest.mock('./FieldMatcherExtractor');
+jest.mock('../FieldMatcherExtractor');
 
 const mockExtractAndReturnChildren =
 	extractAndReturnChildren as jest.MockedFunction<
 		typeof extractAndReturnChildren
 	>;
 
-jest.mock('./ElementSetter');
+jest.mock('../ElementSetter');
 
 const mockPossiblySetReturnValue =
 	possiblySetReturnValue as jest.MockedFunction<

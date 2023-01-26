@@ -8,7 +8,7 @@ import {
 } from '../CoraDataUtils';
 import * as cduw from '../CoraDataUtilsWrappers';
 
-jest.mock('./CoraDataUtils');
+jest.mock('../CoraDataUtils');
 
 const mockGetFirstDataAtomicWithNameInData =
 	getFirstDataAtomicWithNameInData as jest.MockedFunction<

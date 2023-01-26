@@ -58,7 +58,6 @@ function composeUrlForPersonSearch(
 	rows?: number
 ) {
 	const searchData = composeReturnData(searchTerm, start, rows);
-
 	return (
 		// process.env.REST_API_BASE_URL +
 		`https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}${JSON.stringify(

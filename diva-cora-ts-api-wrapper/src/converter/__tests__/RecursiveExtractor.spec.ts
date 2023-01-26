@@ -9,7 +9,7 @@ import {
 	extractOneDataAtomicValueFollowingNameInDatas,
 } from '../RecursiveExtractor';
 
-jest.mock('../cora-data/CoraDataUtilsWrappers');
+jest.mock('../../cora-data/CoraDataUtilsWrappers');
 
 const mockGetAllDataAtomicValuesWithNameInData =
 	getAllDataAtomicValuesWithNameInData as jest.MockedFunction<

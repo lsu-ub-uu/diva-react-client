@@ -8,7 +8,7 @@ import { DataListWrapper } from '../../../cora-data/CoraData';
 import extractListFromDataList from '../DataListHandler';
 import { List } from '../../../types/List';
 
-jest.mock('../../converter/RecordTypeConverter');
+jest.mock('../../../converter/RecordTypeConverter');
 const mockConvertToObjectWithRecordType =
 	convertToObjectWithRecordType as jest.MockedFunction<
 		typeof convertToObjectWithRecordType

@@ -2,7 +2,7 @@ import convertToObject, { FieldMatcher, Matcher } from '../Converter';
 import { DataGroup } from '../../cora-data/CoraData';
 import extractWithMatcher from '../MatcherExtractor';
 
-jest.mock('./MatcherExtractor');
+jest.mock('../MatcherExtractor');
 const mockExtractWithMatcher = extractWithMatcher as jest.MockedFunction<
 	typeof extractWithMatcher
 >;

@@ -9,12 +9,12 @@ import personMatcher from '../definitions/PersonDefinitions';
 import personDomainPartMatcher from '../definitions/PersonDomainPartDefinitions';
 import convertToObjectWithRecordType from '../RecordTypeConverter';
 
-jest.mock('./Converter');
+jest.mock('../Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
 	typeof convertToObject
 >;
 
-jest.mock('./definitions');
+jest.mock('../definitions');
 const mockGetMatcherForRecordType =
 	getMatcherForRecordType as jest.MockedFunction<
 		typeof getMatcherForRecordType

@@ -11,14 +11,14 @@ import {
 	extractOneDataAtomicValueFollowingNameInDatas,
 } from '../RecursiveExtractor';
 
-jest.mock('./MatcherExtractor');
+jest.mock('../MatcherExtractor');
 const mockExtractWithMatcher = extractWithMatcher as jest.MockedFunction<
 	typeof extractWithMatcher
 >;
 
-jest.mock('./ElementSetter');
+jest.mock('../ElementSetter');
 
-jest.mock('./RecursiveExtractor');
+jest.mock('../RecursiveExtractor');
 
 const mockExtractAllDataAtomicValuesFollowingNameInDatas =
 	extractAllDataAtomicValuesFollowingNameInDatas as jest.MockedFunction<
@@ -30,7 +30,7 @@ const mockExtractOneDataAtomicValueFollowingNameInDatas =
 		typeof extractOneDataAtomicValueFollowingNameInDatas
 	>;
 
-jest.mock('../cora-data/CoraDataUtilsWrappers');
+jest.mock('../../cora-data/CoraDataUtilsWrappers');
 const mockExtractFirstDataGroupWithAttributesFollowingNameInDatas =
 	extractFirstDataGroupWithAttributesFollowingNameInDatas as jest.MockedFunction<
 		typeof extractFirstDataGroupWithAttributesFollowingNameInDatas

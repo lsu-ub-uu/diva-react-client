@@ -7,15 +7,15 @@ import {
 	dataListContainingTwoOfFifteen,
 	dataListContainingOnePerson,
 } from '../../../../testData/searchResults';
-import searchPersonsByGeneralSearch from '../searchPersonByGeneralSearch';
+import { searchPersonsByGeneralSearch } from '../searchPersonByGeneralSearch';
 
-jest.mock('../http/HttpClient');
+jest.mock('../../http/HttpClient');
 
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
 
-jest.mock('../../converter/Converter');
+jest.mock('../../../converter/Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
 	typeof convertToObject
 >;
@@ -50,8 +50,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should correctly call httpClient with parameters', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"1"},{"name":"rows","value":"2"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -168,8 +167,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should pass start', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"2"},{"name":"rows","value":"3"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -185,8 +183,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should pass rows', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"3"},{"name":"rows","value":"4"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -202,8 +199,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should not pass start if start is 0', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"rows","value":"4"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -219,8 +215,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should not pass start if start is negative', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"rows","value":"4"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -236,8 +231,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should not pass rows if rows is 0', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"3"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 
@@ -253,8 +247,7 @@ describe('searchPersonsByGeneralSearch', () => {
 
 	it('should not pass rows if rows is negative', async () => {
 		const generalSearch = `publicPersonSearch?searchData={"name":"search","children":[{"name":"include","children":[{"name":"includePart","children":[{"name":"personGeneralSearchTerm","value":"${searchTerm}"}]}]},{"name":"start","value":"3"}]}`;
-		const expectedUrl =
-			process.env.REST_API_BASE_URL + searchEndpoint + generalSearch;
+		const expectedUrl = `https://cora.test.diva-portal.org/diva/rest/${searchEndpoint}${generalSearch}`;
 
 		expect.assertions(2);
 

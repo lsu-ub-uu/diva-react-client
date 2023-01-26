@@ -1,21 +1,21 @@
-import { List } from '../../../dist/types';
+import { List } from '../../../../dist/types';
 import {
 	dataListContainingOneOrganisation,
 	dataListContainingThreeOrganisations,
 	dataListContainingTwoOfFifteen,
-} from '../../../testData/searchResults';
-import convertToObject from '../../converter/Converter';
-import organisationMatcher from '../../converter/definitions/OrganisationDefinitions';
-import { searchOrganisationsByDomain } from '../api/searchOrganisation';
-import httpClient from '../http/HttpClient';
+} from '../../../../testData/searchResults';
+import convertToObject from '../../../converter/Converter';
+import organisationMatcher from '../../../converter/definitions/OrganisationDefinitions';
+import { searchOrganisationsByDomain } from '../searchOrganisation';
+import httpClient from '../../http/HttpClient';
 
-jest.mock('./http/HttpClient');
+jest.mock('../../http/HttpClient');
 
 const mockHttpClientGet = httpClient.get as jest.MockedFunction<
 	typeof httpClient.get
 >;
 
-jest.mock('../converter/Converter');
+jest.mock('../../../converter/Converter');
 const mockConvertToObject = convertToObject as jest.MockedFunction<
 	typeof convertToObject
 >;
