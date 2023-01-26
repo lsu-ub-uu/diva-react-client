@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button as GrommetButton, Grid, Select, TextInput } from 'grommet';
 import { Search } from 'grommet-icons';
+import SearchButton from './SearchButton';
 
 const StyledForm = styled.form`
 	display: grid;
@@ -72,6 +73,7 @@ const SearchComponent = function ({
 	return (
 		<StyledForm onSubmit={handleSubmit}>
 			<TextInput
+				id='search'
 				type='search'
 				icon={<Search />}
 				reverse
@@ -80,12 +82,13 @@ const SearchComponent = function ({
 				onChange={handleChange}
 				aria-labelledby='searchButton'
 			/>
-			<GrommetButton
+			{/* <GrommetButton
 				type='submit'
 				id='searchButton'
 				primary
 				label='Sök'
-			/>
+			/> */}
+			<SearchButton />
 			<Grid
 				columns={['6.3em', 'max-content']}
 				gap={{ column: 'small' }}

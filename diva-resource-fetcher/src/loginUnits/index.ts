@@ -5,7 +5,7 @@ const fetchLoginUnitsWithBaseDir = async (baseDir: string) => {
 		if (baseDir === '') {
 			reject(
 				new Error(
-					'Error in fetchCollectionsWithBaseDir. No baseDir given."'
+					'Error in fetchCollectionsWithBaseDir. No baseDir given.'
 				)
 			);
 		}
