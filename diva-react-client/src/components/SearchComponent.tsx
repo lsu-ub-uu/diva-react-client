@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button as GrommetButton, Grid, Select, TextInput } from 'grommet';
+import { Grid, Select, TextInput } from 'grommet';
 import { Search } from 'grommet-icons';
-import SearchButton from './SearchButton';
+import SearchButton from './Buttons/SearchButton';
 
 const StyledForm = styled.form`
 	display: grid;

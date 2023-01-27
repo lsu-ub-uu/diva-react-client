@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../../../context/AuthContext';
 import { personDomainPartReducer } from './personDomainPartReducer';
 import { PersonActionType, personReducer } from './personReducer';
-import BackButton from '../../BackButton';
+import BackButton from '../../Buttons/BackButton';
 import { convertToFormPerson, FormPerson } from '../../../types/FormPerson';
 import {
 	convertToFormPersonDomainPart,

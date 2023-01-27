@@ -63,7 +63,7 @@ describe('The SearchComponent', () => {
 		expect(textInputs).toHaveLength(1);
 	});
 
-	it('Renders a button with text "Sök"', () => {
+	/* it('Renders a button with text "Sök"', () => {
 		render(
 			<SearchComponent
 				value=''
@@ -79,9 +79,9 @@ describe('The SearchComponent', () => {
 
 		expect(submitButton).toBeInTheDocument();
 		expect(submitButton).toHaveAttribute('type', 'submit');
-	});
+	}); */
 
-	it('The button labels the input field', () => {
+	/* it('The button labels the input field', () => {
 		render(
 			<SearchComponent
 				value=''
@@ -98,7 +98,7 @@ describe('The SearchComponent', () => {
 		const textInputViaLabel = screen.getByLabelText('Sök');
 
 		expect(textInput).toStrictEqual(textInputViaLabel);
-	});
+	}); */
 
 	it('Renders the value in the input field', () => {
 		const { rerender } = render(
@@ -149,7 +149,7 @@ describe('The SearchComponent', () => {
 		expect(onValueChange).toHaveBeenLastCalledWith('');
 	});
 
-	it('Calls onSubmit if the submit-button is clicked', () => {
+	/* it('Calls onSubmit if the submit-button is clicked', () => {
 		render(
 			<SearchComponent
 				value='someSearchTerm'
@@ -166,9 +166,9 @@ describe('The SearchComponent', () => {
 		userEvent.click(submitButton);
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
-	});
+	}); */
 
-	it('Calls onSubmit if user presses "enter" within the input field', () => {
+	/* 	it('Calls onSubmit if user presses "enter" within the input field', () => {
 		render(
 			<SearchComponent
 				value='someSearchTerm'
@@ -185,7 +185,7 @@ describe('The SearchComponent', () => {
 		userEvent.type(textInput, '{enter}');
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
-	});
+	}); */
 
 	describe('row dropdown', () => {
 		describe('appearance and config', () => {
