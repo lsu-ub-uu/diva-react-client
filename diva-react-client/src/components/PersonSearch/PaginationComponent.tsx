@@ -13,22 +13,26 @@ const PaginationGrid = styled.div`
 	gap: 0;
 `;
 const PaginationButton = styled.button`
+	width: 3em;
+	height: 3em;
+	color: rgb(33, 33, 33);
 	background-color: rgb(255, 255, 255);
 	box-sizing: border-box;
-	width: 2em;
 	border-radius: 0px;
-	color: rgb(33, 33, 33);
-	cursor: pointer;
-	display: inline-block;
-	padding: 0.5em 2em;
-	text-align: center;
-	//border: 1px solid #e9ecef;
 	border-top: 1px solid #e9ecef;
 	border-right: 0.5px solid #e9ecef;
 	border-bottom: 1px solid #e9ecef;
 	border-left: 0.5px solid #e9ecef;
+
+	cursor: pointer;
+	display: inline-block;
+
+	text-align: center;
+
 	font-size: 1em;
-	height: 2.5em;
+
+	text-align: center;
+
 	&:hover {
 		background-color: #e9ecef;
 	}
@@ -36,6 +40,7 @@ const PaginationButton = styled.button`
 		background-color: #e9ecef;
 	}
 	&:first-child {
+		margin-left: 1em;
 		border-left: 1px solid #e9ecef;
 		border-top-left-radius: 4px;
 		border-bottom-left-radius: 4px;
