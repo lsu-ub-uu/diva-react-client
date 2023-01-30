@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 type Props = { theme: DefaultTheme };
+
 const SearchInput = styled.input`
 	width: 50%;
 	font-size: 1em;

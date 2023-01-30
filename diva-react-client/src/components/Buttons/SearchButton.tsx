@@ -5,7 +5,8 @@ import styled from 'styled-components';
 const Button = styled.button`
 	background-color: rgb(51, 51, 51);
 	box-sizing: border-box;
-	border-radius: 4px;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	display: inline-block;
@@ -13,6 +14,7 @@ const Button = styled.button`
 	text-align: center;
 	border: none;
 	font-size: 1em;
+	height: 2.5em;
 `;
 
 const SearchButton = function () {
