@@ -6,7 +6,7 @@ import {
 	createMinimumFormPersonWithIdAndName,
 	formPersonWithDomain,
 } from '../../../../testData/personObjectData';
-import EditButton from '../../EditButton';
+import EditButton from '../../Buttons/EditButton';
 import Biography from '../Biography';
 import FormPersonView from '../FormPersonView';
 import Identifiers from '../Identifiers';
@@ -50,8 +50,8 @@ jest.mock('../Public', () => {
 		return <div />;
 	});
 });
-
-jest.mock('../../EditButton', () => {
+// A
+jest.mock('../../Buttons/EditButton', () => {
 	return jest.fn(() => {
 		return <div />;
 	});

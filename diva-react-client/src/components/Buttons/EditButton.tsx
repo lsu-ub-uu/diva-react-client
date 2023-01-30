@@ -2,7 +2,7 @@ import { Box, Button } from 'grommet';
 import { Edit } from 'grommet-icons';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { LOGIN_STATUS, useAuth } from '../context/AuthContext';
+import { LOGIN_STATUS, useAuth } from '../../context/AuthContext';
 
 const EditButton = function ({
 	recordType,

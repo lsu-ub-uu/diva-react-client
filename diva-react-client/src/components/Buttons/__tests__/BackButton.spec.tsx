@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BackButton from '../BackButton';
 
-import { renderWithRouter } from '../../../test-utils';
+import { renderWithRouter } from '../../../../test-utils';
 
 const mockedUsedNavigate = jest.fn();
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import EditButton from '../EditButton';
-import { LOGIN_STATUS } from '../../context/AuthContext';
-import { renderWithRouter } from '../../../test-utils';
+import { LOGIN_STATUS } from '../../../context/AuthContext';
+import { renderWithRouter } from '../../../../test-utils';
 
 const mockAuth = jest.fn();
-jest.mock('../../context/AuthContext', () => ({
-	...jest.requireActual('../../context/AuthContext'),
+jest.mock('../../../context/AuthContext', () => ({
+	...jest.requireActual('../../../context/AuthContext'),
 	useAuth: () => {
 		return mockAuth();
 	},

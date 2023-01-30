@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button as GrommetButton, Grid, Select, TextInput } from 'grommet';
-import { Search } from 'grommet-icons';
+import { Grid, Select /* TextInput */ } from 'grommet';
+import SearchButton from './Buttons/SearchButton';
+import SearchInput from './SearchInput/SearchInput';
 
-const StyledForm = styled.form`
-	display: grid;
-	grid-template-columns: 50% min-content;
+const Form = styled.form`
+	display: flex;
+	flex-direction: column;
+	/* grid-template-columns: 50% min-content;
 	grid-template-rows: 1fr;
 	justify-content: left;
 	justify-items: left;
 	column-gap: 1em;
-	row-gap: 0.5em;
+	row-gap: 0.5em; */
+	width: 50vw;
+	gap: 0.5em;
+	div {
+		display: flex;
+		grid-column: span 2;
+	}
 `;
 
 function getRowsOrDefaultValue(providedRows: number) {
@@ -32,6 +40,7 @@ const SearchComponent = function ({
 	onRowUpdate: (newRows: number) => void;
 	onSubmit: () => void;
 }) {
+	// console.log(magnifyingGlass);
 	const [opinionatedRows, setOpinionatedRows] = useState(
 		getRowsOrDefaultValue(rows)
 	);
@@ -70,37 +79,31 @@ const SearchComponent = function ({
 		options.push(opinionatedRows.toString());
 	}
 	return (
-		<StyledForm onSubmit={handleSubmit}>
-			<TextInput
-				type='search'
-				icon={<Search />}
-				reverse
-				placeholder='Sök med namn, ORCID eller id'
-				value={value}
-				onChange={handleChange}
-				aria-labelledby='searchButton'
-			/>
-			<GrommetButton
-				type='submit'
-				id='searchButton'
-				primary
-				label='Sök'
-			/>
-			<Grid
-				columns={['6.3em', 'max-content']}
-				gap={{ column: 'small' }}
-				align='center'
-			>
-				<Select
-					id='rows-input'
-					aria-labelledby='rows-label'
-					value={opinionatedRows.toString()}
-					onChange={handleRowChange}
-					options={options}
+		<Form onSubmit={handleSubmit}>
+			<div>
+				<SearchInput
+					value={value}
+					onChange={handleChange}
 				/>
-				<span id='rows-label'>Träffar per sida</span>
-			</Grid>
-		</StyledForm>
+				<SearchButton />
+			</div>
+			<div>
+				<Grid
+					columns={['6.3em', 'max-content']}
+					gap={{ column: 'small' }}
+					align='center'
+				>
+					<Select
+						id='rows-input'
+						aria-labelledby='rows-label'
+						value={opinionatedRows.toString()}
+						onChange={handleRowChange}
+						options={options}
+					/>
+					<span id='rows-label'>Träffar per sida</span>
+				</Grid>
+			</div>
+		</Form>
 	);
 };
 

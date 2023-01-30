@@ -3,7 +3,7 @@ import { Box, Heading } from 'grommet';
 import React from 'react';
 import { FormPerson } from '../../types/FormPerson';
 import { FormPersonDomainPart } from '../../types/FormPersonDomainPart';
-import EditButton from '../EditButton';
+import EditButton from '../Buttons/EditButton';
 import Biography from './Biography';
 import Identifiers from './Identifiers';
 import Organisations from './Organisations';
