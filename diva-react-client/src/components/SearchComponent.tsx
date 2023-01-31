@@ -1,25 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Grid, Select /* TextInput */ } from 'grommet';
+// import { Grid, Select /* TextInput */ } from 'grommet';
+import Form from '../styles/Form';
 import SearchButton from './Buttons/SearchButton';
-import SearchInput from './SearchInput/SearchInput';
-
-const Form = styled.form`
-	display: flex;
-	flex-direction: column;
-	/* grid-template-columns: 50% min-content;
-	grid-template-rows: 1fr;
-	justify-content: left;
-	justify-items: left;
-	column-gap: 1em;
-	row-gap: 0.5em; */
-	width: 50vw;
-	gap: 0.5em;
-	div {
-		display: flex;
-		grid-column: span 2;
-	}
-`;
+import SearchInput from './Input/SearchInput';
+import Select from './Input/Select';
 
 function getRowsOrDefaultValue(providedRows: number) {
 	return providedRows < 1 ? 50 : providedRows;
@@ -88,20 +72,13 @@ const SearchComponent = function ({
 				<SearchButton />
 			</div>
 			<div>
-				<Grid
-					columns={['6.3em', 'max-content']}
-					gap={{ column: 'small' }}
-					align='center'
-				>
-					<Select
-						id='rows-input'
-						aria-labelledby='rows-label'
-						value={opinionatedRows.toString()}
-						onChange={handleRowChange}
-						options={options}
-					/>
-					<span id='rows-label'>Träffar per sida</span>
-				</Grid>
+				<Select
+					id='rows-input'
+					aria-labelledby='rows-label'
+					value={opinionatedRows.toString()}
+					onChange={handleRowChange}
+					options={options}
+				/>
 			</div>
 		</Form>
 	);
