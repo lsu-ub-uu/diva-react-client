@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 // import { Grid, Select /* TextInput */ } from 'grommet';
 import Form from '../styles/Form';
 import SearchButton from './Buttons/SearchButton';
@@ -8,7 +9,10 @@ import Select from './Input/Select';
 function getRowsOrDefaultValue(providedRows: number) {
 	return providedRows < 1 ? 50 : providedRows;
 }
-
+const Flex = styled.div`
+	display: flex;
+	align-items: center;
+`;
 const SearchComponent = function ({
 	value,
 	rows,
@@ -71,15 +75,15 @@ const SearchComponent = function ({
 				/>
 				<SearchButton />
 			</div>
-			<div>
+			<Flex>
 				<Select
 					id='rows-input'
-					aria-labelledby='rows-label'
 					value={opinionatedRows.toString()}
 					onChange={handleRowChange}
 					options={options}
+					labelText='Träffar per sida'
 				/>
-			</div>
+			</Flex>
 		</Form>
 	);
 };

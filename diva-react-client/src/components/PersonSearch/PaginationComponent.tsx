@@ -13,8 +13,8 @@ const PaginationGrid = styled.div`
 	gap: 0;
 `;
 const PaginationButton = styled.button`
-	width: 3em;
-	height: 3em;
+	width: 2.5em;
+	height: 2.5em;
 	color: rgb(33, 33, 33);
 	background-color: rgb(255, 255, 255);
 	box-sizing: border-box;
